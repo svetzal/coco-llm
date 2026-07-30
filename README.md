@@ -93,6 +93,16 @@ epochs. Build the DECB binary with `make coco-bin`, verify the engine with
 See
 [`experiments/EXP-004-complete-6809-training.md`](experiments/EXP-004-complete-6809-training.md).
 
+For a conversation-driven presentation, list or run any recorded experiment:
+
+```sh
+make present
+make present EXP=3
+```
+
+EXP-001 through EXP-003 produce concise terminal evidence. EXP-004 launches the
+interactive XRoar demonstration.
+
 ## Watch it train in XRoar
 
 From Terminal:
@@ -134,10 +144,12 @@ The deterministic parameter check still runs after training, but success is
 not announced on screen. A failed check stops the demonstration with
 `MODEL CHECK FAILED` instead of continuing into generation.
 
-The current cycle projection is about 74 seconds for the complete run. XRoar's `F12`
-key runs at maximum speed while held; `Shift+F12` toggles maximum speed. Leave
-those alone when you want to watch the stock-rate demonstration. Close the
-XRoar window, or press `Control+C` in Terminal, when finished.
+The current cycle model projects about 74 seconds for the complete run, but it
+is not a validated emulator or physical-hardware stopwatch. Do not schedule a
+presentation cue or screenshot from that estimate. XRoar's `F12` key runs at
+maximum speed while held; `Shift+F12` toggles maximum speed. Leave those alone
+when you want to watch the stock-rate demonstration. Close the XRoar window,
+or press `Control+C` in Terminal, when finished.
 
 For a fast, headless correctness check instead of the visible demonstration:
 

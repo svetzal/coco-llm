@@ -136,8 +136,10 @@ Supported.
 
 The complete training and generation path now runs in 6809 assembly and is
 bit-exact with the integer reference for the controlled corpus. Its projected
-stock-clock runtime is comfortably inside three minutes and likely near
-73 seconds.
+stock-clock runtime is comfortably inside three minutes. The approximately
+74-second figure is a cycle-model projection, not a cueing or screenshot
+schedule; emulator wall-clock behaviour and physical hardware still require
+direct measurement.
 
 The next evidence step is to inspect the on-screen XRoar run interactively, then
 spot-check correctness and timing on the physical CoCo 1 and CoCo 3.

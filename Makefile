@@ -6,7 +6,13 @@ COCO_ROM_ARCHIVE ?= $(HOME)/OneDrive/CoCo/MAME/roms/cocoe.zip
 COCO_BASIC_ROM := build/roms/bas11.rom
 COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 
-.PHONY: test reference-test asm-test model-test coco-bin xroar-test xroar tools
+.PHONY: test reference-test asm-test model-test coco-bin xroar-test xroar \
+	present tools
+
+PRESENTER := $(UV) run python tools/present_experiment.py
+
+present:
+	@$(PRESENTER) $(if $(EXP),run $(EXP),list)
 
 test: reference-test asm-test model-test
 

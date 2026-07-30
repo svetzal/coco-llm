@@ -315,6 +315,21 @@ Failure is part of the demonstration. If the model does not improve, inspect
 the evidence with the audience and use a previously recorded run only as a
 clearly labelled comparison.
 
+## Conversation-driven branches
+
+The four experiments are a menu, not four mandatory acts. Run `make present`
+to see the choices, then follow the room:
+
+- “Why not characters?” — `make present EXP=1`
+- “Does tokenization really matter?” — `make present EXP=2`
+- “Can you make it biased?” — `make present EXP=3`
+- “But does the CoCo actually train?” — `make present EXP=4`
+
+The first three resolve quickly in the terminal and return to the same vintage
+computer-name through-line. EXP-004 is the centerpiece and controls its own
+pause before inference. Do not cue it from the cycle-model runtime projection;
+rehearse and measure the actual presentation hardware.
+
 ## Presentation stance
 
 The emotional movement is:
