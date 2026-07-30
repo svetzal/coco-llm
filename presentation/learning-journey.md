@@ -71,8 +71,64 @@ unexpected. Their guesses are a probability distribution derived from
 experience. The model's job is the same narrow task: assign scores to possible
 next tokens.
 
-Introduce tokens, context, logits, probabilities, and sampling only as the live
-example needs them.
+The words are less mysterious when attached to this one example:
+
+- a **token** is one item the model can read or predict, such as `COMMODORE`;
+- the **context** is the two tokens it can currently see;
+- a **parameter** is one adjustable number that influences its predictions;
+- a **logit** is merely a raw scoreboard value for one possible next token.
+
+Do not ask the audience to memorize the vocabulary. Keep returning to the
+computer-name example until the terms become convenient shorthand.
+
+### How does a scoreboard become a probability?
+
+Suppose the model gives three possible next tokens these raw scores:
+
+| Token | Raw score |
+| --- | ---: |
+| `AMIGA` | 3 |
+| `64` | 2 |
+| `PET` | 1 |
+
+Those are logits. A score of 3 does not mean 3%, three votes, or three units of
+confidence. The scores do not yet have a human-friendly scale.
+
+**Softmax turns the scoreboard into shares of 100%.** For these illustrative
+scores, the result is approximately:
+
+| Token | Softmax probability |
+| --- | ---: |
+| `AMIGA` | 67% |
+| `64` | 24% |
+| `PET` | 9% |
+
+Softmax preserves the ordering, makes every share positive, and makes all the
+shares add to 100%. It also emphasizes the lead: a modest score advantage can
+become a much clearer probability advantage.
+
+Why call it “soft” max? A hard maximum would give the winner everything and
+discard every alternative. Softmax lets the strongest choice lead while the
+other choices remain possible.
+
+Here is the precision-versus-accuracy moment: these numbers are a
+**distribution over the model's available choices**, not a measurement of
+truth and not proof that the model understands Commodore. Softmax does not
+choose a token either. Sampling can draw from the distribution; greedy
+inference can take the largest share.
+
+The CoCo calculates an integer approximation using a small lookup table and
+fixed-point arithmetic. It is doing the same conceptual job without floating
+point or the full exponential function.
+
+If the room wants the formula, reveal it only after the intuition:
+
+```text
+probability(token) = exp(score(token)) / sum(exp(every score))
+```
+
+Read that aloud as: make every score a positive weight, then divide each weight
+by the total. The formula should confirm the story, not become an entrance exam.
 
 ### Where does learning happen?
 
@@ -84,13 +140,44 @@ EXPECTED:  AMIGA
 PREDICTED: PET
 ```
 
-Walk one example slowly:
+Call the shot first: which numbers should move? The model gave too much
+probability to `PET` and too little to `AMIGA`.
+
+Now name the complete training step:
 
 ```text
-predict → compare → send error backward → adjust numbers
+forward pass → softmax → compare → backpropagate → update
 ```
 
-Then run the optimized training loop.
+Show the same path in both directions:
+
+```text
+PREDICT: context → embeddings → scores → probabilities
+LEARN:   expected answer → error → output weights → embeddings
+```
+
+Walk it slowly:
+
+1. The **forward pass** uses the current parameters to produce raw scores.
+2. **Softmax** turns those scores into next-token probabilities.
+3. Comparison with the known answer produces a numerical error.
+4. **Backpropagation** works backward through the calculation to determine how
+   much each contributing parameter was responsible for that error.
+5. The update nudges each parameter a small distance in the direction that
+   would have made `AMIGA` more likely.
+
+Backpropagation does not mean “the computer thinks about why it was wrong.” It
+is bookkeeping with multiplication and addition. We know the expected answer
+because the training example supplied it; backpropagation follows the same
+connections backward and distributes correction signals.
+
+Keep one distinction explicit: **backpropagation calculates which direction
+and how much; the update step changes the parameters.** People often use
+“backprop” casually for the whole learning process, but the separation helps
+make the mechanism visible.
+
+Repeat that process for every example. One complete trip through the training
+examples is an **epoch**. Then run the optimized training loop.
 
 On the live CoCo screen, the epoch and actual example occupy separate rows:
 
@@ -312,7 +399,8 @@ The talk should have one genuine run, not a sequence of canned simulations:
 4. Train that example one step at a time.
 5. Start the optimized loop.
 6. Reveal how two unsigned `MUL` operations replaced the slow signed routine.
-7. Explain embeddings and backpropagation while epochs run.
+7. Walk one training step—scores, softmax, error, backpropagation, update—while
+   the epochs run.
 8. Reach the predeclared training boundary and pause at `PRESS ANY KEY`.
 9. Let the audience choose when to begin inference.
 10. Fill the screen with twelve deterministic inference samples.
