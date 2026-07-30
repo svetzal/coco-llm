@@ -30,6 +30,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--basic-rom", required=True, type=Path)
     parser.add_argument("--extended-basic-rom", required=True, type=Path)
     parser.add_argument("--symbols", required=True, type=Path)
+    parser.add_argument("--trap-symbol", default="wait_for_key")
+    parser.add_argument("--timeout", type=int, default=120)
     return parser.parse_args()
 
 
@@ -43,7 +45,7 @@ def verify_rom(path: Path, expected_crc32: int, label: str) -> None:
 
 def main() -> None:
     arguments = parse_arguments()
-    wait_for_key = symbol_address(arguments.symbols, "wait_for_key")
+    trap_address = symbol_address(arguments.symbols, arguments.trap_symbol)
     verify_rom(arguments.basic_rom, BASIC_11_CRC32, "Color BASIC 1.1")
     verify_rom(
         arguments.extended_basic_rom,
@@ -69,9 +71,9 @@ def main() -> None:
             "-trap-snap",
             str(snapshot),
             "-trap",
-            f"pc=0x{wait_for_key:04x}",
+            f"pc=0x{trap_address:04x}",
             "-timeout",
-            "120",
+            str(arguments.timeout),
             "-quiet",
             "-run",
             str(arguments.binary),
@@ -80,12 +82,13 @@ def main() -> None:
         if not snapshot.exists():
             raise RuntimeError(
                 "XRoar did not reach keyboard prompt at program counter "
-                f"${wait_for_key:04X}"
+                f"${trap_address:04X}"
             )
 
     print(
         "XRoar used valid Color BASIC 1.1 / Extended Color BASIC 1.0 ROMs "
-        f"and reached keyboard prompt at program counter ${wait_for_key:04X}"
+        f"and reached {arguments.trap_symbol} at program counter "
+        f"${trap_address:04X}"
     )
 
 

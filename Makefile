@@ -7,14 +7,14 @@ COCO_BASIC_ROM := build/roms/bas11.rom
 COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 
 .PHONY: test reference-test asm-test model-test coco-bin xroar-test xroar \
-	present tools
+	model-test-exp5 coco-bin-exp5 xroar-test-exp5 xroar-exp5 present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 
 present:
 	@$(PRESENTER) $(if $(EXP),run $(EXP),list)
 
-test: reference-test asm-test model-test
+test: reference-test asm-test model-test model-test-exp5
 
 reference-test:
 	$(UV) sync
@@ -28,7 +28,12 @@ asm-test: build/smul8-test.bin $(SIM6809)
 model-test: build/model-test-runner.asm $(SIM6809)
 	$(SIM6809) --perf --run $<
 
+model-test-exp5: build/model-exp5-test-runner.asm $(SIM6809)
+	$(SIM6809) --perf --run $<
+
 coco-bin: build/coco-llm.bin
+
+coco-bin-exp5: build/coco-llm-exp5.bin
 
 xroar-test: build/coco-llm.bin build/coco-llm.sym build/roms/.coco1-roms
 	$(UV) run python tools/test_xroar.py \
@@ -37,12 +42,28 @@ xroar-test: build/coco-llm.bin build/coco-llm.sym build/roms/.coco1-roms
 		--extended-basic-rom $(COCO_EXTBASIC_ROM) \
 		--symbols build/coco-llm.sym
 
+xroar-test-exp5: build/coco-llm-exp5.bin build/coco-llm-exp5.sym \
+		build/roms/.coco1-roms
+	$(UV) run python tools/test_xroar.py \
+		--xroar $(XROAR) --binary build/coco-llm-exp5.bin \
+		--basic-rom $(COCO_BASIC_ROM) \
+		--extended-basic-rom $(COCO_EXTBASIC_ROM) \
+		--symbols build/coco-llm-exp5.sym \
+		--timeout 600
+
 xroar: build/coco-llm.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
 	$(XROAR) -machine cocous -ram 32 \
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
 		-ratelimit -run build/coco-llm.bin
+
+xroar-exp5: build/coco-llm-exp5.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-llm-exp5.bin
 
 build/smul8-test.bin: src/6809/tests/smul8_test.asm
 	mkdir -p build
@@ -52,6 +73,15 @@ build/model_data.inc: tools/generate_6809_data.py \
 		src/reference/fixed_token_lm.py src/reference/token_lm.py \
 		experiments/data/EXP-002-tokenized-computer-names.txt
 	$(UV) run python tools/generate_6809_data.py --output $@
+
+build/model_data_exp5.inc: tools/generate_6809_data.py \
+		src/reference/fixed_token_lm.py src/reference/token_lm.py \
+		experiments/data/EXP-005-marketing-language.txt \
+		experiments/data/EXP-005-prompts.txt
+	$(UV) run python tools/generate_6809_data.py --output $@ \
+		--epochs 80 \
+		--corpus experiments/data/EXP-005-marketing-language.txt \
+		--prompts experiments/data/EXP-005-prompts.txt
 
 build/model-test.bin: src/6809/tests/model_test.asm \
 		src/6809/model_core.asm build/model_data.inc
@@ -65,6 +95,18 @@ build/model-test-runner.asm: build/model-test.bin \
 		--symbols build/model-test.sym \
 		--output $@
 
+build/model-exp5-test.bin: src/6809/tests/model_exp5_test.asm \
+		src/6809/model_core.asm build/model_data_exp5.inc
+	lwasm --6809 --format=raw --symbol-dump=build/model-exp5-test.sym \
+		--output=$@ $<
+
+build/model-exp5-test-runner.asm: build/model-exp5-test.bin \
+		tools/make_6809_test_runner.py
+	$(UV) run python tools/make_6809_test_runner.py \
+		--binary build/model-exp5-test.bin \
+		--symbols build/model-exp5-test.sym \
+		--output $@ --experiment 5
+
 build/coco-llm.bin: src/6809/coco_llm.asm \
 		src/6809/model_core.asm build/model_data.inc
 	lwasm --6809 --format=decb --output=$@ $<
@@ -76,6 +118,15 @@ build/coco-llm.sym: src/6809/coco_llm.asm \
 
 build/coco-llm.raw: build/coco-llm.sym
 	@test -f $@
+
+build/coco-llm-exp5.bin: src/6809/coco_llm_exp5.asm \
+		src/6809/model_core.asm build/model_data_exp5.inc
+	lwasm --6809 --format=decb --output=$@ $<
+
+build/coco-llm-exp5.sym: src/6809/coco_llm_exp5.asm \
+		src/6809/model_core.asm build/model_data_exp5.inc
+	lwasm --6809 --format=raw --symbol-dump=build/coco-llm-exp5.sym \
+		--output=build/coco-llm-exp5.raw $<
 
 build/roms/.coco1-roms: $(COCO_ROM_ARCHIVE)
 	mkdir -p build/roms

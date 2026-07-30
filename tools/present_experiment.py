@@ -29,7 +29,7 @@ EXPERIMENTS = {
     ),
     "EXP-005": (
         "Prompting with 1980s advertising language",
-        "Fast integer reference; visible starting words steer completion.",
+        "Interactive XRoar prompt selector; Up/Down chooses, Enter generates.",
     ),
 }
 
@@ -224,7 +224,7 @@ def run_exp_004() -> dict[str, Any]:
     return payload
 
 
-def run_exp_005() -> dict[str, Any]:
+def build_exp_005_reference() -> dict[str, Any]:
     corpus = ROOT / "experiments" / "data" / "EXP-005-marketing-language.txt"
     phrases = load_names(corpus)
     vocabulary, token_by_text = build_vocabulary(phrases)
@@ -268,28 +268,26 @@ def run_exp_005() -> dict[str, Any]:
         "completions": completions,
     }
 
+    return payload
+
+
+def run_exp_005() -> dict[str, Any]:
+    payload = {
+        "experiment": "EXP-005",
+        "status": "interactive",
+        "parameters": 380,
+        "vocabulary": 38,
+        "command": "make xroar-exp5",
+    }
     heading(
         "EXP-005 — YOU START, IT COMPLETES",
         "If we replace # # with real words, can we steer what comes next?",
     )
-    print("CALL THE SHOT")
-    print("  Pick one of these openings. What do you expect the model to say?")
+    print("Launching XRoar with the expanded model and real CoCo 1 ROMs.")
+    print("After training: press a key, choose with Up/Down, generate with Enter.")
+    print("Each completion stays visible; selection advances to the next prompt.")
     print()
-    print(f"Campaign fragments                {len(phrases):>6,}")
-    print(f"Vocabulary tokens                 {len(vocabulary):>6,}")
-    print(f"Parameters                        {model.parameter_count:>6,}")
-    print(f"Training examples                 {len(targets):>6,}")
-    print(f"Loss                         {initial_loss:>6.4f} -> {final_loss:.4f}")
-    print()
-    print("YOUR WORDS                    MODEL COMPLETES")
-    print("---------------------------   --------------------------------")
-    for completion in completions:
-        print(f"{completion['prompt']:<27} > {completion['completion']}")
-    print()
-    print("SUPPORTED IN THE INTEGER REFERENCE")
-    print("  A prompt is just the model's starting context.")
-    print("  Familiar continuations emerge, and phrases sometimes blend.")
-    print("  Prediction is useful. It still is not understanding.")
+    subprocess.run(["make", "xroar-exp5"], cwd=ROOT, check=True)
     return payload
 
 
@@ -352,9 +350,10 @@ def main() -> None:
         list_experiments(arguments.json)
         return
 
-    if arguments.json and arguments.experiment == "EXP-004":
+    if arguments.json and arguments.experiment in {"EXP-004", "EXP-005"}:
         raise SystemExit(
-            "EXP-004 is interactive and has no JSON mode; try: make present EXP=4"
+            f"{arguments.experiment} is interactive and has no JSON mode; "
+            f"try: make present EXP={arguments.experiment[-1]}"
         )
     if arguments.json:
         import contextlib

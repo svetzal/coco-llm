@@ -95,7 +95,7 @@ Recorded on the macOS reference environment:
 All six prompts produce recognizable continuations. Five reproduce the
 campaign continuation; `ARE YOU` blends “keeping up” with “little computers.”
 
-## Conclusion
+## Initial conclusion
 
 Supported in the integer reference.
 
@@ -106,6 +106,55 @@ presentation evidence: the model has learned reusable statistical structure,
 not the meaning or historical origin of either campaign.
 
 The expanded run performs about 4.8 times as many multiplications as EXP-004.
-It is not yet supported for live stock-rate CoCo use. The next experiment must
-either reduce its training work or demonstrate an honest presentation runtime
-on the 6809 before this corpus moves into the assembly program.
+It therefore required separate 6809 implementation and timing evidence.
+
+## 6809 follow-up
+
+The model now runs end-to-end in 6809 assembly as a separate EXP-005 binary:
+
+```sh
+make model-test-exp5
+make xroar-test-exp5
+make xroar-exp5
+```
+
+The CoCo program:
+
+1. trains all 380 parameters for eighty epochs;
+2. verifies all 760 final parameter bytes;
+3. pauses before inference;
+4. displays six selectable two-token prompts;
+5. moves the selector with Up and Down;
+6. generates with Enter and advances to the next prompt;
+7. leaves previous completions visible.
+
+The prompt and completion occupy adjacent rows. Seed text remains
+black-on-green; generated text, including the boundary `#`, uses
+green-on-dark. A visible `+` marks a continuation clipped at the 32-column
+display edge without changing inference.
+
+The original two-MUL output-update path assumes the context vector fits a
+signed byte. EXP-005 first exceeds that assumption during epoch 77. Its
+output-weight update therefore uses a three-MUL signed 16×16 low-word routine.
+Measured products remain within signed 16-bit range.
+
+Automated evidence:
+
+- 75,792,573 direct-simulator instructions through training, verification,
+  menu setup, first prompted completion, and cursor advance;
+- all 760 parameter bytes match the fixed-point reference;
+- the first prompt generates `MY 64`;
+- the selection moves from `I ADORE` to `ARE YOU`;
+- XRoar with the verified Color BASIC 1.1 and Extended Color BASIC 1.0 ROMs
+  reaches the post-training keyboard handoff;
+- interactive XRoar use exercised all six prompts and wrapped selection back
+  to the first.
+
+## Updated conclusion
+
+Supported in the integer reference and in XRoar on the 6809.
+
+The expanded vocabulary and human-readable starting context are now
+individually presentable. Physical CoCo 1 and CoCo 3 behaviour and stock-rate
+wall-clock timing remain unmeasured, so no physical-hardware runtime claim is
+yet supported.

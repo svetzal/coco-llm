@@ -105,8 +105,8 @@ make present EXP=5
 The presentation menu starts at EXP-004, the first experiment with a complete
 6809 training loop. EXP-001 through EXP-003 remain the engineering evidence
 that led there. EXP-004 launches the interactive XRoar demonstration. EXP-005
-is a fast integer-reference demonstration in which recognizable two-word
-prompts steer completions learned from 1980s computer advertising.
+launches a second XRoar demonstration in which recognizable two-word prompts
+steer completions learned from 1980s computer advertising.
 
 ## Watch it train in XRoar
 
@@ -161,3 +161,25 @@ For a fast, headless correctness check instead of the visible demonstration:
 ```sh
 make xroar-test
 ```
+
+## Prompt it interactively in XRoar
+
+Experiment 5 has its own corpus, 380-parameter model, and DECB binary:
+
+```sh
+cd ~/Work/Projects/Personal/coco-llm
+make xroar-exp5
+```
+
+After eighty training epochs, press any key to open the prompt workbench. Use
+the CoCo Up and Down arrow keys to select one of six starting phrases and press
+Enter to generate its continuation. The seed stays black-on-green, the
+generated line is green-on-dark, and earlier completions remain visible.
+Selection advances automatically, wrapping to the first prompt after the
+sixth.
+
+`make model-test-exp5` verifies all 760 final parameter bytes and the first
+prompted completion in the direct 6809 simulator. `make xroar-test-exp5`
+separately proves that the real-ROM whole-machine build reaches its post-
+training keyboard handoff. Neither automated test is a physical-hardware
+stopwatch.

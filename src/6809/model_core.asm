@@ -6,6 +6,9 @@
 
 SCREEN          equ     $0400
 POLCAT          equ     $A000
+KEY_UP          equ     $5e
+KEY_DOWN        equ     $0a
+KEY_ENTER       equ     $0d
 EMBED_DIMS      equ     3
 CONTEXT_SIZE    equ     2
 POS_BYTES       equ     VOCAB_SIZE*EMBED_DIMS*2
@@ -75,6 +78,9 @@ verification_halt
         endc
 
 show_samples
+        ifdef   EXPERIMENT_5
+        lbra    show_prompt_menu
+        else
         ldx     #SCREEN+64
         lda     #$60
         ldb     #32
@@ -111,6 +117,143 @@ sample_loop
         else
 finished
         bra     finished
+        endc
+        endc
+
+        ifdef   EXPERIMENT_5
+; Build a persistent six-prompt workbench. Each prompt occupies one row and
+; its completion the row beneath it, so previous inference remains visible.
+show_prompt_menu
+        ldx     #SCREEN
+        lda     #$60
+clear_prompt_screen
+        sta     ,x+
+        cmpx    #SCREEN+512
+        blo     clear_prompt_screen
+        ldx     #SCREEN
+        lda     #$20
+        ldb     #32
+fill_prompt_title_bar
+        sta     ,x+
+        decb
+        bne     fill_prompt_title_bar
+        ldx     #SCREEN
+        ldu     #message_prompting
+        lbsr    print_string
+        ldx     #SCREEN+32
+        ldu     #message_prompt_help
+        lbsr    print_black_on_green
+        ldd     #prompt_contexts
+        std     prompt_context_pointer
+        ldd     #SCREEN+96
+        std     prompt_row_pointer
+        lda     #PROMPT_COUNT
+        sta     prompts_remaining
+draw_prompt_rows
+        ldd     prompt_row_pointer
+        addd    #2
+        tfr     d,x
+        ldu     prompt_context_pointer
+        lda     ,u+
+        stu     prompt_context_pointer
+        lbsr    print_token_id
+        ldu     #message_space
+        lbsr    print_black_on_green
+        ldu     prompt_context_pointer
+        lda     ,u+
+        stu     prompt_context_pointer
+        lbsr    print_token_id
+        ldd     prompt_row_pointer
+        addd    #64
+        std     prompt_row_pointer
+        dec     prompts_remaining
+        bne     draw_prompt_rows
+        clr     selected_prompt
+        lbsr    draw_prompt_cursor
+        ifdef   DIRECT_TEST
+        lbsr    run_selected_prompt
+        lbsr    select_next_prompt
+        swi
+        else
+prompt_menu_loop
+        jsr     [POLCAT]
+        beq     prompt_menu_loop
+        cmpa    #KEY_UP
+        beq     prompt_key_up
+        cmpa    #KEY_DOWN
+        beq     prompt_key_down
+        cmpa    #KEY_ENTER
+        bne     prompt_menu_loop
+        lbsr    run_selected_prompt
+        lbsr    select_next_prompt
+        bra     prompt_menu_loop
+prompt_key_up
+        lbsr    erase_prompt_cursor
+        lda     selected_prompt
+        bne     prompt_key_up_decrement
+        lda     #PROMPT_COUNT
+prompt_key_up_decrement
+        deca
+        sta     selected_prompt
+        lbsr    draw_prompt_cursor
+        bra     prompt_menu_loop
+prompt_key_down
+        lbsr    select_next_prompt
+        bra     prompt_menu_loop
+        endc
+
+select_next_prompt
+        lbsr    erase_prompt_cursor
+        inc     selected_prompt
+        lda     selected_prompt
+        cmpa    #PROMPT_COUNT
+        blo     select_next_ready
+        clr     selected_prompt
+select_next_ready
+        lbsr    draw_prompt_cursor
+        rts
+
+prompt_cursor_address
+        lda     selected_prompt
+        ldb     #64
+        mul
+        addd    #SCREEN+96
+        tfr     d,x
+        rts
+
+erase_prompt_cursor
+        lbsr    prompt_cursor_address
+        lda     #$60
+        sta     ,x
+        rts
+
+draw_prompt_cursor
+        lbsr    prompt_cursor_address
+        lda     #$7e
+        sta     ,x
+        rts
+
+run_selected_prompt
+        lda     selected_prompt
+        ldb     #2
+        mul
+        ldu     #prompt_contexts
+        leau    d,u
+        ldd     ,u
+        std     current_context
+        lbsr    prompt_cursor_address
+        leax    32,x
+        stx     screen_pointer
+        pshs    x
+        lda     #$60
+        ldb     #32
+clear_prompt_completion
+        sta     ,x+
+        decb
+        bne     clear_prompt_completion
+        puls    x
+        lbsr    generate_name
+        rts
         endc
 
 ; Initialize all embedding and output-weight masters from XorShift16. Each
@@ -492,9 +635,15 @@ update_weight
         mul
         ldx     #context_vector
         leax    d,x
+        ifdef   EXPERIMENT_5
+        ldd     ,x
+        ldx     probability_pointer
+        lbsr    multiply_s16_s16
+        else
         lda     1,x
         ldx     probability_pointer
-        lbsr     multiply_s8_s16
+        lbsr    multiply_s8_s16
+        endc
         asra
         rorb
         asra
@@ -592,6 +741,31 @@ multiply_ready
         ldd     multiply_product
         rts
 
+        ifdef   EXPERIMENT_5
+; Signed 16-bit D times signed 16-bit [X], returning the low 16-bit product.
+; Three unsigned MUL instructions form that low word. Two's-complement signed
+; and unsigned multiplication have the same low word; measured EXP-005
+; products fit signed 16 bits, so the low word is the complete result.
+multiply_s16_s16
+        std     multiply_factor16
+        lda     multiply_factor16+1
+        ldb     1,x
+        mul
+        std     multiply_product
+        lda     multiply_factor16
+        ldb     1,x
+        mul
+        addb    multiply_product
+        stb     multiply_product
+        lda     multiply_factor16+1
+        ldb     ,x
+        mul
+        addb    multiply_product
+        stb     multiply_product
+        ldd     multiply_product
+        rts
+        endc
+
 verify_parameters
         ldx     #position_embeddings
         ldu     #expected_parameters
@@ -621,11 +795,14 @@ verify_failed
         rts
 
 generate_name
+        ifndef  EXPERIMENT_5
         clr     current_context
         clr     current_context+1
+        endc
         clr     generated_tokens
         lda     #6
         sta     generation_remaining
+        ifndef  EXPERIMENT_5
         ldx     screen_pointer
         lda     #$60
         ldb     #32
@@ -641,8 +818,16 @@ clear_sample_line
         addd    #31
         std     output_limit
         clr     generation_display_full
+        else
+        ldx     screen_pointer
+        stx     output_pointer
+        leax    31,x
+        stx     output_limit
+        clr     generation_display_full
+        endc
 generation_token
         lbsr     forward
+        ifndef  EXPERIMENT_5
         lda     generated_tokens
         cmpa    #2
         bhs     generation_can_end
@@ -661,6 +846,12 @@ generation_token
         addd    removed_boundary
         std     ,x
 generation_can_end
+        endc
+        ifdef   EXPERIMENT_5
+        lbsr    find_probability_winner
+        lda     winner_index
+        sta     chosen_token
+        else
         lbsr     xorshift16
         stb     sample_draw
         clr     chosen_token
@@ -685,6 +876,7 @@ choose_token
 token_chosen
         lda     output_index
         sta     chosen_token
+        endc
         lbsr     print_chosen_token
         lda     chosen_token
         beq     generation_done
@@ -864,10 +1056,18 @@ decimal_ready
         rts
 
 message_training
+        ifdef   EXPERIMENT_5
+        fcc     "COCO LLM EXP-005 TRAINING"
+        else
         fcc     "COCO LLM TRAINING"
+        endc
         fcb     0
 message_epoch
+        ifdef   EXPERIMENT_5
+        fcc     "EPOCH 00 / 80"
+        else
         fcc     "EPOCH 00 / 20"
+        endc
         fcb     0
 message_arrow
         fcc     " > "
@@ -896,11 +1096,23 @@ message_generating
 message_generated
         fcc     "GENERATION COMPLETE"
         fcb     0
+        ifdef   EXPERIMENT_5
+message_prompting
+        fcc     "COCO LLM PROMPTING"
+        fcb     0
+message_prompt_help
+        fcc     "UP/DOWN SELECT  ENTER GENERATE"
+        fcb     0
+        endc
 sample_seeds
         fdb     6809,6810,6811,6812,6813,6814
         fdb     6815,6816,6817,6818,6819,6820
 
+        ifdef   EXPERIMENT_5
+        include "../../build/model_data_exp5.inc"
+        else
         include "../../build/model_data.inc"
+        endc
 
 ; Trainable Q4.12 master parameters are one contiguous block so the test build
 ; can compare every byte with the Python reference fixture.
@@ -936,6 +1148,9 @@ sample_cumulative       rmb     2
 arithmetic_update       rmb     2
 arithmetic_original     rmb     2
 multiply_product        rmb     2
+        ifdef   EXPERIMENT_5
+multiply_factor16       rmb     2
+        endc
 
 weight_pointer          rmb     2
 bias_pointer            rmb     2
@@ -961,6 +1176,12 @@ mismatch_actual         rmb     1
 mismatch_expected       rmb     1
 multiply_factor         rmb     1
 generated_tokens        rmb     1
+        ifdef   EXPERIMENT_5
+selected_prompt         rmb     1
+prompts_remaining       rmb     1
+prompt_context_pointer  rmb     2
+prompt_row_pointer      rmb     2
+        endc
 generation_remaining    rmb     1
 chosen_token            rmb     1
 sample_draw             rmb     1

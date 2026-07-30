@@ -44,13 +44,14 @@ make present EXP=5
 ```
 
 EXP-004 launches the stock-rate XRoar program and pauses before inference.
-EXP-005 is a concise, deterministic Mac reference demonstration; its larger
-training workload has not yet been validated for stock-rate CoCo use.
+EXP-005 launches its own XRoar program, pauses after training, and provides an
+interactive six-prompt workbench. Its larger training workload has not yet
+been timed on physical stock-rate hardware.
 
 | Experiment | Useful when the conversation asks… | Surface |
 | --- | --- | --- |
 | EXP-004 | Can the old machine really train it? | Interactive CoCo emulation |
-| EXP-005 | Can starting words steer it? | Prompted integer reference |
+| EXP-005 | Can starting words steer it? | Interactive prompted CoCo |
 
 EXP-001 through EXP-003 remain recorded as architectural evidence, but are no
 longer in the runnable presentation menu. Presenter output deliberately shows

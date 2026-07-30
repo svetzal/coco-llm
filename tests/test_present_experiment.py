@@ -6,9 +6,9 @@ sys.path.insert(0, str(Path(__file__).parents[1] / "tools"))
 
 from present_experiment import (
     EXPERIMENTS,
+    build_exp_005_reference,
     fan_counts,
     normalize_experiment,
-    run_exp_005,
 )
 
 
@@ -22,11 +22,8 @@ def test_presentation_experiments_start_with_complete_6809_training() -> None:
     assert list(EXPERIMENTS) == ["EXP-004", "EXP-005"]
 
 
-def test_marketing_language_demo_has_memorable_prompt_completions(
-    capsys,
-) -> None:
-    payload = run_exp_005()
-    capsys.readouterr()
+def test_marketing_language_demo_has_memorable_prompt_completions() -> None:
+    payload = build_exp_005_reference()
 
     assert payload["parameters"] == 380
     assert payload["vocabulary"] == 38

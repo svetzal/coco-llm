@@ -21,6 +21,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--binary", required=True, type=Path)
     parser.add_argument("--symbols", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--experiment", choices=(4, 5), type=int, default=4)
     return parser.parse_args()
 
 
@@ -42,14 +43,16 @@ def main() -> None:
     for offset in range(0, len(payload), 16):
         values = ",".join(f"${value:02x}" for value in payload[offset : offset + 16])
         lines.append(f"        fcb     {values}")
-    lines.extend(
-        [
-            "",
-            f"parity_result   equ     ${parity:04x}",
-            f"mismatch_offset equ     ${mismatch_offset:04x}",
-            f"mismatch_actual equ     ${mismatch_actual:04x}",
-            f"mismatch_expect equ     ${mismatch_expected:04x}",
-            f"last_epoch      equ     ${last_epoch_displayed:04x}",
+    common = [
+        "",
+        f"parity_result   equ     ${parity:04x}",
+        f"mismatch_offset equ     ${mismatch_offset:04x}",
+        f"mismatch_actual equ     ${mismatch_actual:04x}",
+        f"mismatch_expect equ     ${mismatch_expected:04x}",
+        f"last_epoch      equ     ${last_epoch_displayed:04x}",
+    ]
+    if arguments.experiment == 4:
+        criteria = [
             "title_first     equ     $0400",
             "complete_first  equ     $0420",
             "generated_first equ     $0460",
@@ -78,9 +81,30 @@ def main() -> None:
             ";! sample_5_first = #$030f",
             "; Long seed 6818 is visibly clipped without crossing its row.",
             ";! sample_10_last = #$2b",
-            "",
         ]
-    )
+    else:
+        criteria = [
+            "title_first     equ     $0400",
+            "instruction     equ     $0420",
+            "prompt_1_cursor equ     $0460",
+            "prompt_1_text   equ     $0462",
+            "completion_1    equ     $0480",
+            "prompt_2_cursor equ     $04a0",
+            ";! parity_result = #$01",
+            ";! mismatch_offset = #$ffff",
+            ";! mismatch_actual = #$00",
+            ";! mismatch_expect = #$00",
+            ";! last_epoch = #80",
+            "; COCO LLM PROMPTING, UP/DOWN SELECT, ENTER GENERATE.",
+            ";! title_first = #$030f",
+            ";! instruction = #$5550",
+            "; First prompt generated MY 64 #, then selection moved down.",
+            ";! prompt_1_cursor = #$6060",
+            ";! prompt_1_text = #$4960",
+            ";! completion_1 = #$0d19",
+            ";! prompt_2_cursor = #$7e60",
+        ]
+    lines.extend([*common, *criteria, ""])
     arguments.output.write_text("\n".join(lines))
 
 

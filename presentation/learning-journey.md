@@ -334,9 +334,12 @@ COMPUTERS`: the model blends two campaigns into something plausible. It can
 predict the shape without understanding either advertisement. Think about that
 a minute.
 
-EXP-005 currently runs in the bit-exact integer reference, not on the CoCo.
-Disclose that boundary before running it. EXP-001 through EXP-003 remain
-engineering evidence rather than entries in the stage menu.
+EXP-005 trains and performs all six prompted completions in 6809 assembly.
+After the training pause, let someone choose with the CoCo arrow keys and press
+Enter. Each result remains visible and the selector advances, which makes it
+easy to follow the room rather than commit to a scripted order. Its physical
+stock-rate runtime still needs direct measurement. EXP-001 through EXP-003
+remain engineering evidence rather than entries in the stage menu.
 
 ## Presentation stance
 

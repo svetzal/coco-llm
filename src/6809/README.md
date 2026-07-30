@@ -5,7 +5,9 @@ This folder contains the first complete bit-exact training implementation:
 - `model_core.asm` — initialization, forward pass, approximate softmax,
   backpropagation, parameter updates, and sampling;
 - `coco_llm.asm` — the writable CoCo program at `$2000`;
-- `tests/model_test.asm` — the direct-simulator wrapper.
+- `coco_llm_exp5.asm` — the prompted advertising-language variant;
+- `tests/model_test.asm` and `tests/model_exp5_test.asm` — direct-simulator
+  wrappers.
 
 The learning engine must not depend on CoCo 3 memory banking, GIME video
 features, or fast mode. Platform-specific code belongs behind narrow display,
@@ -17,12 +19,16 @@ Build and verify the full engine:
 make model-test
 make coco-bin
 make xroar-test
+make model-test-exp5
+make coco-bin-exp5
+make xroar-test-exp5
 ```
 
 Launch the whole-machine demonstration:
 
 ```sh
 make xroar
+make xroar-exp5
 ```
 
 The interactive launcher explicitly enables XRoar's stock-rate limiter. The
@@ -45,6 +51,20 @@ The wait loop calls the Color BASIC `POLCAT` vector at `$A000`, which returns
 only a newly detected keypress. This avoids treating the key used to launch the
 program as permission to begin inference and works through the standard CoCo
 1, 2, and 3 BASIC interface.
+
+EXP-005 uses the same training engine with a separate 38-token, 380-parameter
+fixture. After the post-training pause, it shows six prompt rows with a
+completion row beneath each. The CoCo Up (`$5E`) and Down (`$0A`) key codes move
+the visible `>` cursor; Enter (`$0D`) runs greedy inference from the selected
+two-token context and advances to the next prompt. Previous completions remain
+visible.
+
+The original two-MUL signed 8×16 routine remains on EXP-004's hot path.
+EXP-005's wider training data eventually creates context-vector values outside
+signed eight-bit range, so output-weight updates use a three-MUL signed 16×16
+low-word routine. The complete products were measured to fit signed 16 bits,
+and the direct simulator verifies all 760 trained parameter bytes against the
+reference fixture.
 
 The XRoar launcher uses Stacey's local CoCo 1 firmware archive:
 

@@ -38,8 +38,15 @@ def safe_label(token: str, index: int) -> str:
     return f"token_{index:02d}_{translated}"
 
 
-def generate(root: Path, epochs: int) -> str:
-    corpus = root / "experiments" / "data" / "EXP-002-tokenized-computer-names.txt"
+def generate(
+    root: Path,
+    epochs: int,
+    *,
+    corpus: Path | None = None,
+    prompts: Path | None = None,
+) -> str:
+    if corpus is None:
+        corpus = root / "experiments" / "data" / "EXP-002-tokenized-computer-names.txt"
     names = load_names(corpus)
     vocabulary, token_by_text = build_vocabulary(names)
     contexts, targets = make_examples(names, token_by_text, context_size=2)
@@ -75,6 +82,35 @@ def generate(root: Path, epochs: int) -> str:
         encoded = [ord(character) for character in token] + [0]
         lines.append(safe_label(token, index))
         lines.extend(assembly_bytes(encoded))
+    if prompts is not None:
+        prompt_phrases = load_names(prompts)
+        prompt_tokens = [phrase.split() for phrase in prompt_phrases]
+        if any(len(tokens) != 2 for tokens in prompt_tokens):
+            raise ValueError("every inference prompt must contain exactly two tokens")
+        unknown = sorted(
+            {
+                token
+                for tokens in prompt_tokens
+                for token in tokens
+                if token not in token_by_text
+            }
+        )
+        if unknown:
+            raise ValueError(
+                "inference prompts contain unknown tokens: " + ", ".join(unknown)
+            )
+        lines.extend(
+            [
+                "",
+                f"PROMPT_COUNT    equ     {len(prompt_tokens)}",
+                "prompt_contexts",
+            ]
+        )
+        lines.extend(
+            assembly_bytes(
+                [token_by_text[token] for tokens in prompt_tokens for token in tokens]
+            )
+        )
     lines.extend(["", "expected_parameters"])
     lines.extend(assembly_words(parameters))
     lines.extend(
@@ -95,13 +131,22 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--epochs", type=int, default=20)
+    parser.add_argument("--corpus", type=Path)
+    parser.add_argument("--prompts", type=Path)
     return parser.parse_args()
 
 
 def main() -> None:
     arguments = parse_arguments()
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
-    arguments.output.write_text(generate(ROOT, arguments.epochs))
+    arguments.output.write_text(
+        generate(
+            ROOT,
+            arguments.epochs,
+            corpus=arguments.corpus,
+            prompts=arguments.prompts,
+        )
+    )
 
 
 if __name__ == "__main__":
