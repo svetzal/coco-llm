@@ -240,8 +240,17 @@ The talk should have one genuine run, not a sequence of canned simulations:
 6. Explain embeddings and backpropagation while epochs run.
 7. Sample after each epoch.
 8. Stop at the predeclared quality or time boundary.
-9. Test the model outside its competence.
-10. Reveal the final model size, memory use, and elapsed time.
+9. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
+10. Reveal the ordering effect in concatenated versus interleaved balanced data.
+11. Ask which human choices created each observed behaviour.
+12. Test the model outside its competence.
+13. Reveal the final model size, memory use, and elapsed time.
+
+The main model must train genuinely during the talk. Depending on the measured
+hardware runtime, the five controlled bias runs may be retrained live or loaded
+from deterministic checkpoints. In either case, disclose which work is
+happening live and let the audience verify that architecture, initial weights,
+training budget, vocabulary, and sampling seeds are held constant.
 
 Failure is part of the demonstration. If the model does not improve, inspect
 the evidence with the audience and use a previously recorded run only as a
