@@ -95,6 +95,36 @@ Then run the optimized training loop.
 The model does not receive a grammar lesson. It repeatedly discovers which
 small numerical changes make the next prediction less wrong.
 
+### How do we make that finish before everyone goes home?
+
+The first correct assembly version multiplies a signed 8-bit value by a signed
+16-bit value one bit at a time. It is easy to explain and exactly matches the
+reference model. It also makes the complete run execute about 38.6 million
+instructions.
+
+The 6809 has a fast `MUL` instruction, but it multiplies two **unsigned** bytes.
+Can we use it without changing the mathematics?
+
+Split the 16-bit operand into high and low bytes:
+
+```text
+low product  = 8-bit value × low byte
+high product = 8-bit value × high byte, shifted left by eight
+```
+
+Two `MUL` instructions form the low 16 bits. If the 8-bit value is negative,
+its unsigned representation is 256 too large, so subtract the multiplier's low
+byte from the result's high byte. The measured products all fit in a signed
+16-bit result.
+
+The complete model remains bit-for-bit identical, but now executes 15,823,708
+instructions. Its stock-clock projection falls to about 72 seconds.
+
+This is a useful engineering reveal: the learning algorithm did not change.
+The representation of the arithmetic changed because a person understood both
+the mathematics and the machine. Correctness tests let us optimize aggressively
+without quietly changing what the model learns.
+
 ### Can we train it to have a favourite?
 
 Use the same blank model five times. Keep its architecture, initial numbers,
@@ -237,14 +267,15 @@ The talk should have one genuine run, not a sequence of canned simulations:
 3. Inspect one next-token prediction.
 4. Train that example one step at a time.
 5. Start the optimized loop.
-6. Explain embeddings and backpropagation while epochs run.
-7. Sample after each epoch.
-8. Stop at the predeclared quality or time boundary.
-9. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
-10. Reveal the ordering effect in concatenated versus interleaved balanced data.
-11. Ask which human choices created each observed behaviour.
-12. Test the model outside its competence.
-13. Reveal the final model size, memory use, and elapsed time.
+6. Reveal how two unsigned `MUL` operations replaced the slow signed routine.
+7. Explain embeddings and backpropagation while epochs run.
+8. Sample after each epoch.
+9. Stop at the predeclared quality or time boundary.
+10. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
+11. Reveal the ordering effect in concatenated versus interleaved balanced data.
+12. Ask which human choices created each observed behaviour.
+13. Test the model outside its competence.
+14. Reveal the final model size, memory use, and elapsed time.
 
 The main model must train genuinely during the talk. Depending on the measured
 hardware runtime, the five controlled bias runs may be retrained live or loaded

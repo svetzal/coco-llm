@@ -10,7 +10,9 @@ and demonstration sequence, not yet a slide deck.
 The presentation has four connected teaching threads:
 
 1. **Mechanism:** tokens, next-token prediction, error, and parameter updates
-   are small enough to watch on a CoCo.
+   are small enough to watch on a CoCo. The two-`MUL` optimization shows how
+   understanding the mathematics and the machine turns a correct experiment
+   into a practical live demonstration without changing its result.
 2. **Training-data choices:** Apple-, Commodore-, and Tandy-fan corpora show
    that selection and repetition shape model behaviour. Concatenating and
    interleaving the same balanced examples shows that ordering matters too.
