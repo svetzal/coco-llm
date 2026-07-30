@@ -120,6 +120,23 @@ is wider than the screen rather than allowing it to corrupt the following row.
 The model does not receive a grammar lesson. It repeatedly discovers which
 small numerical changes make the next prediction less wrong.
 
+### What actually changes when we change the lesson?
+
+Put the EXP-004 and EXP-005 assembly drivers beside each other. Both say:
+initialize the screen, initialize the same model machinery, train, verify, then
+hand control to the demonstration. That is the boring part—and boring is good.
+
+The interesting lines name the human choices. EXP-004 uses the narrow multiply
+its measured values permit, starts from `# #`, prevents an immediate ending,
+and samples a gallery. EXP-005 needs the wider multiply, accepts the audience's
+two-word context, permits an immediate ending, and greedily picks the strongest
+continuation.
+
+So what made the second model behave differently? Not a mysterious new
+intelligence hidden in the engine. We changed the vocabulary, examples,
+numerical range, prompt, and selection policy. Call your shot: which one of
+those choices do you expect to matter next?
+
 ### How do we make that finish before everyone goes home?
 
 The first correct assembly version multiplies a signed 8-bit value by a signed
@@ -144,8 +161,8 @@ byte from the result's high byte. The measured products all fit in a signed
 
 The complete model remains bit-for-bit identical. The optimized engine executes
 about 15.8 million instructions before the per-example display is added, and
-about 16.0 million with the full live display. Its stock-clock projection is
-about 73 seconds.
+about 16.4 million with the full live display and named experiment-policy
+calls. Its stock-clock projection remains about 75 seconds.
 
 This is a useful engineering reveal: the learning algorithm did not change.
 The representation of the arithmetic changed because a person understood both

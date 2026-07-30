@@ -2,6 +2,6 @@
 
         org     $2000
 
-        include "model_core.asm"
+        include "experiments/experiment_004.asm"
 
         end     start

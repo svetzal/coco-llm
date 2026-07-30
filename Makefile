@@ -10,6 +10,18 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	model-test-exp5 coco-bin-exp5 xroar-test-exp5 xroar-exp5 present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
+6809_COMMON_SOURCES := \
+	src/6809/model_core.asm \
+	src/6809/model_storage.asm \
+	src/6809/training.asm \
+	src/6809/inference.asm \
+	src/6809/screen.asm
+6809_EXP004_SOURCES := \
+	src/6809/experiments/experiment_004.asm \
+	src/6809/experiments/sample_gallery.asm
+6809_EXP005_SOURCES := \
+	src/6809/experiments/experiment_005.asm \
+	src/6809/experiments/prompt_workbench.asm
 
 present:
 	@$(PRESENTER) $(if $(EXP),run $(EXP),list)
@@ -84,7 +96,7 @@ build/model_data_exp5.inc: tools/generate_6809_data.py \
 		--prompts experiments/data/EXP-005-prompts.txt
 
 build/model-test.bin: src/6809/tests/model_test.asm \
-		src/6809/model_core.asm build/model_data.inc
+		$(6809_COMMON_SOURCES) $(6809_EXP004_SOURCES) build/model_data.inc
 	lwasm --6809 --format=raw --symbol-dump=build/model-test.sym \
 		--output=$@ $<
 
@@ -96,7 +108,7 @@ build/model-test-runner.asm: build/model-test.bin \
 		--output $@
 
 build/model-exp5-test.bin: src/6809/tests/model_exp5_test.asm \
-		src/6809/model_core.asm build/model_data_exp5.inc
+		$(6809_COMMON_SOURCES) $(6809_EXP005_SOURCES) build/model_data_exp5.inc
 	lwasm --6809 --format=raw --symbol-dump=build/model-exp5-test.sym \
 		--output=$@ $<
 
@@ -108,11 +120,11 @@ build/model-exp5-test-runner.asm: build/model-exp5-test.bin \
 		--output $@ --experiment 5
 
 build/coco-llm.bin: src/6809/coco_llm.asm \
-		src/6809/model_core.asm build/model_data.inc
+		$(6809_COMMON_SOURCES) $(6809_EXP004_SOURCES) build/model_data.inc
 	lwasm --6809 --format=decb --output=$@ $<
 
 build/coco-llm.sym: src/6809/coco_llm.asm \
-		src/6809/model_core.asm build/model_data.inc
+		$(6809_COMMON_SOURCES) $(6809_EXP004_SOURCES) build/model_data.inc
 	lwasm --6809 --format=raw --symbol-dump=build/coco-llm.sym \
 		--output=build/coco-llm.raw $<
 
@@ -120,11 +132,11 @@ build/coco-llm.raw: build/coco-llm.sym
 	@test -f $@
 
 build/coco-llm-exp5.bin: src/6809/coco_llm_exp5.asm \
-		src/6809/model_core.asm build/model_data_exp5.inc
+		$(6809_COMMON_SOURCES) $(6809_EXP005_SOURCES) build/model_data_exp5.inc
 	lwasm --6809 --format=decb --output=$@ $<
 
 build/coco-llm-exp5.sym: src/6809/coco_llm_exp5.asm \
-		src/6809/model_core.asm build/model_data_exp5.inc
+		$(6809_COMMON_SOURCES) $(6809_EXP005_SOURCES) build/model_data_exp5.inc
 	lwasm --6809 --format=raw --symbol-dump=build/coco-llm-exp5.sym \
 		--output=build/coco-llm-exp5.raw $<
 

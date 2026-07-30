@@ -127,15 +127,9 @@ update_weight
         mul
         ldx     #context_vector
         leax    d,x
-        ifdef   EXPERIMENT_5
-        ldd     ,x
-        ldx     probability_pointer
-        lbsr    multiply_s16_s16
-        else
-        lda     1,x
-        ldx     probability_pointer
-        lbsr    multiply_s8_s16
-        endc
+        ; The experiment driver chooses the narrow or wide multiply according
+        ; to the measured range of its context encoding.
+        lbsr    experiment_multiply_training_context
         asra
         rorb
         asra

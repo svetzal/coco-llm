@@ -1,8 +1,8 @@
 ; Bit-exact integer token language model for the Motorola 6809.
 ;
-; The caller must select an origin, define entry point "start", and provide
-; build/model_data.inc. The implementation deliberately favours readable,
-; testable arithmetic over final optimization in this first complete port.
+; An experiment driver selects an origin and data fixture, calls the reusable
+; training phases, and chooses the presentation used after training. The
+; implementation deliberately favours readable, testable arithmetic.
 
 SCREEN          equ     $0400
 POLCAT          equ     $A000
@@ -16,11 +16,9 @@ WEIGHT_BYTES    equ     VOCAB_SIZE*EMBED_DIMS*2
 BIAS_BYTES      equ     VOCAB_SIZE*2
 PARAM_BYTES     equ     PARAM_COUNT*2
 
-start
-        lds     #$7f00
-        lbsr    initialize_training_screen
-        lbsr     initialize_model
-        lbsr     train_model
+; Verify the completed training run, report its status, and wait for the
+; audience before returning to the experiment driver's inference lesson.
+finish_training
         lbsr     verify_parameters
         lbsr    show_training_complete
         tst     parity_result
@@ -30,7 +28,7 @@ wait_for_key
         jsr     [POLCAT]
         beq     wait_for_key
         endc
-        lbra    show_samples
+        rts
 verification_failed
         lbsr    show_verification_failed
         ifdef   DIRECT_TEST
@@ -338,7 +336,6 @@ multiply_ready
         ldd     multiply_product
         rts
 
-        ifdef   EXPERIMENT_5
 ; Signed 16-bit D times signed 16-bit [X], returning the low 16-bit product.
 ; Three unsigned MUL instructions form that low word. Two's-complement signed
 ; and unsigned multiplication have the same low word; measured EXP-005
@@ -361,7 +358,6 @@ multiply_s16_s16
         stb     multiply_product
         ldd     multiply_product
         rts
-        endc
 
 verify_parameters
         ldx     #position_embeddings
@@ -391,90 +387,8 @@ verify_failed
         clr     parity_result
         rts
 
-; Phase-specific orchestration and platform rendering stay out of the shared
-; model machinery above. Forward references let these modules call one another
-; while this file remains the single composition root for both experiments.
+; Phase-specific orchestration stays in the experiment drivers. These modules
+; supply the common training, inference, and platform-rendering functions.
         include "training.asm"
         include "inference.asm"
         include "screen.asm"
-
-        ifdef   EXPERIMENT_5
-        include "../../build/model_data_exp5.inc"
-        else
-        include "../../build/model_data.inc"
-        endc
-
-; Trainable Q4.12 master parameters are one contiguous block so the test build
-; can compare every byte with the Python reference fixture.
-position_embeddings
-        rmb     POS_BYTES*CONTEXT_SIZE
-output_weights
-        rmb     WEIGHT_BYTES
-output_biases
-        rmb     BIAS_BYTES
-parameters_end
-
-context_vector          rmb     6
-logits                  rmb     VOCAB_SIZE*2
-exponentials            rmb     VOCAB_SIZE
-probabilities           rmb     VOCAB_SIZE*2
-context_error           rmb     6
-
-rng_state               rmb     2
-sample_seed_pointer     rmb     2
-shift_temp              rmb     2
-shift_left              rmb     2
-shift_right             rmb     1
-accumulator             rmb     2
-maximum_logit           rmb     2
-exponential_total       rmb     2
-division_numerator      rmb     3
-reciprocal              rmb     1
-probability_total       rmb     2
-maximum_probability     rmb     2
-correction              rmb     2
-removed_boundary        rmb     2
-sample_cumulative       rmb     2
-arithmetic_update       rmb     2
-arithmetic_original     rmb     2
-multiply_product        rmb     2
-        ifdef   EXPERIMENT_5
-multiply_factor16       rmb     2
-        endc
-
-weight_pointer          rmb     2
-bias_pointer            rmb     2
-logit_pointer           rmb     2
-probability_pointer     rmb     2
-embedding_pointer       rmb     2
-screen_pointer          rmb     2
-output_pointer          rmb     2
-output_limit            rmb     2
-
-current_context         rmb     2
-current_target          rmb     1
-epochs_remaining        rmb     1
-examples_remaining      rmb     1
-outputs_remaining       rmb     1
-dimensions_remaining    rmb     1
-dimension_index         rmb     1
-output_index            rmb     1
-winner_index            rmb     1
-parity_result           rmb     1
-mismatch_offset         rmb     2
-mismatch_actual         rmb     1
-mismatch_expected       rmb     1
-multiply_factor         rmb     1
-generated_tokens        rmb     1
-        ifdef   EXPERIMENT_5
-selected_prompt         rmb     1
-prompts_remaining       rmb     1
-prompt_context_pointer  rmb     2
-prompt_row_pointer      rmb     2
-        endc
-generation_remaining    rmb     1
-chosen_token            rmb     1
-sample_draw             rmb     1
-sample_count            rmb     1
-last_epoch_displayed    rmb     1
-generation_display_full rmb     1

@@ -80,7 +80,7 @@ matching the integer reference run.
 | Writable RAM image including work buffers | 3,850 bytes |
 | Trainable parameters | 580 bytes |
 
-The writable image occupies `$2000` through `$2F09`, well inside
+The writable image occupies `$2000` through `$2F60`, well inside
 a 32K CoCo 1.
 
 ### Performance
@@ -89,12 +89,13 @@ The initial bit-at-a-time signed multiplication routine executed about
 38.6 million instructions. The two-`MUL` kernel reduced the same bit-exact run
 to 15,824,366 instructions with the epoch and generation display. Showing the
 complete two-token context and target for every example brings the interactive
-run, including twelve displayed inference samples, to 16,253,237 instructions,
-excluding the human-length pause.
+run, including twelve displayed inference samples, to 16,354,392 instructions
+after extracting the named experiment-policy calls, excluding the human-length
+pause.
 
 The direct simulator reports an effective cycle rate which, combined with its
-wall time, implies approximately 66.3 million emulated 6809 cycles. At the
-CoCo 1's approximate 0.895 MHz clock, that projects to about 74 seconds.
+wall time, implies approximately 66.7 million emulated 6809 cycles. At the
+CoCo 1's approximate 0.895 MHz clock, that projects to about 75 seconds.
 
 This is a cycle-model projection, not a physical-hardware measurement. XRoar
 successfully boots the real CoCo 1 ROM pair, loads the DECB binary, and reaches

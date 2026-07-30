@@ -149,7 +149,7 @@ The deterministic parameter check still runs after training, but success is
 not announced on screen. A failed check stops the demonstration with
 `MODEL CHECK FAILED` instead of continuing into generation.
 
-The current cycle model projects about 74 seconds for the complete run, but it
+The current cycle model projects about 75 seconds for the complete run, but it
 is not a validated emulator or physical-hardware stopwatch. Do not schedule a
 presentation cue or screenshot from that estimate. XRoar's `F12` key runs at
 maximum speed while held; `Shift+F12` toggles maximum speed. Leave those alone

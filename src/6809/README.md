@@ -2,26 +2,43 @@
 
 This folder contains the first complete bit-exact training implementation:
 
-- `model_core.asm` — top-level orchestration, initialization, the shared
-  forward pass, approximate softmax, fixed-point arithmetic, verification,
-  and model storage;
+- `experiments/experiment_004.asm` — the complete EXP-004 lesson driver:
+  train, verify, then generate a sampled gallery from a boundary seed;
+- `experiments/experiment_005.asm` — the complete EXP-005 lesson driver:
+  train the expanded model, then run prompted greedy inference;
+- `model_core.asm` — initialization, the shared forward pass, approximate
+  softmax, fixed-point arithmetic, and verification;
+- `model_storage.asm` — shared parameters and working memory, kept at the end
+  of each assembled image;
 - `training.asm` — epoch and example loops, error calculation, backpropagation,
   and parameter updates;
-- `inference.asm` — EXP-004 sampling, EXP-005's interactive prompt workbench,
-  and next-token generation;
+- `inference.asm` — the shared next-token loop plus reusable sampled and greedy
+  selection functions;
 - `screen.asm` — CoCo VDG screen setup, text rendering, token formatting, and
   status messages;
+- `experiments/sample_gallery.asm` and
+  `experiments/prompt_workbench.asm` — the lesson-specific presentation shells;
 - `coco_llm.asm` — the writable CoCo program at `$2000`;
 - `coco_llm_exp5.asm` — the prompted advertising-language variant;
 - `tests/model_test.asm` and `tests/model_exp5_test.asm` — direct-simulator
   wrappers.
 
-`model_core.asm` is the composition root and includes the three phase-specific
-modules. Training and inference deliberately share its `forward` routine:
+Each experiment driver is the composition root. Its short `start` routine calls
+the same screen initialization, model initialization, training, and
+verification functions before delegating to its lesson-specific presentation.
+Training and inference deliberately share `model_core.asm`'s `forward` routine:
 training uses the resulting probabilities to calculate errors and update
-parameters, while inference uses those probabilities to choose the next token.
-The split therefore follows the learning story without duplicating the model's
-mathematics.
+parameters, while inference uses them to choose the next token.
+
+The drivers also name the few policies that genuinely differ:
+
+- EXP-004 uses the measured-safe 8×16 training multiply, suppresses an early
+  boundary token, and samples from the probability distribution;
+- EXP-005 uses the full 16×16 training multiply, accepts an audience-selected
+  context without a minimum length, and chooses the highest-probability token.
+
+There are no experiment-number conditionals in the shared engine. This split
+keeps each new lesson explicit without duplicating the model mathematics.
 
 The learning engine must not depend on CoCo 3 memory banking, GIME video
 features, or fast mode. Platform-specific code belongs behind narrow display,

@@ -149,20 +149,6 @@ decimal_ready
         sta     ,x
         rts
 
-message_training
-        ifdef   EXPERIMENT_5
-        fcc     "COCO LLM EXP-005 TRAINING"
-        else
-        fcc     "COCO LLM TRAINING"
-        endc
-        fcb     0
-message_epoch
-        ifdef   EXPERIMENT_5
-        fcc     "EPOCH 00 / 80"
-        else
-        fcc     "EPOCH 00 / 20"
-        endc
-        fcb     0
 message_arrow
         fcc     " > "
         fcb     0
@@ -190,11 +176,3 @@ message_generating
 message_generated
         fcc     "GENERATION COMPLETE"
         fcb     0
-        ifdef   EXPERIMENT_5
-message_prompting
-        fcc     "COCO LLM PROMPTING"
-        fcb     0
-message_prompt_help
-        fcc     "UP/DOWN SELECT  ENTER GENERATE"
-        fcb     0
-        endc

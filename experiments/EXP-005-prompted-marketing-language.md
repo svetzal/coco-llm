@@ -140,7 +140,7 @@ Measured products remain within signed 16-bit range.
 
 Automated evidence:
 
-- 75,792,573 direct-simulator instructions through training, verification,
+- 76,275,955 direct-simulator instructions through training, verification,
   menu setup, first prompted completion, and cursor advance;
 - all 760 parameter bytes match the fixed-point reference;
 - the first prompt generates `MY 64`;
