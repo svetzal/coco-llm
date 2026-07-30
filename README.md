@@ -36,6 +36,11 @@ remarkably useful when people give them a bounded job, useful context, and
 appropriate verification. They do not supply human purpose, responsibility,
 judgement, or lived context.
 
+The project also makes training-data choices visible. Identical models trained
+as Apple, Commodore, and Tandy fans learn visibly different output
+distributions. Combining the examples demonstrates that representation,
+weighting, and presentation order can all influence the result.
+
 ## Hardware contract
 
 - **Primary:** CoCo 1, MC6809E at approximately 0.89 MHz.
@@ -77,3 +82,6 @@ three-value positional embeddings, 290 trainable parameters, and integer-only
 training. See
 [`research/model-design.md`](research/model-design.md) and
 [`experiments/EXP-002-token-model-feasibility.md`](experiments/EXP-002-token-model-feasibility.md).
+
+The controlled bias demonstration is recorded in
+[`experiments/EXP-003-training-data-bias.md`](experiments/EXP-003-training-data-bias.md).

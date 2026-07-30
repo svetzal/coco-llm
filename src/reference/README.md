@@ -6,6 +6,8 @@ vectors before optimization begins.
 - `coco_lm.py` preserves the rejected character-level MLP from EXP-001.
 - `token_lm.py` is the current 290-parameter token model from EXP-002.
 - `fixed_token_lm.py` specifies its integer-only training arithmetic.
+- `run_bias_demo.py` compares controlled Apple, Commodore, Tandy, concatenated,
+  and interleaved training runs from EXP-003.
 
 The implementation sequence is:
 

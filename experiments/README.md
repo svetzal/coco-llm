@@ -21,3 +21,5 @@ Current experiments:
   character-level candidate.
 - [`EXP-002-token-model-feasibility.md`](EXP-002-token-model-feasibility.md) —
   supported floating-point token model; fixed-point and hardware work pending.
+- [`EXP-003-training-data-bias.md`](EXP-003-training-data-bias.md) — controlled
+  fan-corpus and ordering-bias demonstration.

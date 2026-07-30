@@ -95,6 +95,46 @@ Then run the optimized training loop.
 The model does not receive a grammar lesson. It repeatedly discovers which
 small numerical changes make the next prediction less wrong.
 
+### Can we train it to have a favourite?
+
+Use the same blank model five times. Keep its architecture, initial numbers,
+training budget, vocabulary, and generation seeds fixed.
+
+Change only the training examples:
+
+```text
+APPLE FAN
+COMMODORE FAN
+TANDY FAN
+```
+
+Ask the audience to call the result before each run. Then generate twenty names
+and count their first tokens.
+
+The Apple model begins sixteen names with `APPLE`. The Commodore model begins
+fifteen with `COMMODORE`. The Tandy model begins fourteen with `TANDY`.
+
+The model has no brand loyalty. But the training process absolutely has a point
+of view. Think about that a minute.
+
+Now combine equal sets of Apple, Commodore, and Tandy examples. Surely that
+fixes it?
+
+Not if we concatenate them. Online training sees the Tandy block last in every
+epoch, and fourteen of twenty generated names still begin with `TANDY`.
+
+Interleave the exact same examples and train again. The output now includes all
+three manufacturers, and loss falls much further.
+
+The reveal is not merely "biased data makes a biased model." Representation,
+repetition, order, initialization, and sampling all participate in the observed
+result. Including everyone in the input does not guarantee balance in the
+output.
+
+Ask: who selected the data, chose the order, defined success, and decided the
+result was acceptable? Those are human decisions hiding behind model
+behaviour.
+
 ### What are embeddings and layers doing?
 
 Return to the same `COMMODORE` example. Show its three learned values in each
@@ -178,6 +218,8 @@ with the final generated names.
 Invite people to:
 
 - alter the training corpus and predict what will change;
+- choose a fan corpus, then try to identify the trained model from its output;
+- compare concatenated and interleaved versions of the same examples;
 - inspect the assembly and fixed-point arithmetic;
 - try a deliberately bad or biased corpus;
 - add a bounded language-model task of their own;
