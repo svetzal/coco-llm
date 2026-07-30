@@ -195,11 +195,23 @@ class FixedTokenLanguageModel:
         max_tokens: int = 6,
         minimum_tokens: int = 2,
         random_seed: int,
+        prompt: str = "",
+        greedy: bool = False,
     ) -> str:
         boundary = self.token_by_text[BOUNDARY]
         context = [boundary] * self.config.context
         output: list[str] = []
         random = XorShift16(random_seed)
+
+        prompt_tokens = prompt.upper().split()
+        unknown_tokens = [
+            token for token in prompt_tokens if token not in self.token_by_text
+        ]
+        if unknown_tokens:
+            unknown = ", ".join(unknown_tokens)
+            raise ValueError(f"prompt contains unknown token(s): {unknown}")
+        for prompt_token in prompt_tokens:
+            context = context[1:] + [self.token_by_text[prompt_token]]
 
         for _ in range(max_tokens):
             _, probabilities = self._forward(np.asarray(context, dtype=np.int64))
@@ -209,14 +221,17 @@ class FixedTokenLanguageModel:
                 probabilities[boundary] = 0
                 probabilities[int(np.argmax(probabilities))] += removed
 
-            draw = random.next() & 0xFF
-            cumulative = 0
-            token = boundary
-            for candidate, probability in enumerate(probabilities):
-                cumulative += int(probability)
-                if draw < cumulative:
-                    token = candidate
-                    break
+            if greedy:
+                token = int(np.argmax(probabilities))
+            else:
+                draw = random.next() & 0xFF
+                cumulative = 0
+                token = boundary
+                for candidate, probability in enumerate(probabilities):
+                    cumulative += int(probability)
+                    if draw < cumulative:
+                        token = candidate
+                        break
 
             if token == boundary:
                 break

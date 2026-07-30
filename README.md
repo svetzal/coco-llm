@@ -93,15 +93,20 @@ epochs. Build the DECB binary with `make coco-bin`, verify the engine with
 See
 [`experiments/EXP-004-complete-6809-training.md`](experiments/EXP-004-complete-6809-training.md).
 
-For a conversation-driven presentation, list or run any recorded experiment:
+For a conversation-driven presentation, list or run the audience-facing
+experiments:
 
 ```sh
 make present
-make present EXP=3
+make present EXP=4
+make present EXP=5
 ```
 
-EXP-001 through EXP-003 produce concise terminal evidence. EXP-004 launches the
-interactive XRoar demonstration.
+The presentation menu starts at EXP-004, the first experiment with a complete
+6809 training loop. EXP-001 through EXP-003 remain the engineering evidence
+that led there. EXP-004 launches the interactive XRoar demonstration. EXP-005
+is a fast integer-reference demonstration in which recognizable two-word
+prompts steer completions learned from 1980s computer advertising.
 
 ## Watch it train in XRoar
 

@@ -4,18 +4,49 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).parents[1] / "tools"))
 
-from present_experiment import EXPERIMENTS, fan_counts, normalize_experiment
+from present_experiment import (
+    EXPERIMENTS,
+    fan_counts,
+    normalize_experiment,
+    run_exp_005,
+)
 
 
 def test_experiment_aliases_are_easy_to_type() -> None:
-    assert normalize_experiment("1") == "EXP-001"
-    assert normalize_experiment("002") == "EXP-002"
-    assert normalize_experiment("exp-3") == "EXP-003"
+    assert normalize_experiment("4") == "EXP-004"
     assert normalize_experiment("EXP-004") == "EXP-004"
+    assert normalize_experiment("005") == "EXP-005"
 
 
-def test_all_recorded_experiments_are_presentable() -> None:
-    assert list(EXPERIMENTS) == ["EXP-001", "EXP-002", "EXP-003", "EXP-004"]
+def test_presentation_experiments_start_with_complete_6809_training() -> None:
+    assert list(EXPERIMENTS) == ["EXP-004", "EXP-005"]
+
+
+def test_marketing_language_demo_has_memorable_prompt_completions(
+    capsys,
+) -> None:
+    payload = run_exp_005()
+    capsys.readouterr()
+
+    assert payload["parameters"] == 380
+    assert payload["vocabulary"] == 38
+    assert payload["completions"] == [
+        {"prompt": "I ADORE", "completion": "MY 64"},
+        {
+            "prompt": "ARE YOU",
+            "completion": "KEEPING UP IN LITTLE COMPUTERS",
+        },
+        {"prompt": "WHY BUY", "completion": "JUST A VIDEO GAME"},
+        {"prompt": "POWER WITHOUT", "completion": "THE PRICE"},
+        {
+            "prompt": "GET YOUR",
+            "completion": "START IN COLOR COMPUTING",
+        },
+        {
+            "prompt": "THE COMPUTER",
+            "completion": "FOR THE REST OF US",
+        },
+    ]
 
 
 def test_fan_counts_group_non_brand_outputs_as_other() -> None:

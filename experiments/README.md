@@ -25,34 +25,34 @@ Current experiments:
   fan-corpus and ordering-bias demonstration.
 - [`EXP-004-complete-6809-training.md`](EXP-004-complete-6809-training.md) —
   complete bit-exact assembly training, generation, and initial timing evidence.
+- [`EXP-005-prompted-marketing-language.md`](EXP-005-prompted-marketing-language.md)
+  — expanded advertising vocabulary and visible two-word prompting.
 
 ## Presentation commands
 
-List the four audience-ready paths:
+List the audience-ready paths, beginning with the first complete 6809 run:
 
 ```sh
 make present
 ```
 
-Run any experiment by number:
+Run either presentation experiment:
 
 ```sh
-make present EXP=1
-make present EXP=2
-make present EXP=3
 make present EXP=4
+make present EXP=5
 ```
 
-The first three are concise, deterministic Mac reference demonstrations.
 EXP-004 launches the stock-rate XRoar program and pauses before inference.
+EXP-005 is a concise, deterministic Mac reference demonstration; its larger
+training workload has not yet been validated for stock-rate CoCo use.
 
 | Experiment | Useful when the conversation asks… | Surface |
 | --- | --- | --- |
-| EXP-001 | Why not train characters? | Rejected architecture and lower bound |
-| EXP-002 | What difference does tokenization make? | Integer model comparison |
-| EXP-003 | Can training data create bias? | Five-run comparison table |
 | EXP-004 | Can the old machine really train it? | Interactive CoCo emulation |
+| EXP-005 | Can starting words steer it? | Prompted integer reference |
 
-The presenter output deliberately shows conclusions rather than dumping every
-sample. The underlying experiment commands and recorded evidence remain
+EXP-001 through EXP-003 remain recorded as architectural evidence, but are no
+longer in the runnable presentation menu. Presenter output deliberately shows
+conclusions rather than dumping every sample. The recorded evidence remains
 available for deeper inspection.

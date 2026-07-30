@@ -23,21 +23,13 @@ from token_lm import ModelConfig as TokenConfig
 from token_lm import assess_samples, build_vocabulary, load_names, make_examples
 
 EXPERIMENTS = {
-    "EXP-001": (
-        "Why the character model was rejected",
-        "Fast Mac reference; operation lower bound explains the rejection.",
-    ),
-    "EXP-002": (
-        "Why tokenization changes the feasibility",
-        "Fast integer reference; compares work and generated quality.",
-    ),
-    "EXP-003": (
-        "How training data creates apparent preference",
-        "Fast integer comparison; five controlled corpora in one table.",
-    ),
     "EXP-004": (
         "Training and inference on the 6809",
         "Interactive stock-rate XRoar demonstration; press a key to infer.",
+    ),
+    "EXP-005": (
+        "Prompting with 1980s advertising language",
+        "Fast integer reference; visible starting words steer completion.",
     ),
 }
 
@@ -55,13 +47,11 @@ def normalize_experiment(value: str) -> str:
         number = int(normalized)
     except ValueError as error:
         raise argparse.ArgumentTypeError(
-            f"unknown experiment {value!r}; try 1, 2, 3, or 4"
+            f"unknown experiment {value!r}; try 4 or 5"
         ) from error
     experiment = f"EXP-{number:03d}"
     if experiment not in EXPERIMENTS:
-        raise argparse.ArgumentTypeError(
-            f"unknown experiment {value!r}; try 1, 2, 3, or 4"
-        )
+        raise argparse.ArgumentTypeError(f"unknown experiment {value!r}; try 4 or 5")
     return experiment
 
 
@@ -234,11 +224,78 @@ def run_exp_004() -> dict[str, Any]:
     return payload
 
 
+def run_exp_005() -> dict[str, Any]:
+    corpus = ROOT / "experiments" / "data" / "EXP-005-marketing-language.txt"
+    phrases = load_names(corpus)
+    vocabulary, token_by_text = build_vocabulary(phrases)
+    config = TokenConfig(seed=6809)
+    contexts, targets = make_examples(phrases, token_by_text, config.context)
+    model = FixedTokenLanguageModel(config, vocabulary)
+    initial_loss = model.loss(contexts, targets)
+    final_loss = model.train(contexts, targets, epochs=80)[-1]
+    prompts = (
+        "I ADORE",
+        "ARE YOU",
+        "WHY BUY",
+        "POWER WITHOUT",
+        "GET YOUR",
+        "THE COMPUTER",
+    )
+    completions = [
+        {
+            "prompt": prompt,
+            "completion": model.generate(
+                prompt=prompt,
+                random_seed=config.seed,
+                minimum_tokens=0,
+                greedy=True,
+            ),
+        }
+        for prompt in prompts
+    ]
+    total_multiplies = model.multiplies_per_example * len(targets) * 80
+    payload = {
+        "experiment": "EXP-005",
+        "status": "reference-supported",
+        "parameters": model.parameter_count,
+        "vocabulary": len(vocabulary),
+        "examples": len(targets),
+        "epochs": 80,
+        "multiplies": total_multiplies,
+        "initial_loss": initial_loss,
+        "final_loss": final_loss,
+        "checksum": model.checksum(),
+        "completions": completions,
+    }
+
+    heading(
+        "EXP-005 — YOU START, IT COMPLETES",
+        "If we replace # # with real words, can we steer what comes next?",
+    )
+    print("CALL THE SHOT")
+    print("  Pick one of these openings. What do you expect the model to say?")
+    print()
+    print(f"Campaign fragments                {len(phrases):>6,}")
+    print(f"Vocabulary tokens                 {len(vocabulary):>6,}")
+    print(f"Parameters                        {model.parameter_count:>6,}")
+    print(f"Training examples                 {len(targets):>6,}")
+    print(f"Loss                         {initial_loss:>6.4f} -> {final_loss:.4f}")
+    print()
+    print("YOUR WORDS                    MODEL COMPLETES")
+    print("---------------------------   --------------------------------")
+    for completion in completions:
+        print(f"{completion['prompt']:<27} > {completion['completion']}")
+    print()
+    print("SUPPORTED IN THE INTEGER REFERENCE")
+    print("  A prompt is just the model's starting context.")
+    print("  Familiar continuations emerge, and phrases sometimes blend.")
+    print("  Prediction is useful. It still is not understanding.")
+    return payload
+
+
 RUNNERS: dict[str, Callable[[], dict[str, Any]]] = {
-    "EXP-001": run_exp_001,
-    "EXP-002": run_exp_002,
-    "EXP-003": run_exp_003,
     "EXP-004": run_exp_004,
+    "EXP-005": run_exp_005,
 }
 
 
@@ -261,7 +318,7 @@ def list_experiments(as_json: bool) -> None:
 
     print("PRESENTABLE EXPERIMENTS")
     print("=======================")
-    print("Run one with: make present EXP=1")
+    print("Run one with: make present EXP=4")
     print()
     for experiment, (title, description) in EXPERIMENTS.items():
         print(f"{experiment}  {title}")
@@ -274,7 +331,7 @@ def parse_arguments() -> argparse.Namespace:
         epilog=(
             "examples:\n"
             "  python tools/present_experiment.py list\n"
-            "  python tools/present_experiment.py run 3"
+            "  python tools/present_experiment.py run 5"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

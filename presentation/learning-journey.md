@@ -317,18 +317,26 @@ clearly labelled comparison.
 
 ## Conversation-driven branches
 
-The four experiments are a menu, not four mandatory acts. Run `make present`
-to see the choices, then follow the room:
+The runnable presentation experiments begin with the first complete 6809
+training loop. Run `make present` to see the choices, then follow the room:
 
-- “Why not characters?” — `make present EXP=1`
-- “Does tokenization really matter?” — `make present EXP=2`
-- “Can you make it biased?” — `make present EXP=3`
 - “But does the CoCo actually train?” — `make present EXP=4`
+- “Can my starting words steer it?” — `make present EXP=5`
 
-The first three resolve quickly in the terminal and return to the same vintage
-computer-name through-line. EXP-004 is the centerpiece and controls its own
-pause before inference. Do not cue it from the cycle-model runtime projection;
-rehearse and measure the actual presentation hardware.
+EXP-004 is the hardware centerpiece and controls its own pause before
+inference. Do not cue it from the cycle-model runtime projection; rehearse and
+measure the actual presentation hardware.
+
+EXP-005 begins from `I ADORE` rather than `# #`, then reveals `MY 64` as the
+model's completion. Ask the room to call the next words before showing the
+result. The strongest second reveal is `ARE YOU` becoming `KEEPING UP IN LITTLE
+COMPUTERS`: the model blends two campaigns into something plausible. It can
+predict the shape without understanding either advertisement. Think about that
+a minute.
+
+EXP-005 currently runs in the bit-exact integer reference, not on the CoCo.
+Disclose that boundary before running it. EXP-001 through EXP-003 remain
+engineering evidence rather than entries in the stage menu.
 
 ## Presentation stance
 
