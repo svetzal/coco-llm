@@ -109,17 +109,22 @@ an online-only OneDrive file, download it in Finder first.
 XRoar opens as a stock-rate 32K NTSC CoCo 1 and loads the real DECB binary.
 Watch for this sequence on the CoCo screen:
 
-1. `COCO LLM TRAINING`
+1. `COCO LLM TRAINING` in a full-width inverse title bar
 2. `EPOCH 01 / 20 ACORN > ARCHIMEDES`, with the token pair changing for
    every training example and the epoch advancing through 20
 3. `TRAINING COMPLETE`
-4. `BIT EXACT: YES`
+4. `PRESS ANY KEY`, where the program waits for a new keyboard event
 5. `GENERATING NAMES`, followed by five names appearing on separate rows
 6. `GENERATION COMPLETE`
 
 The text to the right of the count is the most recent context token and the
 expected next token. Its 19-column field is overwritten in place, making the
-58 examples in each epoch visible without scrolling the screen.
+58 examples in each epoch visible without scrolling the screen. The title bar
+is the only inverse text; the changing training row remains normal text.
+
+The deterministic parameter check still runs after training, but success is
+not announced on screen. A failed check stops the demonstration with
+`MODEL CHECK FAILED` instead of continuing into generation.
 
 The current cycle projection is about 73 seconds for training. XRoar's `F12`
 key runs at maximum speed while held; `Shift+F12` toggles maximum speed. Leave

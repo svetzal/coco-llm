@@ -26,12 +26,18 @@ make xroar
 ```
 
 The interactive launcher explicitly enables XRoar's stock-rate limiter. The
-CoCo screen shows an epoch counter from 1 through 20. Beside it, a fixed-width
-field displays the latest training pair as `context > expected token`, such as
-`ACORN > ARCHIMEDES`, and is overwritten for every example. The program then
-reports the final bit-exact check and displays each of five generated names.
+CoCo screen uses a full-width inverse title bar, with the epoch counter and
+training trace in normal text below it. A fixed-width field displays the latest
+training pair as `context > expected token`, such as `ACORN > ARCHIMEDES`, and
+is overwritten for every example. After training, the program displays
+`PRESS ANY KEY` and waits for a keyboard event before generating five names.
 The completed screen remains visible until XRoar is closed. Do not press `F12`
 or `Shift+F12` unless you intentionally want maximum-speed emulation.
+
+The wait loop calls the Color BASIC `POLCAT` vector at `$A000`, which returns
+only a newly detected keypress. This avoids treating the key used to launch the
+program as permission to begin inference and works through the standard CoCo
+1, 2, and 3 BASIC interface.
 
 The XRoar launcher uses Stacey's local CoCo 1 firmware archive:
 
@@ -46,9 +52,10 @@ same `bas11.rom` and `extbas10.rom` members.
 
 `make xroar-test` runs XRoar without its speed limiter and proves that the
 whole-machine build uses the expected ROM checksums and reaches the finished
-program counter. It is an automated correctness check, not the command for
+training prompt. The direct simulator separately verifies the complete
+generation path. These are automated correctness checks, not the command for
 watching the demonstration.
 
 The assembly currently embeds its deterministic expected parameter image so
-the screen can report `BIT EXACT: YES`. That 580-byte teaching and verification
+it can stop on a model mismatch before inference. That 580-byte verification
 fixture can be omitted from a later size-focused build.

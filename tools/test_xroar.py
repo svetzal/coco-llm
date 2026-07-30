@@ -1,4 +1,4 @@
-"""Prove that the ROM-less XRoar build reaches the model's finished loop."""
+"""Prove that the real-ROM XRoar build reaches its keyboard prompt."""
 
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ def verify_rom(path: Path, expected_crc32: int, label: str) -> None:
 
 def main() -> None:
     arguments = parse_arguments()
-    finished = symbol_address(arguments.symbols, "finished")
+    wait_for_key = symbol_address(arguments.symbols, "wait_for_key")
     verify_rom(arguments.basic_rom, BASIC_11_CRC32, "Color BASIC 1.1")
     verify_rom(
         arguments.extended_basic_rom,
@@ -52,7 +52,7 @@ def main() -> None:
     )
 
     with tempfile.TemporaryDirectory(prefix="coco-llm-xroar-") as directory:
-        snapshot = Path(directory) / "finished.sna"
+        snapshot = Path(directory) / "wait-for-key.sna"
         command = [
             str(arguments.xroar),
             "-ui",
@@ -69,7 +69,7 @@ def main() -> None:
             "-trap-snap",
             str(snapshot),
             "-trap",
-            f"pc=0x{finished:04x}",
+            f"pc=0x{wait_for_key:04x}",
             "-timeout",
             "120",
             "-quiet",
@@ -79,12 +79,13 @@ def main() -> None:
         subprocess.run(command, check=True)
         if not snapshot.exists():
             raise RuntimeError(
-                f"XRoar did not reach finished program counter ${finished:04X}"
+                "XRoar did not reach keyboard prompt at program counter "
+                f"${wait_for_key:04X}"
             )
 
     print(
         "XRoar used valid Color BASIC 1.1 / Extended Color BASIC 1.0 ROMs "
-        f"and reached finished program counter ${finished:04X}"
+        f"and reached keyboard prompt at program counter ${wait_for_key:04X}"
     )
 
 

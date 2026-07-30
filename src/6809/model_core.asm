@@ -5,6 +5,7 @@
 ; testable arithmetic over final optimization in this first complete port.
 
 SCREEN          equ     $0400
+POLCAT          equ     $A000
 EMBED_DIMS      equ     3
 CONTEXT_SIZE    equ     2
 POS_BYTES       equ     VOCAB_SIZE*EMBED_DIMS*2
@@ -22,8 +23,16 @@ clear_screen
         blo     clear_screen
 
         ldx     #SCREEN
+        lda     #$20
+        ldb     #32
+fill_title_bar
+        sta     ,x+
+        decb
+        bne     fill_title_bar
+
+        ldx     #SCREEN+7
         ldu     #message_training
-        lbsr     print_string
+        lbsr     print_inverse_string
         ldx     #SCREEN+32
         ldu     #message_epoch
         lbsr     print_string
@@ -44,23 +53,34 @@ clear_training_row
         ldu     #message_complete
         lbsr     print_string
         tst     parity_result
-        beq     parity_failed
+        beq     verification_failed
         ldx     #SCREEN+64
-        ldu     #message_parity_ok
+        ldu     #message_press_key
         lbsr     print_string
+        ifndef  DIRECT_TEST
+wait_for_key
+        jsr     [POLCAT]
+        beq     wait_for_key
+        endc
         bra     show_samples
-parity_failed
+verification_failed
         ldx     #SCREEN+64
-        ldu     #message_parity_bad
+        ldu     #message_verification_failed
         lbsr     print_string
+        ifdef   DIRECT_TEST
+        swi
+        else
+verification_halt
+        bra     verification_halt
+        endc
 
 show_samples
-        ldx     #SCREEN+96
+        ldx     #SCREEN+64
         ldu     #message_generating
         lbsr     print_string
         ldd     #6809
         std     sample_seed
-        ldx     #SCREEN+128
+        ldx     #SCREEN+96
         stx     screen_pointer
         lda     #5
         sta     sample_count
@@ -76,7 +96,7 @@ sample_loop
         dec     sample_count
         bne     sample_loop
 
-        ldx     #SCREEN+96
+        ldx     #SCREEN+64
         ldu     #message_generated
         lbsr     print_string
         ifdef   DIRECT_TEST
@@ -711,6 +731,16 @@ print_string
 print_string_done
         rts
 
+; Print a zero-terminated ASCII string as inverse VDG text.
+print_inverse_string
+        lda     ,u+
+        beq     print_inverse_string_done
+        eora    #$40
+        sta     ,x+
+        bra     print_inverse_string
+print_inverse_string_done
+        rts
+
 ; Show the current context-to-target pair in the 19 columns after the epoch.
 display_training_example
         ldx     #SCREEN+45
@@ -771,11 +801,11 @@ message_arrow
 message_complete
         fcc     "TRAINING COMPLETE"
         fcb     0
-message_parity_ok
-        fcc     "BIT EXACT: YES"
+message_press_key
+        fcc     "PRESS ANY KEY"
         fcb     0
-message_parity_bad
-        fcc     "BIT EXACT: NO"
+message_verification_failed
+        fcc     "MODEL CHECK FAILED"
         fcb     0
 message_generating
         fcc     "GENERATING NAMES"

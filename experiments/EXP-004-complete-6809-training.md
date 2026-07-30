@@ -41,8 +41,8 @@ make xroar
 `make model-test` assembles the production engine with LWASM, runs the resulting
 machine code in the direct 6809 simulator, and checks parameter and generation
 fixtures. `make xroar-test` proves that a whole-machine CoCo 1 emulation reaches
-the finished program counter. `make xroar` loads the same DECB program for
-interactive inspection.
+the post-training keyboard prompt. `make xroar` loads the same DECB program for
+interactive inspection and waits for a key before inference.
 
 The XRoar path uses Tandy Color BASIC 1.1 and Extended Color BASIC 1.0 from
 Stacey's local `cocoe.zip` MAME archive. XRoar recognizes their respective
@@ -75,11 +75,11 @@ matching the integer reference run.
 
 | Artifact | Size |
 | --- | ---: |
-| CoCo DECB executable | 2,851 bytes |
-| Writable RAM image including work buffers | 3,649 bytes |
+| CoCo DECB executable | 2,886 bytes |
+| Writable RAM image including work buffers | 3,684 bytes |
 | Trainable parameters | 580 bytes |
 
-The writable image occupies `$2000` through `$2E40`, well inside
+The writable image occupies `$2000` through `$2E63`, well inside
 a 32K CoCo 1.
 
 ### Performance
@@ -88,7 +88,7 @@ The initial bit-at-a-time signed multiplication routine executed about
 38.6 million instructions. The two-`MUL` kernel reduced the same bit-exact run
 to 15,824,366 instructions with the epoch and generation display. Showing the
 current training pair for every example brings the interactive run to
-16,010,546 instructions.
+16,010,640 instructions, excluding the human-length pause.
 
 The direct simulator reports an effective cycle rate which, combined with its
 wall time, implies approximately 65.3 million emulated 6809 cycles. At the
@@ -96,15 +96,17 @@ CoCo 1's approximate 0.895 MHz clock, that projects to about 73 seconds.
 
 This is a cycle-model projection, not a physical-hardware measurement. XRoar
 successfully boots the real CoCo 1 ROM pair, loads the DECB binary, and reaches
-the finished program counter. Automated headless runs on this Mac do not
-provide a trustworthy stock-rate wall clock. Physical CoCo 1 timing remains
-the authority.
+the post-training keyboard prompt. The direct simulator verifies the subsequent
+generation path. Automated headless runs on this Mac do not provide a
+trustworthy stock-rate wall clock. Physical CoCo 1 timing remains the authority.
 
 The interactive XRoar build enables its rate limiter and visibly advances an
 epoch counter from 1 through 20. A fixed-width field beside the count cycles
 through all 58 examples as `context > expected token`; it is overwritten in
-place rather than scrolling. The program then reports the bit-exact result and
-prints five generated names before leaving the completed screen displayed.
+place rather than scrolling. The normal-text training row sits below a
+full-width inverse title bar. After its internal model check, the program
+pauses at `PRESS ANY KEY`; a keyboard event starts inference and prints five
+generated names before leaving the completed screen displayed.
 
 ### Multiply range
 

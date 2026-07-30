@@ -102,7 +102,9 @@ EPOCH 03 / 20 AMIGA > COMMODORE
 
 The field is overwritten for every update, so it becomes a rapid visual trace
 of the evidence currently changing the model. Pause on one pair when explaining
-the loop, then let the complete corpus flow past.
+the loop, then let the complete corpus flow past. Only the full-width title bar
+uses inverse video; keeping the changing row in normal text makes the data
+easier to follow.
 
 The model does not receive a grammar lesson. It repeatedly discovers which
 small numerical changes make the next prediction less wrong.
@@ -283,13 +285,14 @@ The talk should have one genuine run, not a sequence of canned simulations:
 5. Start the optimized loop.
 6. Reveal how two unsigned `MUL` operations replaced the slow signed routine.
 7. Explain embeddings and backpropagation while epochs run.
-8. Sample after each epoch.
-9. Stop at the predeclared quality or time boundary.
-10. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
-11. Reveal the ordering effect in concatenated versus interleaved balanced data.
-12. Ask which human choices created each observed behaviour.
-13. Test the model outside its competence.
-14. Reveal the final model size, memory use, and elapsed time.
+8. Reach the predeclared training boundary and pause at `PRESS ANY KEY`.
+9. Let the audience choose when to begin inference.
+10. Generate the five deterministic samples.
+11. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
+12. Reveal the ordering effect in concatenated versus interleaved balanced data.
+13. Ask which human choices created each observed behaviour.
+14. Test the model outside its competence.
+15. Reveal the final model size, memory use, and elapsed time.
 
 The main model must train genuinely during the talk. Depending on the measured
 hardware runtime, the five controlled bias runs may be retrained live or loaded
