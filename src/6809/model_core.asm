@@ -30,12 +30,12 @@ fill_title_bar
         decb
         bne     fill_title_bar
 
-        ldx     #SCREEN+7
+        ldx     #SCREEN
         ldu     #message_training
-        lbsr     print_inverse_string
+        lbsr     print_string
         ldx     #SCREEN+32
         ldu     #message_epoch
-        lbsr     print_string
+        lbsr     print_black_on_green
 
         lbsr     initialize_model
         lbsr     train_model
@@ -44,19 +44,19 @@ fill_title_bar
         ldx     #SCREEN+32
         pshs    x
         lda     #$60
-        ldb     #32
-clear_training_row
+        ldb     #64
+clear_training_rows
         sta     ,x+
         decb
-        bne     clear_training_row
+        bne     clear_training_rows
         puls    x
         ldu     #message_complete
-        lbsr     print_string
+        lbsr     print_black_on_green
         tst     parity_result
         beq     verification_failed
         ldx     #SCREEN+64
         ldu     #message_press_key
-        lbsr     print_string
+        lbsr     print_black_on_green
         ifndef  DIRECT_TEST
 wait_for_key
         jsr     [POLCAT]
@@ -66,7 +66,7 @@ wait_for_key
 verification_failed
         ldx     #SCREEN+64
         ldu     #message_verification_failed
-        lbsr     print_string
+        lbsr     print_black_on_green
         ifdef   DIRECT_TEST
         swi
         else
@@ -77,7 +77,7 @@ verification_halt
 show_samples
         ldx     #SCREEN+64
         ldu     #message_generating
-        lbsr     print_string
+        lbsr     print_black_on_green
         ldd     #6809
         std     sample_seed
         ldx     #SCREEN+96
@@ -98,7 +98,7 @@ sample_loop
 
         ldx     #SCREEN+64
         ldu     #message_generated
-        lbsr     print_string
+        lbsr     print_black_on_green
         ifdef   DIRECT_TEST
         swi
         else
@@ -714,8 +714,8 @@ print_chosen_token
         leau    d,u
         ldu     ,u
         ldx     output_pointer
-        lbsr     print_string
-        lda     #$20
+        lbsr     print_black_on_green
+        lda     #$60
         sta     ,x+
         stx     output_pointer
         rts
@@ -731,31 +731,36 @@ print_string
 print_string_done
         rts
 
-; Print a zero-terminated ASCII string as inverse VDG text.
-print_inverse_string
+; Print black glyphs on the VDG's green background. ORA maps both uppercase
+; ASCII and spaces into the $40-$7F inverse-video character set.
+print_black_on_green
         lda     ,u+
-        beq     print_inverse_string_done
-        eora    #$40
+        beq     print_black_on_green_done
+        ora     #$40
         sta     ,x+
-        bra     print_inverse_string
-print_inverse_string_done
+        bra     print_black_on_green
+print_black_on_green_done
         rts
 
-; Show the current context-to-target pair in the 19 columns after the epoch.
+; Show the complete two-token context and target on its own 32-column row.
 display_training_example
-        ldx     #SCREEN+45
+        ldx     #SCREEN+64
         pshs    x
         lda     #$60
-        ldb     #19
+        ldb     #32
 clear_training_example
         sta     ,x+
         decb
         bne     clear_training_example
         puls    x
+        lda     current_context
+        lbsr     print_token_id
+        ldu     #message_space
+        lbsr     print_black_on_green
         lda     current_context+1
         lbsr     print_token_id
         ldu     #message_arrow
-        lbsr     print_string
+        lbsr     print_black_on_green
         lda     current_target
         lbsr     print_token_id
         rts
@@ -767,7 +772,7 @@ print_token_id
         ldu     #token_pointers
         leau    d,u
         ldu     ,u
-        lbsr     print_string
+        lbsr     print_black_on_green
         rts
 
 ; Write unsigned A as exactly two decimal VDG characters at X.
@@ -783,9 +788,11 @@ decimal_ready
         pshs    a
         tfr     b,a
         adda    #$30
+        ora     #$40
         sta     ,x+
         puls    a
         adda    #$30
+        ora     #$40
         sta     ,x
         rts
 
@@ -797,6 +804,9 @@ message_epoch
         fcb     0
 message_arrow
         fcc     " > "
+        fcb     0
+message_space
+        fcc     " "
         fcb     0
 message_complete
         fcc     "TRAINING COMPLETE"

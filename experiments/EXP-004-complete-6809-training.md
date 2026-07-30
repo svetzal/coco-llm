@@ -75,11 +75,11 @@ matching the integer reference run.
 
 | Artifact | Size |
 | --- | ---: |
-| CoCo DECB executable | 2,886 bytes |
-| Writable RAM image including work buffers | 3,684 bytes |
+| CoCo DECB executable | 2,904 bytes |
+| Writable RAM image including work buffers | 3,702 bytes |
 | Trainable parameters | 580 bytes |
 
-The writable image occupies `$2000` through `$2E63`, well inside
+The writable image occupies `$2000` through `$2E75`, well inside
 a 32K CoCo 1.
 
 ### Performance
@@ -87,8 +87,8 @@ a 32K CoCo 1.
 The initial bit-at-a-time signed multiplication routine executed about
 38.6 million instructions. The two-`MUL` kernel reduced the same bit-exact run
 to 15,824,366 instructions with the epoch and generation display. Showing the
-current training pair for every example brings the interactive run to
-16,010,640 instructions, excluding the human-length pause.
+complete two-token context and target for every example brings the interactive
+run to 16,112,536 instructions, excluding the human-length pause.
 
 The direct simulator reports an effective cycle rate which, combined with its
 wall time, implies approximately 65.3 million emulated 6809 cycles. At the
@@ -101,12 +101,12 @@ generation path. Automated headless runs on this Mac do not provide a
 trustworthy stock-rate wall clock. Physical CoCo 1 timing remains the authority.
 
 The interactive XRoar build enables its rate limiter and visibly advances an
-epoch counter from 1 through 20. A fixed-width field beside the count cycles
-through all 58 examples as `context > expected token`; it is overwritten in
-place rather than scrolling. The normal-text training row sits below a
-full-width inverse title bar. After its internal model check, the program
-pauses at `PRESS ANY KEY`; a keyboard event starts inference and prints five
-generated names before leaving the completed screen displayed.
+epoch counter from 1 through 20. The full-width row below cycles through all
+58 examples as `context context > expected token`; it is overwritten in place
+rather than scrolling. Both rows are black-on-green beneath a left-aligned,
+green-on-dark title bar. After its internal model check, the program pauses at
+`PRESS ANY KEY`; a keyboard event starts inference and prints five generated
+names before leaving the completed screen displayed.
 
 ### Multiply range
 

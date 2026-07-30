@@ -92,19 +92,18 @@ predict → compare → send error backward → adjust numbers
 
 Then run the optimized training loop.
 
-On the live CoCo screen, the epoch count remains on the left while the right
-edge cycles through the actual examples:
+On the live CoCo screen, the epoch and actual example occupy separate rows:
 
 ```text
-EPOCH 03 / 20 ACORN > ARCHIMEDES
-EPOCH 03 / 20 AMIGA > COMMODORE
+EPOCH 03 / 20
+<END> ACORN > ARCHIMEDES
 ```
 
-The field is overwritten for every update, so it becomes a rapid visual trace
-of the evidence currently changing the model. Pause on one pair when explaining
-the loop, then let the complete corpus flow past. Only the full-width title bar
-uses inverse video; keeping the changing row in normal text makes the data
-easier to follow.
+The full-width example row shows both context tokens and the expected target.
+It is overwritten for every update, becoming a rapid visual trace of the
+evidence currently changing the model. Pause on one example when explaining
+the loop, then let the complete corpus flow past. The title is left-aligned in
+green on a dark bar; the epoch and example use black text on green.
 
 The model does not receive a grammar lesson. It repeatedly discovers which
 small numerical changes make the next prediction less wrong.

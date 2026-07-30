@@ -112,7 +112,7 @@ memory must also include:
 - screen memory and platform state;
 - code and stack.
 
-The current writable image is 3,684 bytes at `$2000`, including code,
+The current writable image is 3,702 bytes at `$2000`, including code,
 parameters, generated lookup data, verification data, and work buffers. It
 comfortably targets a 32K CoCo 1. A smaller-memory build is a later
 optimization, not an initial constraint.

@@ -26,10 +26,10 @@ make xroar
 ```
 
 The interactive launcher explicitly enables XRoar's stock-rate limiter. The
-CoCo screen uses a full-width inverse title bar, with the epoch counter and
-training trace in normal text below it. A fixed-width field displays the latest
-training pair as `context > expected token`, such as `ACORN > ARCHIMEDES`, and
-is overwritten for every example. After training, the program displays
+CoCo screen uses a left-aligned, full-width dark title bar. The epoch count is
+black-on-green on the next row. A separate 32-column row displays both context
+tokens and the target, such as `<END> ACORN > ARCHIMEDES`, and is overwritten
+for every example. After training, the program displays
 `PRESS ANY KEY` and waits for a keyboard event before generating five names.
 The completed screen remains visible until XRoar is closed. Do not press `F12`
 or `Shift+F12` unless you intentionally want maximum-speed emulation.
