@@ -34,7 +34,6 @@ all 580 trained parameter bytes with that expected image.
 ```sh
 make model-test
 make coco-bin
-make xroar-rom
 make xroar-test
 make xroar
 ```
@@ -42,13 +41,13 @@ make xroar
 `make model-test` assembles the production engine with LWASM, runs the resulting
 machine code in the direct 6809 simulator, and checks parameter and generation
 fixtures. `make xroar-test` proves that a whole-machine CoCo 1 emulation reaches
-the finished program counter. `make xroar` opens the same writable program
-image as a ROM-cartridge payload for interactive inspection.
+the finished program counter. `make xroar` loads the same DECB program for
+interactive inspection.
 
-The cartridge is an emulator convenience. Its bootstrap copies the program
-into RAM at `$2000`, so training does not attempt to modify ROM. It also avoids
-requiring copyrighted Tandy BASIC ROM images. The CoCo SDC or FujiNet build
-uses the DECB binary instead.
+The XRoar path uses Tandy Color BASIC 1.1 and Extended Color BASIC 1.0 from
+Stacey's local `cocoe.zip` MAME archive. XRoar recognizes their respective
+CRC32 values, `6270955a` and `6111a086`, as valid firmware. It loads the same
+DECB binary intended for CoCo SDC or FujiNet.
 
 ## Evidence
 
@@ -78,7 +77,6 @@ matching the integer reference run.
 | --- | ---: |
 | CoCo DECB executable | 2,680 bytes |
 | Writable RAM image including work buffers | 3,477 bytes |
-| XRoar cartridge image | 16,384 bytes |
 | Trainable parameters | 580 bytes |
 
 The writable image occupies `$2000` through approximately `$2D94`, well inside
@@ -95,9 +93,10 @@ wall time, implies approximately 64.8 million emulated 6809 cycles. At the
 CoCo 1's approximate 0.895 MHz clock, that projects to about 72 seconds.
 
 This is a cycle-model projection, not a physical-hardware measurement. XRoar
-successfully boots and reaches the finished program counter, but automated
-headless runs on this Mac do not provide a trustworthy stock-rate wall clock.
-Physical CoCo 1 timing remains the authority.
+successfully boots the real CoCo 1 ROM pair, loads the DECB binary, and reaches
+the finished program counter. Automated headless runs on this Mac do not
+provide a trustworthy stock-rate wall clock. Physical CoCo 1 timing remains
+the authority.
 
 ### Multiply range
 
@@ -122,6 +121,5 @@ bit-exact with the integer reference for the controlled corpus. Its projected
 stock-clock runtime is comfortably inside three minutes and likely near
 72 seconds.
 
-The next evidence step is to run the DECB artifact in XRoar interactively,
-inspect the on-screen output, and then spot-check correctness and timing on the
-physical CoCo 1 and CoCo 3.
+The next evidence step is to inspect the on-screen XRoar run interactively, then
+spot-check correctness and timing on the physical CoCo 1 and CoCo 3.

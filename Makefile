@@ -2,9 +2,11 @@ UV := uv
 SIM6809 := .tools/6809/bin/6809
 SIM6809_REV := 546c8d2efc7d30cecb5afe9bc05e683a4bfbd672
 XROAR ?= /opt/homebrew/opt/xroar/bin/xroar
+COCO_ROM_ARCHIVE ?= $(HOME)/OneDrive/CoCo/MAME/roms/cocoe.zip
+COCO_BASIC_ROM := build/roms/bas11.rom
+COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 
-.PHONY: test reference-test asm-test model-test coco-bin xroar-rom xroar-test \
-	xroar tools
+.PHONY: test reference-test asm-test model-test coco-bin xroar-test xroar tools
 
 test: reference-test asm-test model-test
 
@@ -22,19 +24,19 @@ model-test: build/model-test-runner.asm $(SIM6809)
 
 coco-bin: build/coco-llm.bin
 
-xroar-rom: build/coco-llm.rom
-
-xroar-test: build/coco-llm.rom build/coco-llm.sym
+xroar-test: build/coco-llm.bin build/coco-llm.sym build/roms/.coco1-roms
 	$(UV) run python tools/test_xroar.py \
-		--xroar $(XROAR) --rom build/coco-llm.rom \
+		--xroar $(XROAR) --binary build/coco-llm.bin \
+		--basic-rom $(COCO_BASIC_ROM) \
+		--extended-basic-rom $(COCO_EXTBASIC_ROM) \
 		--symbols build/coco-llm.sym
 
-xroar: build/coco-llm.rom
+xroar: build/coco-llm.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
-	$(XROAR) -machine cocous -ram 32 -no-bas -no-extbas \
-		-cart coco-llm -cart-type rom -cart-rom $< -cart-autorun \
-		-machine-cart coco-llm
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-run build/coco-llm.bin
 
 build/smul8-test.bin: src/6809/tests/smul8_test.asm
 	mkdir -p build
@@ -69,13 +71,10 @@ build/coco-llm.sym: src/6809/coco_llm.asm \
 build/coco-llm.raw: build/coco-llm.sym
 	@test -f $@
 
-build/coco-llm-payload.inc: build/coco-llm.raw \
-		tools/binary_to_assembly.py
-	$(UV) run python tools/binary_to_assembly.py \
-		--input build/coco-llm.raw --output $@
-
-build/coco-llm.rom: src/6809/xroar_boot.asm build/coco-llm-payload.inc
-	lwasm --6809 --format=raw --output=$@ $<
+build/roms/.coco1-roms: $(COCO_ROM_ARCHIVE)
+	mkdir -p build/roms
+	unzip -jo $(COCO_ROM_ARCHIVE) bas11.rom extbas10.rom -d build/roms
+	touch $@
 
 tools:
 	@command -v lwasm >/dev/null || \
