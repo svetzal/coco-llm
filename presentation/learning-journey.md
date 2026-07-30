@@ -15,6 +15,21 @@ The audience should leave able to explain:
 5. why limited models can still be extraordinarily useful;
 6. where human purpose, judgement, and accountability remain essential.
 
+## Assembly reveal discipline
+
+The 6809 source is evidence, not decoration. For every major concept:
+
+1. explain the idea using the sustained computer-name example;
+2. reveal roughly five to twelve executable lines of the actual assembly;
+3. return immediately to the visible behaviour on the CoCo.
+
+Use large, retyped code rather than screenshots of an editor. Label every
+excerpt with its source file and routine. Highlight only the two or three lines
+currently being discussed. Presentation comments may be added for clarity, but
+mark omitted source with `...` and never imply that pseudocode is executing.
+When the final deck tooling supports source imports, pull excerpts directly
+from these files so later assembly changes cannot silently make the slides lie.
+
 ## Sustained example
 
 The model sees names such as:
@@ -75,6 +90,26 @@ actual bytes used by the 6809:
 | `$08` | `APPLE` | `$12` | `MICRO` | `$1C` | `ZX81` |
 | `$09` | `ARCHIMEDES` | `$13` | `MODEL` | &nbsp; | &nbsp; |
 
+Then show how the CoCo turns the token value in `A` into the address of its
+display text. The pointer table contains two-byte addresses, so `MUL` doubles
+the token value:
+
+```asm
+; screen.asm — print_token_id_text
+print_token_id_text
+        ldb     #2
+        mul                     ; D = token value * 2
+        ldu     #token_pointers
+        leau    d,u
+        ldu     ,u              ; U = address of token text
+        lbsr    print_black_on_green
+        rts
+```
+
+That is the whole bridge from `$0D` to the characters in `COMMODORE`: use the
+number as an index, fetch a pointer, print the bytes found there. No meaning is
+decoded.
+
 So the name becomes:
 
 ```text
@@ -117,6 +152,27 @@ Generate from random weights. The machine emits nonsense.
 The first reveal: the model contains no words, rules, facts, or vintage-computer
 database. It begins as numbers.
 
+The initialization loop makes that literal:
+
+```asm
+; model_core.asm — initialize_model
+initialize_model
+        ldd     #6809           ; deterministic random seed
+        std     rng_state
+        ldx     #position_embeddings
+initialize_random_parameter
+        lbsr    xorshift16
+        anda    #$03
+        subd    #$0200
+        std     ,x++            ; store one random parameter
+        cmpx    #output_biases
+        blo     initialize_random_parameter
+        ...                     ; bias initialization follows
+```
+
+Ask: where did `COMMODORE` appear in that code? It did not. We initialized
+adjustable numbers, not a database.
+
 ### What does a language model actually do?
 
 Now give the model two token values:
@@ -130,6 +186,25 @@ Ask the audience what might come next: `AMIGA`, `64`, `PET`, perhaps something
 unexpected. Their guesses are a probability distribution derived from
 experience. The model's job is the same narrow task: assign scores to possible
 next tokens.
+
+The forward pass begins by looking up the learned values for those two token
+numbers in two positional embedding tables:
+
+```asm
+; model_core.asm — forward
+        lda     current_context
+        ldx     #position_embeddings
+        lbsr    add_embedding
+
+        lda     current_context+1
+        ldx     #position_embeddings+POS_BYTES
+        lbsr    add_embedding
+        ...                     ; calculate scores and softmax
+```
+
+The same token can influence a prediction differently in the first and second
+positions because each position has its own table. The token identifies a row;
+training changes the three numbers stored in that row.
 
 The words are less mysterious when attached to this one example:
 
@@ -181,6 +256,41 @@ The CoCo calculates an integer approximation using a small lookup table and
 fixed-point arithmetic. It is doing the same conceptual job without floating
 point or the full exponential function.
 
+Show that compromise in the actual softmax loop. It measures the distance from
+the winning score, scales it with three right shifts, and looks up an
+exponential approximation:
+
+```asm
+; model_core.asm — make_exponential
+        ldd     maximum_logit
+        subd    ,x              ; distance below best score
+        lsra
+        rorb
+        lsra
+        rorb
+        lsra
+        rorb                    ; divide distance by 8
+        ...                     ; clamp distance to table range
+        ldx     #exp_lut
+        abx
+        lda     ,x              ; approximate exponential
+```
+
+The 6809's hardware multiply then turns that weight into a fixed-point
+probability:
+
+```asm
+; model_core.asm — make_probability
+        lda     ,x+             ; exponential weight
+        ldb     reciprocal      ; approximately 256 / total
+        mul
+        addd    #$0080          ; round
+        tfr     a,b
+        clra
+        std     ,u++            ; rounded probability share
+        ...
+```
+
 If the room wants the formula, reveal it only after the intuition:
 
 ```text
@@ -208,6 +318,24 @@ Now name the complete training step:
 ```text
 forward pass → softmax → compare → backpropagate → update
 ```
+
+Then reveal that the assembly reads in almost exactly that order:
+
+```asm
+; training.asm — train_example
+train_example
+        lbsr    forward
+        ...
+        subd    #256            ; expected token: probability - 100%
+        std     ,x
+        lbsr    calculate_context_error
+        lbsr    update_output_parameters
+        lbsr    update_embeddings
+        rts
+```
+
+There is no instruction named `BACKPROP`. The idea emerges from ordinary loads,
+multiplies, additions, and subtractions arranged to carry the error backward.
 
 Show the same path in both directions:
 
@@ -253,6 +381,21 @@ the loop, then let the complete corpus flow past. The title is left-aligned in
 green on a dark bar. Context tokens are black on green, while the expected
 token is green on a dark field. `#` is the visible boundary token.
 
+Even that visual distinction is two tiny 6809 operations:
+
+```asm
+; screen.asm — VDG character rendering
+        anda    #$3f            ; green character on dark
+        sta     ,x+
+
+        ora     #$40            ; black character on green
+        sta     ,x+
+```
+
+The colour convention is not a slide simulation. The program writes different
+VDG character codes so the audience can distinguish supplied context from the
+model's prediction.
+
 After the keypress, twelve rows make the same distinction explicit:
 
 ```text
@@ -264,6 +407,28 @@ The seed is black-on-green. Every token selected by inference, including the
 ending `#`, is green-on-dark. A final-column `+` honestly marks an output that
 is wider than the screen rather than allowing it to corrupt the following row.
 
+Now reveal the shared inference loop:
+
+```asm
+; inference.asm — generation_token
+generation_token
+        lbsr    forward
+        lbsr    experiment_adjust_probabilities
+        lbsr    experiment_choose_token
+        lbsr    print_chosen_token
+        ...
+        lda     current_context+1
+        sta     current_context
+        lda     chosen_token
+        sta     current_context+1
+        dec     generation_remaining
+        bne     generation_token
+```
+
+Training and generation call the same `forward`. What changes is what happens
+after the probabilities appear: training sends error backward; inference
+chooses a token and feeds it into the next context.
+
 The model does not receive a grammar lesson. It repeatedly discovers which
 small numerical changes make the next prediction less wrong.
 
@@ -273,11 +438,46 @@ Put the EXP-004 and EXP-005 assembly drivers beside each other. Both say:
 initialize the screen, initialize the same model machinery, train, verify, then
 hand control to the demonstration. That is the boring part—and boring is good.
 
+```asm
+; Both experiment drivers begin this way
+start
+        lds     #$7f00
+        lbsr    initialize_training_screen
+        lbsr    initialize_model
+        lbsr    train_model
+        lbsr    finish_training
+        ...                     ; gallery or prompt workbench
+```
+
 The interesting lines name the human choices. EXP-004 uses the narrow multiply
 its measured values permit, starts from `# #`, prevents an immediate ending,
 and samples a gallery. EXP-005 needs the wider multiply, accepts the audience's
 two-word context, permits an immediate ending, and greedily picks the strongest
 continuation.
+
+Then put the genuinely different policies beside each other:
+
+```asm
+; experiment_004.asm
+experiment_multiply_training_context
+        lda     1,x
+        ldx     probability_pointer
+        lbra    multiply_s8_s16
+
+experiment_choose_token
+        lbra    choose_sampled_token
+```
+
+```asm
+; experiment_005.asm
+experiment_multiply_training_context
+        ldd     ,x
+        ldx     probability_pointer
+        lbra    multiply_s16_s16
+
+experiment_choose_token
+        lbra    choose_greedy_token
+```
 
 So what made the second model behave differently? Not a mysterious new
 intelligence hidden in the engine. We changed the vocabulary, examples,
@@ -305,6 +505,34 @@ Two `MUL` instructions form the low 16 bits. If the 8-bit value is negative,
 its unsigned representation is 256 too large, so subtract the multiplier's low
 byte from the result's high byte. The measured products all fit in a signed
 16-bit result.
+
+Now show the optimization rather than merely describing it:
+
+```asm
+; model_core.asm — multiply_s8_s16
+        sta     multiply_factor
+        ldb     1,x
+        mul                     ; factor * low byte
+        std     multiply_product
+
+        lda     multiply_factor
+        ldb     ,x
+        mul                     ; factor * high byte
+        addb    multiply_product
+        stb     multiply_product
+```
+
+Follow with the signed correction as a second reveal:
+
+```asm
+        tst     multiply_factor
+        bpl     multiply_ready
+        lda     multiply_product
+        suba    1,x             ; correct negative factor
+        sta     multiply_product
+multiply_ready
+        ldd     multiply_product
+```
 
 The complete model remains bit-for-bit identical. The optimized engine executes
 about 15.8 million instructions before the per-example display is added, and
@@ -344,6 +572,24 @@ fixes it?
 Not if we concatenate them. Online training sees the Tandy block last in every
 epoch, and fourteen of twenty generated names still begin with `TANDY`.
 
+The assembly contains no fairness concept and no shuffle. It walks the examples
+in exactly the order we supplied:
+
+```asm
+; training.asm — epoch_loop / example_loop
+        ldu     #training_examples
+        lda     #EXAMPLE_COUNT
+        sta     examples_remaining
+example_loop
+        lda     ,u+
+        sta     current_context
+        lda     ,u+
+        sta     current_context+1
+        lda     ,u+
+        sta     current_target
+        ...                     ; train this example and repeat
+```
+
 Interleave the exact same examples and train again. The output now includes all
 three manufacturers, and loss falls much further.
 
@@ -360,6 +606,35 @@ behaviour.
 
 Return to the same `COMMODORE` example. Show its three learned values in each
 context position, the summed context vector, and the output scores.
+
+Then connect that diagram to the lookup code. Each token owns three two-byte
+embedding parameters, so multiplying its token value by six selects its row:
+
+```asm
+; model_core.asm — add_embedding
+add_embedding
+        ldb     #6              ; 3 values * 2 bytes
+        mul
+        leax    d,x             ; X = this token's row
+        ldu     #context_vector
+        lda     #EMBED_DIMS
+        sta     dimensions_remaining
+        ...
+```
+
+The dimension loop adds those learned values into the shared context vector:
+
+```asm
+add_embedding_dimension
+        lda     ,x
+        tfr     a,b
+        sex
+        addd    ,u
+        std     ,u
+        leax    2,x
+        leau    2,u
+        ...                     ; repeat for all three dimensions
+```
 
 The numbers are useful because of relationships learned during training, not
 because any individual number has a human-readable definition.
