@@ -75,22 +75,24 @@ matching the integer reference run.
 
 | Artifact | Size |
 | --- | ---: |
-| CoCo DECB executable | 2,782 bytes |
-| Writable RAM image including work buffers | 3,580 bytes |
+| CoCo DECB executable | 2,851 bytes |
+| Writable RAM image including work buffers | 3,649 bytes |
 | Trainable parameters | 580 bytes |
 
-The writable image occupies `$2000` through `$2DFB`, well inside
+The writable image occupies `$2000` through `$2E40`, well inside
 a 32K CoCo 1.
 
 ### Performance
 
 The initial bit-at-a-time signed multiplication routine executed about
 38.6 million instructions. The two-`MUL` kernel reduced the same bit-exact run
-to 15,824,366 instructions, including the live epoch and generation display.
+to 15,824,366 instructions with the epoch and generation display. Showing the
+current training pair for every example brings the interactive run to
+16,010,546 instructions.
 
 The direct simulator reports an effective cycle rate which, combined with its
-wall time, implies approximately 64.8 million emulated 6809 cycles. At the
-CoCo 1's approximate 0.895 MHz clock, that projects to about 72 seconds.
+wall time, implies approximately 65.3 million emulated 6809 cycles. At the
+CoCo 1's approximate 0.895 MHz clock, that projects to about 73 seconds.
 
 This is a cycle-model projection, not a physical-hardware measurement. XRoar
 successfully boots the real CoCo 1 ROM pair, loads the DECB binary, and reaches
@@ -99,8 +101,10 @@ provide a trustworthy stock-rate wall clock. Physical CoCo 1 timing remains
 the authority.
 
 The interactive XRoar build enables its rate limiter and visibly advances an
-epoch counter from 1 through 20. It then reports the bit-exact result and prints
-five generated names before leaving the completed screen displayed.
+epoch counter from 1 through 20. A fixed-width field beside the count cycles
+through all 58 examples as `context > expected token`; it is overwritten in
+place rather than scrolling. The program then reports the bit-exact result and
+prints five generated names before leaving the completed screen displayed.
 
 ### Multiply range
 
@@ -123,7 +127,7 @@ Supported.
 The complete training and generation path now runs in 6809 assembly and is
 bit-exact with the integer reference for the controlled corpus. Its projected
 stock-clock runtime is comfortably inside three minutes and likely near
-72 seconds.
+73 seconds.
 
 The next evidence step is to inspect the on-screen XRoar run interactively, then
 spot-check correctness and timing on the physical CoCo 1 and CoCo 3.

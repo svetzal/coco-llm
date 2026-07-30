@@ -110,13 +110,18 @@ XRoar opens as a stock-rate 32K NTSC CoCo 1 and loads the real DECB binary.
 Watch for this sequence on the CoCo screen:
 
 1. `COCO LLM TRAINING`
-2. `EPOCH 00 / 20`, advancing after every epoch
+2. `EPOCH 01 / 20 ACORN > ARCHIMEDES`, with the token pair changing for
+   every training example and the epoch advancing through 20
 3. `TRAINING COMPLETE`
 4. `BIT EXACT: YES`
 5. `GENERATING NAMES`, followed by five names appearing on separate rows
 6. `GENERATION COMPLETE`
 
-The current cycle projection is about 72 seconds for training. XRoar's `F12`
+The text to the right of the count is the most recent context token and the
+expected next token. Its 19-column field is overwritten in place, making the
+58 examples in each epoch visible without scrolling the screen.
+
+The current cycle projection is about 73 seconds for training. XRoar's `F12`
 key runs at maximum speed while held; `Shift+F12` toggles maximum speed. Leave
 those alone when you want to watch the stock-rate demonstration. Close the
 XRoar window, or press `Control+C` in Terminal, when finished.

@@ -92,6 +92,18 @@ predict → compare → send error backward → adjust numbers
 
 Then run the optimized training loop.
 
+On the live CoCo screen, the epoch count remains on the left while the right
+edge cycles through the actual examples:
+
+```text
+EPOCH 03 / 20 ACORN > ARCHIMEDES
+EPOCH 03 / 20 AMIGA > COMMODORE
+```
+
+The field is overwritten for every update, so it becomes a rapid visual trace
+of the evidence currently changing the model. Pause on one pair when explaining
+the loop, then let the complete corpus flow past.
+
 The model does not receive a grammar lesson. It repeatedly discovers which
 small numerical changes make the next prediction less wrong.
 
@@ -117,9 +129,10 @@ its unsigned representation is 256 too large, so subtract the multiplier's low
 byte from the result's high byte. The measured products all fit in a signed
 16-bit result.
 
-The complete model remains bit-for-bit identical, but now executes about
-15.8 million instructions, including its live display. Its stock-clock
-projection falls to about 72 seconds.
+The complete model remains bit-for-bit identical. The optimized engine executes
+about 15.8 million instructions before the per-example display is added, and
+about 16.0 million with the full live display. Its stock-clock projection is
+about 73 seconds.
 
 This is a useful engineering reveal: the learning algorithm did not change.
 The representation of the arithmetic changed because a person understood both

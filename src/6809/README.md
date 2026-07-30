@@ -26,10 +26,12 @@ make xroar
 ```
 
 The interactive launcher explicitly enables XRoar's stock-rate limiter. The
-CoCo screen shows an epoch counter from 1 through 20, reports the final
-bit-exact check, and displays each of five generated names. The completed
-screen remains visible until XRoar is closed. Do not press `F12` or
-`Shift+F12` unless you intentionally want maximum-speed emulation.
+CoCo screen shows an epoch counter from 1 through 20. Beside it, a fixed-width
+field displays the latest training pair as `context > expected token`, such as
+`ACORN > ARCHIMEDES`, and is overwritten for every example. The program then
+reports the final bit-exact check and displays each of five generated names.
+The completed screen remains visible until XRoar is closed. Do not press `F12`
+or `Shift+F12` unless you intentionally want maximum-speed emulation.
 
 The XRoar launcher uses Stacey's local CoCo 1 firmware archive:
 

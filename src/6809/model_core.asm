@@ -33,6 +33,14 @@ clear_screen
         lbsr     verify_parameters
 
         ldx     #SCREEN+32
+        pshs    x
+        lda     #$60
+        ldb     #32
+clear_training_row
+        sta     ,x+
+        decb
+        bne     clear_training_row
+        puls    x
         ldu     #message_complete
         lbsr     print_string
         tst     parity_result
@@ -127,6 +135,12 @@ train_model
         lda     #TRAIN_EPOCHS
         sta     epochs_remaining
 epoch_loop
+        lda     #TRAIN_EPOCHS
+        suba    epochs_remaining
+        inca
+        sta     last_epoch_displayed
+        ldx     #SCREEN+38
+        lbsr     write_decimal_2
         ldu     #training_examples
         lda     #EXAMPLE_COUNT
         sta     examples_remaining
@@ -138,16 +152,11 @@ example_loop
         lda     ,u+
         sta     current_target
         pshs    u
+        lbsr     display_training_example
         lbsr     train_example
         puls    u
         dec     examples_remaining
         bne     example_loop
-        lda     #TRAIN_EPOCHS
-        suba    epochs_remaining
-        inca
-        sta     last_epoch_displayed
-        ldx     #SCREEN+38
-        lbsr     write_decimal_2
         dec     epochs_remaining
         bne     epoch_loop
         rts
@@ -702,6 +711,35 @@ print_string
 print_string_done
         rts
 
+; Show the current context-to-target pair in the 19 columns after the epoch.
+display_training_example
+        ldx     #SCREEN+45
+        pshs    x
+        lda     #$60
+        ldb     #19
+clear_training_example
+        sta     ,x+
+        decb
+        bne     clear_training_example
+        puls    x
+        lda     current_context+1
+        lbsr     print_token_id
+        ldu     #message_arrow
+        lbsr     print_string
+        lda     current_target
+        lbsr     print_token_id
+        rts
+
+; Print token A at X and return X immediately after its last character.
+print_token_id
+        ldb     #2
+        mul
+        ldu     #token_pointers
+        leau    d,u
+        ldu     ,u
+        lbsr     print_string
+        rts
+
 ; Write unsigned A as exactly two decimal VDG characters at X.
 write_decimal_2
         clrb
@@ -726,6 +764,9 @@ message_training
         fcb     0
 message_epoch
         fcc     "EPOCH 00 / 20"
+        fcb     0
+message_arrow
+        fcc     " > "
         fcb     0
 message_complete
         fcc     "TRAINING COMPLETE"
