@@ -5,9 +5,9 @@ CoCo LLM asks a deliberately playful question:
 > Could a 45-year-old home computer train a language model in front of a live
 > audience?
 
-The project will build a small, causal, character-level neural language model
-that trains from random weights on a stock Motorola 6809E. The primary target is
-a Radio Shack TRS-80 Color Computer 1. A Color Computer 3 will provide a
+The project will build a small, causal, token-level neural language model that
+trains from random weights on a stock Motorola 6809E. The primary target is a
+Radio Shack TRS-80 Color Computer 1. A Color Computer 3 will provide a
 compatible backup and a presentation-friendly HDMI display.
 
 The model is not large and it is not a transformer. It is an honest language
@@ -23,8 +23,8 @@ language models:
 
 ## Project thesis
 
-The machine will learn to produce plausible vintage-computer names without ever
-knowing what a computer is.
+The machine will learn that tokens such as `AMIGA` can plausibly follow
+`COMMODORE` without knowing what either word means or what a computer is.
 
 That single example supports the whole learning journey. It makes the mechanics
 of language-model training visible, exposes the difference between fluent
@@ -70,8 +70,10 @@ assembly implementation.
 
 ## Current direction
 
-The starting candidate has a 40-character vocabulary, three-character context,
-three-value embeddings, six hidden units, and 460 trainable parameters. This is
-a hypothesis, not a specification. See
+The first character-level candidate was rejected by EXP-001 before assembly:
+the 6809's raw multiplication time consumed nearly the entire demonstration
+budget. The current candidate uses 29 visible tokens, a two-token context,
+three-value positional embeddings, 290 trainable parameters, and integer-only
+training. See
 [`research/model-design.md`](research/model-design.md) and
-[`experiments/EXP-001-model-feasibility.md`](experiments/EXP-001-model-feasibility.md).
+[`experiments/EXP-002-token-model-feasibility.md`](experiments/EXP-002-token-model-feasibility.md).

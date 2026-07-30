@@ -1,7 +1,11 @@
 # Reference implementation
 
-The reference implementation will establish model quality and create exact test
+The reference implementations establish model quality and create exact test
 vectors before optimization begins.
+
+- `coco_lm.py` preserves the rejected character-level MLP from EXP-001.
+- `token_lm.py` is the current 290-parameter token model from EXP-002.
+- `fixed_token_lm.py` specifies its integer-only training arithmetic.
 
 The implementation sequence is:
 

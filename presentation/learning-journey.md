@@ -54,27 +54,34 @@ database. It begins as numbers.
 
 ### What does a language model actually do?
 
-Give it three characters:
+Turn a name into tokens:
 
 ```text
-C O M → ?
+COMMODORE AMIGA → COMMODORE | AMIGA | <END>
 ```
 
-Ask the audience what might come next. Their guesses are a probability
-distribution derived from experience. The model's job is the same narrow task:
-assign scores to possible next characters.
+Then give the model one token:
+
+```text
+COMMODORE → ?
+```
+
+Ask the audience what might come next: `AMIGA`, `64`, `PET`, perhaps something
+unexpected. Their guesses are a probability distribution derived from
+experience. The model's job is the same narrow task: assign scores to possible
+next tokens.
 
 Introduce tokens, context, logits, probabilities, and sampling only as the live
 example needs them.
 
 ### Where does learning happen?
 
-Reveal the expected character. Compare it with the prediction.
+Reveal the expected token. Compare it with the prediction.
 
 ```text
-CONTEXT:   C O M
-EXPECTED:  M
-PREDICTED: O
+CONTEXT:   <END> COMMODORE
+EXPECTED:  AMIGA
+PREDICTED: PET
 ```
 
 Walk one example slowly:
@@ -90,15 +97,15 @@ small numerical changes make the next prediction less wrong.
 
 ### What are embeddings and layers doing?
 
-Return to the same `C O M` example. Show three learned values for each character,
-then the hidden activations and output scores.
+Return to the same `COMMODORE` example. Show its three learned values in each
+context position, the summed context vector, and the output scores.
 
 The numbers are useful because of relationships learned during training, not
 because any individual number has a human-readable definition.
 
 Ask: where is the concept of Commodore stored? It is not in one parameter. In
 this tiny model, even the appearance of a concept may be our interpretation of
-learned character patterns.
+learned token relationships.
 
 ### Is this how modern LLMs work?
 
@@ -110,10 +117,10 @@ Yes at the level of the central task:
 - adjust parameters;
 - generate by repeating predictions.
 
-No at the level of architecture and scale. This model has a fixed,
-three-character window and a small feed-forward network. Modern generative
-models normally use transformer attention, much larger vocabularies, longer
-contexts, extensive training data, and vastly more parameters and computation.
+No at the level of architecture and scale. This model has a fixed, two-token
+window and a small additive network. Modern generative models normally use
+transformer attention, much larger vocabularies, longer contexts, extensive
+training data, and vastly more parameters and computation.
 
 The CoCo model is a working cross-section, not a miniature claim to ChatGPT.
 
@@ -124,8 +131,8 @@ Generate plausible names.
 Then ask it questions, request a reliable fact, or point out that it cannot know
 whether an invented machine ever existed.
 
-The model can learn to spell `COMMODORE` without knowing that Commodore was a
-company. Think about that a minute.
+The model can learn that `AMIGA` plausibly follows `COMMODORE` without knowing
+that either was a product or company. Think about that a minute.
 
 Plausibility is the product. Truth requires another system: sources, tools,
 tests, or a person who understands the stakes.
@@ -185,7 +192,7 @@ The talk should have one genuine run, not a sequence of canned simulations:
 
 1. Reset deterministic random weights.
 2. Generate visible nonsense.
-3. Inspect one next-character prediction.
+3. Inspect one next-token prediction.
 4. Train that example one step at a time.
 5. Start the optimized loop.
 6. Explain embeddings and backpropagation while epochs run.

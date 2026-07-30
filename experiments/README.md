@@ -15,5 +15,9 @@ Use the filename pattern `EXP-NNN-short-name.md`. Do not rewrite an experiment's
 original hypothesis after observing the result. Append evidence and conclusions
 so the learning remains visible.
 
-The current experiment is
-[`EXP-001-model-feasibility.md`](EXP-001-model-feasibility.md).
+Current experiments:
+
+- [`EXP-001-model-feasibility.md`](EXP-001-model-feasibility.md) — rejected
+  character-level candidate.
+- [`EXP-002-token-model-feasibility.md`](EXP-002-token-model-feasibility.md) —
+  supported floating-point token model; fixed-point and hardware work pending.

@@ -13,6 +13,11 @@ Open questions belong in an experiment when they can be tested. Research notes
 should distinguish measured facts, sourced facts, design decisions, and
 inferences.
 
+## Current notes
+
+- [`model-design.md`](model-design.md) — candidate language-model architecture.
+- [`toolchain.md`](toolchain.md) — cross-assembly and emulation strategy.
+
 ## Starting sources
 
 - Motorola, [MC6809-MC6809E Microprocessor Programming

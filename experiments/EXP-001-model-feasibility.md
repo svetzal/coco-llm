@@ -1,6 +1,6 @@
 # EXP-001: Model feasibility
 
-**Status:** planned
+**Status:** concluded — hypothesis rejected
 
 ## Question
 
@@ -77,8 +77,46 @@ models, so it cannot be adjusted to favour a result.
 
 ## Evidence
 
-Not yet run.
+The deterministic floating-point reference implementation used:
+
+- 460 parameters;
+- 729 next-character examples;
+- twenty epochs;
+- learning rate 0.05;
+- seed 6809.
+
+Loss fell from 3.6884 to 2.1865. Samples acquired recognizable fragments, but
+remained long and character-noisy, including:
+
+```text
+TASHONDY TROR GR COMTR
+TAMODY TRE 100
+TAROGR COLT-80 MA40
+```
+
+The stronger rejection is the operation budget. The model performs 882 matrix
+multiplications per example:
+
+```text
+882 × 729 examples × 20 epochs = 12,859,560 multiplications
+```
+
+Motorola specifies eleven processor cycles for one unsigned `MUL`. Even if
+every required multiplication were unsigned and adjacent with no loads, stores,
+sign corrections, accumulation, softmax, branches, or parameter updates, the
+bare multiply instructions would consume approximately 159 seconds at
+0.89 MHz.
+
+The complete implementation therefore cannot credibly meet the 180-second
+target. Fixed-point implementation was stopped because it cannot change that
+lower bound enough to rescue the architecture.
 
 ## Conclusion
 
-Pending.
+The character-level MLP is rejected for the live CoCo 1 training demonstration.
+It remains in `src/reference/coco_lm.py` as a readable comparison and as
+evidence of why tokenization matters.
+
+EXP-002 tests a token-level model. It reduces the corpus from 729 character
+predictions to 58 token predictions while producing output that is easier for
+an audience to interpret.

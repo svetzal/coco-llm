@@ -1,0 +1,19 @@
+[project]
+name = "coco-llm"
+version = "0.1.0"
+description = "A tiny language model that trains on a 6809-based Color Computer"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.0,<3",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8,<10",
+    "ruff>=0.12,<1",
+]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["src/reference"]
+testpaths = ["tests"]
