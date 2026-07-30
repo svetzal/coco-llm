@@ -33,6 +33,7 @@ def main() -> None:
     mismatch_offset = symbol_address(symbols, "mismatch_offset")
     mismatch_actual = symbol_address(symbols, "mismatch_actual")
     mismatch_expected = symbol_address(symbols, "mismatch_expected")
+    last_epoch_displayed = symbol_address(symbols, "last_epoch_displayed")
 
     lines = [
         "; Generated direct-simulator image. Do not edit.",
@@ -48,6 +49,10 @@ def main() -> None:
             f"mismatch_offset equ     ${mismatch_offset:04x}",
             f"mismatch_actual equ     ${mismatch_actual:04x}",
             f"mismatch_expect equ     ${mismatch_expected:04x}",
+            f"last_epoch      equ     ${last_epoch_displayed:04x}",
+            "complete_first  equ     $0420",
+            "parity_first    equ     $0440",
+            "generated_first equ     $0460",
             "sample_1_first  equ     $0480",
             "sample_2_first  equ     $04a0",
             "sample_3_first  equ     $04c0",
@@ -57,6 +62,11 @@ def main() -> None:
             ";! mismatch_offset = #$ffff",
             ";! mismatch_actual = #$00",
             ";! mismatch_expect = #$00",
+            ";! last_epoch = #20",
+            "; TRAINING COMPLETE, BIT EXACT: YES, GENERATION COMPLETE.",
+            ";! complete_first = #$1412",
+            ";! parity_first = #$0209",
+            ";! generated_first = #$0705",
             "; COMMODORE, TANDY, COMMODORE, TANDY, COMMODORE.",
             ";! sample_1_first = #$030f",
             ";! sample_2_first = #$1401",

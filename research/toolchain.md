@@ -61,7 +61,7 @@ This Mac has an original extended CoCo firmware set in
 
 XRoar recognizes both checksums as valid firmware. `make xroar` extracts them
 into the ignored build directory and runs the real DECB program in a 32K NTSC
-CoCo 1 profile. Install XRoar with:
+CoCo 1 profile with the stock-rate limiter enabled. Install XRoar with:
 
 ```sh
 brew install xroar

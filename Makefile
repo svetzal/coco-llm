@@ -36,7 +36,7 @@ xroar: build/coco-llm.bin build/roms/.coco1-roms
 		(echo "Install XRoar first: brew install xroar" && exit 1)
 	$(XROAR) -machine cocous -ram 32 \
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
-		-run build/coco-llm.bin
+		-ratelimit -run build/coco-llm.bin
 
 build/smul8-test.bin: src/6809/tests/smul8_test.asm
 	mkdir -p build

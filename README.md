@@ -92,3 +92,37 @@ epochs. Build the DECB binary with `make coco-bin`, verify the engine with
 `make model-test`, or run the whole-machine demonstration with `make xroar`.
 See
 [`experiments/EXP-004-complete-6809-training.md`](experiments/EXP-004-complete-6809-training.md).
+
+## Watch it train in XRoar
+
+From Terminal:
+
+```sh
+cd ~/Work/Projects/Personal/coco-llm
+make xroar
+```
+
+The first run extracts Stacey's local Color BASIC 1.1 and Extended Color BASIC
+1.0 images from `~/OneDrive/CoCo/MAME/roms/cocoe.zip`. If that archive is still
+an online-only OneDrive file, download it in Finder first.
+
+XRoar opens as a stock-rate 32K NTSC CoCo 1 and loads the real DECB binary.
+Watch for this sequence on the CoCo screen:
+
+1. `COCO LLM TRAINING`
+2. `EPOCH 00 / 20`, advancing after every epoch
+3. `TRAINING COMPLETE`
+4. `BIT EXACT: YES`
+5. `GENERATING NAMES`, followed by five names appearing on separate rows
+6. `GENERATION COMPLETE`
+
+The current cycle projection is about 72 seconds for training. XRoar's `F12`
+key runs at maximum speed while held; `Shift+F12` toggles maximum speed. Leave
+those alone when you want to watch the stock-rate demonstration. Close the
+XRoar window, or press `Control+C` in Terminal, when finished.
+
+For a fast, headless correctness check instead of the visible demonstration:
+
+```sh
+make xroar-test
+```

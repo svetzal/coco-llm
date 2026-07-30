@@ -75,18 +75,18 @@ matching the integer reference run.
 
 | Artifact | Size |
 | --- | ---: |
-| CoCo DECB executable | 2,680 bytes |
-| Writable RAM image including work buffers | 3,477 bytes |
+| CoCo DECB executable | 2,782 bytes |
+| Writable RAM image including work buffers | 3,580 bytes |
 | Trainable parameters | 580 bytes |
 
-The writable image occupies `$2000` through approximately `$2D94`, well inside
+The writable image occupies `$2000` through `$2DFB`, well inside
 a 32K CoCo 1.
 
 ### Performance
 
 The initial bit-at-a-time signed multiplication routine executed about
 38.6 million instructions. The two-`MUL` kernel reduced the same bit-exact run
-to 15,823,708 instructions.
+to 15,824,366 instructions, including the live epoch and generation display.
 
 The direct simulator reports an effective cycle rate which, combined with its
 wall time, implies approximately 64.8 million emulated 6809 cycles. At the
@@ -97,6 +97,10 @@ successfully boots the real CoCo 1 ROM pair, loads the DECB binary, and reaches
 the finished program counter. Automated headless runs on this Mac do not
 provide a trustworthy stock-rate wall clock. Physical CoCo 1 timing remains
 the authority.
+
+The interactive XRoar build enables its rate limiter and visibly advances an
+epoch counter from 1 through 20. It then reports the bit-exact result and prints
+five generated names before leaving the completed screen displayed.
 
 ### Multiply range
 

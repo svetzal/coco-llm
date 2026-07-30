@@ -24,6 +24,9 @@ clear_screen
         ldx     #SCREEN
         ldu     #message_training
         lbsr     print_string
+        ldx     #SCREEN+32
+        ldu     #message_epoch
+        lbsr     print_string
 
         lbsr     initialize_model
         lbsr     train_model
@@ -44,6 +47,9 @@ parity_failed
         lbsr     print_string
 
 show_samples
+        ldx     #SCREEN+96
+        ldu     #message_generating
+        lbsr     print_string
         ldd     #6809
         std     sample_seed
         ldx     #SCREEN+128
@@ -62,6 +68,9 @@ sample_loop
         dec     sample_count
         bne     sample_loop
 
+        ldx     #SCREEN+96
+        ldu     #message_generated
+        lbsr     print_string
         ifdef   DIRECT_TEST
         swi
         else
@@ -133,6 +142,12 @@ example_loop
         puls    u
         dec     examples_remaining
         bne     example_loop
+        lda     #TRAIN_EPOCHS
+        suba    epochs_remaining
+        inca
+        sta     last_epoch_displayed
+        ldx     #SCREEN+38
+        lbsr     write_decimal_2
         dec     epochs_remaining
         bne     epoch_loop
         rts
@@ -687,8 +702,30 @@ print_string
 print_string_done
         rts
 
+; Write unsigned A as exactly two decimal VDG characters at X.
+write_decimal_2
+        clrb
+decimal_tens
+        cmpa    #10
+        blo     decimal_ready
+        suba    #10
+        incb
+        bra     decimal_tens
+decimal_ready
+        pshs    a
+        tfr     b,a
+        adda    #$30
+        sta     ,x+
+        puls    a
+        adda    #$30
+        sta     ,x
+        rts
+
 message_training
         fcc     "COCO LLM TRAINING"
+        fcb     0
+message_epoch
+        fcc     "EPOCH 00 / 20"
         fcb     0
 message_complete
         fcc     "TRAINING COMPLETE"
@@ -698,6 +735,12 @@ message_parity_ok
         fcb     0
 message_parity_bad
         fcc     "BIT EXACT: NO"
+        fcb     0
+message_generating
+        fcc     "GENERATING NAMES"
+        fcb     0
+message_generated
+        fcc     "GENERATION COMPLETE"
         fcb     0
 
         include "../../build/model_data.inc"
@@ -764,3 +807,4 @@ generation_remaining    rmb     1
 chosen_token            rmb     1
 sample_draw             rmb     1
 sample_count            rmb     1
+last_epoch_displayed    rmb     1

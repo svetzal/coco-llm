@@ -25,6 +25,12 @@ Launch the whole-machine demonstration:
 make xroar
 ```
 
+The interactive launcher explicitly enables XRoar's stock-rate limiter. The
+CoCo screen shows an epoch counter from 1 through 20, reports the final
+bit-exact check, and displays each of five generated names. The completed
+screen remains visible until XRoar is closed. Do not press `F12` or
+`Shift+F12` unless you intentionally want maximum-speed emulation.
+
 The XRoar launcher uses Stacey's local CoCo 1 firmware archive:
 
 ```text
@@ -38,7 +44,8 @@ same `bas11.rom` and `extbas10.rom` members.
 
 `make xroar-test` runs XRoar without its speed limiter and proves that the
 whole-machine build uses the expected ROM checksums and reaches the finished
-program counter.
+program counter. It is an automated correctness check, not the command for
+watching the demonstration.
 
 The assembly currently embeds its deterministic expected parameter image so
 the screen can report `BIT EXACT: YES`. That 580-byte teaching and verification

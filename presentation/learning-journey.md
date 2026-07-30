@@ -117,8 +117,9 @@ its unsigned representation is 256 too large, so subtract the multiplier's low
 byte from the result's high byte. The measured products all fit in a signed
 16-bit result.
 
-The complete model remains bit-for-bit identical, but now executes 15,823,708
-instructions. Its stock-clock projection falls to about 72 seconds.
+The complete model remains bit-for-bit identical, but now executes about
+15.8 million instructions, including its live display. Its stock-clock
+projection falls to about 72 seconds.
 
 This is a useful engineering reveal: the learning algorithm did not change.
 The representation of the arithmetic changed because a person understood both
