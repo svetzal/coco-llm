@@ -111,23 +111,30 @@ Watch for this sequence on the CoCo screen:
 
 1. `COCO LLM TRAINING`, left-aligned in a full-width dark title bar
 2. `EPOCH 01 / 20` in black-on-green text
-3. `<END> ACORN > ARCHIMEDES` on the full-width row below, changing for
+3. `# ACORN > ARCHIMEDES` on the full-width row below, changing for
    every training example
 4. `TRAINING COMPLETE`
 5. `PRESS ANY KEY`, where the program waits for a new keyboard event
-6. `GENERATING NAMES`, followed by five names appearing on separate rows
-7. `GENERATION COMPLETE`
+6. A blank row, then `GENERATING NAMES`
+7. Twelve generated lines filling the rest of the screen
+8. `GENERATION COMPLETE`
 
 The changing row shows both context tokens and the expected next token. All
 58 examples fit within its 32 columns and are overwritten in place without
 scrolling. The epoch and example rows use black text on the green background;
-only the title uses green text on a dark background.
+only the expected token uses green text on a dark field. `#` is the compact
+on-screen form of the model's `<END>` boundary token.
+
+Each inference line begins with the regular black-on-green seed `# # >`.
+Everything produced by the model—including the final boundary `#`—appears
+green-on-dark. A `+` in the final column means the genuine generated sequence
+continued past the display width; inference itself was not truncated.
 
 The deterministic parameter check still runs after training, but success is
 not announced on screen. A failed check stops the demonstration with
 `MODEL CHECK FAILED` instead of continuing into generation.
 
-The current cycle projection is about 73 seconds for training. XRoar's `F12`
+The current cycle projection is about 74 seconds for the complete run. XRoar's `F12`
 key runs at maximum speed while held; `Shift+F12` toggles maximum speed. Leave
 those alone when you want to watch the stock-rate demonstration. Close the
 XRoar window, or press `Control+C` in Terminal, when finished.

@@ -57,7 +57,8 @@ The direct simulator passes:
 
 - every one of the 580 final parameter bytes;
 - the complete reference parameter checksum represented by that byte image;
-- the expected first token of each of the first five generated names.
+- the expected first token of each of the first five generated names;
+- the seed/generated display attributes and safe clipping of a long sample.
 
 The first five generated names begin:
 
@@ -75,11 +76,11 @@ matching the integer reference run.
 
 | Artifact | Size |
 | --- | ---: |
-| CoCo DECB executable | 2,904 bytes |
-| Writable RAM image including work buffers | 3,702 bytes |
+| CoCo DECB executable | 3,049 bytes |
+| Writable RAM image including work buffers | 3,850 bytes |
 | Trainable parameters | 580 bytes |
 
-The writable image occupies `$2000` through `$2E75`, well inside
+The writable image occupies `$2000` through `$2F09`, well inside
 a 32K CoCo 1.
 
 ### Performance
@@ -88,11 +89,12 @@ The initial bit-at-a-time signed multiplication routine executed about
 38.6 million instructions. The two-`MUL` kernel reduced the same bit-exact run
 to 15,824,366 instructions with the epoch and generation display. Showing the
 complete two-token context and target for every example brings the interactive
-run to 16,112,536 instructions, excluding the human-length pause.
+run, including twelve displayed inference samples, to 16,253,237 instructions,
+excluding the human-length pause.
 
 The direct simulator reports an effective cycle rate which, combined with its
-wall time, implies approximately 65.3 million emulated 6809 cycles. At the
-CoCo 1's approximate 0.895 MHz clock, that projects to about 73 seconds.
+wall time, implies approximately 66.3 million emulated 6809 cycles. At the
+CoCo 1's approximate 0.895 MHz clock, that projects to about 74 seconds.
 
 This is a cycle-model projection, not a physical-hardware measurement. XRoar
 successfully boots the real CoCo 1 ROM pair, loads the DECB binary, and reaches
@@ -102,11 +104,17 @@ trustworthy stock-rate wall clock. Physical CoCo 1 timing remains the authority.
 
 The interactive XRoar build enables its rate limiter and visibly advances an
 epoch counter from 1 through 20. The full-width row below cycles through all
-58 examples as `context context > expected token`; it is overwritten in place
-rather than scrolling. Both rows are black-on-green beneath a left-aligned,
-green-on-dark title bar. After its internal model check, the program pauses at
-`PRESS ANY KEY`; a keyboard event starts inference and prints five generated
-names before leaving the completed screen displayed.
+58 examples as `context context > expected token`; the expected token is
+green-on-dark while its context remains black-on-green. `#` replaces `<END>`
+on screen. After its internal model check, the program pauses at
+`PRESS ANY KEY`. A keyboard event leaves a blank row below
+`TRAINING COMPLETE`, then fills the final twelve rows with black-on-green
+`# # >` seeds and green-on-dark generated tokens.
+
+The presentation uses twelve consecutive seeds, 6809 through 6820. Seed 6818
+genuinely produces more text than one 32-column row can hold. Its display ends
+with `+`, while the complete inference continues in memory; the following row
+is never overwritten.
 
 ### Multiply range
 

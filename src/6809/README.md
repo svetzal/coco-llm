@@ -28,9 +28,16 @@ make xroar
 The interactive launcher explicitly enables XRoar's stock-rate limiter. The
 CoCo screen uses a left-aligned, full-width dark title bar. The epoch count is
 black-on-green on the next row. A separate 32-column row displays both context
-tokens and the target, such as `<END> ACORN > ARCHIMEDES`, and is overwritten
-for every example. After training, the program displays
-`PRESS ANY KEY` and waits for a keyboard event before generating five names.
+tokens and the target, such as `# ACORN > ARCHIMEDES`, and is overwritten for
+every example. Context is black-on-green; the expected token is green-on-dark.
+`#` represents the model's `<END>` boundary token.
+
+After training, the program displays `PRESS ANY KEY` and waits for a keyboard
+event. It then preserves `TRAINING COMPLETE`, leaves one blank row, and fills
+the remaining twelve rows with inference samples. Each sample starts with a
+black-on-green `# # >` seed and shows generated tokens in green-on-dark fields.
+A final-column `+` marks a generated sequence wider than the screen without
+stopping or altering the underlying inference.
 The completed screen remains visible until XRoar is closed. Do not press `F12`
 or `Shift+F12` unless you intentionally want maximum-speed emulation.
 

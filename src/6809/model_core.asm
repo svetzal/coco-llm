@@ -76,19 +76,26 @@ verification_halt
 
 show_samples
         ldx     #SCREEN+64
+        lda     #$60
+        ldb     #32
+clear_key_prompt
+        sta     ,x+
+        decb
+        bne     clear_key_prompt
+        ldx     #SCREEN+96
         ldu     #message_generating
         lbsr     print_black_on_green
-        ldd     #6809
-        std     sample_seed
-        ldx     #SCREEN+96
+        ldd     #sample_seeds
+        std     sample_seed_pointer
+        ldx     #SCREEN+128
         stx     screen_pointer
-        lda     #5
+        lda     #12
         sta     sample_count
 sample_loop
-        ldd     sample_seed
+        ldx     sample_seed_pointer
+        ldd     ,x++
+        stx     sample_seed_pointer
         std     rng_state
-        addd    #1
-        std     sample_seed
         lbsr     generate_name
         ldd     screen_pointer
         addd    #32
@@ -96,7 +103,7 @@ sample_loop
         dec     sample_count
         bne     sample_loop
 
-        ldx     #SCREEN+64
+        ldx     #SCREEN+96
         ldu     #message_generated
         lbsr     print_black_on_green
         ifdef   DIRECT_TEST
@@ -627,7 +634,13 @@ clear_sample_line
         decb
         bne     clear_sample_line
         ldx     screen_pointer
+        ldu     #message_seed
+        lbsr     print_black_on_green
         stx     output_pointer
+        ldd     screen_pointer
+        addd    #31
+        std     output_limit
+        clr     generation_display_full
 generation_token
         lbsr     forward
         lda     generated_tokens
@@ -672,8 +685,9 @@ choose_token
 token_chosen
         lda     output_index
         sta     chosen_token
-        beq     generation_done
         lbsr     print_chosen_token
+        lda     chosen_token
+        beq     generation_done
         lda     current_context+1
         sta     current_context
         lda     chosen_token
@@ -708,16 +722,47 @@ find_probability_not_winner
 
 print_chosen_token
         lda     chosen_token
+        ldx     output_pointer
+        tsta
+        bne     print_chosen_token_text
+        ldu     #message_boundary
+        bra     print_chosen_token_ready
+print_chosen_token_text
         ldb     #2
         mul
         ldu     #token_pointers
         leau    d,u
         ldu     ,u
-        ldx     output_pointer
-        lbsr     print_black_on_green
-        lda     #$60
+print_chosen_token_ready
+        lbsr     print_generated_string
+        tst     generation_display_full
+        bne     print_chosen_token_done
+        cmpx    output_limit
+        bhs     print_chosen_token_done
+        lda     #$20
         sta     ,x+
+print_chosen_token_done
         stx     output_pointer
+        rts
+
+; Print generated text without crossing its 32-column row. Reserve the final
+; cell for "+" when a genuine six-token sample is too long to show in full.
+print_generated_string
+        tst     generation_display_full
+        bne     print_generated_string_done
+print_generated_character
+        lda     ,u+
+        beq     print_generated_string_done
+        cmpx    output_limit
+        bhs     print_generated_string_truncated
+        anda    #$3f
+        sta     ,x+
+        bra     print_generated_character
+print_generated_string_truncated
+        lda     #$2b
+        sta     ,x
+        inc     generation_display_full
+print_generated_string_done
         rts
 
 ; X is a screen destination, U is a zero-terminated ASCII string. CoCo VDG
@@ -762,17 +807,39 @@ clear_training_example
         ldu     #message_arrow
         lbsr     print_black_on_green
         lda     current_target
-        lbsr     print_token_id
+        lbsr     print_token_id_dark
         rts
 
 ; Print token A at X and return X immediately after its last character.
 print_token_id
+        tsta
+        bne     print_token_id_text
+        ldu     #message_boundary
+        lbsr     print_black_on_green
+        rts
+print_token_id_text
         ldb     #2
         mul
         ldu     #token_pointers
         leau    d,u
         ldu     ,u
         lbsr     print_black_on_green
+        rts
+
+; Print token A as green-on-dark generated text at X.
+print_token_id_dark
+        tsta
+        bne     print_token_id_dark_text
+        ldu     #message_boundary
+        lbsr     print_string
+        rts
+print_token_id_dark_text
+        ldb     #2
+        mul
+        ldu     #token_pointers
+        leau    d,u
+        ldu     ,u
+        lbsr     print_string
         rts
 
 ; Write unsigned A as exactly two decimal VDG characters at X.
@@ -808,6 +875,12 @@ message_arrow
 message_space
         fcc     " "
         fcb     0
+message_boundary
+        fcc     "#"
+        fcb     0
+message_seed
+        fcc     "# # > "
+        fcb     0
 message_complete
         fcc     "TRAINING COMPLETE"
         fcb     0
@@ -823,6 +896,9 @@ message_generating
 message_generated
         fcc     "GENERATION COMPLETE"
         fcb     0
+sample_seeds
+        fdb     6809,6810,6811,6812,6813,6814
+        fdb     6815,6816,6817,6818,6819,6820
 
         include "../../build/model_data.inc"
 
@@ -843,7 +919,7 @@ probabilities           rmb     VOCAB_SIZE*2
 context_error           rmb     6
 
 rng_state               rmb     2
-sample_seed             rmb     2
+sample_seed_pointer     rmb     2
 shift_temp              rmb     2
 shift_left              rmb     2
 shift_right             rmb     1
@@ -868,6 +944,7 @@ probability_pointer     rmb     2
 embedding_pointer       rmb     2
 screen_pointer          rmb     2
 output_pointer          rmb     2
+output_limit            rmb     2
 
 current_context         rmb     2
 current_target          rmb     1
@@ -889,3 +966,4 @@ chosen_token            rmb     1
 sample_draw             rmb     1
 sample_count            rmb     1
 last_epoch_displayed    rmb     1
+generation_display_full rmb     1

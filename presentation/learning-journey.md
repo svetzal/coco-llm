@@ -96,14 +96,26 @@ On the live CoCo screen, the epoch and actual example occupy separate rows:
 
 ```text
 EPOCH 03 / 20
-<END> ACORN > ARCHIMEDES
+# ACORN > ARCHIMEDES
 ```
 
 The full-width example row shows both context tokens and the expected target.
 It is overwritten for every update, becoming a rapid visual trace of the
 evidence currently changing the model. Pause on one example when explaining
 the loop, then let the complete corpus flow past. The title is left-aligned in
-green on a dark bar; the epoch and example use black text on green.
+green on a dark bar. Context tokens are black on green, while the expected
+token is green on a dark field. `#` is the visible boundary token.
+
+After the keypress, twelve rows make the same distinction explicit:
+
+```text
+# # > COMMODORE 128 #
+# # > TANDY COMPUTER #
+```
+
+The seed is black-on-green. Every token selected by inference, including the
+ending `#`, is green-on-dark. A final-column `+` honestly marks an output that
+is wider than the screen rather than allowing it to corrupt the following row.
 
 The model does not receive a grammar lesson. It repeatedly discovers which
 small numerical changes make the next prediction less wrong.
@@ -286,7 +298,7 @@ The talk should have one genuine run, not a sequence of canned simulations:
 7. Explain embeddings and backpropagation while epochs run.
 8. Reach the predeclared training boundary and pause at `PRESS ANY KEY`.
 9. Let the audience choose when to begin inference.
-10. Generate the five deterministic samples.
+10. Fill the screen with twelve deterministic inference samples.
 11. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
 12. Reveal the ordering effect in concatenated versus interleaved balanced data.
 13. Ask which human choices created each observed behaviour.
