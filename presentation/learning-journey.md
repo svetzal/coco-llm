@@ -41,10 +41,75 @@ labelled as examples until the implementation generates its own.
 
 ## Question-driven progression
 
-### Can a 45-year-old computer learn?
-
 Fair warning: we are going to use the phrase "language model" generously and
 the word "large" recklessly.
+
+### What does the CoCo think a word is?
+
+Before asking whether the machine can learn `COMMODORE AMIGA`, ask a more basic
+question: where do the letters go?
+
+They do not go into the model. Our tokenizer looks up each word in a fixed
+29-entry vocabulary and replaces it with a one-byte token value. Start with
+just three entries:
+
+```text
+$00 = <END>
+$07 = AMIGA
+$0D = COMMODORE
+```
+
+Then reveal the complete EXP-004 vocabulary. The hexadecimal values are the
+actual bytes used by the 6809:
+
+| Value | Token | Value | Token | Value | Token |
+| ---: | --- | ---: | --- | ---: | --- |
+| `$00` | `<END>` | `$0A` | `ATARI` | `$14` | `PET` |
+| `$01` | `100` | `$0B` | `BBC` | `$15` | `SINCLAIR` |
+| `$02` | `128` | `$0C` | `COLOR` | `$16` | `SPECTRUM` |
+| `$03` | `400` | `$0D` | `COMMODORE` | `$17` | `ST` |
+| `$04` | `64` | `$0E` | `COMPUTER` | `$18` | `TANDY` |
+| `$05` | `800` | `$0F` | `II` | `$19` | `TRS-80` |
+| `$06` | `ACORN` | `$10` | `LISA` | `$1A` | `ZX` |
+| `$07` | `AMIGA` | `$11` | `MACINTOSH` | `$1B` | `ZX80` |
+| `$08` | `APPLE` | `$12` | `MICRO` | `$1C` | `ZX81` |
+| `$09` | `ARCHIMEDES` | `$13` | `MODEL` | &nbsp; | &nbsp; |
+
+So the name becomes:
+
+```text
+COMMODORE  AMIGA  <END>
+   $0D      $07     $00
+```
+
+The numbers do not contain the meanings of the words. `$0D` means
+`COMMODORE` only because our vocabulary table says it does. Renumber every
+token consistently and the model can learn the same relationships.
+
+Our model sees two token values and learns to predict the third. One name
+therefore becomes three training examples:
+
+```text
+# #           > COMMODORE     $00 $00 > $0D
+# COMMODORE   > AMIGA         $00 $0D > $07
+COMMODORE AMIGA > #           $0D $07 > $00
+```
+
+The visible `#` is our compact CoCo-screen representation of `<END>`. At the
+beginning it means “nothing came before this name”; at the end it means “the
+name is finished.”
+
+Be explicit about the simplification. Modern language models usually tokenize
+text into a much larger vocabulary of word pieces, punctuation, and other
+fragments. This experiment uses whole words because its domain is deliberately
+tiny. The essential handoff is the same: text outside the model becomes token
+numbers inside the model.
+
+This also reveals a limitation before discussing intelligence: the CoCo cannot
+even represent a word that is absent from these 29 entries. Tokenization is a
+human design decision about which distinctions the model is able to see.
+
+### Can a 45-year-old computer learn?
 
 Show the CoCo 1, its processor, clock rate, available memory, and blank model.
 Generate from random weights. The machine emits nonsense.
@@ -54,16 +119,11 @@ database. It begins as numbers.
 
 ### What does a language model actually do?
 
-Turn a name into tokens:
+Now give the model two token values:
 
 ```text
-COMMODORE AMIGA → COMMODORE | AMIGA | <END>
-```
-
-Then give the model one token:
-
-```text
-COMMODORE → ?
+# COMMODORE → ?
+$00 $0D   → ?
 ```
 
 Ask the audience what might come next: `AMIGA`, `64`, `PET`, perhaps something
@@ -393,22 +453,25 @@ the model, and it is true for us.
 
 The talk should have one genuine run, not a sequence of canned simulations:
 
-1. Reset deterministic random weights.
-2. Generate visible nonsense.
-3. Inspect one next-token prediction.
-4. Train that example one step at a time.
-5. Start the optimized loop.
-6. Reveal how two unsigned `MUL` operations replaced the slow signed routine.
-7. Walk one training step—scores, softmax, error, backpropagation, update—while
+1. Reveal EXP-004's 29 token values and encode `COMMODORE AMIGA`.
+2. Turn that name into its three sliding two-token training examples.
+3. Reset deterministic random weights.
+4. Generate visible nonsense.
+5. Inspect one next-token prediction.
+6. Train that example one step at a time.
+7. Start the optimized loop.
+8. Reveal how two unsigned `MUL` operations replaced the slow signed routine.
+9. Walk one training step—scores, softmax, error, backpropagation, update—while
    the epochs run.
-8. Reach the predeclared training boundary and pause at `PRESS ANY KEY`.
-9. Let the audience choose when to begin inference.
-10. Fill the screen with twelve deterministic inference samples.
-11. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
-12. Reveal the ordering effect in concatenated versus interleaved balanced data.
-13. Ask which human choices created each observed behaviour.
-14. Test the model outside its competence.
-15. Reveal the final model size, memory use, and elapsed time.
+10. Reach the predeclared training boundary and pause at `PRESS ANY KEY`.
+11. Let the audience choose when to begin inference.
+12. Fill the screen with twelve deterministic inference samples.
+13. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
+14. Reveal the ordering effect in concatenated versus interleaved balanced
+    data.
+15. Ask which human choices created each observed behaviour.
+16. Test the model outside its competence.
+17. Reveal the final model size, memory use, and elapsed time.
 
 The main model must train genuinely during the talk. Depending on the measured
 hardware runtime, the five controlled bias runs may be retrained live or loaded
