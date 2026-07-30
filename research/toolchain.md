@@ -51,6 +51,19 @@ Use XRoar when behaviour depends upon the Color Computer rather than only the
 XRoar provides CoCo 1, 2, and 3 emulation, disk and cassette images, snapshots,
 and a GDB target. It requires the appropriate Tandy ROM images.
 
+For this project, `make xroar` builds a self-booting 16K cartridge image that
+does not require Tandy BASIC ROMs. A small cartridge-resident bootstrap copies
+the writable program into RAM at `$2000` before training. Install XRoar with:
+
+```sh
+brew install xroar
+make xroar
+```
+
+This path proves whole-machine execution and makes the screen output easy to
+inspect. The direct simulator remains the automated bit-exact test runner and
+physical hardware remains the timing authority.
+
 Physical CoCo 1 hardware remains the authority for wall-clock timing and the
 final demonstration claim. The CoCo 3 verifies compatibility and provides the
 HDMI presentation path.

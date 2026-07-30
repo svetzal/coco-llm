@@ -85,3 +85,10 @@ training. See
 
 The controlled bias demonstration is recorded in
 [`experiments/EXP-003-training-data-bias.md`](experiments/EXP-003-training-data-bias.md).
+
+The complete integer training and generation path now runs in 6809 assembly.
+It matches all 580 final parameter bytes from the Python reference after twenty
+epochs. Build the DECB binary with `make coco-bin`, verify the engine with
+`make model-test`, or run the whole-machine demonstration with `make xroar`.
+See
+[`experiments/EXP-004-complete-6809-training.md`](experiments/EXP-004-complete-6809-training.md).

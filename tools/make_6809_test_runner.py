@@ -1,0 +1,73 @@
+"""Wrap an LWASM raw binary in source understood by the direct simulator."""
+
+from __future__ import annotations
+
+import argparse
+import re
+from pathlib import Path
+
+
+def symbol_address(symbols: str, name: str) -> int:
+    match = re.search(
+        rf"^{re.escape(name)} EQU \$([0-9A-Fa-f]+)$", symbols, re.MULTILINE
+    )
+    if match is None:
+        raise ValueError(f"symbol not found: {name}")
+    return int(match.group(1), 16)
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--binary", required=True, type=Path)
+    parser.add_argument("--symbols", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    return parser.parse_args()
+
+
+def main() -> None:
+    arguments = parse_arguments()
+    payload = arguments.binary.read_bytes()
+    symbols = arguments.symbols.read_text()
+    start = symbol_address(symbols, "start")
+    parity = symbol_address(symbols, "parity_result")
+    mismatch_offset = symbol_address(symbols, "mismatch_offset")
+    mismatch_actual = symbol_address(symbols, "mismatch_actual")
+    mismatch_expected = symbol_address(symbols, "mismatch_expected")
+
+    lines = [
+        "; Generated direct-simulator image. Do not edit.",
+        f"        org     ${start:04x}",
+    ]
+    for offset in range(0, len(payload), 16):
+        values = ",".join(f"${value:02x}" for value in payload[offset : offset + 16])
+        lines.append(f"        fcb     {values}")
+    lines.extend(
+        [
+            "",
+            f"parity_result   equ     ${parity:04x}",
+            f"mismatch_offset equ     ${mismatch_offset:04x}",
+            f"mismatch_actual equ     ${mismatch_actual:04x}",
+            f"mismatch_expect equ     ${mismatch_expected:04x}",
+            "sample_1_first  equ     $0480",
+            "sample_2_first  equ     $04a0",
+            "sample_3_first  equ     $04c0",
+            "sample_4_first  equ     $04e0",
+            "sample_5_first  equ     $0500",
+            ";! parity_result = #$01",
+            ";! mismatch_offset = #$ffff",
+            ";! mismatch_actual = #$00",
+            ";! mismatch_expect = #$00",
+            "; COMMODORE, TANDY, COMMODORE, TANDY, COMMODORE.",
+            ";! sample_1_first = #$030f",
+            ";! sample_2_first = #$1401",
+            ";! sample_3_first = #$030f",
+            ";! sample_4_first = #$1401",
+            ";! sample_5_first = #$030f",
+            "",
+        ]
+    )
+    arguments.output.write_text("\n".join(lines))
+
+
+if __name__ == "__main__":
+    main()

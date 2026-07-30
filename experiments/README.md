@@ -23,3 +23,5 @@ Current experiments:
   supported floating-point token model; fixed-point and hardware work pending.
 - [`EXP-003-training-data-bias.md`](EXP-003-training-data-bias.md) — controlled
   fan-corpus and ordering-bias demonstration.
+- [`EXP-004-complete-6809-training.md`](EXP-004-complete-6809-training.md) —
+  complete bit-exact assembly training, generation, and initial timing evidence.

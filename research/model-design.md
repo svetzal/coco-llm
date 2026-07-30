@@ -2,8 +2,10 @@
 
 ## Status
 
-The current token-level candidate is supported by a floating-point reference
-run. Fixed-point training and physical CoCo 1 timing remain unproven.
+The token-level candidate is implemented in both an integer reference and a
+bit-exact 6809 assembly training engine. All 580 final parameter bytes match
+after 20 epochs. Emulator execution is proven; physical CoCo 1 timing remains
+unproven.
 
 ## Learning task
 
@@ -110,17 +112,16 @@ memory must also include:
 - screen memory and platform state;
 - code and stack.
 
-The first implementation should target a 32K CoCo 1 unless physical-hardware
-inventory establishes a different minimum. A smaller-memory build is a later
+The first complete writable image is 3,477 bytes at `$2000`, including code,
+parameters, generated lookup data, verification data, and work buffers. It
+comfortably targets a 32K CoCo 1. A smaller-memory build is a later
 optimization, not an initial constraint.
 
 ## Open questions
 
-1. Can fixed-point training reach comparable quality without fragile tuning?
-2. What is the measured signed multiply-accumulate cost on the 6809?
-3. Does a full run complete within three minutes at the CoCo 1 clock rate?
-4. Is approximate cross-entropy useful to display, or is correct-token
+1. Does the approximately 72-second cycle-model projection hold on a physical
+   CoCo 1?
+2. Is approximate cross-entropy useful to display, or is correct-token
    probability a clearer live measure?
-5. Does a three-value context retain enough resolution after quantization?
-6. Can the vocabulary and corpus be made more inclusive without losing the
+3. Can the vocabulary and corpus be made more inclusive without losing the
    performance budget?
