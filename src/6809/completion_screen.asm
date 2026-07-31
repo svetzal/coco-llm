@@ -54,21 +54,75 @@ exp6_clear_input_rows
         decb
         bne     exp6_clear_input_rows
         ldx     #EXP6_INPUT_SCREEN
-        lda     #$7e
-        sta     ,x
-        leax    2,x
         ldu     #exp6_input_buffer
-        ldb     exp6_input_length
+        lda     exp6_input_length
+        sta     exp6_draw_remaining
+        clr     exp6_draw_column
+exp6_draw_next
+        tst     exp6_draw_remaining
         beq     exp6_draw_cursor
-exp6_draw_input_character
+        lda     ,u
+        cmpa    #$20
+        beq     exp6_draw_separator
+
+        ; Measure the next word before drawing it. If it cannot fit in the
+        ; current row, leave the remaining cells blank and start on row two.
+        pshs    u
+        clrb
+exp6_measure_word
+        lda     ,u+
+        beq     exp6_word_measured
+        cmpa    #$20
+        beq     exp6_word_measured
+        incb
+        bra     exp6_measure_word
+exp6_word_measured
+        puls    u
+        lda     exp6_draw_column
+        beq     exp6_draw_word_character
+        pshs    b
+        adda    ,s
+        puls    b
+        cmpa    #32
+        bls     exp6_draw_word_character
+        ldb     #32
+        subb    exp6_draw_column
+        abx
+        clr     exp6_draw_column
+
+exp6_draw_word_character
+        cmpx    #EXP6_INPUT_SCREEN+64
+        bhs     exp6_draw_input_done
         lda     ,u+
         ora     #$40
         sta     ,x+
-        decb
-        bne     exp6_draw_input_character
+        dec     exp6_draw_remaining
+        inc     exp6_draw_column
+        lda     exp6_draw_column
+        cmpa    #32
+        blo     exp6_draw_next
+        clr     exp6_draw_column
+        bra     exp6_draw_next
+
+exp6_draw_separator
+        cmpx    #EXP6_INPUT_SCREEN+64
+        bhs     exp6_draw_input_done
+        leau    1,u
+        leax    1,x
+        dec     exp6_draw_remaining
+        inc     exp6_draw_column
+        lda     exp6_draw_column
+        cmpa    #32
+        blo     exp6_draw_next
+        clr     exp6_draw_column
+        bra     exp6_draw_next
+
 exp6_draw_cursor
+        cmpx    #EXP6_INPUT_SCREEN+64
+        bhs     exp6_draw_input_done
         lda     #$20
         sta     ,x
+exp6_draw_input_done
         rts
 
 exp6_clear_suggestions
@@ -90,6 +144,8 @@ exp6_draw_suggestions
         sta     exp6_suggestions_remaining
 exp6_draw_suggestion
         ldx     exp6_suggestion_row
+        lda     #$60
+        sta     ,x                       ; clear any previous selection marker
         leax    2,x
         lda     ,u+
         beq     exp6_suggestion_blank
@@ -190,3 +246,5 @@ exp6_message_full
 
 exp6_suggestion_row        rmb     2
 exp6_suggestions_remaining rmb     1
+exp6_draw_remaining        rmb     1
+exp6_draw_column           rmb     1
