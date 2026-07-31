@@ -74,11 +74,51 @@ Percentile dice (2d10) resolve to 1% and let the card print the softmax numbers
 exactly. Slower per roll, better for someone who has settled in. Consider one
 deep deck in d100 alongside the d20 decks.
 
-### Deck size
+### Deck size and training length
 
-29 distinct two-token contexts appear in the EXP-004 corpus. The trained model
-can also place representable probability on pairs that never appeared, so the
-real deck size is larger and needs measuring rather than guessing.
+Measured with `tools/generate_cards.py`. The deck is every context a visitor can
+reach on a walk of at least `--min-path` probability:
+
+| Epochs | `--min-path` | Cards |
+| ---: | ---: | ---: |
+| 20 | none | 270 |
+| 60 | none | 138 |
+| 60 | 1% | 35 |
+| 60 | 2% | 25 |
+
+**The live demo's twenty epochs make an unusable deck.** After twenty epochs the
+model has barely learned the second position: from `# TANDY` the strongest
+continuation is `MODEL` at 7%, against 3.4% for a uniform guess. Every token
+survives d20 rounding, so the cards run to twenty near-identical 5% rows and the
+reachable set explodes to 270.
+
+At sixty epochs the same contexts are sharp and legible — `# TANDY` becomes
+`MODEL` 40%, `TRS-80` 30%, `COLOR` 20% — and `TANDY MODEL 100` and
+`TANDY COLOR COMPUTER` are visible in the deck as shapes rather than statistics.
+
+At two hundred it degrades again in the other direction: `TANDY` → `MODEL`
+reaches 75%, which makes for a boring roll, and the start card loses its clear
+`TANDY` lead.
+
+So the printed deck is trained longer than the machine on the table, and the
+card must say so. The CoCo stops at twenty epochs because of its time budget,
+not because twenty is the right number — which is worth saying out loud, because
+it is a real engineering trade and not a simplification for the audience's
+benefit.
+
+That gap is also printable. The same context at epoch 1, epoch 20, and epoch 60,
+mounted side by side, is training made visible on paper:
+
+> This is what it knew after one pass. After twenty. After sixty.
+> Nobody added a rule. The numbers just moved.
+
+### Rounding
+
+A d20 cannot represent a 3% share, so the largest-remainder method assigns whole
+faces and the residue is dropped. At sixty epochs that is 9.2% of probability
+mass on an average card and 14.8% on the worst (`ACORN BBC`). Print the
+disclosure on the deck's title card rather than burying it: the paper is a
+rounded copy of the machine, and the rounding is knowable.
 
 Where a walk reaches a context with no card, that is not a failure — it is the
 model wandering off the distribution it was trained on, which is exactly what the
@@ -160,9 +200,39 @@ space. Try it on one person before building five.
 - Corkboard and pins for the wall
 - The "no card for that pair" card, several copies
 
-## To build
+## Generating the decks
 
-A `tools/generate_cards.py` that trains the fixed-point model, walks the
-reachable contexts, and emits print-ready card data with exact probabilities and
-dice ranges. This keeps the paper honest and makes the bias decks a matter of
-pointing the same tool at a different corpus.
+`tools/generate_cards.py` trains the fixed-point model, walks the reachable
+contexts, and emits either an ASCII preview or a print-ready HTML sheet at four
+cards per page.
+
+```sh
+# Read the deck at the terminal
+uv run python tools/generate_cards.py --epochs 60 --min-path 0.02
+
+# Print-ready, four to a page
+uv run python tools/generate_cards.py --epochs 60 --min-path 0.02 \
+    --format html --output build/cards/deck.html
+```
+
+The bias decks are the same tool pointed at a different corpus, which is the
+whole reason to generate rather than author them:
+
+```sh
+uv run python tools/generate_cards.py --format html \
+    --corpus experiments/data/EXP-003-commodore-fan.txt \
+    --label "COMMODORE FAN" --accent "#1f6feb" \
+    --output build/cards/commodore.html
+
+uv run python tools/generate_cards.py --format html \
+    --corpus experiments/data/EXP-003-apple-fan.txt \
+    --label "APPLE FAN" --accent "#d1242f" \
+    --output build/cards/apple.html
+```
+
+The tool prints the card count, the corpus, the parameter checksum, and the
+rounding residue to stderr. Keep the checksum with the printed deck — it is how
+a future run proves the cards on the table match the model that generated them.
+
+Still to do: the slip design, the "off the map" card, and a title card carrying
+the epoch and rounding disclosures.
