@@ -117,6 +117,42 @@ parameters, generated lookup data, verification data, and work buffers. It
 comfortably targets a 32K CoCo 1. A smaller-memory build is a later
 optimization, not an initial constraint.
 
+## Pretrained inference direction
+
+EXP-006 asks a different question from the live-training centerpiece: what
+becomes practical if the CoCo spends 8 KiB on pretrained inference weights?
+
+The first supported engineering candidate retains the additive architecture
+but expands it to four tokens of context, 178 vocabulary entries, and nine
+embedding dimensions. Mac training exports 8,188 signed Q4.4 parameters:
+
+```text
+four token identifiers
+        ↓
+four position-dependent embeddings
+        ↓
+add into a nine-byte context vector
+        ↓
+1,602 signed 8×8 products
+        ↓
+rank 178 next-word logits
+```
+
+No softmax is required for tab completion because it cannot change logit
+ordering. This is a useful distinction for the presentation: softmax is
+essential to normalized training probabilities and sampling, but not to
+choosing the single largest score.
+
+The complete image loads at `$6000` through `$7FFF`. The parameter bytes end at
+`$7FFB`; four zero bytes pad the transport image. Vocabulary strings, editor
+state, code, and stack remain below `$6000`.
+
+On the frozen holdout, the Q4.4 model saves 58.8% of word-entry keystrokes but
+reaches only 59.3% top-three accuracy, below the experiment's predeclared 70%
+threshold. It is therefore an inference prototype rather than a
+presentation-ready result. The direct 6809 simulator nevertheless proves the
+Mac and assembly rankings match for the first fixed vector.
+
 ## Open questions
 
 1. Does the approximately 72-second cycle-model projection hold on a physical
@@ -125,3 +161,6 @@ optimization, not an initial constraint.
    probability a clearer live measure?
 3. Can the vocabulary and corpus be made more inclusive without losing the
    performance budget?
+4. Is held-out top-three accuracy or measured keystroke savings the more honest
+   success criterion for an interactive completion tool?
+5. What is the loaded model's Tab-to-suggestion latency on a stock CoCo 1?

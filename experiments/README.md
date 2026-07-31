@@ -27,6 +27,9 @@ Current experiments:
   complete bit-exact assembly training, generation, and initial timing evidence.
 - [`EXP-005-prompted-marketing-language.md`](EXP-005-prompted-marketing-language.md)
   — expanded advertising vocabulary and visible two-word prompting.
+- [`EXP-006-pretrained-tab-completion.md`](EXP-006-pretrained-tab-completion.md)
+  — partially supported 8 KiB pretrained completion prototype; quality gate
+  not yet met.
 
 ## Presentation commands
 
@@ -56,4 +59,5 @@ been timed on physical stock-rate hardware.
 EXP-001 through EXP-003 remain recorded as architectural evidence, but are no
 longer in the runnable presentation menu. Presenter output deliberately shows
 conclusions rather than dumping every sample. The recorded evidence remains
-available for deeper inspection.
+available for deeper inspection. EXP-006 remains outside the menu until its
+interactive CoCo workbench and timing are verified.

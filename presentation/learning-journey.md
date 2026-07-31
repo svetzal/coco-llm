@@ -784,6 +784,38 @@ easy to follow the room rather than commit to a scripted order. Its physical
 stock-rate runtime still needs direct measurement. EXP-001 through EXP-003
 remain engineering evidence rather than entries in the stage menu.
 
+EXP-006 is the planned practical-use branch: “What if we train on a modern
+machine, spend 8 KiB on weights, and let the CoCo complete what you type?” It
+creates a strong contrast without disguising where the work happened:
+
+1. EXP-004 genuinely trains a 290-parameter model on the CoCo.
+2. EXP-005 shows that starting words steer the same kind of model.
+3. EXP-006 explicitly loads 8,188 parameters trained on the Mac.
+4. The audience types a phrase and Tab asks the old machine to predict its next
+   word.
+5. Familiar completions demonstrate bounded usefulness; unfamiliar input
+   demonstrates the fixed vocabulary and lack of understanding.
+
+The optimized assembly supplies another teachable code reveal:
+
+```asm
+        lda     ,x+            ; signed Q4.4 output weight
+        ldb     ,u+            ; signed context value
+        lbsr    multiply_s8_s8 ; one native MUL plus sign correction
+        addd    accumulator
+```
+
+Then reveal what is absent: inference ranks logits directly. Softmax is needed
+to turn scores into probabilities for training and sampling, but it cannot
+change which score is largest.
+
+This branch is not yet in `make present`. Its frozen experiment saved 58.8% of
+held-out word keystrokes and passed quantization parity, but missed its 70%
+top-three target at 59.3%. Add it only after the interactive workbench and
+stock-rate latency are verified. The failed stretch criterion is useful
+presentation material in its own right: we declared success before looking,
+then let evidence constrain the claim.
+
 ## Presentation stance
 
 The emotional movement is:

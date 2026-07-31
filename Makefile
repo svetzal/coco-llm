@@ -6,8 +6,10 @@ COCO_ROM_ARCHIVE ?= $(HOME)/OneDrive/CoCo/MAME/roms/cocoe.zip
 COCO_BASIC_ROM := build/roms/bas11.rom
 COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 
-.PHONY: test reference-test asm-test model-test coco-bin xroar-test xroar \
-	model-test-exp5 coco-bin-exp5 xroar-test-exp5 xroar-exp5 present tools
+.PHONY: test reference-test asm-test model-test model-test-exp6 coco-bin \
+	xroar-test xroar \
+	model-test-exp5 coco-bin-exp5 xroar-test-exp5 xroar-exp5 exp006-model \
+	present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -26,7 +28,10 @@ PRESENTER := $(UV) run python tools/present_experiment.py
 present:
 	@$(PRESENTER) $(if $(EXP),run $(EXP),list)
 
-test: reference-test asm-test model-test model-test-exp5
+exp006-model:
+	$(UV) run python tools/export_exp_006.py
+
+test: reference-test asm-test model-test model-test-exp5 model-test-exp6
 
 reference-test:
 	$(UV) sync
@@ -41,6 +46,9 @@ model-test: build/model-test-runner.asm $(SIM6809)
 	$(SIM6809) --perf --run $<
 
 model-test-exp5: build/model-exp5-test-runner.asm $(SIM6809)
+	$(SIM6809) --perf --run $<
+
+model-test-exp6: build/model-exp6-test-runner.asm $(SIM6809)
 	$(SIM6809) --perf --run $<
 
 coco-bin: build/coco-llm.bin
@@ -118,6 +126,29 @@ build/model-exp5-test-runner.asm: build/model-exp5-test.bin \
 		--binary build/model-exp5-test.bin \
 		--symbols build/model-exp5-test.sym \
 		--output $@ --experiment 5
+
+build/model-exp6-test.bin: src/6809/tests/completion_exp6_test.asm \
+		src/6809/completion_inference.asm build/exp006/model_data.inc \
+		build/exp006/weights.bin
+	lwasm --6809 --format=raw --symbol-dump=build/model-exp6-test.sym \
+		--output=$@ $<
+
+build/model-exp6-test-runner.asm: build/model-exp6-test.bin \
+		tools/make_6809_test_runner.py build/exp006/weights.bin \
+		build/exp006/manifest.json build/exp006/test-vectors.json
+	$(UV) run python tools/make_6809_test_runner.py \
+		--binary build/model-exp6-test.bin \
+		--symbols build/model-exp6-test.sym \
+		--output $@ --experiment 6 \
+		--weights build/exp006/weights.bin \
+		--manifest build/exp006/manifest.json \
+		--test-vectors build/exp006/test-vectors.json
+
+build/exp006/model_data.inc build/exp006/weights.bin \
+		build/exp006/manifest.json build/exp006/test-vectors.json: \
+		tools/export_exp_006.py src/reference/completion_lm.py \
+		experiments/data/EXP-006-completion-training.txt
+	$(UV) run python tools/export_exp_006.py
 
 build/coco-llm.bin: src/6809/coco_llm.asm \
 		$(6809_COMMON_SOURCES) $(6809_EXP004_SOURCES) build/model_data.inc
