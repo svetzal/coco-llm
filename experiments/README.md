@@ -30,6 +30,8 @@ Current experiments:
 - [`EXP-006-pretrained-tab-completion.md`](EXP-006-pretrained-tab-completion.md)
   — partially supported 8 KiB pretrained completion prototype; quality gate
   not yet met.
+- [`EXP-007-all-ram-sentence-completion.md`](EXP-007-all-ram-sentence-completion.md)
+  — in-progress 32–48 KiB all-RAM, punctuation-aware completion experiment.
 
 ## Presentation commands
 

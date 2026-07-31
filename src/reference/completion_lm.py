@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import math
+import re
 from collections import Counter, defaultdict
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
@@ -18,6 +19,8 @@ FloatArray = NDArray[np.float64]
 IntArray = NDArray[np.int64]
 ByteArray = NDArray[np.int8]
 
+SENTENCE_TOKEN = re.compile(r"[A-Z0-9]+(?:'[A-Z0-9]+)?|[.,!?;:]")
+
 
 def load_phrases(path: Path) -> list[str]:
     return [
@@ -25,6 +28,61 @@ def load_phrases(path: Path) -> list[str]:
         for line in path.read_text(encoding="ascii").splitlines()
         if line.strip()
     ]
+
+
+def tokenize_sentence(text: str) -> list[str]:
+    """Tokenize words and displayable sentence punctuation without hiding gaps."""
+    normalized = text.strip().upper()
+    tokens: list[str] = []
+    position = 0
+    for match in SENTENCE_TOKEN.finditer(normalized):
+        if normalized[position : match.start()].strip():
+            raise ValueError(
+                f"unsupported text between tokens: "
+                f"{normalized[position : match.start()]!r}"
+            )
+        tokens.append(match.group())
+        position = match.end()
+    if normalized[position:].strip():
+        raise ValueError(f"unsupported text after token: {normalized[position:]!r}")
+    return tokens
+
+
+def load_token_sequences(path: Path) -> list[list[str]]:
+    return [
+        tokens
+        for line in path.read_text(encoding="ascii").splitlines()
+        if (tokens := tokenize_sentence(line))
+    ]
+
+
+def build_sequence_vocabulary(
+    sequences: Sequence[Sequence[str]],
+) -> tuple[list[str], dict[str, int]]:
+    vocabulary = [BOUNDARY] + sorted(
+        {token for sequence in sequences for token in sequence}
+    )
+    return vocabulary, {token: index for index, token in enumerate(vocabulary)}
+
+
+def make_sequence_examples(
+    sequences: Sequence[Sequence[str]],
+    token_by_text: dict[str, int],
+    context_size: int,
+) -> tuple[IntArray, IntArray]:
+    contexts: list[list[int]] = []
+    targets: list[int] = []
+    boundary = token_by_text[BOUNDARY]
+
+    for tokens in sequences:
+        context = [boundary] * context_size
+        sequence = [token_by_text[token] for token in tokens] + [boundary]
+        for target in sequence:
+            contexts.append(context.copy())
+            targets.append(target)
+            context = context[1:] + [target]
+
+    return np.asarray(contexts, dtype=np.int64), np.asarray(targets, dtype=np.int64)
 
 
 def build_completion_vocabulary(

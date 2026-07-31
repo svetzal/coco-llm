@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import numpy as np
+import pytest
 from completion_lm import (
     AdditiveCompletionModel,
     BackoffNGramPredictor,
@@ -8,13 +9,17 @@ from completion_lm import (
     Int8AdditiveModel,
     NeuralConfig,
     build_completion_vocabulary,
+    build_sequence_vocabulary,
     evaluate,
     largest_additive_embedding,
     largest_hidden_width,
     load_phrases,
+    load_token_sequences,
     make_completion_examples,
+    make_sequence_examples,
     quantize_q4_4,
     suggest,
+    tokenize_sentence,
     train_neural_model,
 )
 
@@ -43,6 +48,36 @@ def test_holdout_uses_training_vocabulary() -> None:
         for word in phrase.split()
         if word not in token_by_text
     } == set()
+
+
+def test_sentence_tokenization_preserves_punctuation_as_tokens(tmp_path) -> None:
+    path = tmp_path / "sentences.txt"
+    path.write_text(
+        "The CoCo predicts, humans decide.\nIs this useful? Yes!\n",
+        encoding="ascii",
+    )
+
+    sequences = load_token_sequences(path)
+    vocabulary, token_by_text = build_sequence_vocabulary(sequences)
+    contexts, targets = make_sequence_examples(sequences, token_by_text, 5)
+
+    assert tokenize_sentence("The CoCo predicts, humans decide.") == [
+        "THE",
+        "COCO",
+        "PREDICTS",
+        ",",
+        "HUMANS",
+        "DECIDE",
+        ".",
+    ]
+    assert all(mark in vocabulary for mark in (".", ",", "?", "!"))
+    assert contexts.shape == (15, 5)
+    assert targets.shape == (15,)
+
+
+def test_sentence_tokenization_rejects_unsupported_characters() -> None:
+    with pytest.raises(ValueError, match="unsupported"):
+        tokenize_sentence('THE COCO SAYS "HELLO"')
 
 
 def test_budget_dimensions_fit_one_byte_weight_budget() -> None:

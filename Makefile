@@ -10,7 +10,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	workbench-test-exp6 coco-bin \
 	xroar-test xroar \
 	model-test-exp5 coco-bin-exp5 xroar-test-exp5 xroar-exp5 exp006-model \
-	coco-bin-exp6 xroar-test-exp6 xroar-exp6 present tools
+	coco-bin-exp6 xroar-test-exp6 xroar-exp6 exp007-sweep present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -31,6 +31,9 @@ present:
 
 exp006-model:
 	$(UV) run python tools/export_exp_006.py
+
+exp007-sweep:
+	$(UV) run python tools/run_exp_007.py
 
 test: reference-test asm-test model-test model-test-exp5 model-test-exp6 \
 	workbench-test-exp6
