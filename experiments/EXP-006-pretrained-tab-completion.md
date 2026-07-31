@@ -164,7 +164,7 @@ make xroar-exp6
 
 The 32×16 screen contains:
 
-- a nine-row, cursor-only phrase editor that wraps complete words;
+- a ten-row, cursor-only phrase editor that wraps complete words;
 - a measured popover containing up to three reverse-field model suggestions;
 - visible controls for prediction, selection, acceptance, deletion, and reset;
 - the model's 178-word vocabulary and four-word context on the final row.

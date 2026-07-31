@@ -43,7 +43,7 @@ exp6_ui_copy_phrase
         cmpa    #11                    ; widest candidate plus marker padding
         lbne    exp6_ui_test_failed
         lda     ,x
-        cmpa    #$7e                   ; first row selected
+        cmpa    #$3e                   ; reverse-field first-row marker
         lbne    exp6_ui_test_failed
         ldd     2,x
         cmpd    #$030f                 ; dark "CO" from COMPLETE
@@ -61,7 +61,7 @@ exp6_ui_copy_phrase
         cmpa    #$20                   ; old marker cleared to dark background
         lbne    exp6_ui_test_failed
         lda     32,x
-        cmpa    #$7e                   ; second row selected
+        cmpa    #$3e                   ; second row selected
         lbne    exp6_ui_test_failed
         lda     64,x
         cmpa    #$20                   ; third row remains clear
@@ -70,7 +70,7 @@ exp6_ui_copy_phrase
         lbsr    exp6_draw_suggestions
         ldx     exp6_popover_origin
         lda     ,x
-        cmpa    #$7e                   ; first row selected again
+        cmpa    #$3e                   ; first row selected again
         lbne    exp6_ui_test_failed
         lda     32,x
         cmpa    #$20                   ; second-row marker cleared
@@ -182,9 +182,9 @@ exp6_ui_copy_exact_wrap_phrase
         cmpa    #$20                   ; cursor remains immediately after it
         lbne    exp6_ui_test_failed
 
-        ; Nine wrapped rows fill the editor but preserve its separator row.
+        ; Ten wrapped rows fill the editor immediately above the instructions.
         ldu     #exp6_input_buffer
-        lda     #9
+        lda     #10
         sta     exp6_ui_fill_rows_remaining
 exp6_ui_fill_next_row
         ldb     #16
@@ -198,20 +198,17 @@ exp6_ui_fill_row_word
         dec     exp6_ui_fill_rows_remaining
         bne     exp6_ui_fill_next_row
         clr     ,u
-        lda     #153
+        lda     #170
         sta     exp6_input_length
         lbsr    exp6_draw_input
         lda     EXP6_INPUT_END-32
-        cmpa    #$41                   ; text reaches screen row ten
+        cmpa    #$41                   ; text reaches screen row eleven
         lbne    exp6_ui_test_failed
         lda     EXP6_INPUT_END-15
         cmpa    #$20                   ; cursor remains on the final text row
         lbne    exp6_ui_test_failed
         lda     EXP6_INPUT_END
-        cmpa    #$60                   ; row eleven remains blank
-        lbne    exp6_ui_test_failed
-        lda     EXP6_SCREEN+384
-        cmpa    #$52                   ; instructions still begin on row twelve
+        cmpa    #$52                   ; instructions begin on the next row
         lbne    exp6_ui_test_failed
 
         ; Restore the unmasked fixed vector for the shared runner criteria.

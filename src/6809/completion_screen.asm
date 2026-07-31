@@ -5,7 +5,7 @@
 
 EXP6_SCREEN             equ     $0400
 EXP6_INPUT_SCREEN       equ     EXP6_SCREEN+64
-EXP6_INPUT_END          equ     EXP6_SCREEN+352
+EXP6_INPUT_END          equ     EXP6_SCREEN+384
 EXP6_STATUS_SCREEN      equ     EXP6_SCREEN+48
 
 exp6_initialize_screen
@@ -172,7 +172,7 @@ exp6_fill_popover_row
         lda     exp6_popover_row_index
         cmpa    exp6_selected_suggestion
         bne     exp6_draw_popover_word
-        lda     #$7e
+        lda     #$3e                       ; reverse-field ">"
         sta     ,x
 exp6_draw_popover_word
         leax    2,x
