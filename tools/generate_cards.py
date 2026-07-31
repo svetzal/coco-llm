@@ -230,33 +230,210 @@ def render_text(cards: list[Card], faces: int) -> str:
 
 
 def stylesheet(accent: str) -> str:
-    """Print-first: black on white, colour only in the deck band."""
+    """Four landscape cards on a letter sheet, styled like a CoCo manual."""
     return f"""
-@page {{ size: letter; margin: 0.4in; }}
+@page {{ size: letter landscape; margin: 0.25in; }}
 * {{ box-sizing: border-box; }}
-body {{ margin: 0; color: #111; background: #fff;
-       font-family: "Helvetica Neue", Arial, sans-serif; }}
-.sheet {{ display: grid; grid-template-columns: 1fr 1fr;
-         grid-template-rows: 1fr 1fr; gap: 0.2in;
-         height: 10.2in; page-break-after: always; }}
-.card {{ border: 2px solid #111; border-radius: 6px; padding: 0.22in;
-        display: flex; flex-direction: column; overflow: hidden; }}
-.band {{ height: 0.16in; background: {accent}; border-radius: 3px 3px 0 0;
-        margin: -0.22in -0.22in 0.14in -0.22in; }}
-.deck {{ font-size: 7.5pt; text-transform: uppercase; color: #777;
-        letter-spacing: 0.14em; }}
-.ctx {{ font-size: 27pt; font-weight: 800; letter-spacing: 0.01em;
-       line-height: 1.05; margin: 0.02in 0 0.02in; }}
-.prompt {{ font-size: 9.5pt; color: #555; margin: 0 0 0.1in; }}
-table {{ width: 100%; border-collapse: collapse; font-size: 13.5pt; }}
-td {{ padding: 2.5pt 0; border-bottom: 1px solid #e8e8e8; }}
-.range {{ width: 24%; font-weight: 700; font-variant-numeric: tabular-nums; }}
-.word {{ font-weight: 600; }}
-.pct {{ width: 20%; text-align: right; color: #777;
-       font-variant-numeric: tabular-nums; }}
-.foot {{ margin-top: auto; padding-top: 0.1in; border-top: 2px solid #111;
-        font-size: 9.5pt; line-height: 1.5; }}
-.next b {{ font-size: 12pt; }}
+html, body {{ margin: 0; padding: 0; background: #fff; }}
+body {{
+  color: #0a160b;
+  font-family: Avenir Next, Avenir, Futura, sans-serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}}
+@media screen {{
+  body {{ background: #d7d5ce; padding: 0.25in; }}
+  .sheet {{
+    background: #fff;
+    box-shadow: 0 0.08in 0.28in rgb(0 0 0 / 18%);
+    margin: 0 auto 0.25in;
+  }}
+}}
+.sheet {{
+  width: 10.5in;
+  height: 8in;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 0.14in;
+  break-after: page;
+  page-break-after: always;
+}}
+.sheet:last-child {{ break-after: auto; page-break-after: auto; }}
+.card {{
+  --ink: #071508;
+  --screen: #25c925;
+  --screen-dark: #052706;
+  --paper: #f3ecd8;
+  background: var(--paper);
+  border: 1.8pt solid var(--ink);
+  border-radius: 0.08in;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
+  min-width: 0;
+}}
+.screen {{
+  background: var(--screen);
+  border-bottom: 1.6pt solid var(--ink);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  padding: 0.09in 0.12in 0.07in;
+}}
+.screen-head {{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: 0.12in;
+  border-bottom: 1.5pt solid var(--screen-dark);
+  padding-bottom: 0.045in;
+  margin-bottom: 0.035in;
+}}
+.step-label {{
+  display: block;
+  color: var(--screen-dark);
+  font: 800 5.9pt/1 Avenir Next, Avenir, Futura, sans-serif;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  margin-bottom: 0.018in;
+}}
+.ctx {{
+  color: var(--screen-dark);
+  font-family: Menlo, Monaco, Courier New, monospace;
+  font-size: 29pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 0.96;
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}}
+.roll {{
+  align-items: center;
+  color: var(--screen-dark);
+  display: flex;
+  font: 900 11pt/1 Avenir Next, Avenir, Futura, sans-serif;
+  gap: 0.055in;
+  padding-bottom: 0.012in;
+  white-space: nowrap;
+}}
+.roll-label {{ display: grid; gap: 0.015in; }}
+.roll-label .step-label {{ margin: 0; }}
+.die {{ height: 0.38in; width: 0.38in; flex: none; }}
+.die text {{ font: 900 8px/1 Menlo, Monaco, monospace; }}
+.distribution {{
+  align-self: stretch;
+  border-collapse: collapse;
+  color: var(--screen-dark);
+  font-family: Menlo, Monaco, Courier New, monospace;
+  font-size: 9.1pt;
+  font-weight: 700;
+  line-height: 1;
+  table-layout: fixed;
+  width: 100%;
+}}
+.distribution td {{ padding: 1.25pt 0; }}
+.distribution .range {{ width: 24%; font-variant-numeric: tabular-nums; }}
+.distribution .word {{ width: 56%; }}
+.distribution .pct {{ width: 20%; text-align: right;
+                      font-variant-numeric: tabular-nums; }}
+.distribution.dense {{ font-size: 7.3pt; }}
+.distribution.dense td {{ padding: 0.55pt 0; }}
+.manual {{
+  background: var(--paper);
+  display: grid;
+  grid-template-rows: auto auto;
+}}
+.instruction {{
+  align-items: center;
+  display: flex;
+  font-size: 7.2pt;
+  gap: 0.08in;
+  line-height: 1.15;
+  min-height: 0.46in;
+  padding: 0.055in 0.12in;
+}}
+.instruction-copy {{ flex: 1 1 auto; min-width: 0; }}
+.step-badge {{
+  align-items: center;
+  background: var(--ink);
+  border-radius: 0.035in;
+  color: var(--paper);
+  display: flex;
+  font-size: 12pt;
+  font-weight: 900;
+  height: 0.27in;
+  justify-content: center;
+  flex: none;
+  width: 0.27in;
+}}
+.instruction-title {{
+  display: block;
+  font-size: 7pt;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.02in;
+  text-transform: uppercase;
+}}
+.next-context {{ font-size: 8.5pt; }}
+.next-context b {{ font-size: 10.5pt; }}
+.ending {{
+  border: 1.2pt solid var(--ink);
+  font-size: 6.6pt;
+  font-weight: 800;
+  padding: 0.04in 0.055in;
+  flex: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}}
+.brand {{
+  align-items: center;
+  background: var(--ink);
+  color: var(--paper);
+  display: grid;
+  gap: 0.08in;
+  grid-template-columns: auto 1fr auto;
+  min-height: 0.24in;
+  padding: 0.035in 0.12in;
+}}
+.spectrum {{ display: flex; gap: 0.018in; }}
+.spectrum i {{ display: block; height: 0.075in; transform: skewX(-24deg);
+               width: 0.19in; }}
+.spectrum i:nth-child(1) {{ background: #d73521; }}
+.spectrum i:nth-child(2) {{ background: #ee791d; }}
+.spectrum i:nth-child(3) {{ background: #e3bb22; }}
+.spectrum i:nth-child(4) {{ background: #4a8e3a; }}
+.spectrum i:nth-child(5) {{ background: #2c5f9f; }}
+.brand-name {{
+  font-size: 7.1pt;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}}
+.deck {{
+  border-left: 0.055in solid {accent};
+  font-size: 5.8pt;
+  letter-spacing: 0.12em;
+  padding-left: 0.06in;
+  text-transform: uppercase;
+  white-space: nowrap;
+}}
+""".strip()
+
+
+def render_d20() -> str:
+    """A small line-art die that stays crisp in print."""
+    return """
+<svg class="die" viewBox="0 0 48 48" aria-hidden="true">
+  <g fill="none" stroke="#052706" stroke-linecap="round"
+     stroke-linejoin="round" stroke-width="1.5">
+    <polygon points="24,2 43,14 39,37 24,46 9,37 5,14" />
+    <path d="M24 2 15 17 5 14m19-12 9 15 10-3M15 17l9 12 9-12M9 37l15-8 15 8M9 37l15 9 15-9" />
+  </g>
+  <circle cx="24" cy="25" r="6" fill="#25c925" />
+  <text x="24" y="28" fill="#052706" text-anchor="middle">20</text>
+</svg>
 """.strip()
 
 
@@ -272,13 +449,22 @@ def render_html(cards: list[Card], faces: int, label: str, accent: str) -> str:
         parts.append('<div class="sheet">')
         for card in cards[offset : offset + 4]:
             parts.append('<div class="card">')
-            parts.append('<div class="band"></div>')
-            parts.append(f'<div class="deck">{html.escape(label)}</div>')
+            parts.append('<section class="screen">')
+            parts.append('<header class="screen-head">')
+            parts.append('<div>')
+            parts.append('<span class="step-label">1 · Current context</span>')
             parts.append(f'<p class="ctx">{html.escape(card.title)}</p>')
-            parts.append(
-                f'<p class="prompt">Roll 1d{faces} and write the word down.</p>'
-            )
-            parts.append("<table>")
+            parts.append('</div>')
+            parts.append('<div class="roll">')
+            parts.append('<span class="roll-label">')
+            parts.append('<span class="step-label">2 · Roll</span>')
+            parts.append(f'<span>1d{faces}</span>')
+            parts.append('</span>')
+            parts.append(render_d20())
+            parts.append('</div>')
+            parts.append('</header>')
+            density = " dense" if len(card.rows) > 9 else ""
+            parts.append(f'<table class="distribution{density}">')
             for row in card.rows:
                 parts.append(
                     "<tr>"
@@ -288,17 +474,34 @@ def render_html(cards: list[Card], faces: int, label: str, accent: str) -> str:
                     "</tr>"
                 )
             parts.append("</table>")
+            parts.append('</section>')
             ending, lookup = footer_parts(card)
-            parts.append('<div class="foot">')
-            if ending:
-                parts.append(f"<div>{html.escape(ending)}</div>")
+            parts.append('<footer class="manual">')
+            parts.append('<div class="instruction">')
+            parts.append('<span class="step-badge">3</span>')
+            parts.append('<div class="instruction-copy">')
+            parts.append('<span class="instruction-title">Find next card</span>')
             if lookup:
                 carry = html.escape(card.carry)
                 rest = html.escape(lookup.split(" + ", 1)[1])
                 parts.append(
-                    f'<div class="next">Next card: <b>{carry}</b> + {rest}</div>'
+                    f'<div class="next-context"><b>{carry}</b> + {rest}</div>'
                 )
+            else:
+                parts.append('<div class="next-context">No next card</div>')
+            parts.append('</div>')
+            if ending:
+                parts.append(f'<div class="ending">{html.escape(ending)}</div>')
             parts.append("</div>")
+            parts.append('<div class="brand">')
+            parts.append(
+                '<span class="spectrum" aria-hidden="true">'
+                '<i></i><i></i><i></i><i></i><i></i></span>'
+            )
+            parts.append('<span class="brand-name">CoCo LLM · Be the model</span>')
+            parts.append(f'<span class="deck">{html.escape(label)}</span>')
+            parts.append('</div>')
+            parts.append('</footer>')
             parts.append("</div>")
         parts.append("</div>")
 
