@@ -10,17 +10,59 @@ EXP7_SAM_ALL_RAM    equ     $ffdf
 
 completion_policy_initialize
         clr     exp7_prefix_length
+        orcc    #$50
         sta     EXP7_SAM_ALL_RAM
+        ifndef  EXP7_UI_TEST
+        lbsr    exp7_unpack_model
+        endc
         rts
 
-; POLCAT lives in BASIC ROM. Restore the ROM read map only for the call, save
-; its character and condition codes, then make the model visible again.
+; The DECB loader runs while map Type 0 is active, where addresses above
+; $7FFF select the current 32 KiB page rather than contiguous high RAM. The
+; packed model therefore travels below $8000 with the program. Once Type 1 is
+; active, expand two signed Q2.2 nibbles per source byte into contiguous signed
+; bytes at EXP7_MODEL_BASE.
+exp7_unpack_model
+        ldx     #exp7_packed_model
+        ldu     #EXP7_MODEL_BASE
+exp7_unpack_pair
+        lda     ,x+
+        sta     exp7_packed_byte
+        lsra
+        lsra
+        lsra
+        lsra
+        cmpa    #8
+        blo     exp7_unpack_high_ready
+        ora     #$f0
+exp7_unpack_high_ready
+        sta     ,u+
+        cmpu    #EXP7_MODEL_BASE+EXP7_PARAM_COUNT
+        bhs     exp7_unpack_done
+
+        lda     exp7_packed_byte
+        anda    #$0f
+        cmpa    #8
+        blo     exp7_unpack_low_ready
+        ora     #$f0
+exp7_unpack_low_ready
+        sta     ,u+
+        cmpu    #EXP7_MODEL_BASE+EXP7_PARAM_COUNT
+        blo     exp7_unpack_pair
+exp7_unpack_done
+        rts
+
+; POLCAT lives in BASIC ROM and expects the normal interrupt-driven ROM
+; environment. Restore that map and interrupt state only for the call. Mask
+; interrupts again before exposing RAM at the ROM addresses.
 completion_policy_read_key
         sta     EXP7_SAM_ROM_MAP
+        andcc   #$af
         jsr     [EXP7_POLCAT]
-        pshs    cc,a
+        pshs    a
+        orcc    #$50
         sta     EXP7_SAM_ALL_RAM
-        puls    cc,a
+        puls    a
         rts
 
 ; Return non-zero in A for letters, digits, spaces, and the punctuation tokens
@@ -367,3 +409,4 @@ exp7_lookup_word        rmb     2
 exp7_lookup_length      rmb     1
 exp7_lookup_token       rmb     1
 exp7_accepted_token     rmb     1
+exp7_packed_byte        rmb     1

@@ -216,7 +216,7 @@ build/model-exp7-test-runner.asm: build/model-exp7-test.bin \
 		--symbols build/model-exp7-test.sym \
 		--output $@ --experiment 7 \
 		--weights build/exp007/weights.bin \
-		--weights-address 0x7f00 \
+		--weights-address 0x8000 \
 		--manifest build/exp007/manifest.json \
 		--test-vectors build/exp007/test-vectors.json
 
@@ -255,7 +255,7 @@ build/workbench-exp7-test-runner.asm: build/workbench-exp7-test.bin \
 		--symbols build/workbench-exp7-test.sym \
 		--output $@ --experiment 7 \
 		--weights build/exp007/weights.bin \
-		--weights-address 0x7f00 \
+		--weights-address 0x8000 \
 		--manifest build/exp007/manifest.json \
 		--test-vectors build/exp007/test-vectors.json
 
@@ -267,8 +267,9 @@ build/exp006/model_data.inc build/exp006/weights.bin \
 	$(UV) run python tools/export_exp_006.py
 
 build/exp007/model_data.inc build/exp007/weights.bin \
+		build/exp007/weights-packed.bin \
 		build/exp007/manifest.json build/exp007/test-vectors.json \
-		build/exp007/model_image.inc: \
+		build/exp007/packed_model.inc: \
 		tools/export_exp_007.py src/reference/completion_lm.py \
 		experiments/data/EXP-007-sentence-training.txt \
 		experiments/data/EXP-007-sentence-holdout.txt
@@ -317,7 +318,7 @@ build/coco-llm-exp7.bin: src/6809/coco_llm_exp7.asm \
 		src/6809/completion_inference_exp7.asm \
 		src/6809/completion_screen.asm src/6809/completion_editor.asm \
 		src/6809/completion_policy_exp7.asm build/exp007/model_data.inc \
-		build/exp007/model_image.inc
+		build/exp007/packed_model.inc
 	lwasm --6809 --format=decb --output=$@ $<
 
 build/coco-llm-exp7.sym: src/6809/coco_llm_exp7.asm \

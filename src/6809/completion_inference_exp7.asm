@@ -1,6 +1,6 @@
 ; EXP-007 inference-only additive language model.
 ;
-; Mac training exports signed Q4.4 bytes at EXP7_MODEL_BASE:
+; Mac training exports signed Q2.2 values expanded to bytes at EXP7_MODEL_BASE:
 ;   five positional embedding tables, output weights, output biases.
 ;
 ; The five embeddings add into 22 signed bytes. The exporter proves every
@@ -69,10 +69,6 @@ exp7_score_output
         stx     exp7_bias_pointer
         tfr     a,b
         sex
-        aslb
-        rola
-        aslb
-        rola
         aslb
         rola
         aslb

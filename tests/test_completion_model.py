@@ -140,6 +140,22 @@ def test_int8_additive_scores_match_quantized_float_ranking() -> None:
     assert len(fixed.model_bytes(padded_size=8192)) == 8192
 
 
+def test_int8_additive_supports_signed_q2_2_parameters() -> None:
+    model = AdditiveCompletionModel(
+        NeuralConfig(context=1, embedding=1), ["<END>", "COCO"]
+    )
+    model.position_embeddings[:] = [[[-3.0], [3.0]]]
+    model.output_weights[:] = [[-2.5], [2.5]]
+    model.output_biases[:] = [-3.0, 3.0]
+
+    fixed = model.int8_copy(fractional_bits=2, value_bits=4)
+
+    assert fixed.position_embeddings.flatten().tolist() == [-8, 7]
+    assert fixed.output_weights.flatten().tolist() == [-8, 7]
+    assert fixed.output_biases.tolist() == [-8, 7]
+    assert fixed.integer_scores(np.asarray([1])).tolist() == [-88, 77]
+
+
 def test_ngram_evaluation_and_prefix_suggestions() -> None:
     vocabulary, training_examples, holdout_examples = completion_data()
     training_contexts, training_targets = training_examples

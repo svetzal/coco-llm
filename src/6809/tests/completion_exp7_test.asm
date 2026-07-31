@@ -3,7 +3,7 @@
         org     $2000
 
 start
-        lds     #$3e00
+        lds     #$7f00
         ldd     #EXP7_MODEL_BASE
         std     exp7_position_base
         clr     exp7_prefix_length

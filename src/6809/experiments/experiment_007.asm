@@ -5,7 +5,7 @@
 ; punctuation policy, and the ROM-switching keyboard adapter.
 
 start
-        lds     #$3e00
+        lds     #$7f00
         ifdef   EXP7_UI_TEST
         lbra    exp7_ui_test_start
         else
@@ -29,5 +29,14 @@ exp7_resident_end
         endc
 
         ifndef  DIRECT_TEST
-        include "../../../build/exp007/model_image.inc"
+        include "../../../build/exp007/packed_model.inc"
+        ifgt    exp7_packed_model_end-$7f00
+        fail    "EXP-007 packed image collides with its stack"
+        endc
+        else
+exp7_packed_model       equ     0
+        endc
+
+        ifgt    EXP7_MODEL_BASE+EXP7_PARAM_COUNT-$ff00
+        fail    "EXP-007 expanded model crosses the CoCo I/O page"
         endc

@@ -2,9 +2,9 @@
 
 ## Status
 
-Runnable in XRoar. The expanded punctuated corpus, deterministic 32 KiB model,
+Runnable in XRoar. The expanded punctuated corpus, deterministic model,
 all-RAM 6809 inference core, punctuation-aware workbench, and emulator checks
-exist. Physical CoCo 1 loading, keyboard, and stock-rate latency evidence remain
+exist. Physical CoCo 1 loading and stock-rate latency evidence remain
 outstanding.
 
 ## Question
@@ -15,7 +15,7 @@ remaining responsive enough for an interactive demonstration?
 
 ## Hypothesis
 
-A 255-token additive Q4.4 model with five tokens of context will make the
+A 255-token additive fixed-point model with five tokens of context will make the
 completion workbench materially more expressive than EXP-006. A 48 KiB weight
 ceiling will permit the experiment to compare 32, 40, and 48 KiB candidates
 without assuming that filling all available memory improves quality.
@@ -41,7 +41,7 @@ that EXP-006 had without punctuation.
 
 ## Candidate architecture
 
-The additive model stores one signed Q4.4 byte per parameter:
+The additive model has one signed value per parameter:
 
 ```text
 parameters = V × (E × (C + 1) + 1)
@@ -70,7 +70,7 @@ and the
 [Tandy Color Computer Technical Reference Manual](https://support.retrorewind.ca/media/coco/color_computer_technical_reference_manual_tandy_.pdf)
 are the primary references for the implementation.
 
-A contiguous 48 KiB image fits exactly at:
+A contiguous 48 KiB working model fits exactly at:
 
 ```text
 $3F00-$FEFF  49,152 model bytes
@@ -88,9 +88,18 @@ call. The loader and UI must therefore prove one of these strategies:
 - replace `POLCAT` with a small keyboard scanner; or
 - use a loader/runtime interface supplied by CoCo SDC or FujiNet.
 
-Loading bytes beneath the normal ROM window is a separate acceptance test. A
-model that works only because an emulator preloaded hidden RAM does not satisfy
-the hardware contract.
+Loading bytes beneath the normal ROM window is a separate acceptance test.
+DECB starts in SAM Type 0, where an address above `$7FFF` selects a 32 KiB RAM
+page rather than contiguous high RAM. A loader that writes the final model
+directly at `$8000` therefore wraps and corrupts the display and resident
+program.
+
+The runnable design quantizes each parameter to a signed Q2.2 nibble and packs
+two parameters per byte. Its 16,160-byte transport image loads below `$8000`
+with the resident program. Startup masks interrupts, selects Type 1, and
+expands the nibbles to signed bytes at `$8000-$FE3E`. Masking matters because
+Type 1 also exposes RAM over the ROM interrupt vectors; an interrupt during
+unpacking would otherwise jump through uninitialized RAM.
 
 ## Punctuation tokenization
 
@@ -170,7 +179,7 @@ The expanded experiment proceeds to 6809 assembly only if:
 - its broader holdout has a lower unknown-token rate than EXP-006;
 - top-three accuracy is at least EXP-006's recorded 59.3%;
 - keystroke savings is at least 60%;
-- Q4.4 quantization does not lose more than one percentage point;
+- the chosen fixed-point quantization retains useful top-three accuracy;
 - every possible context vector remains in signed 8-bit range;
 - the chosen model fits its declared 32, 40, or 48 KiB image; and
 - stock-rate CoCo 1 latency is measured and explicitly accepted.
@@ -187,13 +196,15 @@ The runnable candidate uses:
 | Context | 5 tokens |
 | Embedding width | 22 |
 | Parameters | 32,319 |
-| Model image | 32 KiB |
+| Quantization | Signed Q2.2 |
 | Scoring multiplies | 5,346 |
-| Holdout top one | 49.7% |
-| Holdout top three | 66.5% |
+| Holdout top one | 50.8% |
+| Holdout top three | 63.5% |
 | Holdout keystroke savings | 54.2% |
-| All-context magnitude | 112 |
-| Proven score range | -24,607 to 27,171 |
+| Packed transport image | 16,160 bytes |
+| Expanded working model | 32,319 bytes |
+| All-context magnitude | 28 |
+| Proven score range | -1,579 to 1,725 |
 
 The 32 KiB model satisfies the vocabulary, top-three, quantization, context,
 score-width, and memory gates. It does not satisfy the declared 60% keystroke
@@ -201,11 +212,13 @@ savings gate. That miss remains part of the result; the runnable artifact is a
 demonstration candidate, not evidence that the original hypothesis is fully
 supported.
 
-The DECB image contains resident code below `$3F00` and the model at
-`$7F00-$FEFF`. XRoar with 64 KiB RAM and the verified Tandy ROMs completes a
-`POLCAT` call through the ROM-switching keyboard adapter, restores the all-RAM
-map, and returns safely to the editor. Direct-simulator tests prove bit-exact
-top-three ranking, five-token parsing, and punctuation attachment.
+The DECB image contains resident code and the packed model below `$7F00`.
+Startup expands the working model at `$8000-$FE3E`. XRoar with 64 KiB RAM and
+the verified Tandy ROMs reaches the editor after the complete load, map switch,
+and unpack path. The keyboard adapter briefly restores both the ROM map and its
+interrupt environment for `POLCAT`, then masks interrupts before exposing the
+model again. Direct-simulator tests prove bit-exact top-three ranking,
+five-token parsing, and punctuation attachment.
 
 Run it:
 

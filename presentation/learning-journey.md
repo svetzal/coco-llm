@@ -830,13 +830,21 @@ declared success before looking, then let evidence constrain the claim.
 
 EXP-007 asks the next question out loud: “The ROM occupies half the address
 space when we read it—but the RAM is still underneath. Is that an
-opportunity?” The Mac trains 32,319 one-byte parameters. The CoCo switches to
-its all-RAM map and ranks 243 possible tokens using five-token context. Periods,
+opportunity?” The Mac trains 32,319 parameters. They travel as 16,160 packed
+bytes, then the CoCo switches to its all-RAM map and expands them to signed
+working bytes. It ranks 243 possible tokens using five-token context. Periods,
 commas, questions, exclamations, colons, and semicolons are tokens now, so the
 audience can watch a word completer become a tiny sentence completer.
 
+That loader is presentation material too. DECB begins in the SAM's 32 KiB
+paged map, so directly loading at `$8000` wraps over lower RAM and paints the
+screen with model bytes. EXP-007 instead loads packed nibbles below `$8000`,
+masks interrupts, enters the contiguous 64 KiB map, and expands them at
+`$8000-$FE3E`. The interrupt mask prevents the newly exposed RAM vectors from
+sending the CPU into model data.
+
 The reveal is not “bigger is intelligent.” It is “more parameters can retain
-more task-specific patterns.” EXP-007 reaches 66.5% top-three accuracy on its
+more task-specific patterns.” EXP-007 reaches 63.5% top-three accuracy on its
 held-out sentence corpus, but only 54.2% measured keystroke savings. Useful?
 Sometimes. Understanding? No. Think about that a minute.
 

@@ -263,25 +263,38 @@ class AdditiveCompletionModel:
             destination[:] = quantize_q4_4(source)
         return clone
 
-    def int8_copy(self) -> Int8AdditiveModel:
+    def int8_copy(
+        self,
+        *,
+        fractional_bits: int = 4,
+        value_bits: int = 8,
+    ) -> Int8AdditiveModel:
+        if not 1 <= fractional_bits < value_bits <= 8:
+            raise ValueError("expected 1 <= fractional_bits < value_bits <= 8")
+        scale = 1 << fractional_bits
+        minimum = -(1 << (value_bits - 1))
+        maximum = (1 << (value_bits - 1)) - 1
         return Int8AdditiveModel(
             self.config,
             self.vocabulary,
             tuple(
-                np.rint(quantize_q4_4(parameter) * 16.0).astype(np.int8)
+                np.clip(np.rint(parameter * scale), minimum, maximum).astype(np.int8)
                 for parameter in self.parameters
             ),
+            fractional_bits=fractional_bits,
         )
 
 
 class Int8AdditiveModel:
-    """Bit-exact inference view of the exported Q4.4 additive model."""
+    """Bit-exact inference view of an exported fixed-point additive model."""
 
     def __init__(
         self,
         config: NeuralConfig,
         vocabulary: Sequence[str],
         parameters: tuple[ByteArray, ByteArray, ByteArray],
+        *,
+        fractional_bits: int = 4,
     ):
         self.config = config
         self.vocabulary = list(vocabulary)
@@ -293,6 +306,7 @@ class Int8AdditiveModel:
             self.output_weights,
             self.output_biases,
         ) = parameters
+        self.fractional_bits = fractional_bits
 
     @property
     def parameters(self) -> tuple[ByteArray, ...]:
@@ -318,9 +332,10 @@ class Int8AdditiveModel:
 
     def integer_scores(self, context: IntArray) -> IntArray:
         context_vector = self.context_vector(context)
-        return (
-            self.output_weights.astype(np.int64) @ context_vector
-            + self.output_biases.astype(np.int64) * 16
+        return self.output_weights.astype(
+            np.int64
+        ) @ context_vector + self.output_biases.astype(np.int64) * (
+            1 << self.fractional_bits
         )
 
     def scores(self, context: IntArray) -> FloatArray:

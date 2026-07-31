@@ -115,12 +115,13 @@ the visible `>` cursor; Enter (`$0D`) runs greedy inference from the selected
 two-token context and advances to the next prompt. Previous completions remain
 visible.
 
-EXP-007 uses a Mac-trained 32 KiB image at `$7F00-$FEFF`: 243 tokens, five
-context positions, 22 embedding dimensions, and 32,319 signed Q4.4 parameters.
-The resident program and vocabulary end below `$3F00`. At startup it selects
-the SAM all-RAM map so inference can read weights beneath BASIC ROM. Its
-keyboard adapter briefly restores the ROM map around `POLCAT`, preserves the
-returned key and condition codes, then makes the model visible again.
+EXP-007 uses a Mac-trained model with 243 tokens, five context positions,
+22 embedding dimensions, and 32,319 signed Q2.2 parameters. Two parameters are
+packed into each byte so the 16,160-byte transport image and resident program
+both load below `$7F00`. Startup masks interrupts, selects the SAM all-RAM map,
+and expands the parameters to signed bytes at `$8000-$FE3E`. Its keyboard
+adapter briefly restores the ROM map and interrupt environment around `POLCAT`,
+then masks interrupts before making the model visible again.
 Punctuation is a real token in both the reference and 6809 parsers. Accepted
 punctuation attaches to the preceding word and leaves one separator ready for
 the next word.
