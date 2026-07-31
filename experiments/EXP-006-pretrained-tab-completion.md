@@ -126,7 +126,8 @@ This creates ignored development artifacts under `build/exp006/`:
 - `vocabulary.txt` — the ordered 178-token vocabulary;
 - `manifest.json` — shapes, offsets, checksum, range proof, and workload;
 - `test-vectors.json` — contexts and expected integer rankings;
-- `model_data.inc` — assembly constants for parity tests.
+- `model_data.inc` — assembly constants and vocabulary strings;
+- `model_image.inc` — generated model bytes for the combined CoCo executable.
 
 The exported image SHA-256 is
 `a9c224bd3acd2a9b969189cde2878394558927a81accbd2c4a2a5f68aa3ff4b4`.
@@ -148,10 +149,55 @@ The direct simulator verifies:
 
 - all nine context-vector bytes for `PRESS TAB TO`;
 - the three expected token identifiers for `COMPLETE`, `ACCEPT`, and `STOP`;
-- 36,183 executed instructions for the complete test program.
+- 37,246 executed instructions for the prefix-aware prediction test.
 
 The simulator is not cycle-accurate, so this is parity and instruction-count
 evidence, not a stock-CoCo latency measurement.
+
+## Interactive workbench
+
+The first CoCo UI is now implemented. Run it visibly with:
+
+```sh
+make xroar-exp6
+```
+
+The 32×16 screen contains:
+
+- a two-row phrase editor;
+- three reverse-field model suggestions;
+- visible controls for prediction, selection, acceptance, deletion, and reset;
+- the model's 178-word vocabulary and four-word context;
+- the explicit disclosure `MAC TRAINS / COCO PREDICTS`.
+
+The original CoCo keyboard has no key labelled Tab. Its Right Arrow produces
+control code 9, the code conventionally used for Tab, so the screen labels the
+action `RIGHT/TAB`. Right Arrow predicts when no suggestions are visible and
+accepts the selected word when they are. Up and Down choose among suggestions,
+Enter also accepts, Left Arrow erases, and Clear restarts the editor.
+
+Typed text is black-on-green. All three model-generated suggestions use the
+green-on-dark reverse field, preserving the visual convention established by
+EXP-004 and EXP-005.
+
+Completed, space-terminated words are looked up in the fixed vocabulary and
+reassembled into the model's four-token context on every prediction. The final
+unterminated word is treated as a prefix and masks incompatible output tokens.
+This reparsing keeps the hidden context honest after deletion or reset.
+
+Automated workbench evidence:
+
+```sh
+make workbench-test-exp6
+make xroar-test-exp6
+```
+
+The direct test enters `PRESS TAB TO C`, verifies the normal-field input, uses
+`C` as a prefix, renders reverse-field `COMPLETE`, accepts it, appends a space,
+and returns to editing. It covers screen setup, parsing, prefix masking,
+prediction, rendering, and acceptance. XRoar separately verifies that the
+combined program and 8 KiB pretrained image load under the validated Color
+BASIC ROMs and reach the keyboard loop.
 
 ## Conclusion
 
@@ -160,12 +206,12 @@ conjunctive and failed.
 
 The more important task-level result is promising: a quantized 8 KiB neural
 model saves 58.8% of held-out word keystrokes, beats both baselines, and now has
-a bit-exact 6809 inference core. It is an engineering prototype, not yet a
-presentation experiment.
+a bit-exact 6809 inference core and interactive XRoar workbench. It remains an
+engineering prototype rather than a presentation experiment because physical
+keyboard behaviour and stock-rate latency are not measured, and the original
+quality gate still failed.
 
-The next step is an interactive CoCo workbench that types a phrase, invokes
-the predictor with Tab, and cycles the three prefix-compatible suggestions.
-It should not enter the `make present` menu until XRoar verifies the interaction
-and timing. Before calling the quality result a success, either define a
-task-focused acceptance criterion in a follow-up experiment or revise the
-corpus and vocabulary without rewriting this failed hypothesis.
+Before adding it to `make present`, exercise the editor on the intended CoCo 1
+and CoCo 3, measure Right-Arrow-to-suggestion latency, and decide whether to
+define a task-focused acceptance criterion in a follow-up experiment or revise
+the corpus and vocabulary without rewriting this failed hypothesis.

@@ -59,5 +59,6 @@ been timed on physical stock-rate hardware.
 EXP-001 through EXP-003 remain recorded as architectural evidence, but are no
 longer in the runnable presentation menu. Presenter output deliberately shows
 conclusions rather than dumping every sample. The recorded evidence remains
-available for deeper inspection. EXP-006 remains outside the menu until its
-interactive CoCo workbench and timing are verified.
+available for deeper inspection. EXP-006 now has an interactive XRoar
+workbench, but remains outside the menu until physical keyboard behaviour,
+stock-rate latency, and its task-focused quality criterion are resolved.

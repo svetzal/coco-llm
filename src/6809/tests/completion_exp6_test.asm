@@ -6,6 +6,7 @@ start
         lds     #$5f00
         ldd     #EXP6_MODEL_BASE
         std     exp6_position_base
+        clr     exp6_prefix_length
         ldx     #exp6_test_context
         ldu     #exp6_current_context
         ldd     ,x++

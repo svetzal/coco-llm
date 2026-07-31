@@ -809,12 +809,20 @@ Then reveal what is absent: inference ranks logits directly. Softmax is needed
 to turn scores into probabilities for training and sampling, but it cannot
 change which score is largest.
 
+The first workbench now fits the complete interaction on the CoCo's 32×16
+screen. Typed text is black-on-green, while three model suggestions are
+green-on-dark. Right Arrow serves as the original keyboard's Tab-equivalent:
+it predicts, then accepts. Up and Down choose; Enter also accepts; Left erases;
+Clear restarts. The bottom of the screen says `MAC TRAINS / COCO PREDICTS`, so
+the practical improvement never obscures where training happened.
+
 This branch is not yet in `make present`. Its frozen experiment saved 58.8% of
-held-out word keystrokes and passed quantization parity, but missed its 70%
-top-three target at 59.3%. Add it only after the interactive workbench and
-stock-rate latency are verified. The failed stretch criterion is useful
-presentation material in its own right: we declared success before looking,
-then let evidence constrain the claim.
+held-out word keystrokes and passed quantization and XRoar interaction parity,
+but missed its 70% top-three target at 59.3%. Add it only after physical
+keyboard behaviour and stock-rate latency are verified and the quality
+decision is explicit. The failed stretch criterion is useful presentation
+material in its own right: we declared success before looking, then let
+evidence constrain the claim.
 
 ## Presentation stance
 

@@ -6,10 +6,11 @@ COCO_ROM_ARCHIVE ?= $(HOME)/OneDrive/CoCo/MAME/roms/cocoe.zip
 COCO_BASIC_ROM := build/roms/bas11.rom
 COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 
-.PHONY: test reference-test asm-test model-test model-test-exp6 coco-bin \
+.PHONY: test reference-test asm-test model-test model-test-exp6 \
+	workbench-test-exp6 coco-bin \
 	xroar-test xroar \
 	model-test-exp5 coco-bin-exp5 xroar-test-exp5 xroar-exp5 exp006-model \
-	present tools
+	coco-bin-exp6 xroar-test-exp6 xroar-exp6 present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -31,7 +32,8 @@ present:
 exp006-model:
 	$(UV) run python tools/export_exp_006.py
 
-test: reference-test asm-test model-test model-test-exp5 model-test-exp6
+test: reference-test asm-test model-test model-test-exp5 model-test-exp6 \
+	workbench-test-exp6
 
 reference-test:
 	$(UV) sync
@@ -51,9 +53,14 @@ model-test-exp5: build/model-exp5-test-runner.asm $(SIM6809)
 model-test-exp6: build/model-exp6-test-runner.asm $(SIM6809)
 	$(SIM6809) --perf --run $<
 
+workbench-test-exp6: build/workbench-exp6-test-runner.asm $(SIM6809)
+	$(SIM6809) --perf --run $<
+
 coco-bin: build/coco-llm.bin
 
 coco-bin-exp5: build/coco-llm-exp5.bin
+
+coco-bin-exp6: build/coco-llm-exp6.bin
 
 xroar-test: build/coco-llm.bin build/coco-llm.sym build/roms/.coco1-roms
 	$(UV) run python tools/test_xroar.py \
@@ -84,6 +91,22 @@ xroar-exp5: build/coco-llm-exp5.bin build/roms/.coco1-roms
 	$(XROAR) -machine cocous -ram 32 \
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
 		-ratelimit -run build/coco-llm-exp5.bin
+
+xroar-test-exp6: build/coco-llm-exp6.bin build/coco-llm-exp6.sym \
+		build/roms/.coco1-roms
+	$(UV) run python tools/test_xroar.py \
+		--xroar $(XROAR) --binary build/coco-llm-exp6.bin \
+		--basic-rom $(COCO_BASIC_ROM) \
+		--extended-basic-rom $(COCO_EXTBASIC_ROM) \
+		--symbols build/coco-llm-exp6.sym \
+		--trap-symbol exp6_input_loop
+
+xroar-exp6: build/coco-llm-exp6.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-llm-exp6.bin
 
 build/smul8-test.bin: src/6809/tests/smul8_test.asm
 	mkdir -p build
@@ -144,8 +167,27 @@ build/model-exp6-test-runner.asm: build/model-exp6-test.bin \
 		--manifest build/exp006/manifest.json \
 		--test-vectors build/exp006/test-vectors.json
 
+build/workbench-exp6-test.bin: src/6809/tests/completion_ui_exp6_test.asm \
+		src/6809/experiments/experiment_006.asm \
+		src/6809/completion_inference.asm src/6809/completion_screen.asm \
+		src/6809/completion_workbench.asm build/exp006/model_data.inc
+	lwasm --6809 --format=raw --symbol-dump=build/workbench-exp6-test.sym \
+		--output=$@ $<
+
+build/workbench-exp6-test-runner.asm: build/workbench-exp6-test.bin \
+		tools/make_6809_test_runner.py build/exp006/weights.bin \
+		build/exp006/manifest.json build/exp006/test-vectors.json
+	$(UV) run python tools/make_6809_test_runner.py \
+		--binary build/workbench-exp6-test.bin \
+		--symbols build/workbench-exp6-test.sym \
+		--output $@ --experiment 6 \
+		--weights build/exp006/weights.bin \
+		--manifest build/exp006/manifest.json \
+		--test-vectors build/exp006/test-vectors.json
+
 build/exp006/model_data.inc build/exp006/weights.bin \
-		build/exp006/manifest.json build/exp006/test-vectors.json: \
+		build/exp006/manifest.json build/exp006/test-vectors.json \
+		build/exp006/model_image.inc: \
 		tools/export_exp_006.py src/reference/completion_lm.py \
 		experiments/data/EXP-006-completion-training.txt
 	$(UV) run python tools/export_exp_006.py
@@ -170,6 +212,21 @@ build/coco-llm-exp5.sym: src/6809/coco_llm_exp5.asm \
 		$(6809_COMMON_SOURCES) $(6809_EXP005_SOURCES) build/model_data_exp5.inc
 	lwasm --6809 --format=raw --symbol-dump=build/coco-llm-exp5.sym \
 		--output=build/coco-llm-exp5.raw $<
+
+build/coco-llm-exp6.bin: src/6809/coco_llm_exp6.asm \
+		src/6809/experiments/experiment_006.asm \
+		src/6809/completion_inference.asm src/6809/completion_screen.asm \
+		src/6809/completion_workbench.asm build/exp006/model_data.inc \
+		build/exp006/model_image.inc
+	lwasm --6809 --format=decb --output=$@ $<
+
+build/coco-llm-exp6.sym: src/6809/coco_llm_exp6.asm \
+		src/6809/experiments/experiment_006.asm \
+		src/6809/completion_inference.asm src/6809/completion_screen.asm \
+		src/6809/completion_workbench.asm build/exp006/model_data.inc
+	lwasm --6809 --define=DIRECT_TEST=1 --format=raw \
+		--symbol-dump=build/coco-llm-exp6.sym \
+		--output=build/coco-llm-exp6.raw $<
 
 build/roms/.coco1-roms: $(COCO_ROM_ARCHIVE)
 	mkdir -p build/roms

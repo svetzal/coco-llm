@@ -92,10 +92,40 @@ exp6_score_dimension
         dec     exp6_dimensions_remaining
         bne     exp6_score_dimension
         stx     exp6_weight_pointer
+        lbsr    exp6_candidate_matches_prefix
+        beq     exp6_score_skipped
         lbsr    exp6_consider_score
+exp6_score_skipped
         inc     exp6_output_index
         dec     exp6_outputs_remaining
         bne     exp6_score_output
+        rts
+
+; Return non-zero when the current output token begins with the typed prefix.
+; An empty prefix permits every lexical token.
+exp6_candidate_matches_prefix
+        ldb     exp6_prefix_length
+        beq     exp6_prefix_matches
+        lda     exp6_output_index
+        pshs    b
+        ldb     #2
+        mul
+        ldx     #exp6_token_pointers
+        leax    d,x
+        ldx     ,x
+        puls    b
+        ldu     exp6_prefix_pointer
+exp6_compare_prefix
+        lda     ,u+
+        cmpa    ,x+
+        bne     exp6_prefix_mismatch
+        decb
+        bne     exp6_compare_prefix
+exp6_prefix_matches
+        lda     #1
+        rts
+exp6_prefix_mismatch
+        clra
         rts
 
 ; Insert the current signed 16-bit accumulator into a descending top-three.
@@ -174,3 +204,5 @@ exp6_outputs_remaining     rmb     1
 exp6_output_index          rmb     1
 exp6_factor_a              rmb     1
 exp6_factor_b              rmb     1
+exp6_prefix_pointer        rmb     2
+exp6_prefix_length         rmb     1
