@@ -813,8 +813,10 @@ The first workbench now fits the complete interaction on the CoCo's 32×16
 screen. Typed text is black-on-green, while three model suggestions are
 green-on-dark. Right Arrow serves as the original keyboard's Tab-equivalent:
 it predicts, then accepts. Up and Down choose; Enter also accepts; Left erases;
-Clear restarts. The bottom of the screen says `MAC TRAINS / COCO PREDICTS`, so
-the practical improvement never obscures where training happened.
+Clear restarts. The last row identifies the 178-word vocabulary and four-word
+context. The presenter must state before launching it that the Mac trained the
+weights and the CoCo is performing inference; the practical improvement must
+not obscure where training happened.
 
 This branch is not yet in `make present`. Its frozen experiment saved 58.8% of
 held-out word keystrokes and passed quantization and XRoar interaction parity,

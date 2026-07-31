@@ -5,8 +5,8 @@
 
 EXP6_SCREEN             equ     $0400
 EXP6_INPUT_SCREEN       equ     EXP6_SCREEN+64
-EXP6_SUGGESTION_SCREEN  equ     EXP6_SCREEN+288
-EXP6_STATUS_SCREEN      equ     EXP6_SCREEN+480
+EXP6_SUGGESTION_SCREEN  equ     EXP6_SCREEN+192
+EXP6_STATUS_SCREEN      equ     EXP6_SCREEN+320
 
 exp6_initialize_screen
         ldx     #EXP6_SCREEN
@@ -30,23 +30,17 @@ exp6_fill_title
         ldx     #EXP6_SCREEN+32
         ldu     #exp6_message_type
         lbsr    exp6_print_normal
-        ldx     #EXP6_SCREEN+128
+        ldx     #EXP6_SCREEN+384
         ldu     #exp6_message_predict
         lbsr    exp6_print_normal
-        ldx     #EXP6_SCREEN+160
+        ldx     #EXP6_SCREEN+416
         ldu     #exp6_message_choose
         lbsr    exp6_print_normal
-        ldx     #EXP6_SCREEN+192
-        ldu     #exp6_message_edit
-        lbsr    exp6_print_normal
-        ldx     #EXP6_SCREEN+256
+        ldx     #EXP6_SCREEN+160
         ldu     #exp6_message_suggestions
         lbsr    exp6_print_normal
-        ldx     #EXP6_SCREEN+416
+        ldx     #EXP6_SCREEN+480
         ldu     #exp6_message_shape
-        lbsr    exp6_print_normal
-        ldx     #EXP6_SCREEN+448
-        ldu     #exp6_message_roles
         lbsr    exp6_print_normal
         lbsr    exp6_draw_input
         rts
@@ -120,8 +114,7 @@ exp6_suggestion_blank
         sta     exp6_suggestions_visible
         rts
 
-exp6_show_status
-        pshs    u
+exp6_clear_status_line
         ldx     #EXP6_STATUS_SCREEN
         lda     #$60
         ldb     #32
@@ -129,6 +122,11 @@ exp6_clear_status
         sta     ,x+
         decb
         bne     exp6_clear_status
+        rts
+
+exp6_show_status
+        pshs    u
+        lbsr    exp6_clear_status_line
         ldx     #EXP6_STATUS_SCREEN
         puls    u
         lbsr    exp6_print_normal
@@ -169,25 +167,16 @@ exp6_message_type
         fcc     "TYPE A PHRASE"
         fcb     0
 exp6_message_predict
-        fcc     "RIGHT/TAB PREDICTS OR ACCEPTS"
+        fcc     "RIGHT/TAB PREDICTS/ACCEPTS"
         fcb     0
 exp6_message_choose
-        fcc     "UP/DOWN CHOOSE  ENTER ACCEPT"
-        fcb     0
-exp6_message_edit
-        fcc     "LEFT ERASES  CLEAR RESTARTS"
+        fcc     "UP/DOWN CHOOSE LEFT ERASE CLEAR"
         fcb     0
 exp6_message_suggestions
         fcc     "SUGGESTIONS"
         fcb     0
 exp6_message_shape
         fcc     "178 WORDS / 4 WORD CONTEXT"
-        fcb     0
-exp6_message_roles
-        fcc     "MAC TRAINS / COCO PREDICTS"
-        fcb     0
-exp6_message_ready
-        fcc     "READY"
         fcb     0
 exp6_message_unknown
         fcc     "UNKNOWN WORD"

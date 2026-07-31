@@ -167,8 +167,7 @@ The 32×16 screen contains:
 - a two-row phrase editor;
 - three reverse-field model suggestions;
 - visible controls for prediction, selection, acceptance, deletion, and reset;
-- the model's 178-word vocabulary and four-word context;
-- the explicit disclosure `MAC TRAINS / COCO PREDICTS`.
+- the model's 178-word vocabulary and four-word context on the final row.
 
 The original CoCo keyboard has no key labelled Tab. Its Right Arrow produces
 control code 9, the code conventionally used for Tab, so the screen labels the

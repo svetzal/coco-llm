@@ -19,8 +19,6 @@ exp6_show_workbench
         clr     exp6_selected_suggestion
         clr     exp6_prefix_length
         lbsr    exp6_initialize_screen
-        ldu     #exp6_message_ready
-        lbsr    exp6_show_status
 exp6_input_loop
         jsr     [EXP6_POLCAT]
         beq     exp6_input_loop
@@ -63,8 +61,7 @@ exp6_append_typed_character
         lbsr    exp6_append_character
         lbcs    exp6_input_loop
         lbsr    exp6_draw_input
-        ldu     #exp6_message_ready
-        lbsr    exp6_show_status
+        lbsr    exp6_clear_status_line
         lbra    exp6_input_loop
 
 exp6_key_left
@@ -77,8 +74,7 @@ exp6_key_left
         abx
         clr     ,x
         lbsr    exp6_draw_input
-        ldu     #exp6_message_ready
-        lbsr    exp6_show_status
+        lbsr    exp6_clear_status_line
         lbra    exp6_input_loop
 
 exp6_key_clear
@@ -86,8 +82,7 @@ exp6_key_clear
         clr     exp6_input_buffer
         lbsr    exp6_hide_suggestions
         lbsr    exp6_draw_input
-        ldu     #exp6_message_ready
-        lbsr    exp6_show_status
+        lbsr    exp6_clear_status_line
         lbra    exp6_input_loop
 
 exp6_key_complete
@@ -275,8 +270,7 @@ exp6_accept_space
 exp6_accept_done
         lbsr    exp6_hide_suggestions
         lbsr    exp6_draw_input
-        ldu     #exp6_message_ready
-        lbsr    exp6_show_status
+        lbsr    exp6_clear_status_line
         rts
 
 ; Append A to the editor buffer. Carry reports a full buffer.
