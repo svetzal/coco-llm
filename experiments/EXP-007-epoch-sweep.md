@@ -3,7 +3,8 @@
 ## Status
 
 Complete and reproducible. This side experiment measures the deployed EXP-007
-architecture at eight training durations without changing the runnable model.
+architecture at eight training durations without changing its weights. The UI
+mistake exposed by the experiment has been corrected.
 
 ## Question
 
@@ -55,10 +56,10 @@ depends on the job we ask the model to do.
 ## Why punctuation appears after a period
 
 EXP-007 trains `<END>` as the target after the terminal punctuation in every
-sentence. The 6809 popover intentionally excludes token zero, which is
-`<END>`, because it is not a printable word. That policy is harmless in the
-middle of a sentence, but misleading at its end: it hides the model's stop
-decision and displays the highest-scoring remaining token instead.
+sentence. The original 6809 popover excluded token zero, which is `<END>`,
+because it is not an ordinary printable word. That policy was harmless in the
+middle of a sentence, but misleading at its end: it hid the model's stop
+decision and displayed the highest-scoring remaining token instead.
 
 At 40 epochs, the Q2.2 model ranks `<END>` first for 30 of 31 held-out sentence
 boundaries. For the 26 sentences ending in a period, it ranks `<END>` first 25
@@ -88,7 +89,8 @@ evidence-selected optimum. Twenty epochs is the best candidate when top-three
 suggestion quality is the priority. The runnable model remains at 40 epochs
 until that product choice is made explicitly.
 
-The punctuation symptom should be treated as an interface-policy lesson. A
-future UI change can interpret `<END>` as “offer no continuation” or visibly
-offer a stop/reset action instead of silently substituting the runner-up. The
-model is telling us it is finished. We should let people see that.
+The punctuation symptom is an interface-policy lesson. The corrected workbench
+now includes `<END>` in the ranked popover. Accepting it changes no sentence
+text, removes any pending separator, closes the popover, and displays
+`END OF PHRASE`. The model is telling us it is finished, and now people can see
+that decision directly.

@@ -124,7 +124,10 @@ adapter briefly restores the ROM map and interrupt environment around `POLCAT`,
 then masks interrupts before making the model visible again.
 Punctuation is a real token in both the reference and 6809 parsers. Accepted
 punctuation attaches to the preceding word and leaves one separator ready for
-the next word.
+the next word. `<END>` is also a visible ranked suggestion. Accepting it
+removes that pending separator, leaves the sentence unchanged, and displays
+`END OF PHRASE` rather than substituting a lower-ranked word or punctuation
+mark.
 
 The original two-MUL signed 8×16 routine remains on EXP-004's hot path.
 EXP-005's wider training data eventually creates context-vector values outside

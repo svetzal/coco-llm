@@ -21,11 +21,12 @@ exp7_ui_test_start
         lbne    exp7_ui_test_failed
         inc     exp7_ui_stage
 
-        ; PRESS TAB TO plus a trailing separator recreates the exported
-        ; five-token test vector and produces the bit-exact ranking.
+        ; A completed sentence recreates the exported five-token test vector.
+        ; <END> is token zero, ranks first, and is visibly rendered rather than
+        ; being confused with the old "no suggestion" sentinel.
         ldx     #exp7_ui_test_phrase
         ldu     #completion_input_buffer
-        ldb     #13
+        ldb     #16
         stb     completion_input_length
 exp7_ui_copy_phrase
         lda     ,x+
@@ -43,7 +44,24 @@ exp7_ui_copy_phrase
         lda     exp7_top_three_token
         cmpa    exp7_expected_top_three+2
         lbne    exp7_ui_test_failed
-        lbsr    completion_hide_suggestions
+        lda     completion_suggestion_count
+        cmpa    #3
+        lbne    exp7_ui_test_failed
+        tst     completion_suggestions_visible
+        lbeq    exp7_ui_test_failed
+        ldx     completion_popover_origin
+        leax    2,x
+        ldd     ,x
+        cmpd    #$3c05                 ; reverse-field "<E"
+        lbne    exp7_ui_test_failed
+        clr     completion_selected_suggestion
+        lbsr    completion_policy_apply_suggestion
+        lda     completion_input_length
+        cmpa    #16
+        lbne    exp7_ui_test_failed
+        ldd     COMPLETION_STATUS_SCREEN
+        cmpd    #$454e                 ; normal-field "EN"
+        lbne    exp7_ui_test_failed
         inc     exp7_ui_stage
 
         ; Attached punctuation is tokenized independently and occupies the
@@ -138,7 +156,7 @@ exp7_ui_test_failed
         swi
 
 exp7_ui_test_phrase
-        fcc     "PRESS TAB TO "
+        fcc     "RUN THE PROGRAM."
 exp7_ui_punctuation_phrase
         fcc     "BETTER DATA: "
 exp7_ui_model_space

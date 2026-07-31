@@ -866,14 +866,20 @@ opportunity? It is certainly a chance to explain why we measure the behaviour
 we care about rather than worship the number the optimizer gives us.
 
 There is another lovely reveal hiding in the punctuation bug. After a period,
-the CoCo often offers `?` or `,`. Is the model really asking for two punctuation
-marks? Usually, no. At 40 epochs, `<END>` is its first choice at 30 of 31
-held-out sentence boundaries. The popover hides `<END>` and shows the runner-up.
-After the 26 periods, that runner-up is `?` six times and `,` once.
+the CoCo initially offered `?` or `,`. Was the model really asking for two
+punctuation marks? Usually, no. At 40 epochs, `<END>` is its first choice at 30
+of 31 held-out sentence boundaries. The first popover hid `<END>` and showed
+the runner-up. After the 26 periods, that runner-up is `?` six times and `,`
+once.
 
 So the model said “stop,” and our interface said “pick something else.” Think
 about that a minute. Some apparent model failures are product-policy failures,
 and hiding the mechanism makes it harder for people to tell the difference.
+
+Then show the correction. `<END>` becomes a real popover option. Accepting it
+adds no strange marker to the sentence; the workbench closes the popover and
+says `END OF PHRASE`. We did not retrain the model. We stopped lying about what
+it predicted. Is that an opportunity? Absolutely.
 
 ## Presentation stance
 

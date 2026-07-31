@@ -52,16 +52,16 @@ exp7_add_dimension
         std     exp7_top_one_score
         std     exp7_top_two_score
         std     exp7_top_three_score
-        clr     exp7_top_one_token
-        clr     exp7_top_two_token
-        clr     exp7_top_three_token
-        ldx     #EXP7_OUTPUT_WEIGHTS+EXP7_EMBED_DIMS
+        lda     #$ff
+        sta     exp7_top_one_token
+        sta     exp7_top_two_token
+        sta     exp7_top_three_token
+        ldx     #EXP7_OUTPUT_WEIGHTS
         stx     exp7_weight_pointer
-        ldx     #EXP7_OUTPUT_BIASES+1
+        ldx     #EXP7_OUTPUT_BIASES
         stx     exp7_bias_pointer
-        lda     #1
-        sta     exp7_output_index
-        lda     #EXP7_VOCAB_SIZE-1
+        clr     exp7_output_index
+        lda     #EXP7_VOCAB_SIZE
         sta     exp7_outputs_remaining
 exp7_score_output
         ldx     exp7_bias_pointer

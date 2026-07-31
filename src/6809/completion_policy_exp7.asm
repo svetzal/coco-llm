@@ -126,14 +126,17 @@ completion_policy_predict_input
         ldd     #EXP7_MODEL_BASE
         std     exp7_position_base
         lbsr    exp7_predict_top_three
-        tst     exp7_top_one_token
+        lda     exp7_top_one_token
+        cmpa    #$ff
         beq     exp7_predict_no_match
         lda     #3
         sta     completion_suggestion_count
-        tst     exp7_top_three_token
+        lda     exp7_top_three_token
+        cmpa    #$ff
         bne     exp7_suggestion_count_ready
         dec     completion_suggestion_count
-        tst     exp7_top_two_token
+        lda     exp7_top_two_token
+        cmpa    #$ff
         bne     exp7_suggestion_count_ready
         dec     completion_suggestion_count
 exp7_suggestion_count_ready
@@ -312,6 +315,7 @@ completion_policy_apply_suggestion
         abx
         lda     ,x
         sta     exp7_accepted_token
+        beq     exp7_accept_end
         ldb     #2
         mul
         ldu     #exp7_token_pointers
@@ -352,6 +356,18 @@ exp7_accept_punctuation
         bcs     exp7_accept_done
         lda     #$20
         lbsr    completion_append_character
+        bra     exp7_accept_done
+
+; Token zero is the model's visible stop decision. It changes no text, removes
+; any pending model-supplied separator, and explains the action in the status
+; area instead of silently substituting the second-ranked token.
+exp7_accept_end
+        lbsr    exp7_remove_trailing_space
+        lbsr    completion_hide_suggestions
+        lbsr    completion_draw_input
+        ldu     #exp7_message_end
+        lbsr    completion_show_status
+        rts
 
 exp7_accept_done
         lbsr    completion_hide_suggestions
@@ -401,6 +417,9 @@ exp7_message_unknown
         fcb     0
 exp7_message_no_match
         fcc     "NO MATCHING TOKEN"
+        fcb     0
+exp7_message_end
+        fcc     "END OF PHRASE"
         fcb     0
 
 exp7_word_pointer       rmb     2

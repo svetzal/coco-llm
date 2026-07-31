@@ -168,6 +168,7 @@ def main() -> None:
     )
 
     prompts = [
+        ["RUN", "THE", "PROGRAM", "."],
         ["PRESS", "TAB", "TO"],
         ["THE", "COMMODORE", "64", "IS"],
         ["THE", "MODEL", "CAN"],
@@ -185,7 +186,7 @@ def main() -> None:
             range(len(vocabulary)),
             key=lambda index: (-int(integer_scores[index]), index),
         )
-        ranking = [index for index in ranking if index != boundary][:3]
+        ranking = ranking[:3]
         tests.append(
             {
                 "prompt": " ".join(words),

@@ -127,11 +127,13 @@ Each experiment supplies narrow policy hooks for initialization, keyboard
 input, accepted typed characters, prediction, and suggestion insertion.
 EXP-007's policy will:
 
-- display `255 TOKENS / 5 TOKEN CONTEXT` on the bottom row;
+- display `243 TOKENS / 5 TOKEN CONTEXT` on the bottom row;
 - accept the selected punctuation characters as input;
 - tokenize punctuation independently from words;
 - attach punctuation without a leading space while retaining normal spacing
   between words;
+- present `<END>` as a ranked stop option instead of silently displaying the
+  next lexical token;
 - call the expanded EXP-007 scorer; and
 - read the keyboard safely while BASIC ROM is hidden by the all-RAM map.
 
@@ -218,7 +220,8 @@ the verified Tandy ROMs reaches the editor after the complete load, map switch,
 and unpack path. The keyboard adapter briefly restores both the ROM map and its
 interrupt environment for `POLCAT`, then masks interrupts before exposing the
 model again. Direct-simulator tests prove bit-exact top-three ranking,
-five-token parsing, and punctuation attachment.
+five-token parsing, punctuation attachment, visible `<END>` rendering, and
+stop-token acceptance.
 
 Run it:
 
