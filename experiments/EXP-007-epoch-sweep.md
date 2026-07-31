@@ -3,8 +3,9 @@
 ## Status
 
 Complete and reproducible. This side experiment measures the deployed EXP-007
-architecture at eight training durations without changing its weights. The UI
-mistake exposed by the experiment has been corrected.
+architecture at several training durations. It now records both the original
+150-sentence corpus and the expanded 423-sentence corpus. The UI mistake
+exposed by the first sweep has been corrected.
 
 ## Question
 
@@ -20,11 +21,10 @@ model is quantized to the signed Q2.2 representation used by the CoCo.
 
 ## Procedure
 
-Each row starts a fresh deterministic training run with seed 6809. Every run
-uses the same 150 training sentences, 31 holdout sentences, 243-token
-vocabulary, five-token context, 22 embedding dimensions, learning rate 0.01,
-and batch size 32. The model is evaluated both at full precision and after the
-signed Q2.2 quantization used by EXP-007.
+Each row starts a fresh deterministic training run with seed 6809. Within a
+sweep, every run uses the same corpus, vocabulary, five-token context, learning
+rate 0.01, and batch size 32. The model is evaluated both at full precision and
+after the signed Q2.2 quantization used by EXP-007.
 
 Run the sweep with:
 
@@ -35,7 +35,10 @@ make exp007-epoch-sweep
 The command writes its complete machine-readable evidence to
 `build/exp007/epoch-sweep.json`.
 
-## Results
+## Baseline corpus results
+
+The first sweep used 150 training sentences, 31 holdout sentences, 243 tokens,
+and 22 embedding dimensions.
 
 | Epochs | Train loss | Float top 3 | Q2.2 top 1 | Q2.2 top 3 | Saved |
 | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -52,6 +55,34 @@ Training loss falls at every checkpoint. Held-out quality does not. Twenty
 epochs produces the strongest Q2.2 top-three result, while 40 narrowly wins
 top-one accuracy and 160 narrowly wins keystroke savings. “Best” therefore
 depends on the job we ask the model to do.
+
+## Expanded corpus results
+
+The current sweep uses 423 unique training sentences, 61 unique holdout
+sentences, all 255 available token identifiers, and 21 embedding dimensions.
+No holdout sentence appears in training and every holdout token is known.
+
+| Epochs | Train loss | Float top 3 | Q2.2 top 1 | Q2.2 top 3 | Saved |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 4.144 | 40.9% | 25.2% | 40.7% | 40.8% |
+| 2 | 2.861 | 52.9% | 31.1% | 52.0% | 47.4% |
+| 3 | 2.205 | 58.1% | 36.5% | 58.1% | 49.4% |
+| 4 | 1.768 | 59.5% | 38.4% | **60.2%** | 51.5% |
+| 5 | 1.504 | **61.2%** | **39.5%** | 60.0% | 51.7% |
+| 6 | 1.324 | 58.8% | 37.6% | 57.9% | **52.0%** |
+| 8 | 1.137 | 60.2% | 34.1% | 56.2% | 49.0% |
+| 10 | 1.062 | 59.1% | 35.3% | 55.3% | 49.6% |
+| 20 | 0.970 | 58.4% | 37.9% | 56.9% | 51.3% |
+| 40 | 0.930 | 56.7% | 33.2% | 51.8% | 49.8% |
+| 80 | 0.917 | 53.9% | 35.5% | 56.2% | 50.1% |
+| 160 | **0.907** | 49.9% | 26.1% | 46.4% | 46.7% |
+
+Four epochs narrowly wins quantized top-three accuracy. Five is within
+0.2 percentage points, while winning top-one accuracy and slightly improving
+keystroke savings, so five is the selected runtime default. This is not a
+claim that five is universally optimal. An epoch is a pass through the corpus;
+the larger corpus performs almost three times as many training examples per
+epoch as the baseline.
 
 ## Why punctuation appears after a period
 
@@ -85,9 +116,11 @@ its output weights remain competitive when the stop token is removed.
 ## Conclusion
 
 Forty epochs was a reasonable development checkpoint, but it was not an
-evidence-selected optimum. Twenty epochs is the best candidate when top-three
-suggestion quality is the priority. The runnable model remains at 40 epochs
-until that product choice is made explicitly.
+evidence-selected optimum. On the baseline corpus, 20 epochs produced the best
+top-three result. After the corpus grew, four and five epochs were strongest,
+and the runnable model now uses five. The reversal is part of the lesson:
+“epochs” cannot be compared without also saying how much data each epoch
+contains.
 
 The punctuation symptom is an interface-policy lesson. The corrected workbench
 now includes `<END>` in the ranked popover. Accepting it changes no sentence

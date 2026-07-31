@@ -95,9 +95,9 @@ directly at `$8000` therefore wraps and corrupts the display and resident
 program.
 
 The runnable design quantizes each parameter to a signed Q2.2 nibble and packs
-two parameters per byte. Its 16,160-byte transport image loads below `$8000`
+two parameters per byte. Its 16,193-byte transport image loads below `$8000`
 with the resident program. Startup masks interrupts, selects Type 1, and
-expands the nibbles to signed bytes at `$8000-$FE3E`. Masking matters because
+expands the nibbles to signed bytes at `$8000-$FE80`. Masking matters because
 Type 1 also exposes RAM over the ROM interrupt vectors; an interrupt during
 unpacking would otherwise jump through uninitialized RAM.
 
@@ -127,7 +127,7 @@ Each experiment supplies narrow policy hooks for initialization, keyboard
 input, accepted typed characters, prediction, and suggestion insertion.
 EXP-007's policy will:
 
-- display `243 TOKENS / 5 TOKEN CONTEXT` on the bottom row;
+- display `255 TOKENS / 5 TOKEN CONTEXT` on the bottom row;
 - accept the selected punctuation characters as input;
 - tokenize punctuation independently from words;
 - attach punctuation without a leading space while retaining normal spacing
@@ -186,7 +186,7 @@ The expanded experiment proceeds to 6809 assembly only if:
 - the chosen model fits its declared 32, 40, or 48 KiB image; and
 - stock-rate CoCo 1 latency is measured and explicitly accepted.
 
-## Phase B evidence
+## Phase B baseline evidence
 
 The runnable candidate uses:
 
@@ -222,6 +222,53 @@ interrupt environment for `POLCAT`, then masks interrupts before exposing the
 model again. Direct-simulator tests prove bit-exact top-three ranking,
 five-token parsing, punctuation attachment, visible `<END>` rendering, and
 stop-token acceptance.
+
+This was the first runnable corpus. It is retained as baseline evidence rather
+than rewritten after the experiment changed.
+
+## Expanded conversational corpus
+
+The present runnable model broadens the lesson from isolated slogans and
+commands to short questions, answers, explanations, and alternate sentence
+shapes. It keeps the retro-computing setting while varying brands, hardware,
+actions, and claims. The holdout is separate, contains no duplicate training
+sentence, and uses only vocabulary learned from training.
+
+| Measurement | Result |
+| --- | ---: |
+| Training sentences | 423 |
+| Holdout sentences | 61 |
+| Vocabulary | 255 tokens |
+| Context | 5 tokens |
+| Embedding width | 21 |
+| Parameters | 32,385 |
+| Training epochs | 5 |
+| Quantization | Signed Q2.2 |
+| Scoring multiplies | 5,355 |
+| Holdout top one | 39.5% |
+| Holdout top three | 60.0% |
+| Holdout keystroke savings | 51.7% |
+| Packed transport image | 16,193 bytes |
+| Expanded working model | 32,385 bytes |
+| All-context magnitude | 22 |
+| Observed context magnitude | 16 |
+| Proven score range | -1,060 to 1,015 |
+
+Filling the one-byte token space reduces the embedding from 22 to 21
+dimensions, yet uses nearly the entire 32 KiB weight budget. The harder,
+broader holdout lowers headline accuracy, which is the expected cost of asking
+a more general question. It still clears the original top-three gate by a
+small margin and still misses the 60% keystroke-savings stretch gate.
+
+Because an epoch is one pass through the corpus, expanding from 150 to 423
+training sentences also changes the meaning of the epoch count. A fresh sweep
+selects five epochs for the runnable artifact; later passes continue lowering
+training loss without improving the held-out completion behaviour we care
+about.
+
+The current startup expands the working model at `$8000-$FE80`. The same
+all-RAM loader, ROM-safe keyboard adapter, and direct-simulator parity tests
+remain in use.
 
 Run it:
 

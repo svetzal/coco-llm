@@ -26,6 +26,8 @@ from completion_lm import (
 ROOT = Path(__file__).parents[1]
 TRAINING = ROOT / "experiments" / "data" / "EXP-006-completion-training.txt"
 HOLDOUT = ROOT / "experiments" / "data" / "EXP-006-completion-holdout.txt"
+EXP7_TRAINING = ROOT / "experiments" / "data" / "EXP-007-sentence-training.txt"
+EXP7_HOLDOUT = ROOT / "experiments" / "data" / "EXP-007-sentence-holdout.txt"
 
 
 def completion_data():
@@ -47,6 +49,27 @@ def test_holdout_uses_training_vocabulary() -> None:
         for phrase in holdout
         for word in phrase.split()
         if word not in token_by_text
+    } == set()
+
+
+def test_exp7_corpus_respects_model_and_holdout_boundaries() -> None:
+    training = load_token_sequences(EXP7_TRAINING)
+    holdout = load_token_sequences(EXP7_HOLDOUT)
+    vocabulary, token_by_text = build_sequence_vocabulary(training)
+    training_sequences = {tuple(sequence) for sequence in training}
+    holdout_sequences = {tuple(sequence) for sequence in holdout}
+
+    assert len(training) == 423
+    assert len(holdout) == 61
+    assert len(vocabulary) == 255
+    assert len(training_sequences) == len(training)
+    assert len(holdout_sequences) == len(holdout)
+    assert training_sequences.isdisjoint(holdout_sequences)
+    assert {
+        token
+        for sequence in holdout
+        for token in sequence
+        if token not in token_by_text
     } == set()
 
 

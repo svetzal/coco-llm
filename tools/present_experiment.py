@@ -325,8 +325,8 @@ def run_exp_007() -> dict[str, Any]:
     payload = {
         "experiment": "EXP-007",
         "status": "interactive",
-        "parameters": 32319,
-        "vocabulary": 243,
+        "parameters": 32385,
+        "vocabulary": 255,
         "context": 5,
         "command": "make xroar-exp7",
     }

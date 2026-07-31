@@ -50,7 +50,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--epochs",
         type=comma_separated_epochs,
-        default=[1, 2, 5, 10, 20, 40, 80, 160],
+        default=[1, 2, 3, 4, 5, 6, 8, 10, 20, 40, 80, 160],
     )
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     return parser.parse_args()

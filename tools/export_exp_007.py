@@ -66,7 +66,7 @@ def parse_arguments() -> argparse.Namespace:
         type=Path,
         default=ROOT / "build" / "exp007",
     )
-    parser.add_argument("--epochs", type=int, default=40)
+    parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument(
         "--load-address", type=lambda text: int(text, 0), default=0x8000
     )

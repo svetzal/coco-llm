@@ -830,9 +830,9 @@ declared success before looking, then let evidence constrain the claim.
 
 EXP-007 asks the next question out loud: “The ROM occupies half the address
 space when we read it—but the RAM is still underneath. Is that an
-opportunity?” The Mac trains 32,319 parameters. They travel as 16,160 packed
+opportunity?” The Mac trains 32,385 parameters. They travel as 16,193 packed
 bytes, then the CoCo switches to its all-RAM map and expands them to signed
-working bytes. It ranks 243 possible tokens using five-token context. Periods,
+working bytes. It ranks 255 possible tokens using five-token context. Periods,
 commas, questions, exclamations, colons, and semicolons are tokens now, so the
 audience can watch a word completer become a tiny sentence completer.
 
@@ -840,13 +840,16 @@ That loader is presentation material too. DECB begins in the SAM's 32 KiB
 paged map, so directly loading at `$8000` wraps over lower RAM and paints the
 screen with model bytes. EXP-007 instead loads packed nibbles below `$8000`,
 masks interrupts, enters the contiguous 64 KiB map, and expands them at
-`$8000-$FE3E`. The interrupt mask prevents the newly exposed RAM vectors from
+`$8000-$FE80`. The interrupt mask prevents the newly exposed RAM vectors from
 sending the CPU into model data.
 
 The reveal is not “bigger is intelligent.” It is “more parameters can retain
-more task-specific patterns.” EXP-007 reaches 63.5% top-three accuracy on its
-held-out sentence corpus, but only 54.2% measured keystroke savings. Useful?
-Sometimes. Understanding? No. Think about that a minute.
+more task-specific patterns.” Our first 150-sentence corpus reached 63.5%
+top-three accuracy on 31 held-out sentences, but only 54.2% measured keystroke
+savings. Then we made the question harder: 423 more conversational training
+sentences and 61 held-out sentences. The current model reaches 60.0% top-three
+accuracy and 51.7% savings. Useful? Sometimes. Understanding? No. Think about
+that a minute.
 
 Then ask: “Why 40 epochs?” Fair warning, the honest answer is that we picked a
 number that seemed reasonable. So call the shot and take the shot: train fresh
@@ -865,12 +868,31 @@ not. More training is not the same thing as more useful. Is that an
 opportunity? It is certainly a chance to explain why we measure the behaviour
 we care about rather than worship the number the optimizer gives us.
 
-There is another lovely reveal hiding in the punctuation bug. After a period,
-the CoCo initially offered `?` or `,`. Was the model really asking for two
-punctuation marks? Usually, no. At 40 epochs, `<END>` is its first choice at 30
-of 31 held-out sentence boundaries. The first popover hid `<END>` and showed
-the runner-up. After the 26 periods, that runner-up is `?` six times and `,`
-once.
+Then change the corpus and take the shot again. The vocabulary fills all 255
+one-byte token identifiers. The embedding shrinks from 22 dimensions to 21 so
+the weights still fit. And because one epoch now contains 423 sentences rather
+than 150, the useful part of the curve moves much earlier:
+
+| Epochs | Training loss | Q2.2 top 3 | Saved keystrokes |
+| ---: | ---: | ---: | ---: |
+| 1 | 4.144 | 40.7% | 40.8% |
+| 3 | 2.205 | 58.1% | 49.4% |
+| 4 | 1.768 | **60.2%** | 51.5% |
+| 5 | 1.504 | 60.0% | **51.7%** |
+| 20 | 0.970 | 56.9% | 51.3% |
+| 160 | **0.907** | 46.4% | 46.7% |
+
+Five epochs becomes the runnable choice: almost the best top-three result,
+the best top-one result in the neighbourhood, and slightly better savings than
+four. So what does “40 epochs” tell us by itself? Almost nothing. We have to ask
+how much data was in an epoch and which behaviour we were measuring.
+
+There is another lovely reveal hiding in the original corpus's punctuation
+bug. After a period, the CoCo initially offered `?` or `,`. Was the model really
+asking for two punctuation marks? Usually, no. At 40 epochs, `<END>` was its
+first choice at 30 of 31 held-out sentence boundaries. The first popover hid
+`<END>` and showed the runner-up. After the 26 periods, that runner-up was `?`
+six times and `,` once.
 
 So the model said “stop,” and our interface said “pick something else.” Think
 about that a minute. Some apparent model failures are product-policy failures,

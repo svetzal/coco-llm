@@ -410,7 +410,7 @@ exp7_token_is_punctuation_yes
         rts
 
 exp7_message_shape
-        fcc     "243 TOKENS / 5 TOKEN CONTEXT"
+        fcc     "255 TOKENS / 5 TOKEN CONTEXT"
         fcb     0
 exp7_message_unknown
         fcc     "UNKNOWN WORD"

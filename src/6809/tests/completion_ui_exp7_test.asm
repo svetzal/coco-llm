@@ -14,10 +14,10 @@ exp7_ui_test_start
 
         ; The shared screen is bound to EXP-007's measured model shape.
         ldd     COMPLETION_SCREEN+480
-        cmpd    #$7274                 ; normal-field "24"
+        cmpd    #$7275                 ; normal-field "25"
         lbne    exp7_ui_test_failed
         lda     COMPLETION_SCREEN+482
-        cmpa    #$73                   ; normal-field "3"
+        cmpa    #$75                   ; normal-field "5"
         lbne    exp7_ui_test_failed
         inc     exp7_ui_stage
 
