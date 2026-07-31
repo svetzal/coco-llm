@@ -2,8 +2,14 @@
 
 ## Status
 
-Planned. No implementation exists. This document records the hypothesis,
-gates, and procedure before any code is written.
+Phase A complete and **not supported**. The reference implementation, six
+synthetic players, four baselines, and the prequential harness exist and pass
+their tests. The declared Phase A gate fails: the model beats a memory-matched
+table on two of five structured players, not the required three.
+
+The experiment does not proceed to 6809 assembly. The recorded diagnosis is a
+convergence-rate limit rather than a capacity limit, and the next step is real
+human data rather than more model tuning. See "Phase A result" below.
 
 ## Question
 
@@ -179,6 +185,136 @@ Proceed to 6809 assembly only if all hold:
 
 The context-magnitude and score-range gates carry forward unchanged from
 EXP-007, where they were the constraints that made fixed-point inference safe.
+
+## Phase A result
+
+Run it:
+
+```sh
+make exp008-sweep
+```
+
+The implementation lives in `src/reference/duel_arena.py` and
+`src/reference/mimic_lm.py`, with the sweep in `tools/run_exp_008.py`.
+
+### Selected candidate sizes
+
+Separating input and output vocabularies made every candidate smaller than the
+plan projected. Only the nine move tokens are ever predicted, so the output
+layer has nine rows rather than twenty.
+
+| Layout | Embedding | Parameters | Master bytes | Prediction multiplies |
+| --- | ---: | ---: | ---: | ---: |
+| History | 6 | 333 | 666 | 54 |
+| History | 8 | 441 | 882 | 72 |
+| Situational | 6 | 663 | 1,326 | 54 |
+| Situational | 8 | 881 | 1,762 | 72 |
+
+Prediction costs 54 to 72 multiplies rather than the 120 projected, because
+prediction skips the softmax and ranks nine outputs instead of twenty.
+
+### Headline measurements
+
+Five seeds, 600 ticks per run, scoring the final 200 ticks prequentially. Each
+figure is the best method of its kind, averaged across seeds.
+
+| Player | Uniform | Best table | Best model | Margin |
+| --- | ---: | ---: | ---: | ---: |
+| `RANDOM` | 11.1% | 13.8% | 12.1% | -1.7pp |
+| `ZIGZAG` | 11.1% | 82.2% | 90.1% | +7.9pp |
+| `CIRCLE` | 12.4% | 81.1% | 89.2% | +8.1pp |
+| `FLEE` | 10.6% | 82.1% | 85.8% | +3.7pp |
+| `PANIC` | 9.8% | 58.9% | 56.0% | -2.9pp |
+| `HABIT` | 11.5% | 68.0% | 57.1% | -10.9pp |
+
+| Gate | Result |
+| --- | --- |
+| Beats best table by 5pp on three of five structured players | **FAIL** (2/5) |
+| Does not beat uniform on `RANDOM` beyond noise | PASS (+1.0pp) |
+| Largest candidate within 1,024 parameters | PASS (881) |
+| Context magnitude within signed byte | PASS (61 of 127) |
+| Score range within accumulator width | PASS (-1,694 to 2,013) |
+
+### The result splits along a clean line
+
+The model wins where prediction requires generalizing across situations, and
+loses where a short move history is directly sufficient.
+
+`CIRCLE` and `FLEE` condition on bearing, and the situational layout beat every
+table. `ZIGZAG` is a long fixed pattern, and the model beat even an order-2
+table with backoff. `HABIT` is 70% "repeat the last move", which an order-1
+table of 90 bytes captures immediately and gradient descent must discover, so
+the 666-byte model lost to it by 10.9 points.
+
+This is the theoretically expected shape rather than a surprise. The learned
+representation buys generalization and buys nothing when the task is
+memorizing a small table. Recording it that way is more useful to the
+presentation than a result where the model simply wins.
+
+The situational layout was the better of the two on four of the five
+structured players, which supports the secondary hypothesis even though the
+primary gate failed.
+
+### Diagnosis: convergence rate, not capacity
+
+Two follow-up sweeps distinguish the two explanations. Neither changes the
+synthetic players, because tuning the task until the model wins would destroy
+the evidence.
+
+Extending each run from 600 to 2,400 ticks passes the gate at 3/5, and moves
+every losing player toward the model: `FLEE` +3.7 to +6.8pp, `PANIC` -2.9 to
++0.7pp, `HABIT` -10.9 to -2.1pp. The model therefore has enough capacity; it
+does not have enough time.
+
+Raising the learning rate does not recover that time. Sweeping the update shift
+across 1/16, 1/8, and 1/4 at 600 ticks leaves the gate failing at 2/5, with
+`FLEE` reaching only +4.9pp and `HABIT` still at -8.1pp.
+
+Since 600 ticks is 60 seconds at a 10 Hz decision tick, and 2,400 ticks is four
+minutes, the hypothesis as written — measurable improvement within one minute —
+is not supported by this evidence.
+
+### Two methodology notes worth keeping
+
+The `RANDOM` negative control earned its place twice.
+
+On its first run every method scored 100% on a uniformly random player. The
+uniform baseline had been given the same `XorShift16` seed as the synthetic
+player, and that generator's 16-bit state has a single orbit, so the "baseline"
+was replaying the player's own draws in lock-step. The control caught a harness
+fault before it could produce a publishable number. The baseline now uses an
+independent generator and is documented as a measurement device rather than a
+6809 candidate.
+
+On the learning-rate sweep the control failed at +2.3pp against a 2pp limit.
+That sweep compares 27 model candidates instead of 9, and reporting the best of
+a larger pool inflates the apparent maximum on pure noise. The inflation is the
+finding, not a model property. Any future sweep that widens the candidate pool
+must either hold the control's limit fixed and expect it to trip, or select a
+candidate before scoring it.
+
+### Conclusion and next step
+
+Phase A does not support the hypothesis. The blocking uncertainty has changed
+shape: it is no longer whether the model can learn a move stream, but whether a
+*human* move stream looks more like `HABIT`, where a 90-byte table wins, or
+more like `CIRCLE` and `FLEE`, where the model wins by roughly eight points.
+
+That distinction cannot be settled by more synthetic players. It is an
+empirical question about people, and the synthetic players were authored by the
+same person who wants the model to win, which is exactly the bias the evidence
+loop exists to catch.
+
+The recommended next step is a Mac-side capture tool that records a real person
+dodging a chaser at 10 Hz, then replays that stream through the identical
+harness and predictors. It is small, it needs no 6809 work, and it converts the
+central open question from inference to measurement. Open question 1 was
+already the top of the list before Phase A ran; the result promotes it to the
+blocking item.
+
+Porting to 6809 assembly is deliberately not the next step. A bit-exact port of
+a model that loses to a 90-byte table against the best available human proxy
+would be effort spent ahead of its evidence.
 
 ## Phase B gates: bit-exact 6809
 

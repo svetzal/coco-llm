@@ -451,18 +451,18 @@ def render_html(cards: list[Card], faces: int, label: str, accent: str) -> str:
             parts.append('<div class="card">')
             parts.append('<section class="screen">')
             parts.append('<header class="screen-head">')
-            parts.append('<div>')
+            parts.append("<div>")
             parts.append('<span class="step-label">1 · Current context</span>')
             parts.append(f'<p class="ctx">{html.escape(card.title)}</p>')
-            parts.append('</div>')
+            parts.append("</div>")
             parts.append('<div class="roll">')
             parts.append('<span class="roll-label">')
             parts.append('<span class="step-label">2 · Roll</span>')
-            parts.append(f'<span>1d{faces}</span>')
-            parts.append('</span>')
+            parts.append(f"<span>1d{faces}</span>")
+            parts.append("</span>")
             parts.append(render_d20())
-            parts.append('</div>')
-            parts.append('</header>')
+            parts.append("</div>")
+            parts.append("</header>")
             density = " dense" if len(card.rows) > 9 else ""
             parts.append(f'<table class="distribution{density}">')
             for row in card.rows:
@@ -474,7 +474,7 @@ def render_html(cards: list[Card], faces: int, label: str, accent: str) -> str:
                     "</tr>"
                 )
             parts.append("</table>")
-            parts.append('</section>')
+            parts.append("</section>")
             ending, lookup = footer_parts(card)
             parts.append('<footer class="manual">')
             parts.append('<div class="instruction">')
@@ -484,24 +484,22 @@ def render_html(cards: list[Card], faces: int, label: str, accent: str) -> str:
             if lookup:
                 carry = html.escape(card.carry)
                 rest = html.escape(lookup.split(" + ", 1)[1])
-                parts.append(
-                    f'<div class="next-context"><b>{carry}</b> + {rest}</div>'
-                )
+                parts.append(f'<div class="next-context"><b>{carry}</b> + {rest}</div>')
             else:
                 parts.append('<div class="next-context">No next card</div>')
-            parts.append('</div>')
+            parts.append("</div>")
             if ending:
                 parts.append(f'<div class="ending">{html.escape(ending)}</div>')
             parts.append("</div>")
             parts.append('<div class="brand">')
             parts.append(
                 '<span class="spectrum" aria-hidden="true">'
-                '<i></i><i></i><i></i><i></i><i></i></span>'
+                "<i></i><i></i><i></i><i></i><i></i></span>"
             )
             parts.append('<span class="brand-name">CoCo LLM · Be the model</span>')
             parts.append(f'<span class="deck">{html.escape(label)}</span>')
-            parts.append('</div>')
-            parts.append('</footer>')
+            parts.append("</div>")
+            parts.append("</footer>")
             parts.append("</div>")
         parts.append("</div>")
 
