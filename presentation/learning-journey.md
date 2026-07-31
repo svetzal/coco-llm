@@ -765,6 +765,8 @@ training loop. Run `make present` to see the choices, then follow the room:
 
 - “But does the CoCo actually train?” — `make present EXP=4`
 - “Can my starting words steer it?” — `make present EXP=5`
+- “Can a pretrained model do useful work?” — `make present EXP=6`
+- “What if we use the RAM hidden beneath ROM?” — `make present EXP=7`
 
 EXP-004 is the hardware centerpiece and controls its own pause before
 inference. Do not cue it from the cycle-model runtime projection; rehearse and
@@ -820,13 +822,23 @@ context. The presenter must state before launching it that the Mac trained the
 weights and the CoCo is performing inference; the practical improvement must
 not obscure where training happened.
 
-This branch is not yet in `make present`. Its frozen experiment saved 58.8% of
-held-out word keystrokes and passed quantization and XRoar interaction parity,
-but missed its 70% top-three target at 59.3%. Add it only after physical
-keyboard behaviour and stock-rate latency are verified and the quality
-decision is explicit. The failed stretch criterion is useful presentation
-material in its own right: we declared success before looking, then let
-evidence constrain the claim.
+EXP-006 is now in `make present` as an emulator demonstration. Its frozen
+experiment saved 58.8% of held-out word keystrokes and passed quantization and
+XRoar interaction parity, but missed its 70% top-three target at 59.3%. The
+failed stretch criterion is useful presentation material in its own right: we
+declared success before looking, then let evidence constrain the claim.
+
+EXP-007 asks the next question out loud: “The ROM occupies half the address
+space when we read it—but the RAM is still underneath. Is that an
+opportunity?” The Mac trains 32,319 one-byte parameters. The CoCo switches to
+its all-RAM map and ranks 243 possible tokens using five-token context. Periods,
+commas, questions, exclamations, colons, and semicolons are tokens now, so the
+audience can watch a word completer become a tiny sentence completer.
+
+The reveal is not “bigger is intelligent.” It is “more parameters can retain
+more task-specific patterns.” EXP-007 reaches 66.5% top-three accuracy on its
+held-out sentence corpus, but only 54.2% measured keystroke savings. Useful?
+Sometimes. Understanding? No. Think about that a minute.
 
 ## Presentation stance
 

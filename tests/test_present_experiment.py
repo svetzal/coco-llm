@@ -16,10 +16,16 @@ def test_experiment_aliases_are_easy_to_type() -> None:
     assert normalize_experiment("4") == "EXP-004"
     assert normalize_experiment("EXP-004") == "EXP-004"
     assert normalize_experiment("005") == "EXP-005"
+    assert normalize_experiment("7") == "EXP-007"
 
 
-def test_presentation_experiments_start_with_complete_6809_training() -> None:
-    assert list(EXPERIMENTS) == ["EXP-004", "EXP-005"]
+def test_presentation_menu_follows_the_6809_learning_journey() -> None:
+    assert list(EXPERIMENTS) == [
+        "EXP-004",
+        "EXP-005",
+        "EXP-006",
+        "EXP-007",
+    ]
 
 
 def test_marketing_language_demo_has_memorable_prompt_completions() -> None:

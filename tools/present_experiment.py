@@ -31,6 +31,14 @@ EXPERIMENTS = {
         "Prompting with 1980s advertising language",
         "Interactive XRoar prompt selector; Up/Down chooses, Enter generates.",
     ),
+    "EXP-006": (
+        "Practical pretrained tab completion",
+        "Interactive 8 KiB completion model with a four-word context.",
+    ),
+    "EXP-007": (
+        "All-RAM sentence completion",
+        "Interactive 32 KiB model with five-token context and punctuation.",
+    ),
 }
 
 
@@ -47,11 +55,13 @@ def normalize_experiment(value: str) -> str:
         number = int(normalized)
     except ValueError as error:
         raise argparse.ArgumentTypeError(
-            f"unknown experiment {value!r}; try 4 or 5"
+            f"unknown experiment {value!r}; try 4, 5, 6, or 7"
         ) from error
     experiment = f"EXP-{number:03d}"
     if experiment not in EXPERIMENTS:
-        raise argparse.ArgumentTypeError(f"unknown experiment {value!r}; try 4 or 5")
+        raise argparse.ArgumentTypeError(
+            f"unknown experiment {value!r}; try 4, 5, 6, or 7"
+        )
     return experiment
 
 
@@ -291,9 +301,52 @@ def run_exp_005() -> dict[str, Any]:
     return payload
 
 
+def run_exp_006() -> dict[str, Any]:
+    payload = {
+        "experiment": "EXP-006",
+        "status": "interactive",
+        "parameters": 8188,
+        "vocabulary": 178,
+        "context": 4,
+        "command": "make xroar-exp6",
+    }
+    heading(
+        "EXP-006 — PRACTICAL COMPLETION",
+        "What can an 8 KiB pretrained model do in an interactive editor?",
+    )
+    print("Launching the four-word completion workbench in XRoar.")
+    print("Type a phrase; Right/Tab predicts, Up/Down chooses, Enter accepts.")
+    print()
+    subprocess.run(["make", "xroar-exp6"], cwd=ROOT, check=True)
+    return payload
+
+
+def run_exp_007() -> dict[str, Any]:
+    payload = {
+        "experiment": "EXP-007",
+        "status": "interactive",
+        "parameters": 32319,
+        "vocabulary": 243,
+        "context": 5,
+        "command": "make xroar-exp7",
+    }
+    heading(
+        "EXP-007 — ALL-RAM SENTENCE COMPLETION",
+        "What changes with four times the model memory and punctuation?",
+    )
+    print("Launching the 64 KiB CoCo 1 configuration in XRoar.")
+    print("The 32 KiB model uses five-token context and punctuation tokens.")
+    print("Type a phrase; Right/Tab predicts, Up/Down chooses, Enter accepts.")
+    print()
+    subprocess.run(["make", "xroar-exp7"], cwd=ROOT, check=True)
+    return payload
+
+
 RUNNERS: dict[str, Callable[[], dict[str, Any]]] = {
     "EXP-004": run_exp_004,
     "EXP-005": run_exp_005,
+    "EXP-006": run_exp_006,
+    "EXP-007": run_exp_007,
 }
 
 
@@ -350,7 +403,7 @@ def main() -> None:
         list_experiments(arguments.json)
         return
 
-    if arguments.json and arguments.experiment in {"EXP-004", "EXP-005"}:
+    if arguments.json and arguments.experiment in RUNNERS:
         raise SystemExit(
             f"{arguments.experiment} is interactive and has no JSON mode; "
             f"try: make present EXP={arguments.experiment[-1]}"

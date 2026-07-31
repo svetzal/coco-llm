@@ -2,9 +2,10 @@
 
 ## Status
 
-In progress. The baseline capacity sweep is reproducible; the expanded
-punctuated corpus, all-RAM loader, 6809 port, and physical timing evidence do
-not yet exist.
+Runnable in XRoar. The expanded punctuated corpus, deterministic 32 KiB model,
+all-RAM 6809 inference core, punctuation-aware workbench, and emulator checks
+exist. Physical CoCo 1 loading, keyboard, and stock-rate latency evidence remain
+outstanding.
 
 ## Question
 
@@ -173,6 +174,59 @@ The expanded experiment proceeds to 6809 assembly only if:
 - every possible context vector remains in signed 8-bit range;
 - the chosen model fits its declared 32, 40, or 48 KiB image; and
 - stock-rate CoCo 1 latency is measured and explicitly accepted.
+
+## Phase B evidence
+
+The runnable candidate uses:
+
+| Measurement | Result |
+| --- | ---: |
+| Training sentences | 150 |
+| Holdout sentences | 31 |
+| Vocabulary | 243 tokens |
+| Context | 5 tokens |
+| Embedding width | 22 |
+| Parameters | 32,319 |
+| Model image | 32 KiB |
+| Scoring multiplies | 5,346 |
+| Holdout top one | 49.7% |
+| Holdout top three | 66.5% |
+| Holdout keystroke savings | 54.2% |
+| All-context magnitude | 112 |
+| Proven score range | -24,607 to 27,171 |
+
+The 32 KiB model satisfies the vocabulary, top-three, quantization, context,
+score-width, and memory gates. It does not satisfy the declared 60% keystroke
+savings gate. That miss remains part of the result; the runnable artifact is a
+demonstration candidate, not evidence that the original hypothesis is fully
+supported.
+
+The DECB image contains resident code below `$3F00` and the model at
+`$7F00-$FEFF`. XRoar with 64 KiB RAM and the verified Tandy ROMs completes a
+`POLCAT` call through the ROM-switching keyboard adapter, restores the all-RAM
+map, and returns safely to the editor. Direct-simulator tests prove bit-exact
+top-three ranking, five-token parsing, and punctuation attachment.
+
+Run it:
+
+```sh
+make xroar-exp7
+```
+
+Run the non-interactive checks:
+
+```sh
+make model-test-exp7
+make workbench-test-exp7
+make xroar-test-exp7
+```
+
+## Interim conclusion
+
+EXP-007 is ready for emulator demonstration and audience-driven exploration.
+The larger model improves top-three accuracy over EXP-006 and makes sentence
+punctuation visible, but it does not improve measured typing savings. Physical
+hardware validation is the next acceptance boundary.
 
 ## Future boundary: 2 MiB CoCo 3 model
 

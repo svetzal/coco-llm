@@ -31,6 +31,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--extended-basic-rom", required=True, type=Path)
     parser.add_argument("--symbols", required=True, type=Path)
     parser.add_argument("--trap-symbol", default="wait_for_key")
+    parser.add_argument("--ram", choices=(16, 32, 64), type=int, default=32)
     parser.add_argument("--timeout", type=int, default=120)
     return parser.parse_args()
 
@@ -62,7 +63,7 @@ def main() -> None:
             "-machine",
             "cocous",
             "-ram",
-            "32",
+            str(arguments.ram),
             "-bas",
             str(arguments.basic_rom),
             "-extbas",

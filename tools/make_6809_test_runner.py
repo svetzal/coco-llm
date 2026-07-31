@@ -17,12 +17,19 @@ def symbol_address(symbols: str, name: str) -> int:
     return int(match.group(1), 16)
 
 
+def optional_symbol_address(symbols: str, name: str) -> int | None:
+    match = re.search(
+        rf"^{re.escape(name)} EQU \$([0-9A-Fa-f]+)$", symbols, re.MULTILINE
+    )
+    return int(match.group(1), 16) if match is not None else None
+
+
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--binary", required=True, type=Path)
     parser.add_argument("--symbols", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
-    parser.add_argument("--experiment", choices=(4, 5, 6), type=int, default=4)
+    parser.add_argument("--experiment", choices=(4, 5, 6, 7), type=int, default=4)
     parser.add_argument("--weights", type=Path)
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--test-vectors", type=Path)
@@ -37,12 +44,13 @@ def main() -> None:
     payload = arguments.binary.read_bytes()
     symbols = arguments.symbols.read_text()
     start = symbol_address(symbols, "start")
-    if arguments.experiment == 6:
-        parity = symbol_address(symbols, "exp6_parity_result")
-        top_one = symbol_address(symbols, "exp6_top_one_token")
-        top_two = symbol_address(symbols, "exp6_top_two_token")
-        top_three = symbol_address(symbols, "exp6_top_three_token")
-        context_vector_address = symbol_address(symbols, "exp6_context_vector")
+    if arguments.experiment in (6, 7):
+        prefix = f"exp{arguments.experiment}"
+        parity = symbol_address(symbols, f"{prefix}_parity_result")
+        top_one = symbol_address(symbols, f"{prefix}_top_one_token")
+        top_two = symbol_address(symbols, f"{prefix}_top_two_token")
+        top_three = symbol_address(symbols, f"{prefix}_top_three_token")
+        context_vector_address = symbol_address(symbols, f"{prefix}_context_vector")
         lines = [
             "; Generated direct-simulator image. Do not edit.",
             f"        org     ${start:04x}",
@@ -58,7 +66,8 @@ def main() -> None:
             or arguments.test_vectors is None
         ):
             raise ValueError(
-                "experiment 6 requires --weights, --manifest, and --test-vectors"
+                "completion experiments require --weights, --manifest, "
+                "and --test-vectors"
             )
         weights = arguments.weights.read_bytes()
         manifest = json.loads(arguments.manifest.read_text())
@@ -116,6 +125,15 @@ def main() -> None:
                 "",
             ]
         )
+        ui_stage = optional_symbol_address(symbols, f"{prefix}_ui_stage")
+        if ui_stage is not None:
+            lines.extend(
+                [
+                    f"ui_stage       equ     ${ui_stage:04x}",
+                    ";! ui_stage = #$05",
+                    "",
+                ]
+            )
         arguments.output.write_text("\n".join(lines))
         return
 

@@ -21,6 +21,10 @@ This folder contains the first complete bit-exact training implementation:
 - `completion_editor.asm` — the shared keyboard-driven completion controller;
 - `completion_policy_exp6.asm` — EXP-006's four-word parser, prefix matching,
   model call, and accepted-word spacing;
+- `completion_inference_exp7.asm` — the five-token, 22-dimension EXP-007
+  integer scorer;
+- `completion_policy_exp7.asm` — punctuation tokenization and spacing plus the
+  all-RAM keyboard adapter;
 - `experiments/sample_gallery.asm` and
   `experiments/prompt_workbench.asm` — the lesson-specific presentation shells;
 - `coco_llm.asm` — the writable CoCo program at `$2000`;
@@ -67,6 +71,11 @@ make xroar-test
 make model-test-exp5
 make coco-bin-exp5
 make xroar-test-exp5
+make model-test-exp6
+make xroar-test-exp6
+make model-test-exp7
+make workbench-test-exp7
+make xroar-test-exp7
 ```
 
 Launch the whole-machine demonstration:
@@ -74,6 +83,8 @@ Launch the whole-machine demonstration:
 ```sh
 make xroar
 make xroar-exp5
+make xroar-exp6
+make xroar-exp7
 ```
 
 The interactive launcher explicitly enables XRoar's stock-rate limiter. The
@@ -103,6 +114,16 @@ completion row beneath each. The CoCo Up (`$5E`) and Down (`$0A`) key codes move
 the visible `>` cursor; Enter (`$0D`) runs greedy inference from the selected
 two-token context and advances to the next prompt. Previous completions remain
 visible.
+
+EXP-007 uses a Mac-trained 32 KiB image at `$7F00-$FEFF`: 243 tokens, five
+context positions, 22 embedding dimensions, and 32,319 signed Q4.4 parameters.
+The resident program and vocabulary end below `$3F00`. At startup it selects
+the SAM all-RAM map so inference can read weights beneath BASIC ROM. Its
+keyboard adapter briefly restores the ROM map around `POLCAT`, preserves the
+returned key and condition codes, then makes the model visible again.
+Punctuation is a real token in both the reference and 6809 parsers. Accepted
+punctuation attaches to the preceding word and leaves one separator ready for
+the next word.
 
 The original two-MUL signed 8×16 routine remains on EXP-004's hot path.
 EXP-005's wider training data eventually creates context-vector values outside

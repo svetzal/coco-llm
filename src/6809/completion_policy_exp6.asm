@@ -36,6 +36,9 @@ exp6_character_rejected
         clra
         rts
 
+completion_policy_append_typed_character
+        lbra    completion_append_character
+
 completion_policy_predict_input
         lbsr    exp6_parse_input
         bcs     exp6_predict_done

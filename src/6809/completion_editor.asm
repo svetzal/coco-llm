@@ -4,10 +4,11 @@
 ; character code 9, the same control code conventionally used for Tab. The UI
 ; therefore names both meanings while remaining usable on physical hardware.
 ;
-; An experiment supplies five narrow policy hooks:
+; An experiment supplies six narrow policy hooks:
 ;   completion_policy_initialize
 ;   completion_policy_read_key
 ;   completion_policy_character_allowed
+;   completion_policy_append_typed_character
 ;   completion_policy_predict_input
 ;   completion_policy_apply_suggestion
 ;
@@ -31,6 +32,7 @@ completion_show_workbench
         lbsr    completion_initialize_screen
 completion_input_loop
         lbsr    completion_policy_read_key
+completion_key_polled
         beq     completion_input_loop
         cmpa    #COMPLETION_KEY_RIGHT
         lbeq    completion_key_complete
@@ -63,7 +65,7 @@ completion_key_character
         cmpa    ,x
         beq     completion_input_loop
 completion_append_typed_character
-        lbsr    completion_append_character
+        lbsr    completion_policy_append_typed_character
         lbcs    completion_input_loop
         lbsr    completion_draw_input
         lbsr    completion_clear_status_line

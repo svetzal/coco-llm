@@ -21,12 +21,16 @@ The presentation has four connected teaching threads:
 4. **Human agency:** people choose the task, data, training procedure, success
    criteria, verification, and acceptable consequences.
 
-The developing practical branch is an explicitly pretrained 8 KiB
-next-word-completion model. It connects mechanism to usefulness while making
-the division of labour visible: the Mac trains and exports; the CoCo performs
-integer inference. EXP-006 has a verified 6809 core but remains outside the
-stage menu until its interactive workbench, quality criterion, and stock-rate
-latency are resolved.
+The practical branch now has two explicitly pretrained completion models.
+EXP-006 spends 8 KiB on four-word completion. EXP-007 asks, “What if I use the
+memory the ROM normally occupies?” Its 32 KiB model adds a five-token context
+and punctuation. Both connect mechanism to usefulness while making the
+division of labour visible: the Mac trains and exports; the CoCo performs
+integer inference.
+
+Both are in the presentation launcher for conversation-driven XRoar
+demonstrations. Neither should be described as physically validated until
+keyboard behaviour and stock-rate latency are measured on the CoCo 1.
 
 The bias demonstration is therefore part of the main argument, not a detached
 ethics aside. It connects the mechanics of learning directly to the need for

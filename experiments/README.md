@@ -31,7 +31,8 @@ Current experiments:
   — partially supported 8 KiB pretrained completion prototype; quality gate
   not yet met.
 - [`EXP-007-all-ram-sentence-completion.md`](EXP-007-all-ram-sentence-completion.md)
-  — in-progress 32–48 KiB all-RAM, punctuation-aware completion experiment.
+  — runnable 32 KiB all-RAM, punctuation-aware completion experiment; physical
+  hardware evidence remains outstanding.
 
 ## Presentation commands
 
@@ -41,26 +42,32 @@ List the audience-ready paths, beginning with the first complete 6809 run:
 make present
 ```
 
-Run either presentation experiment:
+Run any presentation experiment:
 
 ```sh
 make present EXP=4
 make present EXP=5
+make present EXP=6
+make present EXP=7
 ```
 
 EXP-004 launches the stock-rate XRoar program and pauses before inference.
 EXP-005 launches its own XRoar program, pauses after training, and provides an
 interactive six-prompt workbench. Its larger training workload has not yet
-been timed on physical stock-rate hardware.
+been timed on physical stock-rate hardware. EXP-006 and EXP-007 launch
+pretrained completion workbenches; say explicitly that the Mac trained their
+weights and the CoCo performs integer inference.
 
 | Experiment | Useful when the conversation asks… | Surface |
 | --- | --- | --- |
 | EXP-004 | Can the old machine really train it? | Interactive CoCo emulation |
 | EXP-005 | Can starting words steer it? | Interactive prompted CoCo |
+| EXP-006 | Can a pretrained model save typing? | 8 KiB completion workbench |
+| EXP-007 | What changes with more memory and punctuation? | 32 KiB all-RAM |
 
 EXP-001 through EXP-003 remain recorded as architectural evidence, but are no
 longer in the runnable presentation menu. Presenter output deliberately shows
 conclusions rather than dumping every sample. The recorded evidence remains
-available for deeper inspection. EXP-006 now has an interactive XRoar
-workbench, but remains outside the menu until physical keyboard behaviour,
-stock-rate latency, and its task-focused quality criterion are resolved.
+available for deeper inspection. The menu labels EXP-006 and EXP-007 as
+emulator demonstrations until physical keyboard behaviour and stock-rate
+latency are measured.
