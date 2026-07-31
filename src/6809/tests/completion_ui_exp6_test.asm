@@ -182,6 +182,38 @@ exp6_ui_copy_exact_wrap_phrase
         cmpa    #$20                   ; cursor remains immediately after it
         lbne    exp6_ui_test_failed
 
+        ; Nine wrapped rows fill the editor but preserve its separator row.
+        ldu     #exp6_input_buffer
+        lda     #9
+        sta     exp6_ui_fill_rows_remaining
+exp6_ui_fill_next_row
+        ldb     #16
+        lda     #$41
+exp6_ui_fill_row_word
+        sta     ,u+
+        decb
+        bne     exp6_ui_fill_row_word
+        lda     #$20
+        sta     ,u+
+        dec     exp6_ui_fill_rows_remaining
+        bne     exp6_ui_fill_next_row
+        clr     ,u
+        lda     #153
+        sta     exp6_input_length
+        lbsr    exp6_draw_input
+        lda     EXP6_INPUT_END-32
+        cmpa    #$41                   ; text reaches screen row ten
+        lbne    exp6_ui_test_failed
+        lda     EXP6_INPUT_END-15
+        cmpa    #$20                   ; cursor remains on the final text row
+        lbne    exp6_ui_test_failed
+        lda     EXP6_INPUT_END
+        cmpa    #$60                   ; row eleven remains blank
+        lbne    exp6_ui_test_failed
+        lda     EXP6_SCREEN+384
+        cmpa    #$52                   ; instructions still begin on row twelve
+        lbne    exp6_ui_test_failed
+
         ; Restore the unmasked fixed vector for the shared runner criteria.
         clr     exp6_prefix_length
         ldd     #EXP6_MODEL_BASE
@@ -202,6 +234,8 @@ exp6_ui_wrap_phrase
 exp6_ui_exact_wrap_phrase
         fcc     "12345678901234567890123456789012 WORD"
 exp6_ui_saved_corner
+        rmb     1
+exp6_ui_fill_rows_remaining
         rmb     1
 
 exp6_parity_result

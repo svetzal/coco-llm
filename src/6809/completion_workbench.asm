@@ -11,7 +11,7 @@ EXP6_KEY_DOWN     equ     $0a
 EXP6_KEY_CLEAR    equ     $0c
 EXP6_KEY_ENTER    equ     $0d
 EXP6_KEY_UP       equ     $5e
-EXP6_INPUT_LIMIT  equ     160
+EXP6_INPUT_LIMIT  equ     240
 
 exp6_show_workbench
         clr     exp6_input_length

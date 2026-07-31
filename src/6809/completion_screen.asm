@@ -5,7 +5,7 @@
 
 EXP6_SCREEN             equ     $0400
 EXP6_INPUT_SCREEN       equ     EXP6_SCREEN+64
-EXP6_INPUT_END          equ     EXP6_SCREEN+384
+EXP6_INPUT_END          equ     EXP6_SCREEN+352
 EXP6_STATUS_SCREEN      equ     EXP6_SCREEN+48
 
 exp6_initialize_screen
