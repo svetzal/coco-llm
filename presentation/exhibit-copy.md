@@ -3,12 +3,12 @@
 Approved copy for the talk listing, the table, and printed materials. Keep this
 file as the single source for anything that goes to print.
 
-## Open question before anything is printed
+## Dates
 
-The abstract says the CoCo is "from 1981." The bio says it arrived at Christmas
-45 years ago, which lands on Christmas 1980. Both may be defensible depending on
-whether the date refers to the gift or to manufacture, but the two texts will be
-read side by side. Settle this before print and make both agree.
+The machine is a Christmas 1981 gift. "45 years ago" and "from 1981" therefore
+agree, and both match the 45-years-of-coding figure used in Stacey's other bios.
+Recorded here because the arithmetic invites a second-guess every time someone
+new reads the two texts side by side.
 
 ## Talk abstract
 
