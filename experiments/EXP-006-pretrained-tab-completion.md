@@ -164,9 +164,8 @@ make xroar-exp6
 
 The 32×16 screen contains:
 
-- a two-row phrase editor;
-- a cursor-only input field that wraps complete words between rows;
-- three reverse-field model suggestions;
+- a ten-row, cursor-only phrase editor that wraps complete words;
+- a measured popover containing up to three reverse-field model suggestions;
 - visible controls for prediction, selection, acceptance, deletion, and reset;
 - the model's 178-word vocabulary and four-word context on the final row.
 
@@ -176,9 +175,11 @@ action `RIGHT/TAB`. Right Arrow predicts when no suggestions are visible and
 accepts the selected word when they are. Up and Down choose among suggestions,
 Enter also accepts, Left Arrow erases, and Clear restarts the editor.
 
-Typed text is black-on-green. All three model-generated suggestions use the
-green-on-dark reverse field, preserving the visual convention established by
-EXP-004 and EXP-005.
+Typed text is black-on-green. The popover measures its widest candidate, then
+shifts left or upward as needed so its complete rectangle remains within the
+32×16 display. It saves the covered screen bytes before drawing and restores
+them when dismissed. Model-generated suggestions use the green-on-dark reverse
+field, preserving the visual convention established by EXP-004 and EXP-005.
 
 Completed, space-terminated words are looked up in the fixed vocabulary and
 reassembled into the model's four-token context on every prediction. The final

@@ -810,9 +810,11 @@ to turn scores into probabilities for training and sampling, but it cannot
 change which score is largest.
 
 The first workbench now fits the complete interaction on the CoCo's 32×16
-screen. Typed text is black-on-green, while three model suggestions are
-green-on-dark. Right Arrow serves as the original keyboard's Tab-equivalent:
-it predicts, then accepts. Up and Down choose; Enter also accepts; Left erases;
+screen. Typed text is black-on-green. Prediction opens a compact green-on-dark
+popover at the text cursor, sized to its widest candidate and shifted away from
+the right or bottom edge when necessary. Dismissing it restores the covered
+screen bytes. Right Arrow serves as the original keyboard's Tab-equivalent: it
+predicts, then accepts. Up and Down choose; Enter also accepts; Left erases;
 Clear restarts. The last row identifies the 178-word vocabulary and four-word
 context. The presenter must state before launching it that the Mac trained the
 weights and the CoCo is performing inference; the practical improvement must

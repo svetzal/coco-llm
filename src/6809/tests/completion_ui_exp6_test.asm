@@ -32,11 +32,20 @@ exp6_ui_copy_phrase
         cmpa    #1
         lbne    exp6_ui_test_failed
 
-        ; Typed text is black-on-green and the first suggestion is dark.
+        ; Typed text is black-on-green and the popover begins at its cursor.
         ldd     EXP6_INPUT_SCREEN
         cmpd    #$5052                 ; "PR" | $40
         lbne    exp6_ui_test_failed
-        ldd     EXP6_SUGGESTION_SCREEN+2
+        ldx     exp6_popover_origin
+        cmpx    exp6_input_cursor
+        lbne    exp6_ui_test_failed
+        lda     exp6_popover_width
+        cmpa    #11                    ; widest candidate plus marker padding
+        lbne    exp6_ui_test_failed
+        lda     ,x
+        cmpa    #$7e                   ; first row selected
+        lbne    exp6_ui_test_failed
+        ldd     2,x
         cmpd    #$030f                 ; dark "CO" from COMPLETE
         lbne    exp6_ui_test_failed
         lda     exp6_suggestions_visible
@@ -47,25 +56,75 @@ exp6_ui_copy_phrase
         lda     #1
         sta     exp6_selected_suggestion
         lbsr    exp6_draw_suggestions
-        lda     EXP6_SUGGESTION_SCREEN
-        cmpa    #$60                   ; old marker cleared
+        ldx     exp6_popover_origin
+        lda     ,x
+        cmpa    #$20                   ; old marker cleared to dark background
         lbne    exp6_ui_test_failed
-        lda     EXP6_SUGGESTION_SCREEN+32
+        lda     32,x
         cmpa    #$7e                   ; second row selected
         lbne    exp6_ui_test_failed
-        lda     EXP6_SUGGESTION_SCREEN+64
-        cmpa    #$60                   ; third row remains clear
+        lda     64,x
+        cmpa    #$20                   ; third row remains clear
         lbne    exp6_ui_test_failed
         clr     exp6_selected_suggestion
         lbsr    exp6_draw_suggestions
-        lda     EXP6_SUGGESTION_SCREEN
+        ldx     exp6_popover_origin
+        lda     ,x
         cmpa    #$7e                   ; first row selected again
         lbne    exp6_ui_test_failed
-        lda     EXP6_SUGGESTION_SCREEN+32
-        cmpa    #$60                   ; second-row marker cleared
+        lda     32,x
+        cmpa    #$20                   ; second-row marker cleared
+        lbne    exp6_ui_test_failed
+
+        ; Dismissing the overlay restores the cursor and phrase underneath.
+        lbsr    exp6_hide_suggestions
+        ldx     exp6_input_cursor
+        lda     ,x
+        cmpa    #$20
+        lbne    exp6_ui_test_failed
+        ldd     EXP6_INPUT_SCREEN
+        cmpd    #$5052
+        lbne    exp6_ui_test_failed
+
+        ; At the right edge, the measured box shifts left to fit exactly.
+        ldd     #EXP6_SCREEN+158        ; row four, column 30
+        std     exp6_input_cursor
+        lbsr    exp6_draw_suggestions
+        lda     exp6_popover_origin+1
+        anda    #$1f
+        adda    exp6_popover_width
+        cmpa    #32
+        lbne    exp6_ui_test_failed
+        ldd     exp6_popover_origin
+        andb    #$e0
+        cmpd    #EXP6_SCREEN+128
+        lbne    exp6_ui_test_failed
+        lbsr    exp6_hide_suggestions
+
+        ; At the bottom-right corner, the box shifts both left and upward.
+        lda     EXP6_SCREEN+511
+        sta     exp6_ui_saved_corner
+        ldd     #EXP6_SCREEN+510
+        std     exp6_input_cursor
+        lbsr    exp6_draw_suggestions
+        ldd     exp6_popover_origin
+        andb    #$e0
+        cmpd    #EXP6_SCREEN+416        ; last legal start row for height three
+        lbne    exp6_ui_test_failed
+        lda     exp6_popover_origin+1
+        anda    #$1f
+        adda    exp6_popover_width
+        cmpa    #32
+        lbne    exp6_ui_test_failed
+        lbsr    exp6_hide_suggestions
+        lda     EXP6_SCREEN+511
+        cmpa    exp6_ui_saved_corner
         lbne    exp6_ui_test_failed
 
         ; C is a typed prefix. Acceptance appends OMPLETE and a space.
+        lbsr    exp6_draw_input
+        clr     exp6_selected_suggestion
+        lbsr    exp6_draw_suggestions
         lbsr    exp6_apply_suggestion
         lda     exp6_input_length
         cmpa    #22
@@ -121,6 +180,8 @@ exp6_ui_test_phrase
         fcc     "PRESS TAB TO C"
 exp6_ui_wrap_phrase
         fcc     "12345678901234567890123456789 WORD"
+exp6_ui_saved_corner
+        rmb     1
 
 exp6_parity_result
         rmb     1
