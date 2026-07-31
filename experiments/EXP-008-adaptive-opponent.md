@@ -380,6 +380,24 @@ path. The comparison that matters is within a single stream — model against
 table on the same data — so it stays internally valid. The synthetic figures
 are context, not the control.
 
+### Capture dependency
+
+The capture tool uses `pygame-ce`, added to the dev dependency group. Nothing
+the CoCo runs depends on it.
+
+`pygame-ce` rather than upstream `pygame` for a concrete reason. Upstream
+pygame 2.6.1 publishes no wheel for Python 3.14, so `uv` builds it from source,
+and that source build silently omits the compiled font extension when SDL_ttf
+is absent. The result is a package that imports, reports a version, and then
+raises `NotImplementedError` the first time it renders text. `pygame-ce` 2.5.7
+ships a current wheel and works as delivered.
+
+The tool also tolerates a missing font module rather than refusing to start,
+falling back to a drawn progress bar, and saves whatever ticks it captured if
+the loop raises partway through. Both exist because a recording session costs a
+person three minutes of their attention, and losing that to a tooling fault is
+worse than losing the status text.
+
 ### Sample size
 
 One session is one person on one day. The replay tool prints an explicit

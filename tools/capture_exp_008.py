@@ -57,6 +57,22 @@ TEXT = (210, 214, 218)
 DIM = (120, 126, 132)
 
 
+def load_font() -> pygame.font.Font | None:
+    """Return a status font, or None if this build has no font module.
+
+    pygame's font support is a compiled extension over SDL_ttf. A source build
+    on a Python version with no published wheel can silently omit it, which is
+    exactly what happened on Python 3.14 with upstream pygame 2.6.1. Losing the
+    status text is a nuisance; losing the session is not acceptable, so the
+    capture runs without text rather than refusing to start.
+    """
+    try:
+        return pygame.font.SysFont("menlo,consolas,monospace", 14)
+    except (NotImplementedError, ImportError, AttributeError, pygame.error):
+        print("warning: no font module available; showing a progress bar instead")
+        return None
+
+
 def held_move(keys) -> int:
     """Quantize currently held direction keys to one move token."""
     right = keys[pygame.K_RIGHT] or keys[pygame.K_d]
@@ -68,7 +84,7 @@ def held_move(keys) -> int:
 
 def draw(
     surface: pygame.Surface,
-    font: pygame.font.Font,
+    font: pygame.font.Font | None,
     arena: Arena,
     *,
     captured: int,
@@ -94,6 +110,18 @@ def draw(
         )
 
     base = ARENA_HEIGHT * CELL + 10
+    if font is None:
+        width = ARENA_WIDTH * CELL - 20
+        filled = int(width * captured / max(1, target))
+        pygame.draw.rect(surface, GRID, pygame.Rect(10, base, width, 10))
+        pygame.draw.rect(
+            surface,
+            CHASER_COLOUR if caught else PLAYER_COLOUR,
+            pygame.Rect(10, base, filled, 10),
+        )
+        pygame.display.flip()
+        return
+
     progress = (
         f"captured {captured}/{target} ticks   runs {runs}   this run {run_ticks}"
     )
@@ -111,7 +139,7 @@ def run_session(*, label: str, target_ticks: int, tick_hz: int) -> Capture | Non
         (ARENA_WIDTH * CELL, ARENA_HEIGHT * CELL + STATUS_HEIGHT)
     )
     pygame.display.set_caption(f"EXP-008 capture: {label}")
-    font = pygame.font.SysFont("menlo,consolas,monospace", 14)
+    font = load_font()
     clock = pygame.time.Clock()
 
     arena = Arena()
@@ -123,51 +151,61 @@ def run_session(*, label: str, target_ticks: int, tick_hz: int) -> Capture | Non
     step = 1000.0 / tick_hz
     caught_until = 0
     stopped = False
+    failed = False
 
-    while captured < target_ticks and not stopped:
-        elapsed = clock.tick(60)
-        now = pygame.time.get_ticks()
+    # Anything already played is real data. A crash partway through must not
+    # cost the whole session, so the loop hands back whatever it has.
+    try:
+        while captured < target_ticks and not stopped:
+            elapsed = clock.tick(60)
+            now = pygame.time.get_ticks()
 
-        for event in pygame.event.get():
-            quitting = event.type == pygame.QUIT
-            escaping = event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
-            if quitting or escaping:
-                stopped = True
+            for event in pygame.event.get():
+                quitting = event.type == pygame.QUIT
+                escaping = event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                if quitting or escaping:
+                    stopped = True
 
-        if now >= caught_until:
-            accumulated += elapsed
-            while accumulated >= step and captured < target_ticks:
-                accumulated -= step
-                move = held_move(pygame.key.get_pressed())
-                current.append(move)
-                captured += 1
-                arena.apply(move)
+            if now >= caught_until:
+                accumulated += elapsed
+                while accumulated >= step and captured < target_ticks:
+                    accumulated -= step
+                    move = held_move(pygame.key.get_pressed())
+                    current.append(move)
+                    captured += 1
+                    arena.apply(move)
 
-                if arena.is_caught():
-                    runs.append(tuple(current))
-                    outcomes.append("caught")
-                    current = []
-                    arena = Arena()
-                    caught_until = now + CAUGHT_PAUSE_MS
-                    accumulated = 0.0
-                    break
+                    if arena.is_caught():
+                        runs.append(tuple(current))
+                        outcomes.append("caught")
+                        current = []
+                        arena = Arena()
+                        caught_until = now + CAUGHT_PAUSE_MS
+                        accumulated = 0.0
+                        break
 
-        draw(
-            surface,
-            font,
-            arena,
-            captured=captured,
-            target=target_ticks,
-            runs=len(runs),
-            run_ticks=len(current),
-            caught=now < caught_until,
-        )
-
-    pygame.quit()
+            draw(
+                surface,
+                font,
+                arena,
+                captured=captured,
+                target=target_ticks,
+                runs=len(runs),
+                run_ticks=len(current),
+                caught=now < caught_until,
+            )
+    except Exception as error:  # noqa: BLE001 - keep the data, report the cause
+        failed = True
+        print(f"capture interrupted: {type(error).__name__}: {error}")
+        print("keeping the ticks recorded so far")
+    finally:
+        pygame.quit()
 
     if current:
         runs.append(tuple(current))
-        outcomes.append("stopped" if stopped else "expired")
+        outcomes.append(
+            "interrupted" if failed else "stopped" if stopped else "expired"
+        )
     if not runs:
         return None
 
