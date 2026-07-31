@@ -23,12 +23,12 @@ from duel_arena import (
     generate_stream,
 )
 from mimic_lm import (
-    MarginalBaseline,
     MimicConfig,
     MimicPredictor,
-    TableBaseline,
-    UniformBaseline,
+    build_candidate_predictors,
     evaluate_stream,
+    predictor_kind,
+    predictor_storage_bytes,
 )
 
 PARAMETER_CEILING = 1024
@@ -43,47 +43,6 @@ class MethodSummary:
     kind: str
     storage_bytes: int
     window_accuracy: float
-
-
-def build_predictors(embeddings: list[int], shifts: list[int], seed: int) -> list:
-    predictors = [
-        UniformBaseline(seed=seed),
-        MarginalBaseline(),
-        TableBaseline(1),
-        TableBaseline(2),
-    ]
-    for layout in (HISTORY_LAYOUT, SITUATIONAL_LAYOUT):
-        for embedding in embeddings:
-            for shift in shifts:
-                predictors.append(
-                    MimicPredictor(
-                        MimicConfig(
-                            layout=layout,
-                            embedding=embedding,
-                            seed=seed,
-                            learning_shift=shift,
-                        )
-                    )
-                )
-    return predictors
-
-
-def storage_bytes(predictor) -> int:
-    if isinstance(predictor, MimicPredictor):
-        return predictor.model.master_bytes
-    if isinstance(predictor, TableBaseline):
-        return predictor.counter_cells
-    if isinstance(predictor, MarginalBaseline):
-        return 9
-    return 0
-
-
-def kind_of(predictor) -> str:
-    if isinstance(predictor, MimicPredictor):
-        return "model"
-    if isinstance(predictor, UniformBaseline):
-        return "uniform"
-    return "table"
 
 
 def run_player(
@@ -105,14 +64,20 @@ def run_player(
     for run in range(seeds):
         seed = base_seed + run * 101
         stream = generate_stream(player_type, ticks=ticks, seed=seed)
-        predictors = build_predictors(embeddings, shifts, seed)
+        predictors = build_candidate_predictors(
+            embeddings=embeddings, shifts=shifts, seed=seed
+        )
         results = evaluate_stream(stream, predictors, window=window)
 
         for predictor, result in zip(predictors, results, strict=True):
             totals[result.name] = totals.get(result.name, 0.0) + result.window_accuracy
             if run == 0:
                 order.append(
-                    (result.name, kind_of(predictor), storage_bytes(predictor))
+                    (
+                        result.name,
+                        predictor_kind(predictor),
+                        predictor_storage_bytes(predictor),
+                    )
                 )
             if isinstance(predictor, MimicPredictor):
                 magnitude = max(magnitude, predictor.model.max_context_magnitude)

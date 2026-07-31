@@ -11,6 +11,9 @@ The experiment does not proceed to 6809 assembly. The recorded diagnosis is a
 convergence-rate limit rather than a capacity limit, and the next step is real
 human data rather than more model tuning. See "Phase A result" below.
 
+The human-capture tooling described in "Phase A-bis" is built and tested. No
+sessions have been recorded, so no human result is claimed.
+
 ## Question
 
 Can a stock CoCo 1 train a next-token model online, from random weights, on a
@@ -315,6 +318,78 @@ blocking item.
 Porting to 6809 assembly is deliberately not the next step. A bit-exact port of
 a model that loses to a 90-byte table against the best available human proxy
 would be effort spent ahead of its evidence.
+
+## Phase A-bis: human capture
+
+The tooling to answer the blocking question exists and is tested. No human
+sessions have been recorded yet, so no result is claimed.
+
+Record a session:
+
+```sh
+make exp008-capture LABEL=stacey-01
+```
+
+Score every recorded session:
+
+```sh
+make exp008-replay
+```
+
+### Protocol
+
+Each session is roughly three minutes, 1,800 ticks at 10 Hz. That covers both
+the 600-tick demonstration budget and the 2,400-tick figure at which the
+synthetic gate passed, so one recording answers both questions.
+
+The chaser moves at half the player's speed and ends the run on contact. A
+threat with no consequence produces idle wandering rather than evasion, and
+idle wandering would answer a question nobody asked.
+
+Three properties of the capture are deliberate and must not be relaxed:
+
+**The capture is blind.** No prediction is computed, displayed, or used to
+steer the chaser. A visible ghost would record a human reacting to a
+predictor, when the question is whether unaided human movement is predictable
+at all. The ghost belongs to Phase C.
+
+**The keyboard is polled as held state**, at the tick rate, rather than
+consumed as an event stream. That is what the CoCo does when it scans its
+keyboard matrix, so the recorded signal has the same shape as the signal the
+6809 would eventually see.
+
+**Only moves are stored.** Bearings and ranges are regenerated on replay by
+the same deterministic arena the predictors were measured against. The
+geometry therefore has one implementation rather than one for the recorder and
+another for the analysis.
+
+Predictor state persists across runs within a session while the arena resets,
+because a player keeps learning across deaths and so should anything
+predicting them.
+
+### One difference from Phase A, recorded rather than corrected
+
+Phase A streams ran a fixed 600 ticks with a pinned chaser sitting adjacent
+indefinitely. Captured runs end at contact instead. Human sessions will
+therefore spend less time in the `NEAR` range bucket than the synthetic
+streams did.
+
+Phase A's recorded numbers are left untouched rather than regenerated under
+the new rule, and `Arena.is_caught` is not called anywhere in the synthetic
+path. The comparison that matters is within a single stream — model against
+table on the same data — so it stays internally valid. The synthetic figures
+are context, not the control.
+
+### Sample size
+
+One session is one person on one day. The replay tool prints an explicit
+caution below three distinct participants, because "Stacey looked like `HABIT`"
+and "humans look like `HABIT`" are different claims and only the first is
+supported by a single recording.
+
+Within-person variation matters too. Several short sessions across different
+days are more informative than one long session, since a player who has just
+worked out that circling the wall is safe is no longer the player who started.
 
 ## Phase B gates: bit-exact 6809
 

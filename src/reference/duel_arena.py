@@ -15,8 +15,10 @@ would add precision the experiment has not earned.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+import json
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
+from pathlib import Path
 
 from fixed_token_lm import XorShift16
 
@@ -158,6 +160,17 @@ class Arena:
             bearing=max(0, bearing - 1),
             range_index=range_bucket(delta_x, delta_y),
         )
+
+    def is_caught(self) -> bool:
+        """True once the chaser is adjacent.
+
+        Nothing in the synthetic-player path calls this. Phase A deliberately
+        let a pinned chaser sit adjacent forever so that streams ran to a fixed
+        length. Human capture needs a real consequence, so the capture tool
+        ends a run here instead.
+        """
+        delta_x, delta_y = self.delta
+        return max(abs(delta_x), abs(delta_y)) <= 1
 
     def apply(self, move: int) -> None:
         """Advance one tick: the player moves, then the opponent chases."""
@@ -323,3 +336,100 @@ def generate_stream(
 
 def move_names(moves: Sequence[int]) -> str:
     return " ".join(MOVE_TOKENS[move] for move in moves)
+
+
+CAPTURE_SCHEMA = "exp008-capture/1"
+DEFAULT_TICK_HZ = 10
+
+
+def stream_from_runs(
+    runs: Iterable[Sequence[int]],
+) -> list[tuple[TickRecord, int]]:
+    """Rebuild situations from recorded moves.
+
+    A capture stores only the move stream. Because `Arena.apply` is
+    deterministic, replaying those moves regenerates every bearing and range
+    exactly, so the geometry has one implementation rather than one for the
+    recorder and another for the analysis.
+
+    The arena resets per run, since each run began from the starting position
+    after a catch. Predictor state deliberately does not reset: a player keeps
+    learning across deaths, and so should anything predicting them.
+    """
+    stream: list[tuple[TickRecord, int]] = []
+    for moves in runs:
+        arena = Arena()
+        for move in moves:
+            stream.append((arena.record(), move))
+            arena.apply(move)
+    return stream
+
+
+@dataclass(frozen=True)
+class Capture:
+    """One recorded human session, made of consecutive runs."""
+
+    label: str
+    recorded_utc: str
+    tick_hz: int
+    runs: tuple[tuple[int, ...], ...]
+    outcomes: tuple[str, ...]
+
+    @property
+    def ticks(self) -> int:
+        return sum(len(run) for run in self.runs)
+
+    def stream(self) -> list[tuple[TickRecord, int]]:
+        return stream_from_runs(self.runs)
+
+    def to_json(self) -> dict:
+        return {
+            "schema": CAPTURE_SCHEMA,
+            "label": self.label,
+            "recorded_utc": self.recorded_utc,
+            "tick_hz": self.tick_hz,
+            "arena": {"width": ARENA_WIDTH, "height": ARENA_HEIGHT},
+            "runs": [
+                {"moves": list(moves), "outcome": outcome}
+                for moves, outcome in zip(self.runs, self.outcomes, strict=True)
+            ],
+        }
+
+    @classmethod
+    def from_json(cls, payload: dict) -> Capture:
+        schema = payload.get("schema")
+        if schema != CAPTURE_SCHEMA:
+            raise ValueError(f"unsupported capture schema: {schema!r}")
+
+        runs: list[tuple[int, ...]] = []
+        outcomes: list[str] = []
+        for entry in payload["runs"]:
+            moves = tuple(int(move) for move in entry["moves"])
+            if any(move < 0 or move >= MOVE_COUNT for move in moves):
+                raise ValueError(
+                    f"capture {payload['label']!r} has a move out of range"
+                )
+            runs.append(moves)
+            outcomes.append(str(entry.get("outcome", "unknown")))
+
+        return cls(
+            label=str(payload["label"]),
+            recorded_utc=str(payload.get("recorded_utc", "")),
+            tick_hz=int(payload.get("tick_hz", DEFAULT_TICK_HZ)),
+            runs=tuple(runs),
+            outcomes=tuple(outcomes),
+        )
+
+
+def append_capture(path: Path, capture: Capture) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(capture.to_json()) + "\n")
+
+
+def load_captures(path: Path) -> list[Capture]:
+    return [
+        Capture.from_json(json.loads(line))
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]

@@ -25,7 +25,13 @@ from dataclasses import dataclass
 from typing import Protocol
 
 import numpy as np
-from duel_arena import MOVE_COUNT, TickRecord, input_vocabulary_size
+from duel_arena import (
+    HISTORY_LAYOUT,
+    MOVE_COUNT,
+    SITUATIONAL_LAYOUT,
+    TickRecord,
+    input_vocabulary_size,
+)
 from fixed_token_lm import EXP_LUT, XorShift16, clamp_int16
 from numpy.typing import NDArray
 
@@ -281,6 +287,57 @@ class TableBaseline:
     def observe(self, record: TickRecord, move: int) -> None:
         for level in range(self.order + 1):
             self.tables[level][self._key(record.history, level)][move] += 1
+
+
+def build_candidate_predictors(
+    *,
+    embeddings: Sequence[int],
+    shifts: Sequence[int],
+    seed: int,
+) -> list[Predictor]:
+    """The candidate set under comparison.
+
+    Defined once so that synthetic sweeps and human-capture replays score the
+    same methods. If these ever diverge, their numbers stop being comparable.
+    """
+    predictors: list[Predictor] = [
+        UniformBaseline(seed=seed),
+        MarginalBaseline(),
+        TableBaseline(1),
+        TableBaseline(2),
+    ]
+    for layout in (HISTORY_LAYOUT, SITUATIONAL_LAYOUT):
+        for embedding in embeddings:
+            for shift in shifts:
+                predictors.append(
+                    MimicPredictor(
+                        MimicConfig(
+                            layout=layout,
+                            embedding=embedding,
+                            seed=seed,
+                            learning_shift=shift,
+                        )
+                    )
+                )
+    return predictors
+
+
+def predictor_kind(predictor: Predictor) -> str:
+    if isinstance(predictor, MimicPredictor):
+        return "model"
+    if isinstance(predictor, UniformBaseline):
+        return "uniform"
+    return "table"
+
+
+def predictor_storage_bytes(predictor: Predictor) -> int:
+    if isinstance(predictor, MimicPredictor):
+        return predictor.model.master_bytes
+    if isinstance(predictor, TableBaseline):
+        return predictor.counter_cells
+    if isinstance(predictor, MarginalBaseline):
+        return MOVE_COUNT
+    return 0
 
 
 @dataclass(frozen=True)

@@ -9,6 +9,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pygame>=2.6.1",
     "pytest>=8,<10",
     "ruff>=0.12,<1",
 ]
