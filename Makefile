@@ -102,7 +102,7 @@ xroar-test-exp6: build/coco-llm-exp6.bin build/coco-llm-exp6.sym \
 		--basic-rom $(COCO_BASIC_ROM) \
 		--extended-basic-rom $(COCO_EXTBASIC_ROM) \
 		--symbols build/coco-llm-exp6.sym \
-		--trap-symbol exp6_input_loop
+		--trap-symbol completion_input_loop
 
 xroar-exp6: build/coco-llm-exp6.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
@@ -173,7 +173,8 @@ build/model-exp6-test-runner.asm: build/model-exp6-test.bin \
 build/workbench-exp6-test.bin: src/6809/tests/completion_ui_exp6_test.asm \
 		src/6809/experiments/experiment_006.asm \
 		src/6809/completion_inference.asm src/6809/completion_screen.asm \
-		src/6809/completion_workbench.asm build/exp006/model_data.inc
+		src/6809/completion_editor.asm src/6809/completion_policy_exp6.asm \
+		build/exp006/model_data.inc
 	lwasm --6809 --format=raw --symbol-dump=build/workbench-exp6-test.sym \
 		--output=$@ $<
 
@@ -219,14 +220,16 @@ build/coco-llm-exp5.sym: src/6809/coco_llm_exp5.asm \
 build/coco-llm-exp6.bin: src/6809/coco_llm_exp6.asm \
 		src/6809/experiments/experiment_006.asm \
 		src/6809/completion_inference.asm src/6809/completion_screen.asm \
-		src/6809/completion_workbench.asm build/exp006/model_data.inc \
+		src/6809/completion_editor.asm src/6809/completion_policy_exp6.asm \
+		build/exp006/model_data.inc \
 		build/exp006/model_image.inc
 	lwasm --6809 --format=decb --output=$@ $<
 
 build/coco-llm-exp6.sym: src/6809/coco_llm_exp6.asm \
 		src/6809/experiments/experiment_006.asm \
 		src/6809/completion_inference.asm src/6809/completion_screen.asm \
-		src/6809/completion_workbench.asm build/exp006/model_data.inc
+		src/6809/completion_editor.asm src/6809/completion_policy_exp6.asm \
+		build/exp006/model_data.inc
 	lwasm --6809 --define=DIRECT_TEST=1 --format=raw \
 		--symbol-dump=build/coco-llm-exp6.sym \
 		--output=build/coco-llm-exp6.raw $<

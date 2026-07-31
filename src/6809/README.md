@@ -16,6 +16,11 @@ This folder contains the first complete bit-exact training implementation:
   selection functions;
 - `screen.asm` — CoCo VDG screen setup, text rendering, token formatting, and
   status messages;
+- `completion_screen.asm` — the experiment-neutral VDG completion screen,
+  word-wrapped editor rendering, and save/restore suggestion popover;
+- `completion_editor.asm` — the shared keyboard-driven completion controller;
+- `completion_policy_exp6.asm` — EXP-006's four-word parser, prefix matching,
+  model call, and accepted-word spacing;
 - `experiments/sample_gallery.asm` and
   `experiments/prompt_workbench.asm` — the lesson-specific presentation shells;
 - `coco_llm.asm` — the writable CoCo program at `$2000`;
@@ -39,6 +44,15 @@ The drivers also name the few policies that genuinely differ:
 
 There are no experiment-number conditionals in the shared engine. This split
 keeps each new lesson explicit without duplicating the model mathematics.
+
+The completion workbench follows the same rule. Its screen and editor use
+small experiment policy hooks to initialize state, read a key, accept or reject
+a typed character, predict suggestions, and insert the selected token. EXP-006
+implements those hooks with BASIC ROM `POLCAT`, letters and digits,
+space-delimited four-word parsing, and a trailing space after every accepted
+word. EXP-007 can reuse the complete ten-row editor and edge-corrected popover
+while substituting punctuation-aware parsing, five-token context, punctuation
+spacing, and the keyboard adapter required while BASIC ROM is hidden.
 
 The learning engine must not depend on CoCo 3 memory banking, GIME video
 features, or fast mode. Platform-specific code belongs behind narrow display,

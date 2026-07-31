@@ -1,372 +1,363 @@
-; CoCo VDG presentation for the EXP-006 completion workbench.
+; Shared CoCo VDG presentation for completion experiments.
 ;
 ; Human-typed text is black-on-green. Model suggestions use the dark reverse
 ; field, preserving the same visual distinction as the earlier experiments.
 
-EXP6_SCREEN             equ     $0400
-EXP6_INPUT_SCREEN       equ     EXP6_SCREEN+64
-EXP6_INPUT_END          equ     EXP6_SCREEN+384
-EXP6_STATUS_SCREEN      equ     EXP6_SCREEN+48
+COMPLETION_SCREEN             equ     $0400
+COMPLETION_INPUT_SCREEN       equ     COMPLETION_SCREEN+64
+COMPLETION_INPUT_END          equ     COMPLETION_SCREEN+384
+COMPLETION_STATUS_SCREEN      equ     COMPLETION_SCREEN+48
 
-exp6_initialize_screen
-        ldx     #EXP6_SCREEN
+completion_initialize_screen
+        ldx     #COMPLETION_SCREEN
         lda     #$60
-exp6_clear_screen
+completion_clear_screen
         sta     ,x+
-        cmpx    #EXP6_SCREEN+512
-        blo     exp6_clear_screen
+        cmpx    #COMPLETION_SCREEN+512
+        blo     completion_clear_screen
 
-        ldx     #EXP6_SCREEN
+        ldx     #COMPLETION_SCREEN
         lda     #$20
         ldb     #32
-exp6_fill_title
+completion_fill_title
         sta     ,x+
         decb
-        bne     exp6_fill_title
-        ldx     #EXP6_SCREEN
-        ldu     #exp6_message_title
-        lbsr    exp6_print_dark
+        bne     completion_fill_title
+        ldx     #COMPLETION_SCREEN
+        ldu     #completion_message_title
+        lbsr    completion_print_dark
 
-        ldx     #EXP6_SCREEN+32
-        ldu     #exp6_message_type
-        lbsr    exp6_print_normal
-        ldx     #EXP6_SCREEN+384
-        ldu     #exp6_message_predict
-        lbsr    exp6_print_normal
-        ldx     #EXP6_SCREEN+416
-        ldu     #exp6_message_choose
-        lbsr    exp6_print_normal
-        ldx     #EXP6_SCREEN+480
-        ldu     #exp6_message_shape
-        lbsr    exp6_print_normal
-        lbsr    exp6_draw_input
+        ldx     #COMPLETION_SCREEN+32
+        ldu     #completion_message_type
+        lbsr    completion_print_normal
+        ldx     #COMPLETION_SCREEN+384
+        ldu     #completion_message_predict
+        lbsr    completion_print_normal
+        ldx     #COMPLETION_SCREEN+416
+        ldu     #completion_message_choose
+        lbsr    completion_print_normal
+        ldx     #COMPLETION_SCREEN+480
+        ldu     #COMPLETION_MESSAGE_SHAPE
+        lbsr    completion_print_normal
+        lbsr    completion_draw_input
         rts
 
-exp6_draw_input
-        ldx     #EXP6_INPUT_SCREEN
+completion_draw_input
+        ldx     #COMPLETION_INPUT_SCREEN
         lda     #$60
-exp6_clear_input_rows
+completion_clear_input_rows
         sta     ,x+
-        cmpx    #EXP6_INPUT_END
-        blo     exp6_clear_input_rows
-        ldx     #EXP6_INPUT_SCREEN
-        ldu     #exp6_input_buffer
-        lda     exp6_input_length
-        sta     exp6_draw_remaining
-        clr     exp6_draw_column
-exp6_draw_next
-        tst     exp6_draw_remaining
-        beq     exp6_draw_cursor
+        cmpx    #COMPLETION_INPUT_END
+        blo     completion_clear_input_rows
+        ldx     #COMPLETION_INPUT_SCREEN
+        ldu     #completion_input_buffer
+        lda     completion_input_length
+        sta     completion_draw_remaining
+        clr     completion_draw_column
+completion_draw_next
+        tst     completion_draw_remaining
+        beq     completion_draw_cursor
         lda     ,u
         cmpa    #$20
-        beq     exp6_draw_separator
+        beq     completion_draw_separator
 
         ; Measure the next word before drawing it. If it cannot fit in the
         ; current row, leave the remaining cells blank and start on row two.
         pshs    u
         clrb
-exp6_measure_word
+completion_measure_word
         lda     ,u+
-        beq     exp6_word_measured
+        beq     completion_word_measured
         cmpa    #$20
-        beq     exp6_word_measured
+        beq     completion_word_measured
         incb
-        bra     exp6_measure_word
-exp6_word_measured
+        bra     completion_measure_word
+completion_word_measured
         puls    u
-        lda     exp6_draw_column
-        beq     exp6_draw_word_character
+        lda     completion_draw_column
+        beq     completion_draw_word_character
         pshs    b
         adda    ,s
         puls    b
         cmpa    #32
-        bls     exp6_draw_word_character
+        bls     completion_draw_word_character
         ldb     #32
-        subb    exp6_draw_column
+        subb    completion_draw_column
         abx
-        clr     exp6_draw_column
+        clr     completion_draw_column
 
-exp6_draw_word_character
-        cmpx    #EXP6_INPUT_END
-        bhs     exp6_draw_input_done
+completion_draw_word_character
+        cmpx    #COMPLETION_INPUT_END
+        bhs     completion_draw_input_done
         lda     ,u+
         ora     #$40
         sta     ,x+
-        dec     exp6_draw_remaining
-        inc     exp6_draw_column
-        lda     exp6_draw_column
+        dec     completion_draw_remaining
+        inc     completion_draw_column
+        lda     completion_draw_column
         cmpa    #32
-        blo     exp6_draw_next
-        clr     exp6_draw_column
-        bra     exp6_draw_next
+        blo     completion_draw_next
+        clr     completion_draw_column
+        bra     completion_draw_next
 
-exp6_draw_separator
+completion_draw_separator
         leau    1,u
-        dec     exp6_draw_remaining
-        tst     exp6_draw_column
-        beq     exp6_draw_next            ; wrapped rows need no leading space
-        cmpx    #EXP6_INPUT_END
-        bhs     exp6_draw_input_done
+        dec     completion_draw_remaining
+        tst     completion_draw_column
+        beq     completion_draw_next            ; wrapped rows need no leading space
+        cmpx    #COMPLETION_INPUT_END
+        bhs     completion_draw_input_done
         leax    1,x
-        inc     exp6_draw_column
-        lda     exp6_draw_column
+        inc     completion_draw_column
+        lda     completion_draw_column
         cmpa    #32
-        blo     exp6_draw_next
-        clr     exp6_draw_column
-        bra     exp6_draw_next
+        blo     completion_draw_next
+        clr     completion_draw_column
+        bra     completion_draw_next
 
-exp6_draw_cursor
-        cmpx    #EXP6_INPUT_END
-        bhs     exp6_draw_input_done
-        stx     exp6_input_cursor
+completion_draw_cursor
+        cmpx    #COMPLETION_INPUT_END
+        bhs     completion_draw_input_done
+        stx     completion_input_cursor
         lda     #$20
         sta     ,x
-exp6_draw_input_done
+completion_draw_input_done
         rts
 
-exp6_clear_suggestions
-        tst     exp6_suggestions_visible
-        beq     exp6_clear_suggestions_done
-        ldx     exp6_popover_origin
-        ldy     #exp6_popover_backup
-        lda     exp6_popover_height
-        sta     exp6_popover_rows_remaining
-exp6_restore_popover_row
-        ldb     exp6_popover_width
-exp6_restore_popover_cell
+completion_clear_suggestions
+        tst     completion_suggestions_visible
+        beq     completion_clear_suggestions_done
+        ldx     completion_popover_origin
+        ldy     #completion_popover_backup
+        lda     completion_popover_height
+        sta     completion_popover_rows_remaining
+completion_restore_popover_row
+        ldb     completion_popover_width
+completion_restore_popover_cell
         lda     ,y+
         sta     ,x+
         decb
-        bne     exp6_restore_popover_cell
+        bne     completion_restore_popover_cell
         ldb     #32
-        subb    exp6_popover_width
+        subb    completion_popover_width
         abx
-        dec     exp6_popover_rows_remaining
-        bne     exp6_restore_popover_row
-        clr     exp6_suggestions_visible
-exp6_clear_suggestions_done
+        dec     completion_popover_rows_remaining
+        bne     completion_restore_popover_row
+        clr     completion_suggestions_visible
+completion_clear_suggestions_done
         rts
 
-exp6_draw_suggestions
-        tst     exp6_suggestions_visible
-        bne     exp6_paint_popover
-        lbsr    exp6_prepare_popover
-        lbsr    exp6_save_popover_background
+completion_draw_suggestions
+        tst     completion_suggestions_visible
+        bne     completion_paint_popover
+        lbsr    completion_prepare_popover
+        lbsr    completion_save_popover_background
 
-exp6_paint_popover
-        ldy     exp6_popover_origin
-        ldu     #exp6_top_one_token
-        clr     exp6_popover_row_index
-        lda     exp6_popover_height
-        sta     exp6_popover_rows_remaining
-exp6_draw_suggestion
+completion_paint_popover
+        ldy     completion_popover_origin
+        ldu     #COMPLETION_SUGGESTION_TOKENS
+        clr     completion_popover_row_index
+        lda     completion_popover_height
+        sta     completion_popover_rows_remaining
+completion_draw_suggestion
         tfr     y,x
         lda     #$20
-        ldb     exp6_popover_width
-exp6_fill_popover_row
+        ldb     completion_popover_width
+completion_fill_popover_row
         sta     ,x+
         decb
-        bne     exp6_fill_popover_row
+        bne     completion_fill_popover_row
 
         tfr     y,x
-        lda     exp6_popover_row_index
-        cmpa    exp6_selected_suggestion
-        bne     exp6_draw_popover_word
+        lda     completion_popover_row_index
+        cmpa    completion_selected_suggestion
+        bne     completion_draw_popover_word
         lda     #$3e                       ; reverse-field ">"
         sta     ,x
-exp6_draw_popover_word
+completion_draw_popover_word
         leax    2,x
         lda     ,u+
         pshs    u
-        lbsr    exp6_print_token_dark
+        lbsr    completion_print_token_dark
         puls    u
         leay    32,y
-        inc     exp6_popover_row_index
-        dec     exp6_popover_rows_remaining
-        bne     exp6_draw_suggestion
+        inc     completion_popover_row_index
+        dec     completion_popover_rows_remaining
+        bne     completion_draw_suggestion
 
         lda     #1
-        sta     exp6_suggestions_visible
+        sta     completion_suggestions_visible
         rts
 
 ; Measure the widest candidate, place the popover at the editor cursor, and
 ; shift it left or upward when its measured rectangle would cross an edge.
-exp6_prepare_popover
-        clr     exp6_popover_width
-        ldu     #exp6_top_one_token
-        lda     exp6_suggestion_count
-        sta     exp6_popover_rows_remaining
-exp6_measure_candidate
+completion_prepare_popover
+        clr     completion_popover_width
+        ldu     #COMPLETION_SUGGESTION_TOKENS
+        lda     completion_suggestion_count
+        sta     completion_popover_rows_remaining
+completion_measure_candidate
         lda     ,u+
         pshs    u
         ldb     #2
         mul
-        ldu     #exp6_token_pointers
+        ldu     #COMPLETION_TOKEN_POINTERS
         leau    d,u
         ldu     ,u
         clrb
-exp6_measure_candidate_character
+completion_measure_candidate_character
         lda     ,u+
-        beq     exp6_candidate_measured
+        beq     completion_candidate_measured
         incb
-        bra     exp6_measure_candidate_character
-exp6_candidate_measured
-        cmpb    exp6_popover_width
-        bls     exp6_candidate_width_ready
-        stb     exp6_popover_width
-exp6_candidate_width_ready
+        bra     completion_measure_candidate_character
+completion_candidate_measured
+        cmpb    completion_popover_width
+        bls     completion_candidate_width_ready
+        stb     completion_popover_width
+completion_candidate_width_ready
         puls    u
-        dec     exp6_popover_rows_remaining
-        bne     exp6_measure_candidate
+        dec     completion_popover_rows_remaining
+        bne     completion_measure_candidate
 
-        ldb     exp6_popover_width
+        ldb     completion_popover_width
         addb    #2
         cmpb    #32
-        bls     exp6_popover_width_ready
+        bls     completion_popover_width_ready
         ldb     #32
-exp6_popover_width_ready
-        stb     exp6_popover_width
-        lda     exp6_suggestion_count
-        sta     exp6_popover_height
+completion_popover_width_ready
+        stb     completion_popover_width
+        lda     completion_suggestion_count
+        sta     completion_popover_height
 
-        ldd     exp6_input_cursor
-        std     exp6_popover_origin
+        ldd     completion_input_cursor
+        std     completion_popover_origin
         tfr     b,a
         anda    #$1f
-        adda    exp6_popover_width
+        adda    completion_popover_width
         cmpa    #32
-        bls     exp6_popover_horizontal_ready
+        bls     completion_popover_horizontal_ready
         suba    #32
         tfr     a,b
         clra
-        std     exp6_popover_scratch
-        ldd     exp6_popover_origin
-        subd    exp6_popover_scratch
-        std     exp6_popover_origin
-exp6_popover_horizontal_ready
-        ldd     exp6_popover_origin
+        std     completion_popover_scratch
+        ldd     completion_popover_origin
+        subd    completion_popover_scratch
+        std     completion_popover_origin
+completion_popover_horizontal_ready
+        ldd     completion_popover_origin
         andb    #$1f
-        stb     exp6_popover_column
-        ldd     exp6_popover_origin
+        stb     completion_popover_column
+        ldd     completion_popover_origin
         andb    #$e0
-        std     exp6_popover_row_base
+        std     completion_popover_row_base
 
-        lda     exp6_popover_height
+        lda     completion_popover_height
         ldb     #32
         mul
-        std     exp6_popover_scratch
-        ldd     #EXP6_SCREEN+512
-        subd    exp6_popover_scratch
-        std     exp6_popover_last_row
-        cmpd    exp6_popover_row_base
-        bhs     exp6_popover_vertical_ready
-        ldb     exp6_popover_column
-        addb    exp6_popover_last_row+1
-        lda     exp6_popover_last_row
-        std     exp6_popover_origin
-exp6_popover_vertical_ready
+        std     completion_popover_scratch
+        ldd     #COMPLETION_SCREEN+512
+        subd    completion_popover_scratch
+        std     completion_popover_last_row
+        cmpd    completion_popover_row_base
+        bhs     completion_popover_vertical_ready
+        ldb     completion_popover_column
+        addb    completion_popover_last_row+1
+        lda     completion_popover_last_row
+        std     completion_popover_origin
+completion_popover_vertical_ready
         rts
 
-exp6_save_popover_background
-        ldx     exp6_popover_origin
-        ldy     #exp6_popover_backup
-        lda     exp6_popover_height
-        sta     exp6_popover_rows_remaining
-exp6_save_popover_row
-        ldb     exp6_popover_width
-exp6_save_popover_cell
+completion_save_popover_background
+        ldx     completion_popover_origin
+        ldy     #completion_popover_backup
+        lda     completion_popover_height
+        sta     completion_popover_rows_remaining
+completion_save_popover_row
+        ldb     completion_popover_width
+completion_save_popover_cell
         lda     ,x+
         sta     ,y+
         decb
-        bne     exp6_save_popover_cell
+        bne     completion_save_popover_cell
         ldb     #32
-        subb    exp6_popover_width
+        subb    completion_popover_width
         abx
-        dec     exp6_popover_rows_remaining
-        bne     exp6_save_popover_row
+        dec     completion_popover_rows_remaining
+        bne     completion_save_popover_row
         rts
 
-exp6_clear_status_line
-        ldx     #EXP6_STATUS_SCREEN
+completion_clear_status_line
+        ldx     #COMPLETION_STATUS_SCREEN
         lda     #$60
         ldb     #16
-exp6_clear_status
+completion_clear_status
         sta     ,x+
         decb
-        bne     exp6_clear_status
+        bne     completion_clear_status
         rts
 
-exp6_show_status
+completion_show_status
         pshs    u
-        lbsr    exp6_clear_status_line
-        ldx     #EXP6_STATUS_SCREEN
+        lbsr    completion_clear_status_line
+        ldx     #COMPLETION_STATUS_SCREEN
         puls    u
-        lbsr    exp6_print_normal
+        lbsr    completion_print_normal
         rts
 
 ; A is a token identifier. Print its zero-terminated text at X.
-exp6_print_token_dark
+completion_print_token_dark
         ldb     #2
         mul
-        ldu     #exp6_token_pointers
+        ldu     #COMPLETION_TOKEN_POINTERS
         leau    d,u
         ldu     ,u
-        lbra    exp6_print_dark
+        lbra    completion_print_dark
 
 ; X is a screen address and U is zero-terminated ASCII.
-exp6_print_normal
+completion_print_normal
         lda     ,u+
-        beq     exp6_print_normal_done
+        beq     completion_print_normal_done
         ora     #$40
         sta     ,x+
-        bra     exp6_print_normal
-exp6_print_normal_done
+        bra     completion_print_normal
+completion_print_normal_done
         rts
 
-exp6_print_dark
+completion_print_dark
         lda     ,u+
-        beq     exp6_print_dark_done
+        beq     completion_print_dark_done
         anda    #$3f
         sta     ,x+
-        bra     exp6_print_dark
-exp6_print_dark_done
+        bra     completion_print_dark
+completion_print_dark_done
         rts
 
-exp6_message_title
+completion_message_title
         fcc     "COCO LLM COMPLETION"
         fcb     0
-exp6_message_type
+completion_message_type
         fcc     "TYPE A PHRASE"
         fcb     0
-exp6_message_predict
+completion_message_predict
         fcc     "RIGHT/TAB PREDICTS/ACCEPTS"
         fcb     0
-exp6_message_choose
+completion_message_choose
         fcc     "UP/DOWN CHOOSE LEFT ERASE CLEAR"
         fcb     0
-exp6_message_shape
-        fcc     "178 WORDS / 4 WORD CONTEXT"
-        fcb     0
-exp6_message_unknown
-        fcc     "UNKNOWN WORD"
-        fcb     0
-exp6_message_no_match
-        fcc     "NO MATCHING WORD"
-        fcb     0
-exp6_message_full
+completion_message_full
         fcc     "INPUT FULL"
         fcb     0
 
-exp6_draw_remaining        rmb     1
-exp6_draw_column           rmb     1
-exp6_input_cursor          rmb     2
-exp6_popover_origin        rmb     2
-exp6_popover_width         rmb     1
-exp6_popover_height        rmb     1
-exp6_popover_column        rmb     1
-exp6_popover_row_base      rmb     2
-exp6_popover_last_row      rmb     2
-exp6_popover_scratch       rmb     2
-exp6_popover_rows_remaining rmb    1
-exp6_popover_row_index     rmb     1
-exp6_popover_backup        rmb     96
+completion_draw_remaining        rmb     1
+completion_draw_column           rmb     1
+completion_input_cursor          rmb     2
+completion_popover_origin        rmb     2
+completion_popover_width         rmb     1
+completion_popover_height        rmb     1
+completion_popover_column        rmb     1
+completion_popover_row_base      rmb     2
+completion_popover_last_row      rmb     2
+completion_popover_scratch       rmb     2
+completion_popover_rows_remaining rmb    1
+completion_popover_row_index     rmb     1
+completion_popover_backup        rmb     96

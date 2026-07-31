@@ -107,6 +107,28 @@ The 6809 workbench will need matching behaviour:
 
 EXP-006's space-delimited parser remains unchanged.
 
+## Workbench UI reuse
+
+EXP-007 will reuse EXP-006's complete ten-row editor and cursor-anchored,
+edge-corrected suggestion popover. The shared UI is deliberately unaware of
+experiment vocabulary, context size, model layout, and keyboard hardware.
+
+Each experiment supplies narrow policy hooks for initialization, keyboard
+input, accepted typed characters, prediction, and suggestion insertion.
+EXP-007's policy will:
+
+- display `255 TOKENS / 5 TOKEN CONTEXT` on the bottom row;
+- accept the selected punctuation characters as input;
+- tokenize punctuation independently from words;
+- attach punctuation without a leading space while retaining normal spacing
+  between words;
+- call the expanded EXP-007 scorer; and
+- read the keyboard safely while BASIC ROM is hidden by the all-RAM map.
+
+This preserves the presentation lesson: the audience sees the same practical
+completion tool grow a larger vocabulary and context, while the assembly files
+make the parts special to sentence completion easy to identify.
+
 ## Phase A: frozen-corpus capacity sweep
 
 Run:
