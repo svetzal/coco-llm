@@ -7,6 +7,14 @@ The current narrative is in
 [`learning-journey.md`](learning-journey.md). It is intentionally an argument
 and demonstration sequence, not yet a slide deck.
 
+Supporting presentation material includes:
+
+- [`exhibit-copy.md`](exhibit-copy.md) — approved abstract, bio, and table copy;
+- [`table-exercises.md`](table-exercises.md) — the audience's hands-on
+  next-token exercise;
+- [`card-concepts/`](card-concepts/) — exploratory visual directions for that
+  exercise, not final print artwork.
+
 The presentation has four connected teaching threads:
 
 1. **Mechanism:** tokens, next-token prediction, error, and parameter updates
@@ -22,11 +30,11 @@ The presentation has four connected teaching threads:
    criteria, verification, and acceptable consequences.
 
 The practical branch now has two explicitly pretrained completion models.
-EXP-006 spends 8 KiB on four-word completion. EXP-007 asks, “What if I use the
-memory the ROM normally occupies?” Its 32 KiB model adds a five-token context
-and punctuation. Both connect mechanism to usefulness while making the
-division of labour visible: the Mac trains and exports; the CoCo performs
-integer inference.
+EXP-006 spends 8 KiB on a 178-token, four-word completion model. EXP-007 asks,
+“What if I use the memory the ROM normally occupies?” Its 32 KiB model uses all
+255 token identifiers, five-token context, and punctuation. Both connect
+mechanism to usefulness while making the division of labour visible: the Mac
+trains and exports; the CoCo performs integer inference.
 
 Both are in the presentation launcher for conversation-driven XRoar
 demonstrations. Neither should be described as physically validated until
@@ -38,10 +46,8 @@ human judgement.
 
 Future material may include:
 
-- talk abstract and title;
 - slide source and speaker notes;
 - live-demo runbook and recovery paths;
-- exhibit signage;
 - audience handout;
 - photographs and video;
 - cited sources.

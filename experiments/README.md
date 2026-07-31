@@ -28,8 +28,9 @@ Current experiments:
 - [`EXP-005-prompted-marketing-language.md`](EXP-005-prompted-marketing-language.md)
   — expanded advertising vocabulary and visible two-word prompting.
 - [`EXP-006-pretrained-tab-completion.md`](EXP-006-pretrained-tab-completion.md)
-  — partially supported 8 KiB pretrained completion prototype; quality gate
-  not yet met.
+  — partially supported 8 KiB pretrained completion prototype; its original
+  quality gate failed, but its task-level usefulness and runnable UI make the
+  failure presentable.
 - [`EXP-007-all-ram-sentence-completion.md`](EXP-007-all-ram-sentence-completion.md)
   — runnable 32 KiB all-RAM, punctuation-aware completion experiment; physical
   hardware evidence remains outstanding.
@@ -53,7 +54,8 @@ make present EXP=6
 make present EXP=7
 ```
 
-EXP-004 launches the stock-rate XRoar program and pauses before inference.
+EXP-004 launches the stock-rate-limited XRoar program and pauses before
+inference.
 EXP-005 launches its own XRoar program, pauses after training, and provides an
 interactive six-prompt workbench. Its larger training workload has not yet
 been timed on physical stock-rate hardware. EXP-006 and EXP-007 launch

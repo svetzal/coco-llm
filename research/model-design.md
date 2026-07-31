@@ -2,10 +2,12 @@
 
 ## Status
 
-The token-level candidate is implemented in both an integer reference and a
-bit-exact 6809 assembly training engine. All 580 final parameter bytes match
-after 20 epochs. Emulator execution is proven; physical CoCo 1 timing remains
-unproven.
+The original token-level model is implemented in both an integer reference and
+a bit-exact 6809 assembly training engine. All 580 final parameter bytes match
+after 20 epochs. Two larger pretrained inference models are also implemented:
+EXP-006 uses 8 KiB of weights, and EXP-007 uses the CoCo's all-RAM map for a
+32 KiB working model. Emulator execution is proven across all three paths;
+physical CoCo 1 timing remains unproven.
 
 ## Learning task
 
@@ -149,9 +151,41 @@ state, code, and stack remain below `$6000`.
 
 On the frozen holdout, the Q4.4 model saves 58.8% of word-entry keystrokes but
 reaches only 59.3% top-three accuracy, below the experiment's predeclared 70%
-threshold. It is therefore an inference prototype rather than a
-presentation-ready result. The direct 6809 simulator nevertheless proves the
-Mac and assembly rankings match for the first fixed vector.
+threshold. Its original quality hypothesis therefore failed. The direct 6809
+simulator nevertheless proves the Mac and assembly rankings match, and the
+complete UI is available as an explicitly labelled emulator demonstration.
+Presenting the failed stretch target is part of the evidence rather than a
+revised claim.
+
+## All-RAM sentence-completion direction
+
+EXP-007 fills the one-byte token identifier space and uses the CoCo 1's 64 KiB
+all-RAM map. Its current architecture has five context positions, 255 tokens,
+21 embedding dimensions, and 32,385 signed Q2.2 parameters:
+
+```text
+five token identifiers
+        ↓
+five position-dependent embeddings
+        ↓
+add into a twenty-one-byte context vector
+        ↓
+5,355 signed 8×8 products
+        ↓
+rank 255 next-token logits
+```
+
+The packed transport contains two signed nibbles per byte and occupies 16,193
+bytes below `$8000`. Startup masks interrupts, selects the contiguous all-RAM
+map, and expands 32,385 working bytes at `$8000-$FE80`. The keyboard adapter
+briefly restores the ROM map around `POLCAT` without exposing the model to ROM
+interrupt vectors.
+
+The expanded corpus contains 423 training sentences and 61 disjoint holdout
+sentences. At five epochs the deployed Q2.2 model reaches 39.5% top-one and
+60.0% top-three accuracy, with 51.7% measured keystroke savings. It supports
+word-prefix completion, punctuation tokens, and a visible `<END>` choice. The
+Mac trains and exports; the 6809 performs fixed-point ranking and interaction.
 
 ## Open questions
 
@@ -159,8 +193,9 @@ Mac and assembly rankings match for the first fixed vector.
    CoCo 1?
 2. Is approximate cross-entropy useful to display, or is correct-token
    probability a clearer live measure?
-3. Can the vocabulary and corpus be made more inclusive without losing the
-   performance budget?
-4. Is held-out top-three accuracy or measured keystroke savings the more honest
+3. Is held-out top-three accuracy or measured keystroke savings the more honest
    success criterion for an interactive completion tool?
-5. What is the loaded model's Tab-to-suggestion latency on a stock CoCo 1?
+4. What are the loaded EXP-006 and EXP-007 models' suggestion latencies on a
+   stock CoCo 1?
+5. Does the CoCo 3 HDMI presentation path preserve keyboard and display
+   behaviour?

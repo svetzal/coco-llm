@@ -212,7 +212,19 @@ engineering prototype rather than a presentation experiment because physical
 keyboard behaviour and stock-rate latency are not measured, and the original
 quality gate still failed.
 
-Before adding it to `make present`, exercise the editor on the intended CoCo 1
-and CoCo 3, measure Right-Arrow-to-suggestion latency, and decide whether to
-define a task-focused acceptance criterion in a follow-up experiment or revise
-the corpus and vocabulary without rewriting this failed hypothesis.
+At this point, the proposed next step was to exercise the editor on the
+intended CoCo 1 and CoCo 3 before adding it to `make present`, measure
+Right-Arrow-to-suggestion latency, and decide whether to define a task-focused
+acceptance criterion in a follow-up experiment or revise the corpus and
+vocabulary without rewriting this failed hypothesis.
+
+## Subsequent presentation decision
+
+The failed 70% criterion is now part of the lesson rather than a reason to hide
+the workbench. EXP-006 was added to `make present` as an explicitly labelled
+emulator demonstration. Its original conclusion remains unchanged: the
+hypothesis failed. What changed was the presentation decision that a useful,
+bounded prototype—and an honest failed stretch target—has teaching value.
+
+Physical CoCo 1 and CoCo 3 interaction and latency measurements remain
+outstanding.

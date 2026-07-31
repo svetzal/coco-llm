@@ -15,7 +15,8 @@ inferences.
 
 ## Current notes
 
-- [`model-design.md`](model-design.md) — candidate language-model architecture.
+- [`model-design.md`](model-design.md) — implemented live-training and
+  pretrained inference architectures.
 - [`toolchain.md`](toolchain.md) — cross-assembly and emulation strategy.
 
 ## Starting sources

@@ -21,6 +21,20 @@ language models:
 5. Adjust the parameters.
 6. Repeat, then generate one token at a time.
 
+## Promo
+
+**CoCo-LLM: Definitely not large, barely even a language model, and the coolest
+thing I've done yet on my CoCo**
+
+Watch a Tandy Colour Computer from 1981 learn from random numbers, invent
+plausible computer names, and complete fragments of 1980s-style marketing
+language. The mechanism is small enough to inspect, the mistakes are visible,
+and the limitations are part of the point.
+
+The approved talk abstract, biography, and table copy live in
+[`presentation/exhibit-copy.md`](presentation/exhibit-copy.md). That file is the
+single source for public and printed wording.
+
 ## Project thesis
 
 The machine will learn that tokens such as `AMIGA` can plausibly follow
@@ -53,14 +67,15 @@ weighting, and presentation order can all influence the result.
 - **Development:** Cross-compiled and tested primarily on macOS, with emulation
   and repeatable test vectors. Physical hardware remains the final authority.
 
-## Initial success target
+## Original success target
 
 From freshly randomized weights, a short training corpus should produce
 recognizably corpus-shaped but novel computer names in no more than three
 minutes on the CoCo 1.
 
-The first experiment will test that target before the project commits to an
-assembly implementation.
+EXP-001 through EXP-004 record how that target was tested and how the final
+assembly implementation emerged. Emulator execution is proven; physical CoCo
+1 timing remains deliberately unclaimed until it is measured.
 
 ## Repository map
 
@@ -73,25 +88,52 @@ assembly implementation.
 - `distribution/` — intentionally deferred until the project is ready to
   package for other people.
 
-## Current direction
+## Current status
 
-The first character-level candidate was rejected by EXP-001 before assembly:
-the 6809's raw multiplication time consumed nearly the entire demonstration
-budget. The current candidate uses 29 visible tokens, a two-token context,
-three-value positional embeddings, 290 trainable parameters, and integer-only
-training. See
-[`research/model-design.md`](research/model-design.md) and
-[`experiments/EXP-002-token-model-feasibility.md`](experiments/EXP-002-token-model-feasibility.md).
+Seven experiments now form one evidence trail:
 
-The controlled bias demonstration is recorded in
-[`experiments/EXP-003-training-data-bias.md`](experiments/EXP-003-training-data-bias.md).
+- EXP-001 rejects an impractical character-level model.
+- EXP-002 establishes the small token model and fixed-point direction.
+- EXP-003 makes training-data selection and ordering bias visible.
+- EXP-004 performs bit-exact training and generation in 6809 assembly.
+- EXP-005 adds audience-selected starting phrases and marketing language.
+- EXP-006 loads an 8 KiB pretrained model into an interactive completion UI.
+- EXP-007 uses the CoCo 1 all-RAM map for a 32 KiB, 255-token,
+  punctuation-aware sentence-completion model.
 
-The complete integer training and generation path now runs in 6809 assembly.
-It matches all 580 final parameter bytes from the Python reference after twenty
-epochs. Build the DECB binary with `make coco-bin`, verify the engine with
-`make model-test`, or run the whole-machine demonstration with `make xroar`.
-See
-[`experiments/EXP-004-complete-6809-training.md`](experiments/EXP-004-complete-6809-training.md).
+EXP-004 through EXP-007 are individually runnable from the presentation menu.
+The complete reference, assembly, UI, and XRoar integration suite passes on
+macOS. EXP-006 and EXP-007 are explicitly pretrained: the Mac trains and
+exports their weights; the CoCo performs fixed-point inference. Physical CoCo
+1 and CoCo 3 timing and keyboard validation remain the next evidence boundary,
+not a hidden completion claim.
+
+Read [`experiments/README.md`](experiments/README.md) for the experiment index,
+[`research/model-design.md`](research/model-design.md) for the implemented
+architectures, and
+[`presentation/learning-journey.md`](presentation/learning-journey.md) for the
+talk narrative.
+
+## Build and verify
+
+Install the macOS toolchain and run every automated check:
+
+```sh
+brew install lwtools xroar
+make tools
+make test
+make xroar-test
+make xroar-test-exp5
+make xroar-test-exp6
+make xroar-test-exp7
+```
+
+The XRoar checks use Stacey's locally owned Tandy ROM images. See
+[`research/toolchain.md`](research/toolchain.md) for ROM locations, checksums,
+and the distinction between CPU-level, machine-level, and physical-hardware
+evidence.
+
+## Run a presentation experiment
 
 For a conversation-driven presentation, list or run the audience-facing
 experiments:
@@ -102,11 +144,15 @@ make present EXP=4
 make present EXP=5
 ```
 
-The presentation menu starts at EXP-004, the first experiment with a complete
-6809 training loop. EXP-001 through EXP-003 remain the engineering evidence
-that led there. EXP-004 launches the interactive XRoar demonstration. EXP-005
-launches a second XRoar demonstration in which recognizable two-word prompts
-steer completions learned from 1980s computer advertising.
+The menu starts at EXP-004, the first complete 6809 learning loop. Run without
+`EXP` to list all four demonstrations:
+
+| Experiment | Demonstration | Command |
+| --- | --- | --- |
+| EXP-004 | Live 6809 training and generated names | `make present EXP=4` |
+| EXP-005 | Prompted 1980s-style marketing language | `make present EXP=5` |
+| EXP-006 | 8 KiB, four-word completion workbench | `make present EXP=6` |
+| EXP-007 | 32 KiB all-RAM sentence completion | `make present EXP=7` |
 
 ## Watch it train in XRoar
 
