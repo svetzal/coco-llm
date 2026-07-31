@@ -101,11 +101,13 @@ exp6_draw_word_character
         bra     exp6_draw_next
 
 exp6_draw_separator
+        leau    1,u
+        dec     exp6_draw_remaining
+        tst     exp6_draw_column
+        beq     exp6_draw_next            ; wrapped rows need no leading space
         cmpx    #EXP6_INPUT_END
         bhs     exp6_draw_input_done
-        leau    1,u
         leax    1,x
-        dec     exp6_draw_remaining
         inc     exp6_draw_column
         lda     exp6_draw_column
         cmpa    #32

@@ -163,6 +163,25 @@ exp6_ui_copy_wrap_phrase
         cmpa    #$20                   ; cursor follows the wrapped word
         lbne    exp6_ui_test_failed
 
+        ; A separator after a full row is consumed rather than indented.
+        ldx     #exp6_ui_exact_wrap_phrase
+        ldu     #exp6_input_buffer
+        ldb     #37
+        stb     exp6_input_length
+exp6_ui_copy_exact_wrap_phrase
+        lda     ,x+
+        sta     ,u+
+        decb
+        bne     exp6_ui_copy_exact_wrap_phrase
+        clr     ,u
+        lbsr    exp6_draw_input
+        ldd     EXP6_INPUT_SCREEN+32
+        cmpd    #$574f                 ; no blank before "WORD"
+        lbne    exp6_ui_test_failed
+        lda     EXP6_INPUT_SCREEN+36
+        cmpa    #$20                   ; cursor remains immediately after it
+        lbne    exp6_ui_test_failed
+
         ; Restore the unmasked fixed vector for the shared runner criteria.
         clr     exp6_prefix_length
         ldd     #EXP6_MODEL_BASE
@@ -180,6 +199,8 @@ exp6_ui_test_phrase
         fcc     "PRESS TAB TO C"
 exp6_ui_wrap_phrase
         fcc     "12345678901234567890123456789 WORD"
+exp6_ui_exact_wrap_phrase
+        fcc     "12345678901234567890123456789012 WORD"
 exp6_ui_saved_corner
         rmb     1
 
