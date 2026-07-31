@@ -1,0 +1,285 @@
+# EXP-008: Adaptive opponent
+
+## Status
+
+Planned. No implementation exists. This document records the hypothesis,
+gates, and procedure before any code is written.
+
+## Question
+
+Can a stock CoCo 1 train a next-token model online, from random weights, on a
+live player's input stream, and use its predictions to drive an opponent that
+measurably improves within one minute of play, while sustaining a playable
+frame rate?
+
+## Hypothesis
+
+An additive fixed-point model of no more than 1,024 parameters, trained online
+with the EXP-004 stochastic gradient engine, will predict a player's next move
+token with top-one accuracy materially above both a uniform-random baseline and
+a memory-matched frequency-table baseline, within 600 decision ticks, while
+consuming no more than 25% of the CoCo 1 cycle budget at a 10 Hz decision tick.
+
+A secondary hypothesis concerns context design. Situational context — bearing
+to the opponent, range bucket, and the last three moves — will outperform
+history-only context on synthetic players whose behaviour depends on opponent
+position. Both layouts use five context positions and the same vocabulary, so
+the comparison isolates what occupies the context slots.
+
+## Null result to respect
+
+If a memory-matched frequency table matches the model within the declared
+margin across all synthetic players, the honest conclusion is that the model is
+not earning its multiplier for this task. `research/model-design.md` already
+records that a token-to-token table "would be even smaller, but would barely
+exercise the multiplier and would omit learned representations." This
+experiment must be willing to report that outcome rather than presenting a
+model where a table would do.
+
+## Why this is a separate experiment
+
+EXP-004 through EXP-007 share four properties that EXP-008 breaks:
+
+1. Training data is a fixed corpus authored in advance. Here it is generated at
+   run time by a human.
+2. The model has the machine to itself. Here it shares a cycle budget with a
+   real-time game loop.
+3. Model output drives display. Here it drives opponent behaviour.
+4. The prediction target is stationary. Here the player adapts in response to
+   the opponent, so the target moves while the model chases it.
+
+The fourth property is the most technically interesting and the least
+precedented in this repository. Online stochastic gradient descent with no
+optimizer state forgets at a rate set by the learning rate, which may or may
+not track a human who is actively trying to become unpredictable.
+
+EXP-008 reuses the EXP-004 training engine rather than the EXP-006 and EXP-007
+inference cores, because live training is the entire point.
+
+## Token design
+
+Move tokens, emitted once per decision tick:
+
+```text
+N  NE  E  SE  S  SW  W  NW  IDLE
+```
+
+Situational tokens:
+
+```text
+B0 B1 B2 B3 B4 B5 B6 B7    bearing sector from player to opponent
+NEAR  MID  FAR             range bucket
+```
+
+The complete vocabulary is 20 tokens. The player does not fire in this design,
+so no action token is required. The opponent fires; the player dodges.
+
+## Context layouts under comparison
+
+Both layouts use five context positions and predict the next move token.
+
+| Layout | Position 0 | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- | --- |
+| H (history) | move t-5 | move t-4 | move t-3 | move t-2 | move t-1 |
+| S (situational) | bearing | range | move t-3 | move t-2 | move t-1 |
+
+Position-dependent embeddings mean each position carries an embedding row for
+every vocabulary entry, including entries that can never appear there. This
+wastes roughly 60% of the embedding table in Layout S. The waste is accepted
+because it keeps the architecture bit-identical to the engine already built and
+tested, and because the absolute parameter count remains small.
+
+## Candidate sizes
+
+Using the established formula `parameters = V × (E × (C + 1) + 1)` with `V=20`
+and `C=5`:
+
+| Embedding | Parameters | Master bytes | Scoring multiplies |
+| ---: | ---: | ---: | ---: |
+| 4 | 500 | 1,000 | 80 |
+| 6 | 740 | 1,480 | 120 |
+| 8 | 980 | 1,960 | 160 |
+| 10 | 1,220 | 2,440 | 200 |
+
+The declared ceiling of 1,024 parameters admits embedding widths up to 8. The
+sweep will select the smallest candidate whose accuracy is within one
+percentage point of the best, matching the selection rule used in EXP-007.
+
+## Projected cycle budget
+
+These are projections from a nominal 35 cycles per signed 8×8 multiply-
+accumulate in a 6809 loop, not measurements. They exist to establish whether
+the experiment is worth starting, and must be replaced by measured counts in
+Phase B.
+
+| Operation | Multiplies | Projected cycles | Projected ms |
+| --- | ---: | ---: | ---: |
+| Forward prediction (E=6) | 120 | 4,200 | 4.7 |
+| Training step (E=6) | ~360 | 12,600 | 14.2 |
+| Combined per decision tick | — | ~16,800 | ~18.9 |
+
+At a 10 Hz decision tick this projects to roughly 19% of the 890,000-cycle
+second. The declared gate is 25%.
+
+Total weight storage at E=6 is 1,480 bytes of 16-bit master parameters plus
+compact forward operands. The complete image is expected to fit a stock 32 KiB
+CoCo 1 with no all-RAM memory map, making EXP-008 simpler to load than EXP-006
+or EXP-007.
+
+## Baselines
+
+Four baselines, in increasing strength:
+
+1. **Uniform** — uniform random over nine move tokens. 11.1% expected top-one.
+2. **Marginal** — always predict the player's most frequent move to date.
+3. **Bigram table** — most frequent move following the last move. 81 counter
+   bytes.
+4. **Trigram table** — most frequent move following the last two moves. 729
+   counter bytes.
+
+The trigram table is the honest comparison. At 729 bytes it occupies
+approximately the same memory as the 740-parameter model, so any advantage the
+model shows must come from generalization rather than capacity.
+
+Layout S has no practical table equivalent. Tabulating eight bearings by three
+range buckets by three moves of history requires 8 × 3 × 9³ = 17,496 contexts.
+That the model can condition on situational context at all, within 1,480 bytes,
+is the specific claim generalization is meant to support. If Layout S wins,
+this is why.
+
+## Synthetic players
+
+Phase A needs deterministic, seeded opponents so that results are reproducible
+and testable without a human. Six scripted policies:
+
+| Policy | Behaviour | Expectation |
+| --- | --- | --- |
+| `RANDOM` | Uniform over nine moves | Negative control. No method should beat uniform. |
+| `ZIGZAG` | Fixed repeating pattern with noise | Bigram should do well. Model should match, not exceed. |
+| `CIRCLE` | Circle-strafe around the opponent | Needs bearing. Layout S should win. |
+| `FLEE` | Always move directly away | Pure function of bearing. Layout S should win decisively. |
+| `PANIC` | Flee when NEAR, wander when FAR | Needs bearing and range together. |
+| `HABIT` | 70% continue, 20% turn, 10% random, biased away | Closest available proxy for a human. |
+
+`RANDOM` is not optional. If any method appears to beat uniform on a genuinely
+uniform player, the harness is measuring something other than what it claims.
+
+## Phase A gates: Mac reference
+
+Proceed to 6809 assembly only if all hold:
+
+- the model exceeds the best table baseline by at least five percentage points
+  of top-one accuracy on at least three of the five structured players;
+- the model does not exceed the uniform baseline beyond sampling noise on
+  `RANDOM`;
+- the selected layout and embedding width fit within 1,024 parameters;
+- every reachable quantized context vector stays within signed 8-bit range;
+- the reachable score range fits the declared accumulator width;
+- accuracy converges within 600 decision ticks from random initialization.
+
+The context-magnitude and score-range gates carry forward unchanged from
+EXP-007, where they were the constraints that made fixed-point inference safe.
+
+## Phase B gates: bit-exact 6809
+
+- Reference and assembly implementations produce identical parameters after a
+  fixed scripted input sequence.
+- Reference and assembly produce identical top-one predictions at every tick of
+  that sequence.
+- Forward and backward cycle counts are measured, not projected.
+- Combined model cost at a 10 Hz decision tick is at or below 25%.
+
+## Phase C gates: playable duel
+
+Scope is a minimal duel. Player block, opponent block, projectile, arena
+boundary. Survive the clock. No rounds, no levels, no sound.
+
+Required features:
+
+- a visible ghost marker showing where the model predicts the player will be;
+- a running prediction-accuracy readout;
+- a weight-reset key;
+- sustained frame rate at or above 10 fps with model, game, and rendering
+  active.
+
+The reset key is not a convenience. It is the falsifiability demonstration.
+Pressing it re-randomizes the weights, the ghost immediately becomes wrong, the
+accuracy readout collapses, and the audience watches it climb again. Without
+it, an audience cannot distinguish a model that learned from a difficulty curve
+that ramped. It must be treated as a required feature and exercised in the
+demonstration, not left as an option.
+
+## Display decision
+
+Semigraphics-4 through the existing text-screen path at `$0400`, giving a
+64 × 32 block arena.
+
+This is a deliberate choice against PMODE bitmap graphics. SG4 needs a handful
+of byte writes per frame, no page flipping, and no new display code, because
+`screen.asm` already targets that memory. The CPU budget then belongs almost
+entirely to the model, which is the part of this experiment carrying the
+evidence. A blocky arena is adequate for a duel between two markers and a
+projectile.
+
+## Input decision
+
+Keyboard first, through the existing `POLCAT` path. Direction keys quantize to
+move tokens directly, and the ROM-safe adapter patterns from EXP-007 already
+exist if the memory map ever changes.
+
+An analog joystick would suit the era better and would give finer control, but
+it adds PIA and ADC polling, quantization tuning, and a hardware dependency at
+a venue. It is deferred behind a build flag until the model evidence is
+settled.
+
+## Presentation integrity
+
+Stacey has decided that EXP-008 becomes the finale of the talk rather than a
+clearly separated appendix.
+
+This requires an amendment to `AGENTS.md`, which currently reads: "The
+sustained example is a model learning vintage-computer names. Return to it
+throughout the presentation rather than introducing unrelated AI examples."
+
+The proposed framing is that the vintage-computer-names corpus remains the
+spine through which the mechanism is taught, and the adaptive opponent is the
+same engine with a different token stream. The teaching point is continuous
+rather than divided: the model learns that `SW` plausibly follows `W` without
+knowing what a joystick is, exactly as it learns that `AMIGA` plausibly follows
+`COMMODORE` without knowing what a computer is. The mechanism does not care
+what the tokens mean, and demonstrating that twice on different data is a
+stronger claim than demonstrating it once.
+
+The existing distinctions must survive the change. In particular, an opponent
+that predicts a player is still not an opponent that understands a player, and
+the accuracy readout must be described as next-token accuracy over a five-token
+context rather than as strategy, reading, or intent.
+
+The `AGENTS.md` amendment is not yet applied. It should be made deliberately
+once the framing above is accepted.
+
+## Open questions
+
+1. Does a human token stream carry enough structure to learn inside 60 seconds,
+   or do people randomize more than any of the synthetic players?
+2. Is 10 Hz the right decision tick? A slower tick cuts cost and yields a
+   cleaner token stream; a faster one makes the opponent feel more responsive.
+3. Does displaying the ghost prediction make the game better or worse? It makes
+   the demonstration honest, but it also tells the player exactly how to
+   defeat the model.
+4. How does the model behave against a non-stationary target? The player adapts
+   to the opponent adapting to them. Is a fixed 1/16 learning rate fast enough
+   to track that, and does the resulting feedback loop stabilize or oscillate?
+5. What is the honest way to display accuracy? A running percentage invites
+   comparison against a baseline the audience cannot see.
+
+## Relationship to prior experiments
+
+| Experiment | Supplies |
+| --- | --- |
+| EXP-004 | The online SGD training engine, fixed-point format, and bit-exactness discipline |
+| EXP-003 | The precedent for controlled comparison between models differing in one input property |
+| EXP-007 | The context-magnitude and score-range gate methodology |
+
+EXP-008 supplies nothing back to EXP-004 through EXP-007. It is additive, and
+if it fails its gates the existing presentation is unaffected.

@@ -36,6 +36,9 @@ Current experiments:
   hardware evidence remains outstanding.
 - [`EXP-007-epoch-sweep.md`](EXP-007-epoch-sweep.md) — side experiment showing
   that training loss keeps falling after held-out Q2.2 quality peaks.
+- [`EXP-008-adaptive-opponent.md`](EXP-008-adaptive-opponent.md) — planned
+  online-training experiment in which a live player's input stream becomes the
+  corpus and the model drives an opponent. No implementation yet.
 
 ## Presentation commands
 
