@@ -33,6 +33,8 @@ Current experiments:
 - [`EXP-007-all-ram-sentence-completion.md`](EXP-007-all-ram-sentence-completion.md)
   — runnable 32 KiB all-RAM, punctuation-aware completion experiment; physical
   hardware evidence remains outstanding.
+- [`EXP-007-epoch-sweep.md`](EXP-007-epoch-sweep.md) — side experiment showing
+  that training loss keeps falling after held-out Q2.2 quality peaks.
 
 ## Presentation commands
 

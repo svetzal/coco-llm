@@ -848,6 +848,33 @@ more task-specific patterns.” EXP-007 reaches 63.5% top-three accuracy on its
 held-out sentence corpus, but only 54.2% measured keystroke savings. Useful?
 Sometimes. Understanding? No. Think about that a minute.
 
+Then ask: “Why 40 epochs?” Fair warning, the honest answer is that we picked a
+number that seemed reasonable. So call the shot and take the shot: train fresh
+models for 1, 2, 5, 10, 20, 40, 80, and 160 epochs.
+
+| Epochs | Training loss | Q2.2 top 3 | Saved keystrokes |
+| ---: | ---: | ---: | ---: |
+| 1 | 4.941 | 28.4% | 36.4% |
+| 5 | 1.795 | 58.4% | 51.2% |
+| 20 | 0.775 | **68.0%** | 53.9% |
+| 40 | 0.751 | 63.5% | 54.2% |
+| 160 | **0.729** | 63.5% | **54.9%** |
+
+The training loss gets better every time. The held-out suggestion quality does
+not. More training is not the same thing as more useful. Is that an
+opportunity? It is certainly a chance to explain why we measure the behaviour
+we care about rather than worship the number the optimizer gives us.
+
+There is another lovely reveal hiding in the punctuation bug. After a period,
+the CoCo often offers `?` or `,`. Is the model really asking for two punctuation
+marks? Usually, no. At 40 epochs, `<END>` is its first choice at 30 of 31
+held-out sentence boundaries. The popover hides `<END>` and shows the runner-up.
+After the 26 periods, that runner-up is `?` six times and `,` once.
+
+So the model said “stop,” and our interface said “pick something else.” Think
+about that a minute. Some apparent model failures are product-policy failures,
+and hiding the mechanism makes it harder for people to tell the difference.
+
 ## Presentation stance
 
 The emotional movement is:
