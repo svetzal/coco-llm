@@ -5,9 +5,10 @@ Sets up a known voice configuration, runs a fixed number of samples through
 the real sample loop in the direct simulator, and asserts the resulting phase
 accumulators, LFSR, and mix table against values computed by coco_synth.
 
-Phases and the LFSR are the entire state the sample loop evolves, and the DAC
-value is a pure function of that state and the mix table. Checking all three
-therefore pins the audio stream without needing to capture it.
+Phases and the LFSR are the entire state the sample loop evolves. The final
+DAC byte is also checked: in the direct simulator $FF20 is ordinary memory, so
+it still holds the last value the player wrote. Together these pin the audio
+stream without needing to capture it.
 """
 
 from __future__ import annotations
@@ -20,11 +21,11 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from coco_synth import VOICE_COUNT, Voice, build_mix_table, note_increment
+from coco_synth import VOICE_COUNT, Voice, note_increment
 
 RUNNER_ORG = 0x1000
 SAMPLES = 200
-SAMPLE_RATE = 6457
+SAMPLE_RATE = 5679
 
 # Voice 3 is noise and is given a fast increment so the LFSR clocks often
 # inside the sample window.
@@ -57,7 +58,7 @@ def decb_segments(payload: bytes) -> list[tuple[int, bytes]]:
     return segments
 
 
-def expected_state() -> tuple[list[Voice], list[int]]:
+def expected_state() -> tuple[list[Voice], int]:
     voices = [
         Voice(
             increment=note_increment(NOTES[index], SAMPLE_RATE),
@@ -68,8 +69,10 @@ def expected_state() -> tuple[list[Voice], list[int]]:
     for _ in range(SAMPLES):
         for voice in voices:
             voice.step()
-    table = [int(value) << 2 for value in build_mix_table(VOLUMES)]
-    return voices, table
+
+    # The player sums pre-shifted amplitudes for whichever voices are high.
+    dac = sum((VOLUMES[index] << 2) for index, voice in enumerate(voices) if voice.bit)
+    return voices, dac & 0xFF
 
 
 def build_source(binary: Path, symbols_path: Path) -> str:
@@ -80,20 +83,18 @@ def build_source(binary: Path, symbols_path: Path) -> str:
         for name in (
             "phases",
             "incrs",
-            "vols",
-            "noises",
+            "scaled",
+            "decays",
             "lfsr",
-            "mixindex",
-            "mixtable",
+            "dac_acc",
             "tick_samples",
             "row_ticks",
             "rows_left",
             "finished",
             "play_tune",
-            "build_mix",
         )
     }
-    voices, table = expected_state()
+    voices, dac = expected_state()
 
     lines = [
         "; Generated parity image. Do not edit.",
@@ -111,24 +112,23 @@ def build_source(binary: Path, symbols_path: Path) -> str:
             f"        std     ${address['incrs'] + index * 2:04X}",
             "        ldd     #$0000",
             f"        std     ${address['phases'] + index * 2:04X}",
-            f"        lda     #${VOLUMES[index]:02X}",
-            f"        sta     ${address['vols'] + index:04X}",
-            f"        lda     #${0x80 if NOISE[index] else 0x00:02X}",
-            f"        sta     ${address['noises'] + index:04X}",
+            f"        lda     #${VOLUMES[index] << 2:02X}",
+            f"        sta     ${address['scaled'] + index:04X}",
+            "        clra",
+            f"        sta     ${address['decays'] + index:04X}",
         ]
 
     lines += [
         "        ldd     #$ACE1",
         f"        std     ${address['lfsr']:04X}",
         "        clra",
-        f"        sta     ${address['mixindex']:04X}",
+        f"        sta     ${address['dac_acc']:04X}",
         f"        sta     ${address['finished']:04X}",
         f"        sta     ${address['rows_left']:04X}",
         "        lda     #$01",
         f"        sta     ${address['row_ticks']:04X}",
         f"        lda     #${SAMPLES:02X}",
         f"        sta     ${address['tick_samples']:04X}",
-        f"        jsr     ${address['build_mix']:04X}",
         f"        jsr     ${address['play_tune']:04X}",
         "        swi",
         "",
@@ -146,15 +146,13 @@ def build_source(binary: Path, symbols_path: Path) -> str:
     for index in range(VOICE_COUNT):
         lines.append(f"phase{index} equ ${address['phases'] + index * 2:04X}")
     lines.append(f"lfsr_at equ ${address['lfsr']:04X}")
-    for index in range(len(table)):
-        lines.append(f"mix{index:02d} equ ${address['mixtable'] + index:04X}")
+    lines.append("dac_port equ $FF20")
 
     lines.append("")
     for index, voice in enumerate(voices):
         lines.append(f";! phase{index} = #${voice.phase:04X}")
     lines.append(f";! lfsr_at = #${voices[3].lfsr:04X}")
-    for index, value in enumerate(table):
-        lines.append(f";! mix{index:02d} = #${value:02X}")
+    lines.append(f";! dac_port = #${dac:02X}")
     lines.append("")
     return "\n".join(lines)
 

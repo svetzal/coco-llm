@@ -29,7 +29,11 @@ VOICE_SQUARE = [
     ("ADDD", "direct", 6),
     ("STD", "direct", 5),
     ("ROLA", "inherent", 2),
-    ("ROL", "direct", 6),
+    ("LDA", "immediate", 2),
+    ("SBCA", "immediate", 2),
+    ("ANDA", "direct", 4),
+    ("ADDA", "direct", 4),
+    ("STA", "direct", 4),
 ]
 
 VOICE3_NOISE = [
@@ -42,13 +46,13 @@ VOICE3_NOISE = [
     ("STA", "direct", 4),
     ("LDA", "direct", 4),
     ("LSRA", "inherent", 2),
-    ("ROL", "direct", 6),
+    ("LDA", "immediate", 2),
+    ("SBCA", "immediate", 2),
+    ("ANDA", "direct", 4),
+    ("STA", "direct", 4),
 ]
 
 MIX_AND_OUTPUT = [
-    ("LDB", "direct", 4),
-    ("ANDB", "immediate", 2),
-    ("LDA", "B,X indexed", 5),
     ("STA", "extended", 5),
 ]
 
@@ -77,7 +81,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--overhead-cycles",
         type=float,
-        default=3.6,
+        default=1.6,
         help="per-sample share of tick and row processing, amortised",
     )
     return parser.parse_args()
@@ -96,8 +100,9 @@ def main() -> None:
     tick = show("tick countdown", TICK_COUNTDOWN)
     print()
 
-    loop = noise3 + one_voice * 3 + mix + tick
+    loop = noise3 + one_voice * 3 - 4 + mix + tick  # voice 0 stores to the DAC
     print(f"sample loop: {loop} cycles, with no branch and no variation")
+    print("(voice 0 skips its store; its sum goes straight to the DAC)")
     print(f"pitch during playback: {arguments.clock / loop:.0f} Hz")
     print()
     effective = loop + arguments.overhead_cycles

@@ -265,6 +265,32 @@ def demo_tune() -> Tune:
     return Tune(name="EXP-009 demo", rows=tuple(rows), ticks_per_row=6, tick_hz=50)
 
 
+def steady_tune() -> Tune:
+    """A held chord with no decay, for isolating timing artefacts.
+
+    Nothing here changes a volume after the row is applied, so the 6809 player
+    skips build_mix on every tick and its housekeeping stall drops from about
+    three sample periods to a fraction of one. Rows are 200 ticks apart, so
+    the row-boundary stall happens once every four seconds.
+
+    If this sounds steady and the demo tune warbles, the warble is the
+    housekeeping stall and not the oscillators.
+    """
+    chord = (
+        Cell(note=45, volume=12),
+        Cell(note=57, volume=10),
+        Cell(note=69, volume=10),
+        Cell(note=NOTE_OFF),
+    )
+    hold = (Cell(),) * VOICE_COUNT
+    return Tune(
+        name="EXP-009 steady chord",
+        rows=(chord, hold, hold, hold),
+        ticks_per_row=200,
+        tick_hz=50,
+    )
+
+
 def to_waveform(dac_values: NDArray[np.int64]) -> NDArray[np.int16]:
     """Convert 6-bit DAC values to signed 16-bit PCM for a WAV file.
 

@@ -24,6 +24,7 @@ from coco_synth import (
     Tune,
     demo_tune,
     note_increment,
+    steady_tune,
 )
 
 DEFAULT_OUTPUT = ROOT / "build" / "exp009" / "tune_data.inc"
@@ -94,12 +95,13 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--sample-rate", type=int, default=7300)
     parser.add_argument("--repeats", type=int, default=2)
+    parser.add_argument("--tune", choices=("demo", "steady"), default="demo")
     return parser.parse_args()
 
 
 def main() -> None:
     arguments = parse_arguments()
-    tune = demo_tune()
+    tune = steady_tune() if arguments.tune == "steady" else demo_tune()
     source = render_source(
         tune, sample_rate=arguments.sample_rate, repeats=arguments.repeats
     )

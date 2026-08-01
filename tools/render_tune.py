@@ -23,6 +23,7 @@ from coco_synth import (
     demo_tune,
     note_increment,
     render,
+    steady_tune,
     to_waveform,
 )
 
@@ -48,12 +49,13 @@ def parse_arguments() -> argparse.Namespace:
         help="target rate; the 6809 loop budget lands near 7300 Hz",
     )
     parser.add_argument("--repeats", type=int, default=2)
+    parser.add_argument("--tune", choices=("demo", "steady"), default="demo")
     return parser.parse_args()
 
 
 def main() -> None:
     arguments = parse_arguments()
-    tune = demo_tune()
+    tune = steady_tune() if arguments.tune == "steady" else demo_tune()
     dac_values = np.concatenate(
         [
             render(tune, sample_rate=arguments.sample_rate)

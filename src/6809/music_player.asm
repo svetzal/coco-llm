@@ -1,20 +1,32 @@
 ; Four-voice software synthesizer for a stock CoCo 1.
 ;
-; Every voice is a one-bit source, so the sum of four voices takes only
-; sixteen values. Those are precomputed into a table whenever a volume
-; changes, which happens on tick boundaries. The per-sample path is then four
-; 16-bit adds, four bit extractions, one indexed load, and one store to the
-; DAC. There is no multiply, no divide, and no per-sample addition.
+; The CoCo 1 has no timer usable at audio rates. Its only periodic interrupt
+; fast enough is horizontal sync at 15.7 kHz, and a 6809 IRQ costs 19 cycles
+; to enter and 15 to leave against a 57-cycle HSYNC period, so interrupt
+; overhead alone would consume the machine. The sample clock therefore has to
+; be the instruction stream itself: the sample rate IS this loop's cycle
+; count, and every path through it must cost the same.
+;
+; That constraint drives every decision here.
 ;
 ; Voices 0 to 2 take bit 15 of a 16-bit phase accumulator. Voice 3 is a
 ; dedicated noise channel with no accumulator: an LFSR is clocked once per
-; sample and its low bit is the output.
+; sample and its low bit is the output. A switchable tone/noise voice would
+; need a branch, and a branch would modulate the sample period.
 ;
-; Voices are processed 3,2,1,0 so that successive ROLs leave voice v in bit v
-; of the mix index, matching the reference implementation's bit order.
+; There is no mix table. An earlier version precomputed the sixteen possible
+; voice sums, which made the sample path cheap but forced a 199-cycle rebuild
+; whenever a volume changed. That rebuild froze the DAC for three sample
+; periods fifty times a second, and the resulting 50 Hz disturbance of the
+; sample clock was clearly audible as warble.
 ;
-; Interrupts stay masked for the whole tune. The 60 Hz IRQ would otherwise
-; jitter the sample loop audibly.
+; Instead each voice's contribution is masked in branchlessly and summed. With
+; A zero, SBCA #0 leaves $FF when carry was set and $00 when it was clear, so
+; ANDing that against the voice's amplitude adds either the amplitude or
+; nothing without testing anything. Volumes are pre-shifted into PA2-PA7
+; position, so four voices at full volume sum to 240 and never leave a byte.
+;
+; Interrupts stay masked throughout. The 60 Hz IRQ would jitter the loop.
 
 PIA0_CRA        equ     $FF01
 PIA0_CRB        equ     $FF03
@@ -24,44 +36,38 @@ PIA1_CRB        equ     $FF23
 
 ; Writing anywhere in $FFD8 selects the slow clock. On a CoCo 1 that clears
 ; SAM bit R1, the normal state; on a CoCo 3 it selects 0.89 MHz rather than
-; 1.78. The tuning is derived from a cycle count, so the clock cannot be left
-; to whatever the host BASIC happened to leave set.
+; 1.78. The tuning is a cycle count, so the clock cannot be left to whatever
+; the host BASIC happened to set.
 SLOW_CLOCK      equ     $FFD8
 
 VOICES          equ     4
-NOISE_VOICE     equ     3
 LOW_NOTE        equ     12
-MIX_ENTRIES     equ     16
-
 NOTE_HOLD_CODE  equ     0
 NOTE_OFF_CODE   equ     1
 
                 setdp   $20
                 org     $2000
 
-; ---- direct page state, all within page $20 ----
-; phases through noises are cleared as one contiguous block on reset.
-phases          rmb     8               ; four 16-bit phase accumulators
-incrs           rmb     8               ; four 16-bit phase increments
-vols            rmb     4               ; 0..15 per voice
-decays          rmb     4               ; subtracted from vol each tick
-noises          rmb     4               ; retained so the reset block stays contiguous
-STATE_BYTES     equ     28
+; ---- direct page state ----
+; phases through decays are cleared as one contiguous block on reset.
+phases          rmb     8               ; three 16-bit accumulators, one spare
+incrs           rmb     8               ; matching phase increments
+scaled          rmb     4               ; volume already shifted to PA2-PA7
+decays          rmb     4               ; per-tick decrement, in the same units
+STATE_BYTES     equ     24
 
-mixindex        rmb     1               ; low four bits rebuilt every sample
+dac_acc         rmb     1               ; sum of the voices high this sample
 lfsr            rmb     2               ; 16-bit maximal-length shift register
-mixtable        rmb     MIX_ENTRIES     ; DAC values, already shifted to PA2-PA7
 
-tick_samples    rmb     1               ; samples remaining in this tick
-row_ticks       rmb     1               ; ticks remaining in this row
-rows_left       rmb     1               ; rows remaining in this pass
+tick_samples    rmb     1
+row_ticks       rmb     1
+rows_left       rmb     1
 repeats_left    rmb     1
 row_ptr         rmb     2
 finished        rmb     1
-voice_no        rmb     1               ; row cursor, also the tick countdown
-changed         rmb     1               ; a volume moved, so rebuild the table
+voice_no        rmb     1
+incr_tmp        rmb     2
 scratch         rmb     1
-scaled          rmb     4               ; volumes pre-shifted for the mix table
 saved_dp        rmb     1
 
                 org     $2100
@@ -137,7 +143,7 @@ tr_clear        clr     ,x+
 
                 ldd     #$ACE1          ; LFSR seed, matching the reference
                 std     <lfsr
-                clr     <mixindex
+                clr     <dac_acc
                 clr     <finished
 
                 ldd     #tune_rows
@@ -147,22 +153,13 @@ tr_clear        clr     ,x+
                 lda     #1
                 sta     <row_ticks      ; expires immediately, fetching row 0
                 sta     <tick_samples
-                lbsr    build_mix
                 rts
 
 ; ----------------------------------------------------------- sample loop ----
-; The hot path. `make music-cycles` measures its real cost; the sample rate in
-; the exported tune data is derived from that measurement.
+; Constant cost on every path. `make music-cycles` enumerates it.
 play_tune
-                ldx     #mixtable
-
 sample_loop
-; ---- voice 3: dedicated noise, branch-free, fixed cost ----
-; A software DAC has no timer, so the sample rate IS this loop's cycle count.
-; Any branch here modulates the sample period and is audible as distortion.
-; The tap is applied with SBCA rather than a conditional branch: with A zero,
-; SBCA #0 leaves $FF when carry was set and $00 when it was clear. LDA does
-; not disturb carry, so it can sit between the shift and the subtract.
+; ---- voice 3: noise ----
                 lsr     <lfsr           ; 6
                 ror     <lfsr+1         ; 6   carry is the bit shifted out
                 lda     #$00            ; 2
@@ -171,47 +168,61 @@ sample_loop
                 eora    <lfsr           ; 4
                 sta     <lfsr           ; 4
                 lda     <lfsr+1         ; 4
-                lsra                    ; 2   bit 0 of the register into carry
-                rol     <mixindex       ; 6
+                lsra                    ; 2   bit 0 into carry
+                lda     #$00            ; 2
+                sbca    #$00            ; 2   mask from the voice's output bit
+                anda    <scaled+3       ; 4
+                sta     <dac_acc        ; 4   first voice seeds the sum
 
-; ---- voices 2, 1, 0: always square ----
-                ldd     <phases+4
-                addd    <incrs+4
-                std     <phases+4
-                rola
-                rol     <mixindex
+; ---- voice 2 ----
+                ldd     <phases+4       ; 5
+                addd    <incrs+4        ; 6
+                std     <phases+4       ; 5
+                rola                    ; 2   bit 15 into carry
+                lda     #$00            ; 2
+                sbca    #$00            ; 2
+                anda    <scaled+2       ; 4
+                adda    <dac_acc        ; 4
+                sta     <dac_acc        ; 4
 
+; ---- voice 1 ----
                 ldd     <phases+2
                 addd    <incrs+2
                 std     <phases+2
                 rola
-                rol     <mixindex
+                lda     #$00
+                sbca    #$00
+                anda    <scaled+1
+                adda    <dac_acc
+                sta     <dac_acc
 
+; ---- voice 0 ----
                 ldd     <phases
                 addd    <incrs
                 std     <phases
                 rola
-                rol     <mixindex
+                lda     #$00
+                sbca    #$00
+                anda    <scaled+0
+                adda    <dac_acc
 
-; ---- mix and output ----
-                ldb     <mixindex
-                andb    #$0F            ; discard bits rolled out earlier
-                lda     b,x
-                sta     PIA1_DA
+; ---- output ----
+                sta     PIA1_DA         ; 5
 
-                dec     <tick_samples
-                bne     sample_loop
+                dec     <tick_samples   ; 6
+                bne     sample_loop     ; 3
 
                 lbsr    next_tick
                 tst     <finished
                 bne     play_done
-                ldx     #mixtable
                 bra     sample_loop
 
 play_done
                 rts
 
 ; ----------------------------------------------------------------- tick ----
+; Runs 50 times a second. Unrolled and kept under one sample period so the
+; pause it causes is smaller than the interval it interrupts.
 next_tick
                 lda     #SAMPLES_PER_TICK
                 sta     <tick_samples
@@ -219,15 +230,14 @@ next_tick
                 dec     <row_ticks
                 beq     nt_row
 
-                clr     <changed
-                ldx     #vols
+                ldx     #scaled
                 ldy     #decays
                 lda     #VOICES
                 sta     <voice_no
 nt_voice
-                lda     ,y+             ; decay amount for this voice
+                lda     ,y+             ; this voice's per-tick decrement
                 beq     nt_next
-                ldb     ,x              ; current volume
+                ldb     ,x              ; current amplitude
                 beq     nt_next         ; already silent
                 sta     <scratch
                 subb    <scratch
@@ -235,20 +245,14 @@ nt_voice
                 clrb                    ; clamp at silence
 nt_store
                 stb     ,x
-                inc     <changed
 nt_next
                 leax    1,x
                 dec     <voice_no
                 bne     nt_voice
-
-                tst     <changed
-                beq     nt_done
-                lbsr    build_mix
-nt_done
                 rts
 
 nt_row
-                lbsr    next_row        ; a new row rebuilds the table itself
+                lbsr    next_row
                 rts
 
 ; ------------------------------------------------------------------ row ----
@@ -275,11 +279,11 @@ nr_voice
                 bne     nr_voice
 
                 stu     <row_ptr
-                lbsr    build_mix
                 rts
 
-; Apply one cell. U points at note, volume+flags, decay; it is advanced by
-; three. The voice index lives in <voice_no so every register stays free.
+; Apply one cell. U points at note, volume, decay and is advanced by three.
+; Voice 3 has no pitch, but writing its unused increment is cheaper than
+; branching around it.
 apply_cell
                 lda     ,u
                 cmpa    #NOTE_HOLD_CODE
@@ -287,23 +291,19 @@ apply_cell
                 cmpa    #NOTE_OFF_CODE
                 beq     ac_off
 
-                ldb     <voice_no       ; voice 3 has no pitch; only retrigger
-                cmpb    #NOISE_VOICE
-                beq     ac_volume
-
                 suba    #LOW_NOTE       ; index the increment table
                 lsla                    ; two bytes per entry, 0..192
                 tfr     a,b
                 ldx     #note_increments
                 abx                     ; ABX adds B unsigned, so >127 is fine
-                ldd     ,x              ; D is this note's phase increment
+                ldd     ,x
+                std     <incr_tmp
 
                 ldx     #incrs
-                pshs    d
                 ldb     <voice_no
-                lslb                    ; two bytes per voice
+                lslb
                 abx
-                puls    d
+                ldd     <incr_tmp
                 std     ,x
 
                 ldx     #phases         ; retrigger from a known phase
@@ -313,98 +313,35 @@ apply_cell
                 clr     ,x
                 clr     1,x
 
-ac_volume
-                lda     1,u             ; volume, already masked by the exporter
-                ldx     #vols
-                pshs    a
+                lda     1,u             ; volume, 0..15
+                lsla
+                lsla                    ; pre-shift onto PA2-PA7
+                sta     <scratch
+                ldx     #scaled
                 ldb     <voice_no
                 abx
-                puls    a
+                lda     <scratch
                 sta     ,x
 
-                lda     2,u
+                lda     2,u             ; decay, in the same shifted units
+                lsla
+                lsla
+                sta     <scratch
                 ldx     #decays
-                pshs    a
                 ldb     <voice_no
                 abx
-                puls    a
+                lda     <scratch
                 sta     ,x
                 bra     ac_skip
 
 ac_off
-                ldx     #vols           ; silence this voice, leave the rest
+                ldx     #scaled         ; silence this voice, leave the rest
                 ldb     <voice_no
                 abx
                 clr     ,x
 
 ac_skip
                 leau    3,u
-                rts
-
-; ------------------------------------------------------------ mix table ----
-; table[i] = sum of the volumes of the voices whose bit is set in i, shifted
-; left twice so the value already sits on PA2-PA7.
-;
-; Subset sums, fully unrolled: fifteen adds rather than sixty-four bit tests.
-; This runs between samples, so a variable cost would show up as a periodic
-; artefact at the tick rate. Unrolled, it is constant.
-;
-; Volumes are pre-shifted so every entry is a plain add. Four voices at full
-; volume reach 60, and 60 << 2 is 240, still inside a byte.
-build_mix
-                lda     <vols+0
-                lsla
-                lsla
-                sta     <scaled+0
-                lda     <vols+1
-                lsla
-                lsla
-                sta     <scaled+1
-                lda     <vols+2
-                lsla
-                lsla
-                sta     <scaled+2
-                lda     <vols+3
-                lsla
-                lsla
-                sta     <scaled+3
-
-                clr     <mixtable+0
-                lda     <scaled+0
-                sta     <mixtable+1
-                lda     <scaled+1
-                sta     <mixtable+2
-                adda    <scaled+0
-                sta     <mixtable+3
-                lda     <scaled+2
-                sta     <mixtable+4
-                adda    <scaled+0
-                sta     <mixtable+5
-                lda     <scaled+2
-                adda    <scaled+1
-                sta     <mixtable+6
-                adda    <scaled+0
-                sta     <mixtable+7
-                lda     <scaled+3
-                sta     <mixtable+8
-                adda    <scaled+0
-                sta     <mixtable+9
-                lda     <scaled+3
-                adda    <scaled+1
-                sta     <mixtable+10
-                adda    <scaled+0
-                sta     <mixtable+11
-                lda     <scaled+3
-                adda    <scaled+2
-                sta     <mixtable+12
-                adda    <scaled+0
-                sta     <mixtable+13
-                lda     <scaled+3
-                adda    <scaled+2
-                adda    <scaled+1
-                sta     <mixtable+14
-                adda    <scaled+0
-                sta     <mixtable+15
                 rts
 
                 include "../../build/exp009/tune_data.inc"

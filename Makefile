@@ -60,7 +60,7 @@ endif
 exp008-replay:
 	$(UV) run python tools/replay_exp_008.py
 
-MUSIC_RATE ?= 6457
+MUSIC_RATE ?= 5679
 # Toolshed's decb is the reference DECB disk tool; override if it moves.
 DECB ?= $(HOME)/OneDrive/CoCo/dev/toolshed/build/unix/decb/decb
 
