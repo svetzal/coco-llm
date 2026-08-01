@@ -2,7 +2,16 @@
 
 ## Status
 
-Planned. No implementation. This records the hypothesis, the gates, and the
+**Phase A passed** on 2026-08-01. The model beats the strongest table baseline
+by 0.243 bits per row, the advantage holds on contexts never seen in training,
+and the negative control is clean. Phase B, the listening comparison, has not
+been attempted.
+
+Four faults were found and fixed along the way, three of them in the harness
+rather than the model. They are recorded under "Phase A result" because each
+would have produced a confident wrong answer.
+
+Originally planned. This records the hypothesis, the gates, and the
 design before any code is written.
 
 Revised 2026-08-01 from absolute pitches to scale degrees with mode, metre,
@@ -371,6 +380,80 @@ that made every method appear to score 100%, and later caught
 multiple-comparison inflation when the candidate pool grew. Any sweep that
 widens the pool must expect the control's limit to trip and select before
 scoring rather than after.
+
+## Phase A result
+
+Trained on 281 chorales, evaluated on 57 held-out whole chorales.
+
+| Method | Size | Holdout bits/row |
+| --- | ---: | ---: |
+| Uniform | — | 4.755 |
+| `table/order1` | 29 contexts | 2.621 |
+| `table/order1/chord` | 185 | 2.006 |
+| `table/order2` | 247 | 1.894 |
+| `table/order2/chord` | 1,064 | **1.382** |
+| `model/history/H18/E6` | 3,213 params | 1.581 |
+| `model/situational/H18/E6` | 3,357 params | **1.140** |
+
+| Gate | Result |
+| --- | --- |
+| Model beats best table by 0.15 bits | **PASS** (+0.243) |
+| Selected candidate within 4,096 parameters | **PASS** (3,357) |
+| Negative control within 0.05 bits of unigram | **PASS** (-0.022) |
+
+### The secondary hypothesis is supported, strongly
+
+Situational context beats melody history alone by **0.441 bits** — 1.140
+against 1.581 at the same history length and embedding width. Conditioning on
+mode, metre, chord and beat is not a refinement here; it is most of the
+model's advantage. This is the second time the situational layout from
+EXP-008 has been the part that worked.
+
+### The advantage survives on unseen contexts
+
+The claimed mechanism is generalization, so the margin was split by whether
+the eighteen-row context had ever appeared in training:
+
+| Bucket | Rows | Model | Table | Margin |
+| --- | ---: | ---: | ---: | ---: |
+| Seen in training | 2,042 | 1.006 | 1.299 | +0.294 |
+| Never seen | 3,772 | 1.212 | 1.427 | +0.215 |
+
+Both methods do worse on novel contexts, as expected. The model keeps most of
+its advantage there, which is what the hypothesis required. Note that 65% of
+held-out rows have a context never seen in training — the setting the
+audience-entered bar will land in is the common case, not the exception.
+
+## Four faults, and what each would have cost
+
+**A corrupted corpus that raised nothing.** `score.chordify()` reflows the
+source stream: note offsets stop being absolute and become measure-relative.
+Reading them afterwards collapsed a 37-note chorale onto 7 distinct rows. The
+extraction completed, reported 341 tunes and 36,676 rows, and produced
+melodies that were 76% `HOLD`. Nothing failed; the data was simply wrong. The
+melody is now captured in full before `chordify()` is called, and the onset
+rate went from 6% to 48%.
+
+**A model declared a failure while still undertrained.** At 10 epochs the
+model scores 1.690 bits and loses to the table by 0.276. At 80 it scores 1.140
+and wins by 0.243. The first sweep was measuring convergence, not capacity.
+EXP-008 diagnosed the same thing, in the opposite direction, and the lesson
+did not transfer on its own.
+
+**A negative control with the wrong reference, twice.** First it compared
+shuffled-corpus performance against the uniform floor, when shuffling
+preserves each tune's token distribution and history legitimately reveals it.
+Then, with tokens pooled corpus-wide, it still tripped — because the order-0
+baseline was interpolated at 35% empirical against 65% uniform and was not
+really a unigram at all.
+
+**A backoff floor that weakened every baseline.** That same interpolation bug
+sat underneath all the tables, since they back off through it. Fixing it
+strengthened the best table from 1.414 to 1.382 bits and cut the model's
+margin from 0.274 to 0.243. The gate is reported against the stronger baseline.
+
+Three of the four were in the measuring apparatus, not the thing being
+measured. Each would have produced a confident, wrong, publishable number.
 
 ## Phase B gates: continuation quality
 

@@ -85,39 +85,37 @@ def extract(score, source: str):
 
     lowest = min(note.pitch.midi for note in notes)
     tonic_midi = tonic_below(key.tonic.pitchClass, lowest)
+    bar_rows = rows_per_bar(metre)
+
+    # The melody is captured in full BEFORE chordify() is called.
+    #
+    # score.chordify() reflows the source stream: note offsets stop being
+    # absolute and become measure-relative. Reading them afterwards collapses
+    # a 37-note chorale onto 7 distinct rows, which does not raise anything —
+    # it just silently produces a melody that is almost entirely HOLD.
+    spans: list[tuple[int, int, int]] = []
+    for note in notes:
+        start = round(float(note.offset) / ROW_QUARTER_LENGTH)
+        length = max(1, round(float(note.quarterLength) / ROW_QUARTER_LENGTH))
+        token = pitch_token(note.pitch.midi - tonic_midi)
+        if token is None:
+            return None, "melody leaves the pitch range"
+        spans.append((start, length, token))
+
+    row_count = max(start + length for start, length, _ in spans)
+    melody = [REST] * row_count
+    for start, length, token in spans:
+        melody[start] = token
+        for offset in range(start + 1, min(start + length, row_count)):
+            melody[offset] = HOLD
 
     harmony = score.chordify()
     chords = harmony.flatten().getElementsByClass("Chord").stream()
 
-    end = float(soprano.highestTime)
-    bar_rows = rows_per_bar(metre)
-
-    melody: list[int] = []
     chord_row: list[int] = []
     beats: list[int] = []
-    onsets = {round(float(note.offset) / ROW_QUARTER_LENGTH): note for note in notes}
-
-    row_count = round(end / ROW_QUARTER_LENGTH)
-    sounding = False
     for row in range(row_count):
-        offset = row * ROW_QUARTER_LENGTH
-
-        note = onsets.get(row)
-        if note is not None:
-            token = pitch_token(note.pitch.midi - tonic_midi)
-            if token is None:
-                return None, f"melody leaves the pitch range at row {row}"
-            melody.append(token)
-            sounding = True
-        else:
-            element = soprano.getElementAtOrBefore(offset)
-            if element is None or element.isRest:
-                melody.append(REST)
-                sounding = False
-            else:
-                melody.append(HOLD if sounding else REST)
-
-        current = chords.getElementAtOrBefore(offset)
+        current = chords.getElementAtOrBefore(row * ROW_QUARTER_LENGTH)
         if current is None:
             return None, f"no harmony at row {row}"
         try:
@@ -125,7 +123,6 @@ def extract(score, source: str):
             chord_row.append(chord_token(degree))
         except Exception:  # noqa: BLE001 - music21 raises broadly here
             return None, f"unreadable harmony at row {row}"
-
         beats.append(row % bar_rows)
 
     return (

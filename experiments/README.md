@@ -50,7 +50,8 @@ Current experiments:
   and performs a continuation. Melody is scale degrees conditioned on mode,
   metre, beat and chord, so a wrong note is impossible by construction.
   Records corpus vetting, including one dataset whose licence forbids LLM
-  training. No implementation yet.
+  training. Phase A passed: the model beats the strongest table by 0.243
+  bits per row, and situational context supplies most of that.
 
 ## Presentation commands
 
