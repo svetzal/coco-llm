@@ -47,7 +47,8 @@ Current experiments:
   cannot drive an audio sample clock on this machine.
 - [`EXP-010-melody-continuation.md`](EXP-010-melody-continuation.md) — planned
   experiment in which the audience enters an opening bar and the CoCo composes
-  and performs a continuation. No implementation yet.
+  and performs a continuation. Melody is scale degrees conditioned on mode and
+  chord, so a wrong note is impossible by construction. No implementation yet.
 
 ## Presentation commands
 
