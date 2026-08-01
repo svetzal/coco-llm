@@ -14,7 +14,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp007-model coco-bin-exp7 xroar-test-exp7 xroar-exp7 \
 	exp007-sweep exp007-epoch-sweep exp008-sweep exp008-capture \
 	exp008-replay music-tune music-cycles music-bin music-test \
-	xroar-music music-dsk present tools
+	xroar-music music-dsk exp010-corpus present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -89,6 +89,9 @@ build/coco-music.dsk: build/coco-music.bin
 	$(DECB) dir $@
 
 music-dsk: build/coco-music.dsk
+
+exp010-corpus:
+	$(UV) run python tools/extract_chorales.py
 
 build/music-parity-test.asm: build/coco-music.bin tools/make_music_parity_test.py
 	$(UV) run python tools/make_music_parity_test.py \
