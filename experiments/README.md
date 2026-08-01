@@ -41,6 +41,10 @@ Current experiments:
   order-1 frequency table predicts a live player better than every neural
   candidate, so the declared null result triggered and the 6809 port was not
   attempted.
+- [`EXP-009-four-voice-music.md`](EXP-009-four-voice-music.md) — four-voice
+  software synthesizer for a stock CoCo 1, built as the performer for a
+  possible tracker-generation direction. Records why the HSYNC interrupt
+  cannot drive an audio sample clock on this machine.
 
 ## Presentation commands
 
