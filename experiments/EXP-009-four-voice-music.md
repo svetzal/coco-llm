@@ -2,10 +2,19 @@
 
 ## Status
 
+**Accepted and frozen** as of 2026-08-01. Judged good enough by ear on XRoar
+and VCC after the timing rework, and held stable so that generation work has a
+fixed performer to target.
+
 Runnable in XRoar and VCC. The reference synthesizer, the 6809 player, the
 cycle budget, the DECB disk image, and bit-exact parity between reference and
 assembly all exist and pass. Physical CoCo 1 audio and timing remain
 unmeasured.
+
+Frozen means the sample loop, the token format, and the 5679 Hz rate should
+not move without a reason recorded here. Anything generated for this player
+depends on all three. The open questions below stay open; they are candidates
+for a later pass, not pending work.
 
 This experiment exists to support a possible music direction for the model
 work. It deliberately builds the *player* first, because a generator is
