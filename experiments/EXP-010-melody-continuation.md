@@ -109,20 +109,22 @@ row per channel, 6 ticks per row, about 8.3 rows per second.
 Predicted tokens, one per row:
 
 ```text
-1 2 3 4 5 6 7        scale degrees, lower octave
-1' 2' 3' 4' 5' 6' 7' scale degrees, upper octave
-HOLD                 the previous note continues through this row
-REST                 silence
+1 b2 2 b3 3 4 #4 5 b6 6 b7 7    chromatic degrees relative to the tonic
+                                 spanning about an octave and a third
+HOLD                             the previous note continues
+REST                             silence
 ```
 
-Sixteen output tokens. Duration is expressed as runs of `HOLD` rather than a
+Roughly eighteen output tokens, sized from the measured melodic span rather
+than assumed. See the corpus survey for why chromatic degrees rather than
+diatonic ones. Duration is expressed as runs of `HOLD` rather than a
 separate duration token, keeping one token per row and letting the model learn
 note length as part of the same sequence.
 
 Additional context tokens, never predicted:
 
 ```text
-MAJOR MINOR DORIAN MIXOLYDIAN     mode
+MAJOR MINOR                       mode, per the corpus survey
 I ii iii IV V vi vii              chord under the current row
 ```
 
@@ -137,7 +139,7 @@ passing notes — and with a row-based encoding the model has no other way to
 know where the barline is.
 
 ```text
-4/4 3/4 6/8 2/4                   metre
+4/4 3/4 3/2                       metre, per the corpus survey
 BEAT0 .. BEAT7                    position within the bar
 ```
 
@@ -258,14 +260,76 @@ The honest cost, again for the stage: **it will sound like a hymn played on a
 CoCo.** Slower and more solemn than a dance tune. Whether that is charming or
 flat is a judgement to make once something is audible.
 
+### Corpus survey, 2026-08-01
+
+353 chorales are available through music21's iterator, with parts already
+named Soprano, Alto, Tenor and Bass, so the melody separates cleanly. Sixty
+were sampled, 2,987 melody notes.
+
+| Property | Measured |
+| --- | --- |
+| Modes | 32 major, 28 minor. No dorian or mixolydian. |
+| Metres | 4/4 (54), 3/4 (8), 3/2 (1) |
+| Melodic span | median 12 semitones, max 15 |
+| Notes outside the diatonic scale | 3.7% |
+
+Three consequences, all of which change the token design.
+
+**Mode needs two tokens, not four.** The corpus is major and minor only.
+Metre needs three rather than four.
+
+**One octave, not two.** The median melodic span is exactly an octave and the
+widest is 15 semitones. Two octaves of degrees was a guess and it was
+generous; the pitch alphabet can be roughly a third smaller, which buys
+context depth.
+
+**The 3.7% "out of scale" notes must not be discarded.** Broken down by mode,
+they are not noise:
+
+| Mode | Most common alterations |
+| --- | --- |
+| Minor | raised 6th (37), raised 7th (23), raised 3rd (6) |
+| Major | sharpened 4th (19), flattened 7th (18) |
+
+In minor these are the melodic and harmonic minor inflections, and **the
+raised 7th is the leading tone** — the note that makes a cadence a cadence.
+Discarding it, or snapping it to the natural 7th, would destroy the single
+most important structural feature the model is meant to learn. In major the
+sharpened 4th marks secondary dominants and the flattened 7th marks
+subdominant borrowing; both are ordinary tonal vocabulary.
+
+So melody is represented as **twelve chromatic degrees relative to the tonic**
+rather than seven diatonic ones, spanning about an octave and a third.
+
+That gives up "a wrong note is impossible by construction", and the plan
+should not pretend otherwise. What replaces it is weaker but honest: 96.3% of
+training notes are diatonic, the model sees mode and chord as context, and
+**generation can be constrained to in-scale degrees as a sampling policy
+rather than as a property of the representation**. Separating the two is the
+better design in any case, because it can be tested both ways.
+
+The transposition benefit — every key collapsed onto one tonic — survives
+intact, and it was always the larger part of the data-density argument.
+
+### Licence position, checked
+
+music21 itself is BSD. Its corpus carries no blanket grant: "Some encodings
+included in the corpus may not be used for commercial uses or have other
+restrictions."
+
+- The **Essen folksong collection** bundled with music21 is explicitly
+  **non-commercial** and its own licence file states the legal status "is
+  unclear". Excluded.
+- The **Bach chorales** carry no directory licence file, no embedded rights
+  field, and no restriction marker. The music is unambiguously public domain;
+  the encodings are Margaret Greentree's, distributed with permission.
+
+The honest statement is that the chorales are the cleanest footing available,
+not that an explicit grant exists. Absence of a restriction is not a licence.
+
 ### Still to confirm before the corpus is fixed
 
-- Per-directory licence terms inside the music21 corpus. The collection as a
-  whole is distributed by permission, but individual encodings carry their own
-  terms and some are non-commercial.
-- Whether 371 chorales yield enough distinct phrases, and whether the Essen
-  folksong collection bundled with music21 can supplement them on acceptable
-  terms.
+- Whether 353 chorales yield enough distinct phrases.
 - Provenance and licence recorded in `experiments/data/` beside the corpus.
 - Holdout must be entirely separate chorales, not held-out phrases.
 
