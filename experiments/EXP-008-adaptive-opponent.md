@@ -2,17 +2,21 @@
 
 ## Status
 
-Phase A complete and **not supported**. The reference implementation, six
-synthetic players, four baselines, and the prequential harness exist and pass
-their tests. The declared Phase A gate fails: the model beats a memory-matched
-table on two of five structured players, not the required three.
+**Closed as not supported.** The declared null result triggered on real human
+data: a ninety-byte order-1 frequency table predicts a live player better than
+every neural candidate, on all three recorded sessions, including when scored
+over genuine movement only.
 
-The experiment does not proceed to 6809 assembly. The recorded diagnosis is a
-convergence-rate limit rather than a capacity limit, and the next step is real
-human data rather than more model tuning. See "Phase A result" below.
+Phase A failed its synthetic gate at 2 of 5 structured players. Phase A-bis
+recorded three human sessions and settled the blocking question against the
+model. Phases B, C, and D were not attempted; the adaptive opponent should not
+be driven by the neural model.
 
-The human-capture tooling described in "Phase A-bis" is built and tested. No
-sessions have been recorded, so no human result is claimed.
+The reference implementation, synthetic players, baselines, prequential
+harness, capture tool, and replay tool all exist and pass their tests. The
+evidence is reproducible with `make exp008-sweep` and `make exp008-replay`.
+
+Nothing here affects EXP-004 through EXP-007.
 
 ## Question
 
@@ -408,6 +412,108 @@ supported by a single recording.
 Within-person variation matters too. Several short sessions across different
 days are more informative than one long session, since a player who has just
 worked out that circling the wall is safe is no longer the player who started.
+
+## Phase A-bis result: the null result triggers
+
+Three sessions were recorded on 2026-07-31 and 2026-08-01, all by Stacey,
+1,800 ticks each at 10 Hz, 5,400 ticks total. Scoring the final 200 ticks of
+each session across three model seeds:
+
+| Session | Runs | Best table | Best model | Margin |
+| --- | ---: | ---: | ---: | ---: |
+| `stacey-01` | 7 | 73.0% | 74.5% | +1.5pp |
+| `stacey-02` | 3 | 84.5% | 84.5% | +0.0pp |
+| `stacey-03` | 1 | 91.5% | 89.0% | -2.5pp |
+
+Mean margin -0.7pp. The model clears the declared 5pp gate on 0 of 9 scored
+runs. The winning table on every session is `table/order1`: **ninety bytes of
+counters, predicting from the single previous move.**
+
+The best model configuration costs 1,762 bytes of 16-bit masters, 72 multiplies
+per prediction, and roughly 216 more per training step. It loses to ninety bytes
+and no multiplier at all.
+
+This is the null result the experiment declared in advance, confirmed on real
+data rather than synthetic. `research/model-design.md` recorded the concern that
+a token-to-token table "would be even smaller, but would barely exercise the
+multiplier." For this task, against this player, the concern was correct.
+
+### The result is not an artifact of standing still
+
+21% of captured ticks are `IDLE`, and pressing nothing is trivially
+predictable, so the comparison was re-scored over only those ticks whose target
+is a real move.
+
+| Session | Table, moving only | Best model, moving only |
+| --- | ---: | ---: |
+| `stacey-01` | 74.5% | 72.3% |
+| `stacey-02` | 89.1% | 87.8% |
+| `stacey-03` | 90.8% | 87.8% |
+
+The ordering is unchanged. The table wins on genuine movement, not on idleness.
+
+### Why the table wins
+
+The captured streams repeat the previous move 84.2% of the time, or 80.5%
+excluding `IDLE` to `IDLE`. The `HABIT` synthetic player, written as the
+closest available proxy for a human, repeats only about 70%.
+
+Real movement here is *more* first-order predictable than the proxy built to
+imitate it. An order-1 table is close to optimal for a process that nearly is
+order-1, it reaches that optimum by counting rather than by descending a
+gradient, and it needs ninety bytes to do it. The model has nothing left to
+generalize across, so its one advantage does not apply.
+
+The model is not failing to learn. It lands within 2 to 3 points of the table
+on every session. It is solving a problem that does not need solving.
+
+### Skill made the player more predictable, not less
+
+The three sessions show a strong within-person trend. Runs survived per session
+went 7, then 3, then 1 — the third session was never caught across all 1,800
+ticks. Over the same progression, best-table accuracy rose from 73.0% to 84.5%
+to 91.5%.
+
+Getting better at evading made the movement *more* regular, presumably by
+settling into an efficient orbit. This is the opposite of the assumption behind
+the design, which expected a skilled player to defeat prediction by becoming
+erratic.
+
+It also means the three sessions are not three samples of one behaviour. They
+are three different behaviours from a player who was still learning the game,
+which is a further reason not to read them as a stable estimate.
+
+### Limits of this evidence
+
+One person, three sessions, one evening. This says what Stacey's movement looked
+like while she was learning this specific arena. It does not establish what
+human movement looks like in general, and a novice, a child, or someone playing
+with a joystick could differ.
+
+That limitation does not rescue the result. To overturn it, some other player
+would have to be *both* substantially less first-order predictable *and*
+predictable in a way that situational context captures. The first alone would
+lower every method's accuracy without changing their order.
+
+### Conclusion
+
+The adaptive opponent should not be driven by the neural model. For this task a
+ninety-byte order-1 frequency table is faster to converge, cheaper to run,
+twenty times smaller, and more accurate.
+
+EXP-008 is closed as not supported. Phases B, C, and D are not attempted, and
+the Phase B and C gates below stand as the unexercised plan they were.
+
+Nothing here affects EXP-004 through EXP-007. Those demonstrations stand on
+their own evidence; this experiment tested a new claim and the claim failed.
+
+The presentation consequence is a decision for Stacey rather than a technical
+one, and is recorded in "Presentation integrity" above as still open. The
+finding is genuinely presentable — a measured demonstration that a lookup table
+beats a neural model at a bounded job is well aligned with the project's stated
+conclusion of neither fear nor hype — but choosing to present it that way is not
+the same as the experiment having succeeded, and this document should not blur
+the two.
 
 ## Phase B gates: bit-exact 6809
 

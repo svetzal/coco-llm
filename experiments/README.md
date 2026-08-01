@@ -36,11 +36,11 @@ Current experiments:
   hardware evidence remains outstanding.
 - [`EXP-007-epoch-sweep.md`](EXP-007-epoch-sweep.md) — side experiment showing
   that training loss keeps falling after held-out Q2.2 quality peaks.
-- [`EXP-008-adaptive-opponent.md`](EXP-008-adaptive-opponent.md) — online
-  training against a live player's input stream. Phase A is implemented and
-  its gate fails: the model beats a memory-matched table where situation
-  matters and loses where a short history suffices. Diagnosed as a
-  convergence-rate limit; blocked on real human movement data.
+- [`EXP-008-adaptive-opponent.md`](EXP-008-adaptive-opponent.md) — rejected
+  adaptive-opponent experiment. On three recorded human sessions a ninety-byte
+  order-1 frequency table predicts a live player better than every neural
+  candidate, so the declared null result triggered and the 6809 port was not
+  attempted.
 
 ## Presentation commands
 
