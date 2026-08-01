@@ -66,6 +66,7 @@ repeats_left    rmb     1
 row_ptr         rmb     2
 finished        rmb     1
 voice_no        rmb     1
+cells_left      rmb     1               ; cells of the current row still to apply
 incr_tmp        rmb     2
 scratch         rmb     1
 saved_dp        rmb     1
@@ -144,6 +145,7 @@ tr_clear        clr     ,x+
                 ldd     #$ACE1          ; LFSR seed, matching the reference
                 std     <lfsr
                 clr     <dac_acc
+                clr     <cells_left
                 clr     <finished
 
                 ldd     #tune_rows
@@ -221,16 +223,21 @@ play_done
                 rts
 
 ; ----------------------------------------------------------------- tick ----
-; Runs 50 times a second. Unrolled and kept under one sample period so the
-; pause it causes is smaller than the interval it interrupts.
+; Reached whenever tick_samples reaches zero. Every path through here is kept
+; under one sample period, so no pause can stretch the timeline by a whole
+; sample. That is the whole design rule: the sample clock is the instruction
+; stream, so anything that runs between samples has to fit between samples.
 next_tick
+                tst     <cells_left     ; still applying a row?
+                bne     nt_cell
+
                 lda     #SAMPLES_PER_TICK
                 sta     <tick_samples
 
                 dec     <row_ticks
                 beq     nt_row
 
-                ldx     #scaled
+                ldx     #scaled         ; decay: 124 cycles, 0.8 sample periods
                 ldy     #decays
                 lda     #VOICES
                 sta     <voice_no
@@ -251,11 +258,30 @@ nt_next
                 bne     nt_voice
                 rts
 
+; One cell per sample. Applying all four together stalled the DAC for 2.7
+; sample periods eight times a second; spread out, each pause is under one,
+; and the four notes still land within a millisecond of each other.
+nt_cell
+                ldu     <row_ptr
+                lbsr    apply_cell
+                stu     <row_ptr
+                inc     <voice_no
+                dec     <cells_left
+                beq     nt_cells_done
+                lda     #1              ; return on the very next sample
+                sta     <tick_samples
+                rts
+nt_cells_done
+                lda     #SAMPLES_PER_TICK-VOICES
+                sta     <tick_samples   ; the rest of the tick we borrowed from
+                rts
+
 nt_row
                 lbsr    next_row
                 rts
 
 ; ------------------------------------------------------------------ row ----
+; Only starts a row. Its cells are applied one per sample by nt_cell.
 next_row
                 lda     <rows_left
                 bne     nr_fetch
@@ -268,17 +294,11 @@ nr_fetch
                 sta     <rows_left
                 lda     #TICKS_PER_ROW
                 sta     <row_ticks
-
-                ldu     <row_ptr
                 clr     <voice_no
-nr_voice
-                lbsr    apply_cell
-                inc     <voice_no
-                lda     <voice_no
-                cmpa    #VOICES
-                bne     nr_voice
-
-                stu     <row_ptr
+                lda     #VOICES
+                sta     <cells_left
+                lda     #1              ; first cell on the next sample
+                sta     <tick_samples
                 rts
 
 ; Apply one cell. U points at note, volume, decay and is advanced by three.
