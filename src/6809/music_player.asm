@@ -1,0 +1,374 @@
+; Four-voice software synthesizer for a stock CoCo 1.
+;
+; Every voice is a one-bit source, so the sum of four voices takes only
+; sixteen values. Those are precomputed into a table whenever a volume
+; changes, which happens on tick boundaries. The per-sample path is then four
+; 16-bit adds, four bit extractions, one indexed load, and one store to the
+; DAC. There is no multiply, no divide, and no per-sample addition.
+;
+; Square voices take bit 15 of a 16-bit phase accumulator. The noise voice
+; clocks an LFSR when its accumulator wraps, so noise is pitched by the same
+; increment mechanism as tone.
+;
+; Voices are processed 3,2,1,0 so that successive ROLs leave voice v in bit v
+; of the mix index, matching the reference implementation's bit order.
+;
+; Interrupts stay masked for the whole tune. The 60 Hz IRQ would otherwise
+; jitter the sample loop audibly.
+
+PIA0_CRA        equ     $FF01
+PIA0_CRB        equ     $FF03
+PIA1_DA         equ     $FF20
+PIA1_CRA        equ     $FF21
+PIA1_CRB        equ     $FF23
+
+VOICES          equ     4
+LOW_NOTE        equ     12
+MIX_ENTRIES     equ     16
+
+NOTE_HOLD_CODE  equ     0
+NOTE_OFF_CODE   equ     1
+
+                setdp   $20
+                org     $2000
+
+; ---- direct page state, all within page $20 ----
+; phases through noises are cleared as one contiguous block on reset.
+phases          rmb     8               ; four 16-bit phase accumulators
+incrs           rmb     8               ; four 16-bit phase increments
+vols            rmb     4               ; 0..15 per voice
+decays          rmb     4               ; subtracted from vol each tick
+noises          rmb     4               ; non-zero selects the LFSR source
+STATE_BYTES     equ     28
+
+mixindex        rmb     1               ; low four bits rebuilt every sample
+lfsr            rmb     2               ; 16-bit maximal-length shift register
+mixtable        rmb     MIX_ENTRIES     ; DAC values, already shifted to PA2-PA7
+
+tick_samples    rmb     1               ; samples remaining in this tick
+row_ticks       rmb     1               ; ticks remaining in this row
+rows_left       rmb     1               ; rows remaining in this pass
+repeats_left    rmb     1
+row_ptr         rmb     2
+finished        rmb     1
+voice_no        rmb     1               ; row cursor, also the tick countdown
+changed         rmb     1               ; a volume moved, so rebuild the table
+scratch         rmb     1
+saved_dp        rmb     1
+
+                org     $2100
+
+; ---------------------------------------------------------------- entry ----
+music_start
+                tfr     dp,a
+                sta     <saved_dp       ; DP is still the caller's page here
+                orcc    #$50            ; mask IRQ and FIRQ for the whole tune
+                lda     #$20
+                tfr     a,dp
+
+                lbsr    audio_enable
+                lda     #TUNE_REPEATS
+                sta     <repeats_left
+
+music_pass
+                lbsr    tune_reset
+                lbsr    play_tune
+                dec     <repeats_left
+                bne     music_pass
+
+                lbsr    audio_disable
+                lda     <saved_dp
+                tfr     a,dp
+                andcc   #$AF            ; restore interrupts
+                rts
+
+; ------------------------------------------------------------ hardware ----
+; PA2-PA7 drive the DAC. PA0 is cassette in and PA1 is RS-232 in, so the
+; direction register must leave those two as inputs.
+audio_enable
+                lda     PIA1_CRA
+                anda    #$FB            ; select the direction register
+                sta     PIA1_CRA
+                lda     #$FC
+                sta     PIA1_DA         ; PA2-PA7 out, PA0-PA1 in
+                lda     PIA1_CRA
+                ora     #$04            ; back to the peripheral register
+                sta     PIA1_CRA
+
+                lda     PIA1_CRB
+                ora     #$38            ; CB2 as output, held high: sound on
+                sta     PIA1_CRB
+
+                lda     PIA0_CRA        ; mux select lines low selects the DAC
+                anda    #$F7
+                ora     #$30
+                sta     PIA0_CRA
+                lda     PIA0_CRB
+                anda    #$F7
+                ora     #$30
+                sta     PIA0_CRB
+                rts
+
+audio_disable
+                clra
+                sta     PIA1_DA         ; rest the DAC at zero
+                lda     PIA1_CRB
+                anda    #$F7            ; CB2 low mutes the output
+                sta     PIA1_CRB
+                rts
+
+; ---------------------------------------------------------------- reset ----
+tune_reset
+                ldx     #phases
+                ldb     #STATE_BYTES
+tr_clear        clr     ,x+
+                decb
+                bne     tr_clear
+
+                ldd     #$ACE1          ; LFSR seed, matching the reference
+                std     <lfsr
+                clr     <mixindex
+                clr     <finished
+
+                ldd     #tune_rows
+                std     <row_ptr
+                lda     #TUNE_ROWS
+                sta     <rows_left
+                lda     #1
+                sta     <row_ticks      ; expires immediately, fetching row 0
+                sta     <tick_samples
+                lbsr    build_mix
+                rts
+
+; ----------------------------------------------------------- sample loop ----
+; The hot path. `make music-cycles` measures its real cost; the sample rate in
+; the exported tune data is derived from that measurement.
+play_tune
+                ldx     #mixtable
+
+sample_loop
+; ---- voice 3, the only voice allowed to be noise ----
+                ldd     <phases+6
+                addd    <incrs+6
+                std     <phases+6       ; carry from ADDD survives STD and TST
+                tst     <noises+3
+                bne     v3_noise
+                rola                    ; bit 15 of the phase into carry
+                rol     <mixindex
+                bra     v3_done
+v3_noise
+                bcc     v3_tap_done     ; only clock when the phase wrapped
+                lsr     <lfsr
+                ror     <lfsr+1
+                bcc     v3_tap_done
+                lda     <lfsr           ; taps $B400; the low byte is untouched
+                eora    #$B4
+                sta     <lfsr
+v3_tap_done
+                lda     <lfsr+1
+                lsra                    ; bit 0 of the register into carry
+                rol     <mixindex
+v3_done
+
+; ---- voices 2, 1, 0: always square ----
+                ldd     <phases+4
+                addd    <incrs+4
+                std     <phases+4
+                rola
+                rol     <mixindex
+
+                ldd     <phases+2
+                addd    <incrs+2
+                std     <phases+2
+                rola
+                rol     <mixindex
+
+                ldd     <phases
+                addd    <incrs
+                std     <phases
+                rola
+                rol     <mixindex
+
+; ---- mix and output ----
+                ldb     <mixindex
+                andb    #$0F            ; discard bits rolled out earlier
+                lda     b,x
+                sta     PIA1_DA
+
+                dec     <tick_samples
+                bne     sample_loop
+
+                lbsr    next_tick
+                tst     <finished
+                bne     play_done
+                ldx     #mixtable
+                bra     sample_loop
+
+play_done
+                rts
+
+; ----------------------------------------------------------------- tick ----
+next_tick
+                lda     #SAMPLES_PER_TICK
+                sta     <tick_samples
+
+                dec     <row_ticks
+                beq     nt_row
+
+                clr     <changed
+                ldx     #vols
+                ldy     #decays
+                lda     #VOICES
+                sta     <voice_no
+nt_voice
+                lda     ,y+             ; decay amount for this voice
+                beq     nt_next
+                ldb     ,x              ; current volume
+                beq     nt_next         ; already silent
+                sta     <scratch
+                subb    <scratch
+                bcc     nt_store
+                clrb                    ; clamp at silence
+nt_store
+                stb     ,x
+                inc     <changed
+nt_next
+                leax    1,x
+                dec     <voice_no
+                bne     nt_voice
+
+                tst     <changed
+                beq     nt_done
+                lbsr    build_mix
+nt_done
+                rts
+
+nt_row
+                lbsr    next_row        ; a new row rebuilds the table itself
+                rts
+
+; ------------------------------------------------------------------ row ----
+next_row
+                lda     <rows_left
+                bne     nr_fetch
+                lda     #1
+                sta     <finished
+                rts
+
+nr_fetch
+                deca
+                sta     <rows_left
+                lda     #TICKS_PER_ROW
+                sta     <row_ticks
+
+                ldu     <row_ptr
+                clr     <voice_no
+nr_voice
+                lbsr    apply_cell
+                inc     <voice_no
+                lda     <voice_no
+                cmpa    #VOICES
+                bne     nr_voice
+
+                stu     <row_ptr
+                lbsr    build_mix
+                rts
+
+; Apply one cell. U points at note, volume+flags, decay; it is advanced by
+; three. The voice index lives in <voice_no so every register stays free.
+apply_cell
+                lda     ,u
+                cmpa    #NOTE_HOLD_CODE
+                beq     ac_skip
+                cmpa    #NOTE_OFF_CODE
+                beq     ac_off
+
+                suba    #LOW_NOTE       ; index the increment table
+                lsla                    ; two bytes per entry, 0..192
+                tfr     a,b
+                ldx     #note_increments
+                abx                     ; ABX adds B unsigned, so >127 is fine
+                ldd     ,x              ; D is this note's phase increment
+
+                ldx     #incrs
+                pshs    d
+                ldb     <voice_no
+                lslb                    ; two bytes per voice
+                abx
+                puls    d
+                std     ,x
+
+                ldx     #phases         ; retrigger from a known phase
+                ldb     <voice_no
+                lslb
+                abx
+                clr     ,x
+                clr     1,x
+
+                lda     1,u             ; volume in the low nibble
+                tfr     a,b
+                andb    #$0F
+                ldx     #vols
+                pshs    b
+                ldb     <voice_no
+                abx
+                puls    b
+                stb     ,x
+
+                anda    #$80            ; bit 7 selects the noise source
+                ldx     #noises
+                pshs    a
+                ldb     <voice_no
+                abx
+                puls    a
+                sta     ,x
+
+                lda     2,u
+                ldx     #decays
+                pshs    a
+                ldb     <voice_no
+                abx
+                puls    a
+                sta     ,x
+                bra     ac_skip
+
+ac_off
+                ldx     #vols           ; silence this voice, leave the rest
+                ldb     <voice_no
+                abx
+                clr     ,x
+
+ac_skip
+                leau    3,u
+                rts
+
+; ------------------------------------------------------------ mix table ----
+; table[i] = sum of the volumes of the voices whose bit is set in i, shifted
+; left twice so the value already sits on PA2-PA7.
+build_mix
+                ldx     #mixtable
+                clrb
+bm_entry
+                clra
+                bitb    #$01
+                beq     bm_v1
+                adda    <vols+0
+bm_v1           bitb    #$02
+                beq     bm_v2
+                adda    <vols+1
+bm_v2           bitb    #$04
+                beq     bm_v3
+                adda    <vols+2
+bm_v3           bitb    #$08
+                beq     bm_store
+                adda    <vols+3
+bm_store
+                lsla
+                lsla                    ; 0..60 becomes 0..240 on PA2-PA7
+                sta     b,x
+                incb
+                cmpb    #MIX_ENTRIES
+                bne     bm_entry
+                rts
+
+                include "../../build/exp009/tune_data.inc"

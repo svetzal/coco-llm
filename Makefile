@@ -13,7 +13,8 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	coco-bin-exp6 xroar-test-exp6 xroar-exp6 \
 	exp007-model coco-bin-exp7 xroar-test-exp7 xroar-exp7 \
 	exp007-sweep exp007-epoch-sweep exp008-sweep exp008-capture \
-	exp008-replay present tools
+	exp008-replay music-tune music-cycles music-bin music-test \
+	xroar-music present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -58,6 +59,39 @@ endif
 
 exp008-replay:
 	$(UV) run python tools/replay_exp_008.py
+
+MUSIC_RATE ?= 6370
+
+music-cycles:
+	$(UV) run python tools/music_cycle_budget.py
+
+build/exp009/tune_data.inc: tools/export_tune.py src/reference/coco_synth.py
+	$(UV) run python tools/export_tune.py --sample-rate $(MUSIC_RATE)
+
+music-tune: build/exp009/tune_data.inc
+	$(UV) run python tools/render_tune.py --sample-rate $(MUSIC_RATE)
+
+build/coco-music.bin: src/6809/coco_music.asm src/6809/music_player.asm \
+		build/exp009/tune_data.inc
+	lwasm --6809 --format=decb --symbol-dump=build/coco-music.sym \
+		--output=$@ $<
+
+music-bin: build/coco-music.bin
+
+build/music-parity-test.asm: build/coco-music.bin tools/make_music_parity_test.py
+	$(UV) run python tools/make_music_parity_test.py \
+		--binary build/coco-music.bin --symbols build/coco-music.sym \
+		--output $@
+
+music-test: build/music-parity-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run $<
+
+xroar-music: build/coco-music.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-music.bin
 
 test: reference-test asm-test model-test model-test-exp5 model-test-exp6 \
 	workbench-test-exp6 model-test-exp7 workbench-test-exp7
