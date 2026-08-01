@@ -46,8 +46,7 @@ def encode_cell(cell) -> tuple[int, int, int]:
     if cell.note in (NOTE_HOLD_CODE, NOTE_OFF_CODE):
         raise ValueError(f"note {cell.note} collides with a control code")
 
-    flags = min(MAX_VOLUME, cell.volume) | (0x80 if cell.noise else 0x00)
-    return (cell.note, flags, min(255, cell.decay))
+    return (cell.note, min(MAX_VOLUME, cell.volume), min(255, cell.decay))
 
 
 def render_source(tune: Tune, *, sample_rate: int, repeats: int) -> str:
@@ -78,7 +77,7 @@ def render_source(tune: Tune, *, sample_rate: int, repeats: int) -> str:
         increment = note_increment(note, sample_rate)
         lines.append(f"        fdb     ${increment:04X}    ; note {note}")
 
-    lines += ["", "; Rows of four cells: note, volume+flags, decay.", "tune_rows"]
+    lines += ["", "; Rows of four cells: note, volume, decay.", "tune_rows"]
     for number, row in enumerate(tune.rows):
         if len(row) != VOICE_COUNT:
             raise ValueError(f"row {number} has {len(row)} cells")

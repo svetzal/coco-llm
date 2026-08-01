@@ -24,7 +24,7 @@ from coco_synth import VOICE_COUNT, Voice, build_mix_table, note_increment
 
 RUNNER_ORG = 0x1000
 SAMPLES = 200
-SAMPLE_RATE = 6370
+SAMPLE_RATE = 6457
 
 # Voice 3 is noise and is given a fast increment so the LFSR clocks often
 # inside the sample window.

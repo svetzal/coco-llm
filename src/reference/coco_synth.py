@@ -6,11 +6,21 @@ to a WAV file and the assembly can be checked against the same sample stream.
 The technique is the classic one for a machine with a single 6-bit DAC and no
 sound chip: every voice is a one-bit source, and the mix is a table lookup.
 
-Each voice owns a 16-bit phase accumulator and a 16-bit increment. Adding the
-increment each sample and taking bit 15 gives a square wave whose frequency is
-set by the increment alone, with the full precision of a 16-bit divisor. A
-noise voice instead clocks a linear-feedback shift register each time its
-accumulator wraps, so noise is pitched by the same mechanism as tone.
+Voices 0 to 2 own a 16-bit phase accumulator and a 16-bit increment. Adding
+the increment each sample and taking bit 15 gives a square wave whose
+frequency is set by the increment alone, with the full precision of a 16-bit
+divisor.
+
+Voice 3 is a dedicated noise channel, like the noise generator on a period
+sound chip. It has no phase accumulator; a linear-feedback shift register is
+clocked once per sample and its low bit is the output.
+
+That split exists for timing, not for taste. A software DAC has no timer: the
+sample rate *is* the loop's cycle count, so the loop must cost the same every
+pass. An earlier design clocked the LFSR only when a phase accumulator
+wrapped, which made the loop branch three ways and swing the sample period by
+24%. That is frequency modulation, and it sounds like it. Every branch in the
+sample path is now gone.
 
 Because every voice contributes either zero or its own amplitude, the sum of
 four voices takes only sixteen possible values. Those sixteen sums are
@@ -41,6 +51,9 @@ PHASE_MASK = (1 << PHASE_BITS) - 1
 # LFSR. On the 6809 this is a shift and a conditional EOR of two bytes.
 LFSR_TAPS = 0xB400
 LFSR_SEED = 0xACE1
+
+# Voice 3 is the noise channel. Voices 0 to 2 are always square.
+NOISE_VOICE = 3
 
 # MIDI note 69 is A4 at 440 Hz.
 CONCERT_A = 440.0
@@ -95,21 +108,21 @@ class Voice:
     bit: int = 0
 
     def step(self) -> int:
-        """Advance one sample and return this voice's current one-bit output."""
-        self.phase += self.increment
-        wrapped = self.phase > PHASE_MASK
-        self.phase &= PHASE_MASK
+        """Advance one sample and return this voice's current one-bit output.
 
+        Both paths are branch-free on the 6809 and cost a fixed number of
+        cycles, so the sample period never varies.
+        """
         if self.noise:
-            if wrapped:
-                carry = self.lfsr & 1
-                self.lfsr >>= 1
-                if carry:
-                    self.lfsr ^= LFSR_TAPS
+            carry = self.lfsr & 1
+            self.lfsr >>= 1
+            if carry:
+                self.lfsr ^= LFSR_TAPS
             self.bit = self.lfsr & 1
-        else:
-            self.bit = (self.phase >> (PHASE_BITS - 1)) & 1
+            return self.bit
 
+        self.phase = (self.phase + self.increment) & PHASE_MASK
+        self.bit = (self.phase >> (PHASE_BITS - 1)) & 1
         return self.bit
 
 
@@ -120,12 +133,14 @@ class Cell:
     `note` is a MIDI note number, `NOTE_HOLD` to leave the voice alone, or
     `NOTE_OFF` to silence it. `decay` subtracts from volume once per tick,
     which is what gives percussion its shape without an envelope generator.
+
+    On voice 3 the note only retriggers the channel; its pitch is ignored,
+    because the noise generator has no phase accumulator.
     """
 
     note: int = NOTE_HOLD
     volume: int = MAX_VOLUME
     decay: int = 0
-    noise: bool = False
 
 
 @dataclass(frozen=True)
@@ -150,18 +165,21 @@ class Synth:
         default_factory=lambda: build_mix_table([0] * 4)
     )
 
+    def __post_init__(self) -> None:
+        self.voices[NOISE_VOICE].noise = True
+
     def apply_row(self, row: Sequence[Cell]) -> None:
-        for voice, cell in zip(self.voices, row, strict=True):
+        for number, (voice, cell) in enumerate(zip(self.voices, row, strict=True)):
             if cell.note == NOTE_HOLD:
                 continue
             if cell.note == NOTE_OFF:
                 voice.volume = 0
                 continue
-            voice.increment = note_increment(cell.note, self.sample_rate)
-            voice.phase = 0
+            if number != NOISE_VOICE:
+                voice.increment = note_increment(cell.note, self.sample_rate)
+                voice.phase = 0
             voice.volume = min(MAX_VOLUME, cell.volume)
             voice.decay = cell.decay
-            voice.noise = cell.noise
         self.refresh_mix_table()
 
     def apply_tick(self) -> None:
@@ -203,16 +221,18 @@ def render(tune: Tune, *, sample_rate: int = 7300) -> NDArray[np.int64]:
 def demo_tune() -> Tune:
     """A short A-minor riff exercising tone, bass, arpeggio, and percussion.
 
-    Voice 0 is bass, voice 1 melody, voice 2 an arpeggio, voice 3 percussion.
-    Percussion alternates a low square kick against an LFSR snare, both shaped
-    entirely by per-tick decay.
+    Voice 0 is bass, voice 1 melody, voice 2 an arpeggio that drops to a low
+    kick on each downbeat, and voice 3 the noise channel. The kick lives on a
+    tone voice because voice 3 has no phase accumulator and cannot be pitched.
+    Everything percussive is shaped by per-tick decay alone.
     """
     bass_line = [45, 45, 48, 48, 50, 50, 52, 52]
     melody = [69, 72, 76, 74, 72, 69, 67, 69, 72, 76, 79, 76, 74, 72, 69, 69]
     arpeggio = [57, 60, 64, 60]
 
-    kick = Cell(note=24, volume=15, decay=3)
-    snare = Cell(note=84, volume=11, decay=2, noise=True)
+    kick = Cell(note=24, volume=15, decay=4)
+    snare = Cell(note=60, volume=11, decay=2)
+    hat = Cell(note=60, volume=4, decay=4)
     silent = Cell(note=NOTE_HOLD)
 
     rows: list[tuple[Cell, ...]] = []
@@ -227,12 +247,16 @@ def demo_tune() -> Tune:
             if index % 2 == 0
             else silent
         )
-        harmony = Cell(note=arpeggio[index % len(arpeggio)], volume=6, decay=1)
+        harmony = (
+            kick
+            if index % 4 == 0
+            else Cell(note=arpeggio[index % len(arpeggio)], volume=6, decay=1)
+        )
 
-        if index % 4 == 0:
-            drum = kick
-        elif index % 4 == 2:
+        if index % 4 == 2:
             drum = snare
+        elif index % 2 == 1:
+            drum = hat
         else:
             drum = silent
 

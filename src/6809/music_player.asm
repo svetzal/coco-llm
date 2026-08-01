@@ -6,9 +6,9 @@
 ; 16-bit adds, four bit extractions, one indexed load, and one store to the
 ; DAC. There is no multiply, no divide, and no per-sample addition.
 ;
-; Square voices take bit 15 of a 16-bit phase accumulator. The noise voice
-; clocks an LFSR when its accumulator wraps, so noise is pitched by the same
-; increment mechanism as tone.
+; Voices 0 to 2 take bit 15 of a 16-bit phase accumulator. Voice 3 is a
+; dedicated noise channel with no accumulator: an LFSR is clocked once per
+; sample and its low bit is the output.
 ;
 ; Voices are processed 3,2,1,0 so that successive ROLs leave voice v in bit v
 ; of the mix index, matching the reference implementation's bit order.
@@ -23,6 +23,7 @@ PIA1_CRA        equ     $FF21
 PIA1_CRB        equ     $FF23
 
 VOICES          equ     4
+NOISE_VOICE     equ     3
 LOW_NOTE        equ     12
 MIX_ENTRIES     equ     16
 
@@ -38,7 +39,7 @@ phases          rmb     8               ; four 16-bit phase accumulators
 incrs           rmb     8               ; four 16-bit phase increments
 vols            rmb     4               ; 0..15 per voice
 decays          rmb     4               ; subtracted from vol each tick
-noises          rmb     4               ; non-zero selects the LFSR source
+noises          rmb     4               ; retained so the reset block stays contiguous
 STATE_BYTES     equ     28
 
 mixindex        rmb     1               ; low four bits rebuilt every sample
@@ -54,6 +55,7 @@ finished        rmb     1
 voice_no        rmb     1               ; row cursor, also the tick countdown
 changed         rmb     1               ; a volume moved, so rebuild the table
 scratch         rmb     1
+scaled          rmb     4               ; volumes pre-shifted for the mix table
 saved_dp        rmb     1
 
                 org     $2100
@@ -147,28 +149,22 @@ play_tune
                 ldx     #mixtable
 
 sample_loop
-; ---- voice 3, the only voice allowed to be noise ----
-                ldd     <phases+6
-                addd    <incrs+6
-                std     <phases+6       ; carry from ADDD survives STD and TST
-                tst     <noises+3
-                bne     v3_noise
-                rola                    ; bit 15 of the phase into carry
-                rol     <mixindex
-                bra     v3_done
-v3_noise
-                bcc     v3_tap_done     ; only clock when the phase wrapped
-                lsr     <lfsr
-                ror     <lfsr+1
-                bcc     v3_tap_done
-                lda     <lfsr           ; taps $B400; the low byte is untouched
-                eora    #$B4
-                sta     <lfsr
-v3_tap_done
-                lda     <lfsr+1
-                lsra                    ; bit 0 of the register into carry
-                rol     <mixindex
-v3_done
+; ---- voice 3: dedicated noise, branch-free, fixed cost ----
+; A software DAC has no timer, so the sample rate IS this loop's cycle count.
+; Any branch here modulates the sample period and is audible as distortion.
+; The tap is applied with SBCA rather than a conditional branch: with A zero,
+; SBCA #0 leaves $FF when carry was set and $00 when it was clear. LDA does
+; not disturb carry, so it can sit between the shift and the subtract.
+                lsr     <lfsr           ; 6
+                ror     <lfsr+1         ; 6   carry is the bit shifted out
+                lda     #$00            ; 2
+                sbca    #$00            ; 2   $FF if the shifted-out bit was 1
+                anda    #$B4            ; 2   taps $B400; low byte is untouched
+                eora    <lfsr           ; 4
+                sta     <lfsr           ; 4
+                lda     <lfsr+1         ; 4
+                lsra                    ; 2   bit 0 of the register into carry
+                rol     <mixindex       ; 6
 
 ; ---- voices 2, 1, 0: always square ----
                 ldd     <phases+4
@@ -283,6 +279,10 @@ apply_cell
                 cmpa    #NOTE_OFF_CODE
                 beq     ac_off
 
+                ldb     <voice_no       ; voice 3 has no pitch; only retrigger
+                cmpb    #NOISE_VOICE
+                beq     ac_volume
+
                 suba    #LOW_NOTE       ; index the increment table
                 lsla                    ; two bytes per entry, 0..192
                 tfr     a,b
@@ -305,18 +305,9 @@ apply_cell
                 clr     ,x
                 clr     1,x
 
-                lda     1,u             ; volume in the low nibble
-                tfr     a,b
-                andb    #$0F
+ac_volume
+                lda     1,u             ; volume, already masked by the exporter
                 ldx     #vols
-                pshs    b
-                ldb     <voice_no
-                abx
-                puls    b
-                stb     ,x
-
-                anda    #$80            ; bit 7 selects the noise source
-                ldx     #noises
                 pshs    a
                 ldb     <voice_no
                 abx
@@ -345,30 +336,67 @@ ac_skip
 ; ------------------------------------------------------------ mix table ----
 ; table[i] = sum of the volumes of the voices whose bit is set in i, shifted
 ; left twice so the value already sits on PA2-PA7.
+;
+; Subset sums, fully unrolled: fifteen adds rather than sixty-four bit tests.
+; This runs between samples, so a variable cost would show up as a periodic
+; artefact at the tick rate. Unrolled, it is constant.
+;
+; Volumes are pre-shifted so every entry is a plain add. Four voices at full
+; volume reach 60, and 60 << 2 is 240, still inside a byte.
 build_mix
-                ldx     #mixtable
-                clrb
-bm_entry
-                clra
-                bitb    #$01
-                beq     bm_v1
-                adda    <vols+0
-bm_v1           bitb    #$02
-                beq     bm_v2
-                adda    <vols+1
-bm_v2           bitb    #$04
-                beq     bm_v3
-                adda    <vols+2
-bm_v3           bitb    #$08
-                beq     bm_store
-                adda    <vols+3
-bm_store
+                lda     <vols+0
                 lsla
-                lsla                    ; 0..60 becomes 0..240 on PA2-PA7
-                sta     b,x
-                incb
-                cmpb    #MIX_ENTRIES
-                bne     bm_entry
+                lsla
+                sta     <scaled+0
+                lda     <vols+1
+                lsla
+                lsla
+                sta     <scaled+1
+                lda     <vols+2
+                lsla
+                lsla
+                sta     <scaled+2
+                lda     <vols+3
+                lsla
+                lsla
+                sta     <scaled+3
+
+                clr     <mixtable+0
+                lda     <scaled+0
+                sta     <mixtable+1
+                lda     <scaled+1
+                sta     <mixtable+2
+                adda    <scaled+0
+                sta     <mixtable+3
+                lda     <scaled+2
+                sta     <mixtable+4
+                adda    <scaled+0
+                sta     <mixtable+5
+                lda     <scaled+2
+                adda    <scaled+1
+                sta     <mixtable+6
+                adda    <scaled+0
+                sta     <mixtable+7
+                lda     <scaled+3
+                sta     <mixtable+8
+                adda    <scaled+0
+                sta     <mixtable+9
+                lda     <scaled+3
+                adda    <scaled+1
+                sta     <mixtable+10
+                adda    <scaled+0
+                sta     <mixtable+11
+                lda     <scaled+3
+                adda    <scaled+2
+                sta     <mixtable+12
+                adda    <scaled+0
+                sta     <mixtable+13
+                lda     <scaled+3
+                adda    <scaled+2
+                adda    <scaled+1
+                sta     <mixtable+14
+                adda    <scaled+0
+                sta     <mixtable+15
                 rts
 
                 include "../../build/exp009/tune_data.inc"

@@ -60,7 +60,7 @@ endif
 exp008-replay:
 	$(UV) run python tools/replay_exp_008.py
 
-MUSIC_RATE ?= 6370
+MUSIC_RATE ?= 6457
 
 music-cycles:
 	$(UV) run python tools/music_cycle_budget.py

@@ -5,6 +5,7 @@ from coco_synth import (
     DAC_MAX,
     LFSR_SEED,
     MAX_VOLUME,
+    NOISE_VOICE,
     NOTE_HOLD,
     NOTE_OFF,
     PHASE_MASK,
@@ -75,15 +76,17 @@ def test_a_square_voice_has_the_period_its_increment_implies() -> None:
     assert transitions == 8
 
 
-def test_a_noise_voice_only_clocks_when_its_phase_wraps() -> None:
+def test_a_noise_voice_clocks_every_sample() -> None:
+    # Constant cost per sample is the whole point: clocking on a phase wrap
+    # made the 6809 loop branch three ways and swing the sample period 24%.
     voice = Voice(increment=1, noise=True)
     voice.step()
 
-    assert voice.lfsr == LFSR_SEED
+    assert voice.lfsr != LFSR_SEED
 
 
 def test_a_noise_voice_does_not_repeat_quickly() -> None:
-    voice = Voice(increment=PHASE_MASK, noise=True)
+    voice = Voice(noise=True)
     bits = [voice.step() for _ in range(512)]
 
     assert 0 in bits and 1 in bits
@@ -167,19 +170,52 @@ def test_waveform_is_centred_and_within_range() -> None:
     assert int(np.abs(waveform).max()) <= 32767
 
 
-def test_the_demo_tune_produces_its_intended_pitches() -> None:
-    tune = demo_tune()
-    dac = render(tune, sample_rate=RATE)
-    row = int(RATE / tune.tick_hz) * tune.ticks_per_row
-    segment = dac[:row].astype(float)
-    segment -= segment.mean()
-    spectrum = np.abs(np.fft.rfft(segment * np.hanning(len(segment))))
-    frequencies = np.fft.rfftfreq(len(segment), 1 / RATE)
+def test_tone_voices_produce_the_pitches_the_score_asks_for() -> None:
+    # The noise channel is held silent so the spectrum shows only the tone
+    # voices; broadband noise would otherwise lift the floor this compares to.
+    chord = Tune(
+        name="chord",
+        rows=(
+            (
+                Cell(note=45, volume=12),
+                Cell(note=69, volume=13),
+                Cell(note=57, volume=6),
+                Cell(note=NOTE_OFF),
+            ),
+        ),
+        ticks_per_row=6,
+    )
+    dac = render(chord, sample_rate=RATE).astype(float)
+    dac -= dac.mean()
+    spectrum = np.abs(np.fft.rfft(dac * np.hanning(len(dac))))
+    frequencies = np.fft.rfftfreq(len(dac), 1 / RATE)
     floor = float(np.median(spectrum))
 
-    # Row 0 sounds A2 bass, A3 arpeggio, and A4 melody together.
     for note in (45, 57, 69):
         target = note_frequency(note)
         window = (frequencies > target - 12) & (frequencies < target + 12)
 
         assert float(spectrum[window].max()) > floor * 8
+
+
+def test_the_noise_voice_ignores_its_phase_accumulator() -> None:
+    voice = Voice(increment=1234, noise=True)
+    for _ in range(50):
+        voice.step()
+
+    assert voice.phase == 0
+
+
+def test_voice_three_is_the_noise_channel() -> None:
+    synth = Synth(sample_rate=RATE)
+
+    assert synth.voices[NOISE_VOICE].noise
+    assert not any(voice.noise for voice in synth.voices[:NOISE_VOICE])
+
+
+def test_the_noise_channel_takes_no_pitch_from_a_row() -> None:
+    synth = Synth(sample_rate=RATE)
+    synth.apply_row([Cell(note=60, volume=9)] * VOICE_COUNT)
+
+    assert synth.voices[NOISE_VOICE].increment == 0
+    assert synth.voices[NOISE_VOICE].volume == 9

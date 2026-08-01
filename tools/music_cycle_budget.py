@@ -32,24 +32,14 @@ VOICE_SQUARE = [
     ("ROL", "direct", 6),
 ]
 
-VOICE3_SQUARE = [
-    ("LDD", "direct", 5),
-    ("ADDD", "direct", 6),
-    ("STD", "direct", 5),
-    ("TST", "direct", 6),
-    ("BNE", "relative", 3),
-    ("ROLA", "inherent", 2),
-    ("ROL", "direct", 6),
-    ("BRA", "relative", 3),
-]
-
 VOICE3_NOISE = [
-    ("LDD", "direct", 5),
-    ("ADDD", "direct", 6),
-    ("STD", "direct", 5),
-    ("TST", "direct", 6),
-    ("BNE", "relative", 3),
-    ("BCC", "relative", 3),
+    ("LSR", "direct", 6),
+    ("ROR", "direct", 6),
+    ("LDA", "immediate", 2),
+    ("SBCA", "immediate", 2),
+    ("ANDA", "immediate", 2),
+    ("EORA", "direct", 4),
+    ("STA", "direct", 4),
     ("LDA", "direct", 4),
     ("LSRA", "inherent", 2),
     ("ROL", "direct", 6),
@@ -85,15 +75,9 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--clock", type=int, default=COCO1_CLOCK)
     parser.add_argument(
-        "--noise-share",
-        type=float,
-        default=0.25,
-        help="fraction of samples where voice 3 is a noise instrument",
-    )
-    parser.add_argument(
         "--overhead-cycles",
         type=float,
-        default=6.5,
+        default=3.6,
         help="per-sample share of tick and row processing, amortised",
     )
     return parser.parse_args()
@@ -102,34 +86,24 @@ def parse_arguments() -> argparse.Namespace:
 def main() -> None:
     arguments = parse_arguments()
 
-    print("Sample loop, voice 3 on the square path")
-    square3 = show("voice 3 (square)", VOICE3_SQUARE)
+    print("Sample loop (every path, every sample)")
+    noise3 = show("voice 3 (noise, branch-free)", VOICE3_NOISE)
     print()
-    noise3 = show("voice 3 (noise, no wrap)", VOICE3_NOISE)
-    print()
-    one_voice = show("voice 2, 1, or 0", VOICE_SQUARE)
+    one_voice = show("voice 2, 1, or 0 (square)", VOICE_SQUARE)
     print()
     mix = show("mix and output", MIX_AND_OUTPUT)
     print()
     tick = show("tick countdown", TICK_COUNTDOWN)
     print()
 
-    body = one_voice * 3 + mix + tick
-    square_total = square3 + body
-    noise_total = noise3 + body
-    blended = (
-        square_total * (1 - arguments.noise_share) + noise_total * arguments.noise_share
-    )
-    effective = blended + arguments.overhead_cycles
-
-    print(f"per sample, voice 3 square: {square_total} cycles")
-    print(f"per sample, voice 3 noise:  {noise_total} cycles")
-    print(f"blended at {arguments.noise_share:.0%} noise: {blended:.1f} cycles")
-    print(f"plus amortised tick/row work: {arguments.overhead_cycles:.1f} cycles")
-    print(f"effective: {effective:.1f} cycles per sample")
+    loop = noise3 + one_voice * 3 + mix + tick
+    print(f"sample loop: {loop} cycles, with no branch and no variation")
+    print(f"pitch during playback: {arguments.clock / loop:.0f} Hz")
     print()
+    effective = loop + arguments.overhead_cycles
+    print(f"plus amortised tick/row work: {arguments.overhead_cycles:.1f} cycles")
+    print(f"effective average: {effective:.1f} cycles per sample")
     rate = arguments.clock / effective
-    print(f"clock: {arguments.clock} Hz")
     print(f"sample rate: {rate:.0f} Hz")
     print()
     print(f"export with: uv run python tools/export_tune.py --sample-rate {rate:.0f}")
