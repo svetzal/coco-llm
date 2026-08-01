@@ -22,6 +22,12 @@ PIA1_DA         equ     $FF20
 PIA1_CRA        equ     $FF21
 PIA1_CRB        equ     $FF23
 
+; Writing anywhere in $FFD8 selects the slow clock. On a CoCo 1 that clears
+; SAM bit R1, the normal state; on a CoCo 3 it selects 0.89 MHz rather than
+; 1.78. The tuning is derived from a cycle count, so the clock cannot be left
+; to whatever the host BASIC happened to leave set.
+SLOW_CLOCK      equ     $FFD8
+
 VOICES          equ     4
 NOISE_VOICE     equ     3
 LOW_NOTE        equ     12
@@ -88,6 +94,8 @@ music_pass
 ; PA2-PA7 drive the DAC. PA0 is cassette in and PA1 is RS-232 in, so the
 ; direction register must leave those two as inputs.
 audio_enable
+                sta     SLOW_CLOCK      ; force 0.89 MHz before anything is timed
+
                 lda     PIA1_CRA
                 anda    #$FB            ; select the direction register
                 sta     PIA1_CRA
