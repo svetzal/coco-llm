@@ -5,9 +5,11 @@
 Planned. No implementation. This records the hypothesis, the gates, and the
 design before any code is written.
 
-Revised 2026-08-01 from absolute pitches to scale degrees with a mode token
-and chord-conditioned context. The reasoning is in "Why scale degrees" below,
-and it changed the experiment materially rather than cosmetically.
+Revised 2026-08-01 from absolute pitches to scale degrees with mode, metre,
+beat and chord as context, and split into a progression layer and a melody
+layer. The reasoning is in "Why scale degrees" below. Corpus vetting is
+recorded under "Corpus"; one leading candidate was disqualified by its own
+licence.
 
 ## Question
 
@@ -129,28 +131,58 @@ model learns about chord V is shared across modes instead of relearned four
 times. Degree 3 in major and minor are different intervals, so mode cannot be
 left implicit.
 
+Metre and metric position are carried as well. Melody depends strongly on
+where it sits in the bar — strong beats take chord tones, weak beats take
+passing notes — and with a row-based encoding the model has no other way to
+know where the barline is.
+
+```text
+4/4 3/4 6/8 2/4                   metre
+BEAT0 .. BEAT7                    position within the bar
+```
+
 Context layout, following EXP-008's situational design — the one part of that
 experiment that worked:
 
 ```text
-[ mode, chord, degree(t-k) ... degree(t-1) ]
+[ mode, metre, chord, beat, degree(t-k) ... degree(t-1) ]
 ```
+
+### Two layers, not one
+
+Chords and melody move at different rates and are better modelled separately:
+
+- **A progression model** over chord tokens, one per bar or half-bar. Its
+  vocabulary is seven, its sequences are short, and its parameter cost is
+  trivial. Bach's harmonic progressions are highly regular, so this is the
+  part most likely to be learnable from a modest corpus.
+- **A melody model** over degrees, conditioned on the chord the progression
+  model produced.
+
+Generation runs the progression first, then the melody within it. This mirrors
+how the parts are actually written, keeps each model small enough to gate on
+its own evidence, and means a failure can be attributed to one layer rather
+than to an entangled whole.
+
+For a first pass the progression may be fixed rather than modelled, so that
+the melody model is the only thing under test. Modelling it is the immediate
+next step once the melody layer clears its gate.
 
 ## Candidate sizes
 
 Each context position carries only the tokens that can appear in it: mode
-positions need four rows, chord positions seven, melody positions sixteen.
+four rows, metre four, chord seven, beat eight, melody sixteen.
 EXP-008 deliberately used a rectangular table and accepted the waste; here the
 waste costs roughly half the available context, so the ragged layout earns its
 extra complexity.
 
 | Layout | E | Context | History rows | Bars | Parameters |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Ragged | 8 | 18 | 16 | 2.7 | 2,280 |
-| Ragged | 8 | 24 | 22 | 3.7 | 3,048 |
-| Ragged | 8 | 32 | 30 | 5.0 | 4,072 |
-| Ragged | 12 | 18 | 16 | 2.7 | 3,412 |
-| Rectangular | 8 | 18 | 16 | 2.7 | 4,032 |
+| Ragged | 8 | 20 | 16 | 2.7 | 2,376 |
+| Ragged | 8 | 28 | 24 | 4.0 | 3,400 |
+| Ragged | 8 | 32 | 28 | 4.7 | 3,912 |
+| Ragged | 12 | 20 | 16 | 2.7 | 3,556 |
+| Rectangular | 8 | 20 | 16 | 2.7 | 4,736 |
 
 Context length is **not declared here**. Phase A sweeps it, because the ragged
 layout is a real complication for a later 6809 port and should only be paid
@@ -166,30 +198,76 @@ composes into RAM, then performs.
 
 ## Corpus
 
-Public-domain folk and classical melodies. Chosen over chiptune sources
-because licensing must be clean for a recorded public talk, and because folk
-melody has strong, short, repeating phrase structure — the long-range
-regularity the model needs in order to beat a short-context table.
+### Vetting, 2026-08-01
 
-The cost is honest and should be stated on stage: it will sound like folk
-music played on a CoCo, not like a 1985 game soundtrack.
+Four candidate sources were examined. **None is unambiguously clean, and one
+is disqualified outright.**
 
-Requirements the corpus must meet:
+| Source | Tunes | Chords | Mode | Metre | Licence | Verdict |
+| --- | ---: | --- | --- | --- | --- | --- |
+| [The Session](https://thesession.org/) | ~50k settings | no | yes | yes | **Prohibits LLM use** | **Excluded** |
+| [Nottingham NMD](https://abc.sourceforge.net/NMD/) | 977 | yes | yes | yes | IPR claimed, no open licence | Risky |
+| [Jukedeck cleaned NMD](https://github.com/jukedeck/nottingham-dataset) | ~1000 | yes | yes | yes | GPLv3 on the compilation | Risky |
+| [BFDB](https://zenodo.org/records/14692025) | 13,835 | no | no | yes | CC BY-NC 4.0 | Non-commercial, no chords |
+| [music21 corpus](https://www.music21.org/music21docs/about/about.html) | 371 chorales | **derivable** | yes | yes | PD music, encodings by permission | Preferred |
 
-- machine-readable melody, monophonic or with a clear melody line;
-- chord labels, or a defensible way to infer them, since chord is a context
-  token and also drives the accompaniment channels by rule;
-- an identifiable mode per tune;
-- provenance and licence recorded in `experiments/data/` beside the corpus;
-- holdout melodies that are entirely separate tunes, not held-out phrases from
-  training tunes.
+**The Session is excluded on its own terms.** Its data licence reads: "You may
+not use, adapt, modify, or process the material in any way with Large Language
+Models. This includes but is not limited to training Large Language Models."
+That is exactly what this experiment would do. The only carve-out is for
+accessibility tooling. It is the largest and best-structured corpus of the
+four and it cannot be used.
 
-ABC-notation folk collections are the leading candidate because they are
-largely traditional material and frequently carry chord symbols already.
+**Nottingham carries a claimed IPR.** The tunes are traditional and long out
+of copyright, but the ABC page states the rights in the original collection
+"reside with Mick Peat" and no open licence is offered. Bob Sturm additionally
+[documented errors introduced by the Jukedeck cleaning](https://highnoongmt.wordpress.com/2018/10/02/going-to-use-the-nottingham-music-database/)
+— stripped bass notes and a corrupted repeat structure — and recommends
+training on ABC rather than on MIDI conversions.
 
-Every melody is transposed so that its tonic is degree 1. Whether that helps
-by removing a nuisance variable or destroys something worth learning is an
-open question below, and is cheap to test both ways.
+**BFDB is CC BY-NC.** A conference talk that promotes a consultancy is
+arguably a commercial use, and it carries neither chords nor mode.
+
+### Selected: chorale melodies
+
+Bach's chorales are the recommendation, and the reason is not licensing alone.
+
+**The harmony is ground truth, not inference.** Every other candidate would
+have required guessing chords from the melody with a heuristic. A four-part
+chorale states its harmony explicitly, so the chord token this experiment
+conditions on is a fact rather than an estimate. Given that the secondary
+hypothesis is precisely about harmonic conditioning, testing it against
+guessed chords would have been close to worthless.
+
+**The melodies are themselves traditional.** Bach mostly did not compose these
+tunes; he harmonised existing Lutheran hymn melodies, many sixteenth-century
+and folk-derived. So this is traditional material with expert harmony attached,
+rather than a departure from traditional material.
+
+**Phrase structure is unusually regular** and cadences are unambiguous, which
+is exactly the long-range structure the model must capture and a Markov chain
+cannot.
+
+Sturm's other finding is directly relevant: models trained on folk data
+routinely produce chord progressions that "make no sense", with no
+relationship between melody and harmony. Conditioning the melody on a given
+chord, rather than generating both jointly, is a deliberate attempt to avoid
+that failure mode rather than reproduce it.
+
+The honest cost, again for the stage: **it will sound like a hymn played on a
+CoCo.** Slower and more solemn than a dance tune. Whether that is charming or
+flat is a judgement to make once something is audible.
+
+### Still to confirm before the corpus is fixed
+
+- Per-directory licence terms inside the music21 corpus. The collection as a
+  whole is distributed by permission, but individual encodings carry their own
+  terms and some are non-commercial.
+- Whether 371 chorales yield enough distinct phrases, and whether the Essen
+  folksong collection bundled with music21 can supplement them on acceptable
+  terms.
+- Provenance and licence recorded in `experiments/data/` beside the corpus.
+- Holdout must be entirely separate chorales, not held-out phrases.
 
 ## Baselines
 
