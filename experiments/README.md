@@ -45,6 +45,9 @@ Current experiments:
   software synthesizer for a stock CoCo 1, built as the performer for a
   possible tracker-generation direction. Records why the HSYNC interrupt
   cannot drive an audio sample clock on this machine.
+- [`EXP-010-melody-continuation.md`](EXP-010-melody-continuation.md) — planned
+  experiment in which the audience enters an opening bar and the CoCo composes
+  and performs a continuation. No implementation yet.
 
 ## Presentation commands
 
