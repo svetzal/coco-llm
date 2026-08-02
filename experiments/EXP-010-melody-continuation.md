@@ -2,10 +2,22 @@
 
 ## Status
 
-**Phase A passed** on 2026-08-01. The model beats the strongest table baseline
-by 0.243 bits per row, the advantage holds on contexts never seen in training,
-and the negative control is clean. Phase B, the listening comparison, has not
-been attempted.
+**Phase A partially verified.** The model beats the strongest table baseline,
+the advantage holds on contexts never seen in training, and the negative
+control is clean. On the chosen dance corpus the margin is +0.494 bits.
+
+**Two declared Phase A gates were never measured**, and reporting "Phase A
+passed" without saying so was an overstatement:
+
+- every reachable quantized context vector stays within signed 8-bit range;
+- the reachable score range fits the declared accumulator width.
+
+Both concern fixed point. Everything measured so far is floating point on a
+Mac, and the experiment is for a machine with no floating point at all. Until
+those two are checked, the result does not yet say the CoCo can do this — only
+that the architecture can.
+
+Phase B, the listening comparison, has not been attempted formally.
 
 Four faults were found and fixed along the way, three of them in the harness
 rather than the model. They are recorded under "Phase A result" because each
@@ -375,6 +387,10 @@ Proceed to 6809 work only if all hold:
 - every reachable quantized context vector stays within signed 8-bit range;
 - the reachable score range fits the declared accumulator width.
 
+The last two are **not yet measured**. `tools/run_exp_010.py` implements the
+first four and prints three of them; the fixed-point gates need the model
+quantized first, and that has not been done.
+
 The negative control is not optional. In EXP-008 it caught a harness fault
 that made every method appear to score 100%, and later caught
 multiple-comparison inflation when the candidate pool grew. Any sweep that
@@ -471,6 +487,18 @@ melody, sitting on I, IV and V with chord tones on strong beats. The important
 point is that **both the model and the tables would receive the same inferred
 feature**, so the comparison stays fair. What is lost is only the claim that
 the harmony is ground truth, and that claim must then be dropped.
+
+## Corpus decision: dance tunes
+
+**Ryan's Mammoth Collection is the corpus**, decided 2026-08-02 on both
+measurements and listening. Generated continuations were judged clearly more
+melodic than the chorale ones, and the margin over the best table is roughly
+double. This is the first decision in the experiment where the numbers and the
+ear agreed rather than pointing in different directions.
+
+The chorale pipeline is retained and still runs. It remains the fallback if
+inferred chords turn out to be doing something the ground-truth ones would not,
+and it is the only corpus where that comparison is possible.
 
 ## Dance tunes, with inferred chords
 
