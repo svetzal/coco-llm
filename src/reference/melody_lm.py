@@ -36,7 +36,27 @@ METRE_INPUTS = len(METRES)
 CHORD_INPUTS = 7
 BEAT_INPUTS = MAX_BEATS + 4  # 3/2 has twelve rows to the bar
 
-SITUATIONAL = (MODE_INPUTS, METRE_INPUTS, CHORD_INPUTS, BEAT_INPUTS)
+FEATURE_SIZES = {
+    "mode": MODE_INPUTS,
+    "metre": METRE_INPUTS,
+    "chord": CHORD_INPUTS,
+    "beat": BEAT_INPUTS,
+}
+ALL_FEATURES = ("mode", "metre", "chord", "beat")
+
+
+def feature_values(tune: Tune, row: int) -> dict[str, int]:
+    return {
+        "mode": MODES.index(tune.mode),
+        "metre": METRES.index(tune.metre),
+        "chord": tune.chords[row],
+        "beat": tune.beats[row],
+    }
+
+
+def context_prefix(tune: Tune, row: int, features: Sequence[str]) -> list[int]:
+    values = feature_values(tune, row)
+    return [values[name] for name in features]
 
 
 @dataclass(frozen=True)
@@ -44,11 +64,11 @@ class MelodyConfig:
     history: int = 18
     embedding: int = 6
     seed: int = 6809
-    situational: bool = True
+    features: tuple[str, ...] = ALL_FEATURES
 
     @property
     def position_sizes(self) -> tuple[int, ...]:
-        prefix = SITUATIONAL if self.situational else ()
+        prefix = tuple(FEATURE_SIZES[name] for name in self.features)
         return (*prefix, *([MELODY_INPUTS] * self.history))
 
     @property
@@ -69,16 +89,10 @@ def build_examples(
     targets: list[int] = []
 
     for tune in tunes:
-        mode = MODES.index(tune.mode)
-        metre = METRES.index(tune.metre)
         history = [PAD] * config.history
 
         for row in range(tune.rows):
-            prefix = (
-                [mode, metre, tune.chords[row], tune.beats[row]]
-                if config.situational
-                else []
-            )
+            prefix = context_prefix(tune, row, config.features)
             contexts.append([*prefix, *history])
             targets.append(tune.melody[row])
             history = history[1:] + [tune.melody[row]]

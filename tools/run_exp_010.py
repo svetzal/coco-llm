@@ -21,6 +21,7 @@ ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
 from melody_lm import (
+    ALL_FEATURES,
     PAD,
     MelodyConfig,
     MelodyModel,
@@ -99,7 +100,7 @@ def split_by_novelty(
     log_probabilities = model.log_softmax(model.logits(contexts))
     bits = -log_probabilities[np.arange(len(targets)), targets] / np.log(2.0)
 
-    offset = 4 if config.situational else 0
+    offset = len(config.features)
     novel = np.array([tuple(row[offset:]) not in seen for row in contexts], dtype=bool)
     known = ~novel
     return (
@@ -188,17 +189,17 @@ def main() -> None:
 
     print()
     best_model, best_model_name, best_config = None, "", None
-    for situational in (True, False):
+    for features in (ALL_FEATURES, ()):
         for history in histories:
             for embedding in embeddings:
                 config = MelodyConfig(
-                    history=history, embedding=embedding, situational=situational
+                    history=history, embedding=embedding, features=features
                 )
                 if config.parameters > 4096:
                     continue
                 model = train_model(train, config, arguments.epochs)
                 bits = evaluate(model, holdout, config)
-                tag = "situational" if situational else "history"
+                tag = "situational" if features else "history"
                 name = f"model/{tag}/H{history}/E{embedding}"
                 print(f"  {name:<32}{config.parameters:>14}{bits:>13.3f}")
                 if best_model is None or bits < best_model:

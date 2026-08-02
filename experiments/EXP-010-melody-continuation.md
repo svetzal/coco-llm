@@ -424,6 +424,54 @@ its advantage there, which is what the hypothesis required. Note that 65% of
 held-out rows have a context never seen in training — the setting the
 audience-entered bar will land in is the common case, not the exception.
 
+### What the situational context is actually made of
+
+The four situational tokens were ablated separately, because "situational
+context is worth 0.441 bits" says nothing about which part earns it.
+
+| Features | Holdout bits | Cost vs all four |
+| --- | ---: | ---: |
+| mode + metre + chord + beat | 1.140 | — |
+| **chord only** | **1.197** | +0.058 |
+| mode + metre + beat | 1.515 | +0.375 |
+| beat only | 1.568 | +0.428 |
+| mode + metre only | 1.530 | +0.391 |
+| history only | 1.581 | +0.441 |
+
+**Chord is nearly the whole of it.** Chord alone comes within 0.058 bits of
+all four features together, while everything else combined barely improves on
+melody history. Metric position, which was expected to matter because strong
+beats take chord tones, is worth 0.013 bits on its own.
+
+This matters beyond bookkeeping: it decides which corpora are usable. A
+collection without chord labels cannot supply the feature that is carrying the
+result.
+
+### What a chordless corpus would cost
+
+If the corpus has no chords then neither the model nor the tables get them,
+so the comparison has to be redone on that footing:
+
+| Method | Contexts / params | Holdout bits |
+| --- | ---: | ---: |
+| `table/order2` | 247 | 1.894 |
+| `table/order3` | 1,058 | 1.714 |
+| `model/history/H18/E6` | 3,213 | 1.581 |
+
+The margin falls from **+0.243 to +0.133 bits**, below the declared 0.15 gate.
+
+So chord labels are load-bearing, not decorative. The bundled dance-tune
+collections — O'Neill's 2,009 Irish tunes, Aird's 1,180 airs, Ryan's Mammoth
+1,059 reels, jigs and hornpipes, all unambiguously public domain by age —
+carry no chord symbols, and cannot be used as they stand.
+
+Inferring chords for those collections is far more defensible than it would
+have been for chorales: dance-tune harmony is nearly deterministic from the
+melody, sitting on I, IV and V with chord tones on strong beats. The important
+point is that **both the model and the tables would receive the same inferred
+feature**, so the comparison stays fair. What is lost is only the claim that
+the harmony is ground truth, and that claim must then be dropped.
+
 ## Four faults, and what each would have cost
 
 **A corrupted corpus that raised nothing.** `score.chordify()` reflows the

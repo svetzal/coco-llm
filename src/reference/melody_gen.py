@@ -20,7 +20,7 @@ from collections.abc import Sequence
 import numpy as np
 from coco_synth import NOTE_HOLD, NOTE_OFF, Cell
 from coco_synth import Tune as PlayerTune
-from melody_lm import PAD, MelodyConfig, MelodyModel
+from melody_lm import PAD, MelodyConfig, MelodyModel, context_prefix
 from melody_tokens import HOLD, REST, Tune
 
 MAJOR_STEPS = (0, 2, 4, 5, 7, 9, 11)
@@ -52,10 +52,6 @@ def generate(
     That is the demonstration exactly: a person supplies an opening bar and the
     machine continues it.
     """
-    from melody_tokens import METRES, MODES
-
-    mode = MODES.index(source.mode)
-    metre = METRES.index(source.metre)
     allowed = None
     if diatonic_only:
         steps = set(scale_steps(source.mode))
@@ -73,10 +69,8 @@ def generate(
         if row < seed_rows:
             token = source.melody[row]
         else:
-            context = np.asarray(
-                [[mode, metre, source.chords[row], source.beats[row], *history]],
-                dtype=np.int64,
-            )
+            prefix = context_prefix(source, row, config.features)
+            context = np.asarray([[*prefix, *history]], dtype=np.int64)
             logits = model.logits(context)[0]
             if allowed is not None:
                 logits = np.where(allowed, logits, -np.inf)
