@@ -15,7 +15,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp007-sweep exp007-epoch-sweep exp008-sweep exp008-capture \
 	exp008-replay music-tune music-cycles music-bin music-test \
 	xroar-music music-dsk exp010-corpus exp010-dance exp010-model \
-	present tools
+	exp010-core exp010-test present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -103,6 +103,20 @@ build/exp010/melody_model.inc: tools/export_melody_model.py \
 	$(UV) run python tools/export_melody_model.py
 
 exp010-model: build/exp010/melody_model.inc
+
+build/melody-core.bin: src/6809/coco_melody.asm \
+		src/6809/melody_inference.asm build/exp010/melody_model.inc
+	lwasm --6809 --format=raw --symbol-dump=build/melody-core.sym \
+		--output=$@ $<
+
+exp010-core: build/melody-core.bin
+
+build/melody-parity-test.asm: build/melody-core.bin \
+		tools/make_melody_parity_test.py src/reference/melody_fixed.py
+	$(UV) run python tools/make_melody_parity_test.py --output $@
+
+exp010-test: build/melody-parity-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run $<
 
 build/music-parity-test.asm: build/coco-music.bin tools/make_music_parity_test.py
 	$(UV) run python tools/make_music_parity_test.py \
