@@ -147,3 +147,26 @@ def test_the_holdout_is_whole_tunes_and_disjoint() -> None:
 
     assert holdout
     assert not train & holdout
+
+
+def test_fixed_point_bounds_are_reachable_not_observed() -> None:
+    # A model scaled to its observed peak stays correct on data it has seen
+    # and can overflow on data it has not. The demonstration invites a
+    # stranger to type an opening bar, which is the input most likely to sit
+    # outside the corpus, so the bound has to be the reachable one.
+    import numpy as np
+    from melody_fixed import ACCUMULATOR_HIGH, BYTE_HIGH, FixedMelodyModel
+    from melody_lm import ALL_FEATURES, MelodyConfig, MelodyModel
+
+    config = MelodyConfig(history=6, embedding=4, features=ALL_FEATURES)
+    model = MelodyModel(config)
+    contexts = np.zeros((4, config.context), dtype=np.int64)
+    fixed = FixedMelodyModel(model, contexts)
+
+    assert fixed.reachable_context <= BYTE_HIGH
+    assert fixed.reachable_score <= ACCUMULATOR_HIGH
+
+    # The reachable bound must dominate anything an actual input produces.
+    observed = int(np.abs(fixed.context_vectors(contexts)).max())
+
+    assert observed <= fixed.reachable_context
