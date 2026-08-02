@@ -31,7 +31,8 @@ BYTE_LOW = -128
 BYTE_HIGH = 127
 ACCUMULATOR_LOW = -32768
 ACCUMULATOR_HIGH = 32767
-TIGHTEN_ATTEMPTS = 8
+TIGHTEN_ATTEMPTS = 12
+BIAS_HEADROOM = 0.95
 
 # Scales are set from what is *reachable*, not from what was observed.
 #
@@ -97,20 +98,33 @@ class FixedMelodyModel:
         # Worst-case score is a full-scale context against the widest output
         # row, so the weight scale is set from that rather than from the
         # largest single weight.
+        # Reserve part of the accumulator for the bias, which shares the scale
+        # and is added on top of the products.
         widest_row = float(np.abs(model.weights).sum(axis=1).max())
-        self.weight_scale = (ACCUMULATOR_HIGH / max(self.reachable_context, 1)) / max(
+        budget = ACCUMULATOR_HIGH * BIAS_HEADROOM
+        self.weight_scale = (budget / max(self.reachable_context, 1)) / max(
             widest_row, 1e-9
         )
+        # Weights and biases are quantized together, because the bias shares
+        # their scale and has to fit the accumulator alongside the products.
         for _ in range(TIGHTEN_ATTEMPTS):
             self.weights = np.clip(
                 np.rint(model.weights * self.weight_scale), BYTE_LOW, BYTE_HIGH
             ).astype(np.int64)
+            self.product_scale = self.embedding_scale * self.weight_scale
+            self.biases = np.clip(
+                np.rint(model.biases * self.product_scale),
+                ACCUMULATOR_LOW,
+                ACCUMULATOR_HIGH,
+            ).astype(np.int64)
             if self.reachable_score <= ACCUMULATOR_HIGH:
                 break
-            self.weight_scale *= ACCUMULATOR_HIGH / (self.reachable_score + 1)
-
-        self.biases = model.biases.copy()
-        self.product_scale = self.embedding_scale * self.weight_scale
+            # The proportional correction alone can round to no change at all,
+            # leaving the loop spinning just over the limit. Cap it so every
+            # attempt actually shrinks the scale.
+            self.weight_scale *= min(
+                0.98, ACCUMULATOR_HIGH / (self.reachable_score + 1)
+            )
 
     def context_vectors(self, contexts: IntArray) -> IntArray:
         total = np.zeros((len(contexts), self.config.embedding), dtype=np.int64)
@@ -120,10 +134,10 @@ class FixedMelodyModel:
 
     def scores(self, contexts: IntArray) -> IntArray:
         """Integer scores, exactly as the 6809 would accumulate them."""
-        return self.context_vectors(contexts) @ self.weights.T
+        return self.context_vectors(contexts) @ self.weights.T + self.biases
 
     def bits_per_row(self, contexts: IntArray, targets: IntArray) -> float:
-        logits = self.scores(contexts) / self.product_scale + self.biases
+        logits = self.scores(contexts) / self.product_scale
         shifted = logits - logits.max(axis=1, keepdims=True)
         log_probabilities = shifted - np.log(np.exp(shifted).sum(axis=1, keepdims=True))
         chosen = log_probabilities[np.arange(len(targets)), targets]
@@ -150,8 +164,9 @@ class FixedMelodyModel:
 
     @property
     def reachable_score(self) -> int:
-        """Largest score a full-scale context could produce."""
-        return int(self.reachable_context * np.abs(self.weights).sum(axis=1).max())
+        """Largest score a full-scale context could produce, bias included."""
+        products = self.reachable_context * np.abs(self.weights).sum(axis=1)
+        return int((products + np.abs(self.biases)).max())
 
     @property
     def parameter_bytes(self) -> int:

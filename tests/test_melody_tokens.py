@@ -170,3 +170,47 @@ def test_fixed_point_bounds_are_reachable_not_observed() -> None:
     observed = int(np.abs(fixed.context_vectors(contexts)).max())
 
     assert observed <= fixed.reachable_context
+
+
+def test_exported_model_matches_its_manifest() -> None:
+    # The .inc the CoCo assembles and the JSON the parity test reads are
+    # generated together; if they ever disagree the assembly would be checked
+    # against numbers it does not contain.
+    import json as _json
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).parents[1] / "build" / "exp010"
+    inc, js = root / "melody_model.inc", root / "melody_model.json"
+    if not (inc.exists() and js.exists()):
+        pytest.skip("model not exported")
+
+    manifest = _json.loads(js.read_text())
+    text = inc.read_text()
+
+    assert f"MEL_EMBED       equ     {manifest['embedding']}" in text
+    assert f"MEL_CONTEXT     equ     {manifest['context']}" in text
+    assert f"MEL_TOKENS      equ     {manifest['melody_tokens']}" in text
+
+    sizes = re.search(r"mel_position_sizes\n        fcb     ([\d,]+)", text)
+    assert [int(v) for v in sizes.group(1).split(",")] == manifest["position_sizes"]
+
+    # Every stored byte must round-trip as the signed value it stands for.
+    for table in manifest["embeddings"]:
+        for row in table:
+            for value in row:
+                assert -128 <= value <= 127
+                assert (value & 0xFF) - (256 if value < 0 else 0) == value
+
+
+def test_exported_bounds_are_inside_the_hardware_limits() -> None:
+    import json as _json
+    from pathlib import Path
+
+    js = Path(__file__).parents[1] / "build" / "exp010" / "melody_model.json"
+    if not js.exists():
+        pytest.skip("model not exported")
+    manifest = _json.loads(js.read_text())
+
+    assert manifest["reachable_context"] <= 127
+    assert manifest["reachable_score"] <= 32767
