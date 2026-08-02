@@ -472,6 +472,62 @@ point is that **both the model and the tables would receive the same inferred
 feature**, so the comparison stays fair. What is lost is only the claim that
 the harmony is ground truth, and that claim must then be dropped.
 
+## Dance tunes, with inferred chords
+
+The chordless-corpus problem was solved by inferring the chord rather than
+abandoning the corpus. `src/reference/chord_inference.py` scores each diatonic
+triad against a bar's notes, weighted by duration and metric position, with a
+prior favouring I, IV and V and a mild preference for holding the previous
+chord.
+
+That is defensible for dance music and would not have been for chorales.
+Reels, jigs and hornpipes sit on I, IV and V with chord tones on the strong
+beats; the harmony is close to determined by the melody. Bach's whole interest
+is harmony the melody does not imply.
+
+**The chord is now a derived feature, not ground truth, and must be described
+that way.** The Phase A comparison stays fair because the model and the table
+baselines receive the same derived feature.
+
+376 tunes from Ryan's Mammoth Collection (1883), 70,405 rows, a row to the
+sixteenth note because reels are notated in running sixteenths and half the
+tune disappears at eighth resolution.
+
+| Method | Params / contexts | Holdout bits | Margin |
+| --- | ---: | ---: | ---: |
+| `table/order2/chord` | 1,712 | 2.665 | — |
+| `model/history` E6 H18 | 4,018 | 2.226 | +0.439 |
+| `model/chord` E6 H18 | 4,060 | 2.175 | +0.491 |
+| `model/mode+metre+chord+beat` E5 H18 | 3,564 | **2.171** | **+0.494** |
+
+**The margin roughly doubles against chorales**, from +0.243 to +0.494.
+
+### The mechanism is far clearer here
+
+| Bucket | Rows | Model | Table | Margin |
+| --- | ---: | ---: | ---: | ---: |
+| Seen in training | 878 | 2.670 | 2.542 | **-0.128** |
+| Never seen | 11,238 | 2.192 | 2.675 | **+0.483** |
+
+The table wins where it has data. The model wins everywhere else — and
+everywhere else is **93% of held-out rows**, against 65% for chorales. Dance
+melody is more varied than chorale melody, so contexts repeat less often, so
+generalization is worth more. That is the hypothesis stated as plainly as the
+data is ever likely to state it.
+
+### Two further faults
+
+**`BEAT_INPUTS` was hardcoded at 12.** At sixteenth resolution a 3/2 or 12/8
+bar is 24 rows, so the beat token overflowed its embedding table. It did not
+fire earlier because the winning dance configuration used melody history only,
+and the configuration that would have used beat was skipped for exceeding the
+parameter budget. It is now derived from the widest supported bar.
+
+**The wider pitch range costs context.** Fiddle tunes reach 33 semitones above
+the tonic against the chorales' 24, so the melody alphabet grew from 27 tokens
+to 34 and the ceiling on history fell with it. The best dance configuration
+runs at embedding 5 rather than 6 to stay inside 4,096 parameters.
+
 ## Four faults, and what each would have cost
 
 **A corrupted corpus that raised nothing.** `score.chordify()` reflows the

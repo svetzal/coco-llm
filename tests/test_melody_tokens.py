@@ -73,7 +73,20 @@ def test_mode_and_metre_tokens_match_the_surveyed_corpus() -> None:
     assert mode_token("major") == 0
     assert mode_token("minor") == 1
     assert metre_token("4/4") in range(len(METRES))
-    assert metre_token("6/8") is None
+    assert metre_token("7/8") is None
+
+
+def test_dance_metres_were_appended_not_inserted() -> None:
+    # Appending keeps the chorale corpus's metre tokens valid without
+    # re-extracting it.
+    assert METRES[:3] == ("4/4", "3/4", "3/2")
+    assert metre_token("6/8") is not None
+
+
+def test_row_resolution_changes_bar_length() -> None:
+    assert rows_per_bar("2/4", 0.25) == 8  # a reel in running sixteenths
+    assert rows_per_bar("6/8", 0.25) == 12  # a jig
+    assert rows_per_bar("4/4", 0.5) == 8  # a chorale in eighths
 
 
 def test_chord_tokens_are_zero_based_scale_degrees() -> None:

@@ -21,7 +21,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 import numpy as np
-from melody_tokens import MAX_BEATS, MELODY_TOKENS, METRES, MODES, Tune
+from melody_tokens import MELODY_TOKENS, METRES, MODES, Tune, rows_per_bar
 from numpy.typing import NDArray
 
 FloatArray = NDArray[np.float64]
@@ -34,7 +34,12 @@ MELODY_INPUTS = MELODY_TOKENS + 1
 MODE_INPUTS = len(MODES)
 METRE_INPUTS = len(METRES)
 CHORD_INPUTS = 7
-BEAT_INPUTS = MAX_BEATS + 4  # 3/2 has twelve rows to the bar
+# Derived, not guessed. The widest bar in the supported metres, at the finest
+# row resolution used by any corpus: 3/2 and 12/8 are 24 rows to the bar when a
+# row is a sixteenth note. A hardcoded 12 was fine while only chorales existed
+# and only blew up when dance tunes were first given the beat token.
+FINEST_ROW_QUARTER_LENGTH = 0.25
+BEAT_INPUTS = max(rows_per_bar(metre, FINEST_ROW_QUARTER_LENGTH) for metre in METRES)
 
 FEATURE_SIZES = {
     "mode": MODE_INPUTS,

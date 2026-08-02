@@ -35,9 +35,14 @@ ROW_QUARTER_LENGTH = 0.5
 # The ceiling is measured, not assumed. A melody spanning an octave can still
 # reach 24 semitones above the tonic, because the tonic may sit up to eleven
 # semitones below the lowest note it uses. An earlier ceiling of 17 was set
-# from the melodic span alone and rejected 15% of the corpus.
+# from the melodic span alone and rejected 15% of the chorale corpus.
+#
+# Fiddle tunes reach higher than chorale melodies: measured over Ryan's
+# Mammoth, 99.9% of notes fall within 31 semitones of the tonic and the
+# maximum is 33. A ceiling of 24 rejected nearly half of those tunes, because
+# one note over the line discards the whole tune.
 LOWEST_RELATIVE = 0
-HIGHEST_RELATIVE = 24
+HIGHEST_RELATIVE = 31
 PITCH_COUNT = HIGHEST_RELATIVE - LOWEST_RELATIVE + 1
 
 HOLD = PITCH_COUNT
@@ -45,7 +50,9 @@ REST = PITCH_COUNT + 1
 MELODY_TOKENS = PITCH_COUNT + 2
 
 MODES = ("major", "minor")
-METRES = ("4/4", "3/4", "3/2")
+# Chorale metres first, then the dance metres. Appending keeps existing token
+# indices stable, so the chorale corpus does not need re-extracting.
+METRES = ("4/4", "3/4", "3/2", "2/4", "2/2", "6/8", "9/8", "12/8", "3/8")
 CHORDS = (1, 2, 3, 4, 5, 6, 7)
 MAX_BEATS = 8
 
@@ -98,10 +105,16 @@ def chord_token(scale_degree: int) -> int:
     return scale_degree - 1
 
 
-def rows_per_bar(ratio: str) -> int:
+def rows_per_bar(ratio: str, row_quarter_length: float = ROW_QUARTER_LENGTH) -> int:
+    """Rows in one bar of this metre, at the given row resolution.
+
+    Chorales are encoded a row to the eighth note. Dance tunes are notated in
+    running sixteenths, so a reel needs a row to the sixteenth or half its
+    notes are lost.
+    """
     numerator, denominator = (int(part) for part in ratio.split("/"))
     quarters = numerator * 4 / denominator
-    return max(1, round(quarters / ROW_QUARTER_LENGTH))
+    return max(1, round(quarters / row_quarter_length))
 
 
 @dataclass(frozen=True)
