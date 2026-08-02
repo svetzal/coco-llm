@@ -124,7 +124,12 @@ def extract(score, source: str):
     )
 
 
-def iter_scores(collection: str, limit: int):
+def iter_scores(collection: str, limit: int, unreadable: Counter):
+    """Yield every score in a collection, counting files that will not parse.
+
+    A file that fails to parse must not stop the run, but it must not vanish
+    either: the count is reported alongside the rejections.
+    """
     from music21 import corpus
 
     paths = sorted(corpus.getComposer(collection))
@@ -132,7 +137,8 @@ def iter_scores(collection: str, limit: int):
     for path in paths:
         try:
             parsed = corpus.parse(path)
-        except Exception:  # noqa: BLE001 - one bad file must not stop the run
+        except Exception as error:  # noqa: BLE001 - recorded, then skipped
+            unreadable[type(error).__name__] += 1
             continue
         scores = getattr(parsed, "scores", None)
         for score in list(scores) if scores else [parsed]:
@@ -154,9 +160,12 @@ def main() -> None:
     arguments = parse_arguments()
     tunes: list[Tune] = []
     rejected: Counter[str] = Counter()
+    unreadable: Counter[str] = Counter()
 
     for collection in arguments.collections.split(","):
-        for index, score in enumerate(iter_scores(collection, arguments.limit)):
+        for index, score in enumerate(
+            iter_scores(collection, arguments.limit, unreadable)
+        ):
             source = f"{collection}/{index}"
             try:
                 tune, reason = extract(score, source)
@@ -179,6 +188,10 @@ def main() -> None:
     holdout = sum(1 for index in range(len(tunes)) if index % HOLDOUT_EVERY == 0)
     print(f"extracted: {len(tunes)} tunes, {rows} rows")
     print(f"train / holdout: {len(tunes) - holdout} / {holdout}")
+    if unreadable:
+        print("files that would not parse:")
+        for reason, count in unreadable.most_common(4):
+            print(f"  {count:>5}  {reason}")
     if rejected:
         print("rejected:")
         for reason, count in rejected.most_common(8):
