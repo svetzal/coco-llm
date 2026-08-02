@@ -24,10 +24,10 @@ sys.path.insert(0, str(ROOT / "src" / "reference"))
 
 from coco_synth import render, to_waveform
 from melody_gen import arrange, generate
-from melody_lm import MelodyConfig, MelodyModel, build_examples
+from melody_lm import ALL_FEATURES, MelodyConfig, MelodyModel, build_examples
 from melody_tokens import Tune, rows_per_bar, token_name
 
-CORPUS = ROOT / "experiments" / "data" / "EXP-010-chorales.jsonl"
+CHORALES = ROOT / "experiments" / "data" / "EXP-010-chorales.jsonl"
 SAMPLE_RATE = 5679  # the frozen player's measured rate
 
 
@@ -53,9 +53,11 @@ def write_wav(path: Path, waveform: np.ndarray) -> None:
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--corpus", type=Path, default=CHORALES)
     parser.add_argument("--epochs", type=int, default=80)
     parser.add_argument("--history", type=int, default=18)
     parser.add_argument("--embedding", type=int, default=6)
+    parser.add_argument("--features", type=str, default="all")
     parser.add_argument("--tune", type=int, default=0, help="index into the holdout")
     parser.add_argument("--seed-bars", type=int, default=1)
     parser.add_argument("--temperature", type=float, default=0.9)
@@ -75,8 +77,17 @@ def parse_arguments() -> argparse.Namespace:
 
 def main() -> None:
     arguments = parse_arguments()
-    train, holdout = load(CORPUS)
-    config = MelodyConfig(history=arguments.history, embedding=arguments.embedding)
+    train, holdout = load(arguments.corpus)
+    features = (
+        ALL_FEATURES
+        if arguments.features == "all"
+        else tuple(f for f in arguments.features.split(",") if f)
+    )
+    config = MelodyConfig(
+        history=arguments.history,
+        embedding=arguments.embedding,
+        features=features,
+    )
 
     print(f"training {config.parameters} parameters for {arguments.epochs} epochs")
     contexts, targets = build_examples(train, config)
@@ -84,7 +95,8 @@ def main() -> None:
     model.train(contexts, targets, epochs=arguments.epochs)
 
     source = holdout[arguments.tune % len(holdout)]
-    bar_rows = rows_per_bar(source.metre)
+    row_ql = 0.25 if "dance" in arguments.corpus.name else 0.5
+    bar_rows = rows_per_bar(source.metre, row_ql)
     limit = min(arguments.rows, source.rows)
     source = Tune(
         source=source.source,
