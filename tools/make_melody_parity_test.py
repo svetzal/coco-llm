@@ -21,6 +21,8 @@ import numpy as np
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
+from fixed_token_lm import XorShift16
+from melody_fixed import draw_token, sample_weights
 from melody_lm import MelodyConfig, build_examples
 from melody_tokens import Tune
 
@@ -31,6 +33,7 @@ SYMBOLS = ROOT / "build" / "melody-core.sym"
 RUNNER_ORG = 0x0E00
 MODEL_ORG = 0x2000
 CASES = 6
+SEED = 0x1A2B
 
 
 def symbol(text: str, name: str) -> int:
@@ -94,6 +97,9 @@ def main() -> None:
             "melody_context",
             "melody_scores",
             "melody_best_token",
+            "melody_sample",
+            "mel_rng",
+            "mel_total",
         )
     }
 
@@ -119,6 +125,20 @@ def main() -> None:
         lines.append(f"        std     c{case}best")
         lines.append(f"        lda     ${address['melody_best_token']:04X}")
         lines.append(f"        sta     c{case}tok")
+        # Sampling: seed the generator, draw, and check the token and the
+        # weight total. The total pins the softmax approximation; the token
+        # pins the draw on top of it.
+        lines.append(f"        ldd     #${SEED:04X}")
+        lines.append(f"        std     ${address['mel_rng']:04X}")
+        lines.append(f"        jsr     ${address['melody_sample']:04X}")
+        lines.append(f"        lda     ${address['melody_best_token']:04X}")
+        lines.append(f"        sta     c{case}drw")
+        lines.append(f"        ldd     ${address['mel_total']:04X}")
+        lines.append(f"        std     c{case}tot")
+        weights = sample_weights(scores)
+        drawn = draw_token(scores, XorShift16(SEED))
+        expectations.append(f";! c{case}drw = #${drawn:02X}")
+        expectations.append(f";! c{case}tot = #${sum(weights):04X}")
         expectations.append(f";! c{case}first = #${int(scores[0]) & 0xFFFF:04X}")
         expectations.append(f";! c{case}best = #${int(scores[winner]) & 0xFFFF:04X}")
         expectations.append(f";! c{case}tok = #${winner:02X}")
@@ -128,6 +148,8 @@ def main() -> None:
         lines.append(f"c{case}first rmb 2")
         lines.append(f"c{case}best rmb 2")
         lines.append(f"c{case}tok rmb 1")
+        lines.append(f"c{case}drw rmb 1")
+        lines.append(f"c{case}tot rmb 2")
 
     lines.append("")
     lines.append(f"        org     ${MODEL_ORG:04X}")

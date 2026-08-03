@@ -603,6 +603,61 @@ reported as it stands. Better prediction does not guarantee better generation:
 a model that hedges toward the most probable row can score well and still
 produce something dull.
 
+## The 6809 core
+
+`make exp010-core` assembles the model and its inference; `make exp010-test`
+proves them against the reference.
+
+| | |
+| --- | ---: |
+| Model data and inference core | 3,985 bytes |
+| Alongside the frozen player | 4,973 bytes |
+| Multiplies per generated row | 204 |
+| Parity criteria | 30, all passing |
+
+The structure follows EXP-007's completion inference with one change: its
+context positions all held the same vocabulary, so it stepped between
+positional tables by a fixed stride. These do not — mode has two rows, metre
+nine, chord seven, beat twenty-four, each melody position thirty-five — so a
+table of pointers replaces the stride.
+
+Both hardware bounds were proven unreachable before the assembly was written,
+so nothing in it clamps.
+
+### Sampling, not argmax
+
+Argmax is implemented and proven, but generating with it produces a drone:
+the most probable row is usually `HOLD`, and always taking it never moves.
+The sampler draws in proportion to score.
+
+It needs no division and no 32-bit multiply. Weights come from the same
+`exp(-d/32)` table EXP-004 uses, the draw is masked to the smallest power of
+two above the running total and retried when it lands past the end, and the
+generator is the XorShift16 the Python reference uses, so one seed produces
+the same sequence on both machines.
+
+The shift that converts a score drop into a table index sets the temperature.
+Measured over the holdout, the drop from the best score has a median of 3,400
+and a 99th percentile of 7,705; a shift of four maps that onto the table's
+useful range and works out near a softmax temperature of 1.0, which is what
+the generated audio was judged at.
+
+Parity covers the weight totals as well as the drawn tokens. The totals pin
+the softmax approximation; the tokens pin the draw on top of it.
+
+### A tooling limit worth recording
+
+The direct simulator's assembler crashes, with a Rust `unreachable`, on any
+label of sixteen characters or more. A label with nothing after it crashes it
+too, which made a bisection lie: every truncated prefix ending at a label
+failed regardless of what was actually wrong below, so the search kept
+reporting an innocent line.
+
+The fix is the pattern the model experiments already use: assemble with lwasm
+and hand the simulator the resulting bytes. That sidesteps the limit and is
+the better test anyway, since it exercises the artifact the CoCo would run
+rather than a second assembly of the same source.
+
 ## Phase C: entry and performance
 
 A tracker-style keyboard layout for note entry, so a person can play a bar

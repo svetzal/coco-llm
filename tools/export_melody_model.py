@@ -19,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from melody_fixed import FixedMelodyModel
+from melody_fixed import SAMPLE_SHIFT, FixedMelodyModel
 from melody_lm import ALL_FEATURES, MelodyConfig, MelodyModel, build_examples
 from melody_tokens import MELODY_TOKENS, Tune
 
@@ -123,6 +123,17 @@ def main() -> None:
     )
     lines.append("")
 
+    lines += [
+        "; exp(-d/32) as a byte, floored at 1 so no token is impossible",
+        "mel_exp_lut",
+    ]
+    from melody_fixed import EXP_LUT
+
+    for start in range(0, len(EXP_LUT), 16):
+        chunk = EXP_LUT[start : start + 16]
+        lines.append("        fcb     " + ",".join(f"${v:02X}" for v in chunk))
+    lines += ["", f"MEL_SHIFT       equ     {SAMPLE_SHIFT}", ""]
+
     lines += ["; output biases, signed 16-bit at the score scale", "mel_biases"]
     for start in range(0, len(fixed.biases), 8):
         chunk = fixed.biases[start : start + 8]
@@ -147,6 +158,7 @@ def main() -> None:
         "product_scale": fixed.product_scale,
         "reachable_context": report.reachable_context,
         "reachable_score": report.reachable_score,
+        "sample_shift": SAMPLE_SHIFT,
         "bits": report.bits,
         "embeddings": [table.tolist() for table in fixed.embeddings],
         "weights": fixed.weights.tolist(),

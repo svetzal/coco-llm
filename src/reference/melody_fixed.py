@@ -172,3 +172,51 @@ class FixedMelodyModel:
     def parameter_bytes(self) -> int:
         embeddings = sum(int(table.size) for table in self.embeddings)
         return embeddings + int(self.weights.size) + int(self.biases.size)
+
+
+# exp(-d/32) scaled to a byte, floored at 1 so no token is ever impossible.
+# The same table EXP-004 uses, so the two experiments share one approximation.
+EXP_LUT = [max(1, round(np.exp(-index / 32.0) * 255)) for index in range(256)]
+
+# The shift sets the temperature. Measured over the holdout, the spread
+# between the best score and the rest has a median of 3,400 and a 99th
+# percentile of 7,705; a shift of 4 maps that onto the table's useful range
+# and works out to a softmax temperature near 1.0, which is what the
+# generations were listened to at.
+SAMPLE_SHIFT = 4
+DRAW_ATTEMPTS = 16
+
+
+def sample_weights(scores, shift: int = SAMPLE_SHIFT) -> list[int]:
+    """Unnormalised probability per token, as bytes."""
+    top = int(max(scores))
+    return [EXP_LUT[min(255, (top - int(s)) >> shift)] for s in scores]
+
+
+def draw_token(scores, random, shift: int = SAMPLE_SHIFT) -> int:
+    """Draw one token in proportion to its score.
+
+    No division and no 32-bit multiply: the draw is masked to the smallest
+    power of two above the total and retried when it lands past the end. That
+    is a handful of instructions on a 6809, where a divide is not.
+    """
+    weights = sample_weights(scores, shift)
+    total = sum(weights)
+
+    mask = 1
+    while mask < total:
+        mask = mask * 2 + 1
+
+    value = total - 1
+    for _ in range(DRAW_ATTEMPTS):
+        candidate = random.next() & mask
+        if candidate < total:
+            value = candidate
+            break
+
+    running = 0
+    for index, weight in enumerate(weights):
+        running += weight
+        if value < running:
+            return index
+    return len(weights) - 1
