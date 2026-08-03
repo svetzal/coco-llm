@@ -58,6 +58,10 @@ SEED_FIGURE = [
 RNG_SEED = 0x1A2B
 HOOK_SENTINEL = 0xBEEF
 CALLER_DP = 0xA5
+# The figure Stacey enters at the keyboard, as scale degrees.
+ENTERED = (1, 3, 5, 3, 7, 3, 5, 1)
+MAJOR_STEPS = (0, 2, 4, 5, 7, 9, 11)
+SEED_OCTAVE = 12
 CHECKS = 12
 
 
@@ -132,6 +136,12 @@ def main() -> None:
             "row_hook",
             "tune_reset",
             "music_start",
+            "ui_build_seed",
+            "ui_seed",
+            "ui_seed_len",
+            "ui_mode",
+            "demo_seed",
+            "demo_steps",
             "ticks_cfg",
             "row_hook_none",
         )
@@ -177,6 +187,36 @@ def main() -> None:
     lines.append("        std     hook_kept")
     expectations.append(f";! hook_kept = #${HOOK_SENTINEL:04X}")
 
+    # The entered figure must actually reach the composer. It did not:
+    # ui_step_of reloaded X, which ui_build_seed was using as its write
+    # pointer, so every entered note landed in the scale tables and
+    # demo_seed kept its built-in figure. Nothing had ever driven this path.
+    lines.append("; --- entered seed ---")
+    for index, degree in enumerate(ENTERED):
+        lines.append(f"        lda     #{degree}")
+        lines.append(f"        sta     ${address['ui_seed'] + index:04X}")
+    lines.append(f"        lda     #{len(ENTERED)}")
+    lines.append(f"        sta     ${address['ui_seed_len']:04X}")
+    lines.append("        clra")
+    lines.append(f"        sta     ${address['ui_mode']:04X}   ; major")
+    lines.append(f"        jsr     ${address['ui_build_seed']:04X}")
+
+    expected_seed = []
+    for degree in ENTERED:
+        expected_seed += [MAJOR_STEPS[degree - 1] + SEED_OCTAVE, HOLD]
+    for index, value in enumerate(expected_seed):
+        lines.append(f"        lda     ${address['demo_seed'] + index:04X}")
+        lines.append(f"        sta     sd{index}")
+        expectations.append(f";! sd{index} = #${value:02X}")
+    lines.append(f"        lda     ${address['demo_seed_rows']:04X}")
+    lines.append("        sta     seed_rows")
+    expectations.append(f";! seed_rows = #${len(expected_seed):02X}")
+    # The scale tables are what the stray writes were landing in.
+    for index, value in enumerate(MAJOR_STEPS):
+        lines.append(f"        lda     ${address['demo_steps'] + index:04X}")
+        lines.append(f"        sta     st{index}")
+        expectations.append(f";! st{index} = #${value:02X}")
+
     # The player must hand the caller back its own direct page. It did not:
     # music_start saved DP with a direct-page store executed while DP was
     # still the caller's, so the value went to the wrong page and the restore
@@ -201,6 +241,11 @@ def main() -> None:
     lines.append("first_note rmb 1")
     lines.append("hook_kept rmb 2")
     lines.append("dp_kept rmb 1")
+    lines.append("seed_rows rmb 1")
+    for index in range(2 * len(ENTERED)):
+        lines.append(f"sd{index} rmb 1")
+    for index in range(len(MAJOR_STEPS)):
+        lines.append(f"st{index} rmb 1")
     lines.append("")
 
     for load, data in decb_segments(BINARY.read_bytes()):

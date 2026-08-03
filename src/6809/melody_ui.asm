@@ -443,7 +443,14 @@ ubs_next        lda     ,u+
                 rts
 
 ; Semitones above the tonic for scale degree A in mode B.
+;
+; X belongs to the caller. It is the write pointer ui_build_seed is walking
+; through demo_seed, and reloading it here sent every entered note into the
+; scale tables instead: the seed never reached the composer, which went on
+; using its built-in figure, and the arrangement's own scale was overwritten
+; underneath it.
 ui_step_of
+                pshs    x
                 tstb
                 bne     uso_minor
                 ldx     #demo_steps
@@ -452,4 +459,4 @@ uso_minor       ldx     #demo_steps_min
 uso_pick        tfr     a,b
                 abx
                 lda     ,x
-                rts
+                puls    x,pc
