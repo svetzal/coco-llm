@@ -11,10 +11,11 @@
 
 UI_SCREEN       equ     $0400
 UI_WIDTH        equ     32
-UI_ROLL_TOP     equ     6               ; first character row of the roll
+UI_ROLL_TOP     equ     5               ; first character row of the roll
 UI_ROLL_ROWS    equ     10
 UI_PITCHES      equ     UI_ROLL_ROWS*2  ; one pixel row per semitone
 UI_COLUMNS      equ     UI_WIDTH*2
+UI_TRACK        equ     UI_SCREEN+15*UI_WIDTH   ; the cursor's own row
 UI_BLANK        equ     $80             ; semigraphic cell, nothing lit
 UI_COLOUR       equ     $8F             ; green; the low nibble adds blocks
 UI_SPACE        equ     $60
@@ -50,9 +51,15 @@ ui_clear_roll
                 ldx     #UI_SCREEN+UI_ROLL_TOP*UI_WIDTH
                 lda     #UI_BLANK
 ucr_next        sta     ,x+
-                cmpx    #UI_SCREEN+512
+                cmpx    #UI_TRACK
                 blo     ucr_next
+                lda     #UI_BLANK       ; and wipe the cursor track
+                ldx     #UI_TRACK
+ucr_track       sta     ,x+
+                cmpx    #UI_SCREEN+512
+                blo     ucr_track
                 clr     ui_last
+                clr     ui_cursor
                 rts
 
 ; X is a screen address, U a zero-terminated string. VDG text codes are the
@@ -155,39 +162,38 @@ ust_done
                 rts
 
 ; ------------------------------------------------------------------------
-; The playback cursor: a lit column that sweeps the roll. Called once per
-; tune row from the player, in a sample borrowed for the purpose, so it has a
-; whole sample period to itself and cannot stretch the timeline.
+; The playback cursor, on its own row beneath the roll.
+;
+; It reads the player's own row counter, not the composer's. Reading
+; demo_row was the first attempt and it holds 128 for the whole of playback,
+; so the cursor XORed one cell over and over and the accumulated state made
+; the second pass look corrupted.
+;
+; A whole column would be ten cells to redraw, well past what the borrowed
+; sample affords. One solid block on a dedicated row costs two writes and is
+; far easier to follow. It is written inline rather than through a helper:
+; with the call and its stack traffic the hook came to 157 cycles against a
+; 156-cycle sample period, which is not a margin worth having.
 ui_row_cursor
-                lda     ui_cursor       ; erase the previous column
-                lbsr    ui_cursor_col
-                lda     demo_row+1
-                lsra
-                sta     ui_cursor
-                lbsr    ui_cursor_col
-                rts
-
-; Flip the top and bottom pixels of column A, so the cursor reads as a tick
-; above and below the note line rather than covering it.
-ui_cursor_col
-                cmpa    #UI_COLUMNS
-                bhs     ucc_done
-                pshs    a
-                lsra
-                tfr     a,b
-                ldx     #UI_SCREEN+UI_ROLL_TOP*UI_WIDTH
+                ldx     #UI_TRACK       ; blank where it was
+                ldb     ui_cursor
                 abx
-                lda     ,s
-                anda    #1
-                beq     ucc_left
-                lda     #$04
-                bra     ucc_flip
-ucc_left        lda     #$08
-ucc_flip        eora    ,x
-                ora     #UI_BLANK
+                lda     #UI_BLANK
                 sta     ,x
-                leas    1,s
-ucc_done        rts
+
+                lda     #TUNE_ROWS      ; rows played so far
+                suba    rows_left
+                lsra
+                lsra                    ; four tune rows to a cell
+                cmpa    #UI_WIDTH
+                bhs     urc_done
+                sta     ui_cursor
+                ldx     #UI_TRACK
+                tfr     a,b
+                abx
+                lda     #UI_COLOUR
+                sta     ,x
+urc_done        rts
 
 ; ------------------------------------------------------------------------
 ui_panel
@@ -245,7 +251,7 @@ uso_mode        ldx     #UI_SCREEN+UI_WIDTH*2+5
 
 ; A status word in the panel's right-hand end.
 ui_status
-                ldx     #UI_SCREEN+UI_WIDTH*5
+                ldx     #UI_SCREEN+UI_WIDTH*2+21
                 lbsr    ui_print
                 rts
 
@@ -269,11 +275,11 @@ ui_label_key    fcb     'K,'E,'Y,' ,0
 ui_label_speed  fcb     'S,'P,'D,' ,0
 ui_word_major   fcb     'M,'A,'J,'O,'R,0
 ui_word_minor   fcb     'M,'I,'N,'O,'R,0
-ui_help1        fcb     '1,'-,'7,' ,'N,'O,'T,'E,' ,' ,'0,' ,'D,'E,'L,0
-ui_help2        fcb     'M,'O,'D,'E,' ,'S,'P,'D,' ,'E,'N,'T,'E,'R,0
-ui_msg_ready    fcb     'R,'E,'A,'D,'Y,' ,' ,' ,' ,' ,' ,0
-ui_msg_think    fcb     'C,'O,'M,'P,'O,'S,'I,'N,'G,' ,' ,0
-ui_msg_play     fcb     'P,'L,'A,'Y,'I,'N,'G,' ,' ,' ,' ,0
+ui_help1        fcb     '1,'-,'7,' ,'A,'D,'D,' ,'N,'O,'T,'E,' ,' ,'0,' ,'E,'R,'A,'S,'E,0
+ui_help2        fcb     'M,' ,'K,'E,'Y,' ,' ,'S,' ,'S,'P,'E,'E,'D,' ,' ,'E,'N,'T,'E,'R,' ,'G,'O,0
+ui_msg_ready    fcb     'R,'E,'A,'D,'Y,' ,' ,' ,' ,' ,0
+ui_msg_think    fcb     'T,'H,'I,'N,'K,'I,'N,'G,' ,' ,0
+ui_msg_play     fcb     'P,'L,'A,'Y,'I,'N,'G,' ,' ,' ,0
 
 ; ------------------------------------------------------------------------
 ; The control loop. Degrees are entered, not pitches, so the keyboard cannot
