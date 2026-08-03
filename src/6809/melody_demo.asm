@@ -26,7 +26,6 @@ demo_beat       rmb     1
 demo_last_chord rmb     1
 demo_tmp        rmb     1
 demo_mode       rmb     1               ; 0 major, 1 minor
-demo_ticks      rmb     1               ; tempo, handed to the player
 demo_seed_rows  rmb     1               ; rows given rather than composed
 demo_write      rmb     2
 demo_tokens     rmb     TUNE_ROWS
@@ -287,6 +286,8 @@ demo_run
                 lbsr    demo_compose
                 lbsr    demo_arrange
                 ldd     #row_hook_none  ; no display to drive from here
-                std     row_hook
+                std     >row_hook
+                lda     #7              ; and a tempo, rather than stale RAM
+                sta     >ticks_cfg
                 lbsr    music_start
                 rts

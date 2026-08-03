@@ -202,7 +202,7 @@ ui_row_cursor
                 sta     ,x
 
                 lda     #TUNE_ROWS      ; rows played so far
-                suba    rows_left
+                suba    <rows_left      ; DP is the player's here
                 lsra
                 lsra                    ; four tune rows to a cell
                 cmpa    #UI_WIDTH
@@ -402,7 +402,7 @@ ui_perform
                 lda     ui_mode
                 sta     demo_mode
                 lda     ui_tempo
-                sta     demo_ticks
+                sta     >ticks_cfg      ; the player's, not a copy of our own
                 lbsr    ui_build_seed
 
                 lbsr    demo_compose
@@ -412,10 +412,10 @@ ui_perform
                 lbsr    ui_status
                 clr     ui_cursor
                 ldd     #ui_row_cursor  ; sweep the roll while it plays
-                std     row_hook
+                std     >row_hook
                 lbsr    music_start
                 ldd     #row_hook_none
-                std     row_hook
+                std     >row_hook
                 rts
 
 ; Turn the entered degrees into melody tokens, two rows each.
