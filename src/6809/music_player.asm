@@ -67,6 +67,8 @@ row_ptr         rmb     2
 finished        rmb     1
 voice_no        rmb     1
 cells_left      rmb     1               ; cells of the current row still to apply
+row_hook        rmb     2               ; called once per row, in its own sample
+ticks_cfg       rmb     1               ; ticks per row, so tempo can change
 incr_tmp        rmb     2
 scratch         rmb     1
 saved_dp        rmb     1
@@ -81,6 +83,11 @@ music_start
                 lda     #$20
                 tfr     a,dp
 
+                tst     <ticks_cfg      ; default the tempo if nobody set one
+                bne     ms_tempo_set
+                lda     #TICKS_PER_ROW
+                sta     <ticks_cfg
+ms_tempo_set
                 lbsr    audio_enable
                 lda     #TUNE_REPEATS
                 sta     <repeats_left
@@ -148,6 +155,8 @@ tr_clear        clr     ,x+
                 clr     <cells_left
                 clr     <finished
 
+                ldd     #row_hook_none  ; nothing on screen unless installed
+                std     <row_hook
                 ldd     #tune_rows
                 std     <row_ptr
                 lda     #TUNE_ROWS
@@ -261,19 +270,28 @@ nt_next
 ; One cell per sample. Applying all four together stalled the DAC for 2.7
 ; sample periods eight times a second; spread out, each pause is under one,
 ; and the four notes still land within a millisecond of each other.
+; The last borrowed sample of a row calls the display hook rather than a
+; cell. It gets a whole sample period to itself, so a screen update cannot
+; stretch the timeline any more than applying a cell does. The hook defaults
+; to a plain return, leaving the standalone player unchanged.
 nt_cell
+                lda     <cells_left
+                cmpa    #1
+                bne     nt_cell_apply
+                clr     <cells_left
+                lda     #SAMPLES_PER_TICK-VOICES-1
+                sta     <tick_samples
+                jsr     [row_hook]
+                rts
+
+nt_cell_apply
                 ldu     <row_ptr
                 lbsr    apply_cell
                 stu     <row_ptr
                 inc     <voice_no
                 dec     <cells_left
-                beq     nt_cells_done
                 lda     #1              ; return on the very next sample
                 sta     <tick_samples
-                rts
-nt_cells_done
-                lda     #SAMPLES_PER_TICK-VOICES
-                sta     <tick_samples   ; the rest of the tick we borrowed from
                 rts
 
 nt_row
@@ -292,14 +310,18 @@ next_row
 nr_fetch
                 deca
                 sta     <rows_left
-                lda     #TICKS_PER_ROW
+                lda     <ticks_cfg
                 sta     <row_ticks
                 clr     <voice_no
-                lda     #VOICES
+                lda     #VOICES+1       ; one extra for the display hook
                 sta     <cells_left
                 lda     #1              ; first cell on the next sample
                 sta     <tick_samples
                 rts
+
+; The default hook: no display, so the standalone player behaves exactly as
+; it did before one existed.
+row_hook_none   rts
 
 ; Apply one cell. U points at note, volume, decay and is advanced by three.
 ; Voice 3 has no pitch, but writing its unused increment is cheaper than

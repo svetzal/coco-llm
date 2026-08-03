@@ -100,7 +100,16 @@ def main() -> None:
 
     address = {
         name: symbol(symbols, name)
-        for name in ("demo_compose", "demo_tokens", "demo_arrange", "tune_rows")
+        for name in (
+            "demo_compose",
+            "demo_tokens",
+            "demo_arrange",
+            "tune_rows",
+            "demo_mode",
+            "demo_seed_rows",
+            "mel_rng",
+            "ui_last",
+        )
     }
 
     lines = [
@@ -108,6 +117,13 @@ def main() -> None:
         f"; {rows} rows composed, {CHECKS} sampled for comparison",
         f"        org     ${RUNNER_ORG:04X}",
         f"start   lds     #${RUNNER_ORG - 1:04X}",
+        "        clra",
+        f"        sta     ${address['demo_mode']:04X}",
+        f"        sta     ${address['ui_last']:04X}",
+        f"        lda     #{SEED_ROWS}",
+        f"        sta     ${address['demo_seed_rows']:04X}",
+        f"        ldd     #${RNG_SEED:04X}",
+        f"        std     ${address['mel_rng']:04X}",
         f"        jsr     ${address['demo_compose']:04X}",
         f"        jsr     ${address['demo_arrange']:04X}",
     ]

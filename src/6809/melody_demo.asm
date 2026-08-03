@@ -11,11 +11,9 @@
 ; be performed at whatever tempo suits.
 
 DEMO_BAR_ROWS   equ     8               ; 2/4 at a row to the sixteenth
-DEMO_SEED_ROWS  equ     16              ; two bars entered, the rest composed
 DEMO_TONIC      equ     60              ; where the generated tonic sits
 DEMO_BASS       equ     DEMO_TONIC-24
 DEMO_ARP        equ     DEMO_TONIC-12
-DEMO_MODE       equ     0               ; major
 DEMO_METRE      equ     3               ; 2/4
 
 MEL_HOLD        equ     32              ; melody token meanings
@@ -27,14 +25,18 @@ demo_chord      rmb     1
 demo_beat       rmb     1
 demo_last_chord rmb     1
 demo_tmp        rmb     1
+demo_mode       rmb     1               ; 0 major, 1 minor
+demo_ticks      rmb     1               ; tempo, handed to the player
+demo_seed_rows  rmb     1               ; rows given rather than composed
 demo_write      rmb     2
 demo_tokens     rmb     TUNE_ROWS
 
 ; Four bars of I I IV V, repeating.
 demo_prog       fcb     0,0,3,4
 
-; Major scale, semitones above the tonic.
+; Scale steps, semitones above the tonic.
 demo_steps      fcb     0,2,4,5,7,9,11
+demo_steps_min  fcb     0,2,3,5,7,8,10
 
 ; The opening figure, as melody tokens: 1 2 3 5 4 2 5 1, two rows each.
 demo_seed       fcb     0,MEL_HOLD,2,MEL_HOLD,4,MEL_HOLD,7,MEL_HOLD
@@ -58,9 +60,11 @@ dc_clear        sta     ,x+
 dc_row
                 lbsr    demo_set_frame
 
-                ldd     demo_row        ; the opening bars are given, not composed
-                cmpd    #DEMO_SEED_ROWS
+                lda     demo_row+1      ; the opening bars are given, not composed
+                cmpa    demo_seed_rows
                 bhs     dc_generate
+                ldb     demo_row
+                bne     dc_generate
                 ldx     #demo_seed
                 ldb     demo_row+1
                 abx
@@ -77,6 +81,9 @@ dc_store
                 ldb     demo_row+1
                 abx
                 sta     ,x
+                pshs    a               ; the display must not eat the token
+                lbsr    ui_show_token   ; watch the line appear as it composes
+                puls    a
                 lbsr    demo_push
 
                 ldd     demo_row
@@ -88,7 +95,7 @@ dc_store
 
 ; Situational context for this row: mode, metre, chord, beat.
 demo_set_frame
-                lda     #DEMO_MODE
+                lda     demo_mode
                 sta     melody_context
                 lda     #DEMO_METRE
                 sta     melody_context+1
@@ -141,7 +148,7 @@ da_row
                 cmpa    demo_last_chord
                 beq     da_bass_hold
                 sta     demo_last_chord
-                ldx     #demo_steps
+                lbsr    demo_scale
                 ldb     demo_chord
                 abx
                 lda     ,x
@@ -203,7 +210,9 @@ da_arp_tone
                 blo     da_arp_wrap
                 suba    #7
 da_arp_wrap
-                ldx     #demo_steps
+                pshs    a
+                lbsr    demo_scale
+                puls    a
                 tfr     a,b
                 abx
                 lda     ,x
@@ -258,8 +267,20 @@ da_next
                 lblo    da_row
                 rts
 
+; The step table for the current mode.
+demo_scale
+                ldx     #demo_steps
+                tst     demo_mode
+                beq     ds_done
+                ldx     #demo_steps_min
+ds_done         rts
+
 ; ------------------------------------------------------------------------
 demo_main
+                lbsr    ui_main
+                rts
+
+demo_run
                 lbsr    demo_compose
                 lbsr    demo_arrange
                 lbsr    music_start
