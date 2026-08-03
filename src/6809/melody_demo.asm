@@ -286,5 +286,7 @@ demo_main
 demo_run
                 lbsr    demo_compose
                 lbsr    demo_arrange
+                ldd     #row_hook_none  ; no display to drive from here
+                std     row_hook
                 lbsr    music_start
                 rts

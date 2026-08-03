@@ -68,6 +68,11 @@ finished        rmb     1
 voice_no        rmb     1
 cells_left      rmb     1               ; cells of the current row still to apply
 row_hook        rmb     2               ; called once per row, in its own sample
+                                        ; owned by the caller: every entry to
+                                        ; music_start must set it, because the
+                                        ; player has no safe default to fall
+                                        ; back on and tune_reset runs once per
+                                        ; repeat, not once per tune
 ticks_cfg       rmb     1               ; ticks per row, so tempo can change
 incr_tmp        rmb     2
 scratch         rmb     1
@@ -155,8 +160,6 @@ tr_clear        clr     ,x+
                 clr     <cells_left
                 clr     <finished
 
-                ldd     #row_hook_none  ; nothing on screen unless installed
-                std     <row_hook
                 ldd     #tune_rows
                 std     <row_ptr
                 lda     #TUNE_ROWS

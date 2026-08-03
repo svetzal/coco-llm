@@ -56,6 +56,7 @@ SEED_FIGURE = [
     HOLD,
 ]
 RNG_SEED = 0x1A2B
+HOOK_SENTINEL = 0xBEEF
 CHECKS = 12
 
 
@@ -127,6 +128,8 @@ def main() -> None:
             "demo_seed_rows",
             "mel_rng",
             "ui_last",
+            "row_hook",
+            "tune_reset",
         )
     }
 
@@ -158,10 +161,23 @@ def main() -> None:
     lines.append("        sta     first_note")
     expectations.append(f";! first_note = #${(tokens[0] + 60) & 0xFF:02X}")
 
+    # The player must not clobber the row hook the caller installed. It did:
+    # tune_reset defaulted it, so the playback cursor never ran once. Nothing
+    # exercised music_start, which is why that reached the screen.
+    lines.append("        lda     #$20")
+    lines.append("        tfr     a,dp")
+    lines.append(f"        ldd     #${HOOK_SENTINEL:04X}")
+    lines.append(f"        std     ${address['row_hook']:04X}")
+    lines.append(f"        jsr     ${address['tune_reset']:04X}")
+    lines.append(f"        ldd     ${address['row_hook']:04X}")
+    lines.append("        std     hook_kept")
+    expectations.append(f";! hook_kept = #${HOOK_SENTINEL:04X}")
+
     lines.append("        swi")
     for index in range(CHECKS):
         lines.append(f"t{index} rmb 1")
     lines.append("first_note rmb 1")
+    lines.append("hook_kept rmb 2")
     lines.append("")
 
     for load, data in decb_segments(BINARY.read_bytes()):
