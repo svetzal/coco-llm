@@ -38,9 +38,10 @@ demo_prog       fcb     0,0,3,4
 demo_steps      fcb     0,2,4,5,7,9,11
 demo_steps_min  fcb     0,2,3,5,7,8,10
 
-; The opening figure, as melody tokens: 1 2 3 5 4 2 5 1, two rows each.
-demo_seed       fcb     0,MEL_HOLD,2,MEL_HOLD,4,MEL_HOLD,7,MEL_HOLD
-                fcb     5,MEL_HOLD,2,MEL_HOLD,7,MEL_HOLD,0,MEL_HOLD
+; The opening figure, as melody tokens: 1 2 3 5 4 2 5 1, two rows each,
+; an octave above the tonic so it starts where the corpus lives.
+demo_seed       fcb     12,MEL_HOLD,14,MEL_HOLD,16,MEL_HOLD,19,MEL_HOLD
+                fcb     17,MEL_HOLD,14,MEL_HOLD,19,MEL_HOLD,12,MEL_HOLD
 
 ; ------------------------------------------------------------------------
 demo_compose

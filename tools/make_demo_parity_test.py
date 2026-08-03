@@ -36,7 +36,25 @@ SEED_ROWS = 16
 MODE, METRE = 0, 3
 PAD, HOLD = 34, 32
 PROGRESSION = (0, 0, 3, 4)
-SEED_FIGURE = [0, HOLD, 2, HOLD, 4, HOLD, 7, HOLD, 5, HOLD, 2, HOLD, 7, HOLD, 0, HOLD]
+# An octave above the tonic, matching melody_demo.asm.
+SEED_FIGURE = [
+    12,
+    HOLD,
+    14,
+    HOLD,
+    16,
+    HOLD,
+    19,
+    HOLD,
+    17,
+    HOLD,
+    14,
+    HOLD,
+    19,
+    HOLD,
+    12,
+    HOLD,
+]
 RNG_SEED = 0x1A2B
 CHECKS = 12
 

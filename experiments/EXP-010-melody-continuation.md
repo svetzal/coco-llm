@@ -658,6 +658,37 @@ and hand the simulator the resulting bytes. That sidesteps the limit and is
 the better test anyway, since it exercises the artifact the CoCo would run
 rather than a second assembly of the same source.
 
+## What the display caught
+
+The piano roll was built to show generation happening. It also showed a defect
+that no measurement in Phase A would have found, because cross-entropy is
+computed per row and says nothing about where a tune goes over its length.
+
+Generated tunes started at the bottom of the roll and climbed steadily to the
+top without returning. Measured as the change in mean pitch from the first
+quarter of a tune to the last:
+
+| | Drift |
+| --- | ---: |
+| Generated, seed entered at the tonic | +9.5 semitones |
+| Real fiddle tunes | +2.1 |
+| Generated, seed entered an octave up | **-0.1** |
+
+The cause was the seed, not the model. Extraction places each tune's tonic at
+or below its lowest note, so corpus melodies sit a median of fourteen
+semitones above the tonic. A figure entered as degree 1 starts at zero — an
+octave below anything the model was trained on — and the model responds
+exactly as it should, by climbing into the register where its data lives and
+staying there.
+
+Entering degrees an octave up puts the figure where the corpus sits, and the
+drift disappears.
+
+Two things worth keeping from this. A held-out cross-entropy gate cannot see a
+fault that unfolds over a whole tune, so a display is not decoration here; it
+is the only instrument that measures shape. And the fault was in the harness,
+not the model, which is now the fourth time in this experiment.
+
 ## Phase C: entry and performance
 
 A tracker-style keyboard layout for note entry, so a person can play a bar

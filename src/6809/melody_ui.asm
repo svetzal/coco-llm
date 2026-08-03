@@ -23,6 +23,17 @@ UI_SPACE        equ     $60
 POLCAT          equ     $A000
 UI_SEED_MAX     equ     8
 
+; Entered degrees are placed an octave above the tonic, not on it.
+;
+; Extraction puts each tune's tonic at or below its lowest note, so corpus
+; melodies sit a median of fourteen semitones above it. A seed starting at
+; zero is an octave below anything the model ever saw, and it responds by
+; climbing out of that register and staying up: measured, a figure entered at
+; the tonic drifts +9.5 semitones from the first quarter of the tune to the
+; last, against +2.1 for the real fiddle tunes. Entered an octave up, the
+; drift is -0.1.
+UI_SEED_OCTAVE  equ     12
+
 ui_x            rmb     1
 ui_y            rmb     1
 ui_addr         rmb     2
@@ -408,6 +419,7 @@ ubs_next        lda     ,u+
                 ldb     ui_mode
                 lbsr    ui_step_of
                 puls    b
+                adda    #UI_SEED_OCTAVE ; into the register the corpus uses
                 sta     ,x+
                 lda     #MEL_HOLD
                 sta     ,x+
