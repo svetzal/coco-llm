@@ -127,6 +127,20 @@ ust_pitch
                 sta     ui_last
                 deca
 ust_draw
+                ; Pitches run to 28 semitones above the tonic but the roll is
+                ; twenty rows tall. Clamping put a sixth of every tune on the
+                ; top row, which reads as a melody that keeps hitting a
+                ; ceiling. Scaling by five eighths fits the whole range and
+                ; keeps the contour, which is what the display is for.
+                ldb     #5
+                mul
+                lsra
+                rorb
+                lsra
+                rorb
+                lsra
+                rorb
+                tfr     b,a
                 cmpa    #UI_PITCHES
                 blo     ust_inrange
                 lda     #UI_PITCHES-1

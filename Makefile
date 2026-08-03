@@ -124,7 +124,8 @@ build/exp010/tune_frame.inc: tools/export_tune.py
 		--ram-rows 128 --output $@
 
 build/coco-melody-demo.bin: src/6809/coco_melody_demo.asm \
-		src/6809/melody_demo.asm src/6809/melody_inference.asm \
+		src/6809/melody_demo.asm src/6809/melody_ui.asm \
+		src/6809/melody_inference.asm \
 		src/6809/music_player.asm build/exp010/melody_model.inc \
 		build/exp010/tune_frame.inc
 	lwasm --6809 --format=decb \
