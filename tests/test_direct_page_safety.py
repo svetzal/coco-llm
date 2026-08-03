@@ -78,6 +78,23 @@ def test_listing_is_readable() -> None:
     assert any(source != PLAYER for _, source, _ in rows)
 
 
+def test_saved_dp_is_never_reached_through_the_direct_page() -> None:
+    """The one player variable touched while DP is not the player's.
+
+    music_start saves the caller's DP before switching to $20 and restores it
+    after switching back, so the file-level exemption below does not cover it.
+    Written direct, the save landed in the caller's page and the restore read
+    RAM nobody had written, handing the UI a garbage DP to poll the keyboard
+    through.
+    """
+    offenders = [
+        f"{source}:{text.strip()} -> {code}"
+        for code, source, text in listing()
+        if re.match(r"^\s*\S+\s+<?saved_dp\b", text.split(";")[0])
+    ]
+    assert not offenders, f"saved_dp must be reached as >saved_dp: {offenders}"
+
+
 @pytest.mark.parametrize("name", sorted(PLAYER_STATE))
 def test_player_state_is_reached_with_an_explicit_page(name: str) -> None:
     """Outside the player, say which page you mean.

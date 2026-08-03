@@ -83,7 +83,9 @@ saved_dp        rmb     1
 ; ---------------------------------------------------------------- entry ----
 music_start
                 tfr     dp,a
-                sta     <saved_dp       ; DP is still the caller's page here
+                sta     >saved_dp       ; DP is still the caller's page here,
+                                        ; so this must name the address, not
+                                        ; an offset into whatever page that is
                 orcc    #$50            ; mask IRQ and FIRQ for the whole tune
                 lda     #$20
                 tfr     a,dp
@@ -104,7 +106,7 @@ music_pass
                 bne     music_pass
 
                 lbsr    audio_disable
-                lda     <saved_dp
+                lda     >saved_dp
                 tfr     a,dp
                 andcc   #$AF            ; restore interrupts
                 rts

@@ -57,6 +57,7 @@ SEED_FIGURE = [
 ]
 RNG_SEED = 0x1A2B
 HOOK_SENTINEL = 0xBEEF
+CALLER_DP = 0xA5
 CHECKS = 12
 
 
@@ -130,6 +131,9 @@ def main() -> None:
             "ui_last",
             "row_hook",
             "tune_reset",
+            "music_start",
+            "ticks_cfg",
+            "row_hook_none",
         )
     }
 
@@ -173,11 +177,30 @@ def main() -> None:
     lines.append("        std     hook_kept")
     expectations.append(f";! hook_kept = #${HOOK_SENTINEL:04X}")
 
+    # The player must hand the caller back its own direct page. It did not:
+    # music_start saved DP with a direct-page store executed while DP was
+    # still the caller's, so the value went to the wrong page and the restore
+    # read RAM nobody had written. The UI then polled the keyboard through a
+    # garbage DP and BASIC scribbled through the screen.
+    lines.append(f"        lda     #${CALLER_DP:02X}")
+    lines.append("        tfr     a,dp")
+    lines.append("        lda     #1")
+    lines.append(f"        sta     ${address['ticks_cfg']:04X}   ; keep the run short")
+    lines.append(f"        ldd     #${address['row_hook_none']:04X}")
+    lines.append(f"        std     ${address['row_hook']:04X}")
+    lines.append(f"        jsr     ${address['music_start']:04X}")
+    lines.append("        tfr     dp,a")
+    lines.append("        clrb")
+    lines.append("        tfr     b,dp")
+    lines.append("        sta     dp_kept")
+    expectations.append(f";! dp_kept = #${CALLER_DP:02X}")
+
     lines.append("        swi")
     for index in range(CHECKS):
         lines.append(f"t{index} rmb 1")
     lines.append("first_note rmb 1")
     lines.append("hook_kept rmb 2")
+    lines.append("dp_kept rmb 1")
     lines.append("")
 
     for load, data in decb_segments(BINARY.read_bytes()):
