@@ -16,8 +16,16 @@ UI_ROLL_ROWS    equ     10
 UI_PITCHES      equ     UI_ROLL_ROWS*2  ; one pixel row per semitone
 UI_COLUMNS      equ     UI_WIDTH*2
 UI_TRACK        equ     UI_SCREEN+15*UI_WIDTH   ; the cursor's own row
+; A semigraphics cell is 1 C2 C1 C0 L3 L2 L1 L0: bit 7 marks it graphic,
+; bits 6-4 choose one of eight colours, bits 3-0 light the four quadrants.
+; The colour belongs to the whole cell, so two pixels sharing one cell cannot
+; differ - which is why the seed and the composed line can only be told apart
+; to within two tune rows.
 UI_BLANK        equ     $80             ; semigraphic cell, nothing lit
-UI_COLOUR       equ     $8F             ; green; the low nibble adds blocks
+UI_GREEN        equ     $80             ; what the model composed
+UI_YELLOW       equ     $90             ; what the person entered
+UI_ORANGE       equ     $F0             ; the playback cursor
+UI_COLOUR       equ     $8F
 UI_SPACE        equ     $60
 
 POLCAT          equ     $A000
@@ -39,6 +47,7 @@ ui_y            rmb     1
 ui_addr         rmb     2
 ui_last         rmb     1               ; last pitch drawn, plus one
 ui_cursor       rmb     1               ; column the playback cursor is on
+ui_ink          rmb     1               ; colour the roll is drawing in
 ui_seed_len     rmb     1
 ui_seed         rmb     UI_SEED_MAX
 ui_mode         rmb     1
@@ -120,7 +129,7 @@ up_top
                 lsra                    ; and to the right of the pair
 up_left
                 ora     ,x
-                ora     #UI_COLOUR-$0F
+                ora     ui_ink
                 sta     ,x
 up_done
                 rts
@@ -202,7 +211,7 @@ ui_row_cursor
                 ldx     #UI_TRACK
                 tfr     a,b
                 abx
-                lda     #UI_COLOUR
+                lda     #UI_ORANGE+$0F  ; the cursor stands out from the line
                 sta     ,x
 urc_done        rts
 
@@ -383,6 +392,8 @@ uad_store       ldx     #ui_seed
 ; ------------------------------------------------------------------------
 ui_perform
                 lbsr    ui_clear_roll
+                lda     #UI_YELLOW      ; the entered figure, in its own colour
+                sta     ui_ink
                 ldu     #ui_msg_think
                 lbsr    ui_status
 

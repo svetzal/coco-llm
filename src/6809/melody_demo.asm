@@ -73,6 +73,8 @@ dc_row
                 bra     dc_store
 
 dc_generate
+                lda     #UI_GREEN       ; from here on the model is inventing
+                sta     ui_ink
                 lbsr    melody_predict
                 lbsr    melody_sample
                 lda     melody_best_token
