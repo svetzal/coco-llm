@@ -364,4 +364,9 @@ ac_skip
                 leau    3,u
                 rts
 
+; The tune data is a build artifact, not part of the player. The demo supplies
+; its own frame with an empty buffer the generator fills, which the player
+; cannot distinguish: it only ever reads twelve bytes per row from tune_rows.
+                ifndef  TUNE_DATA_EXTERNAL
                 include "../../build/exp009/tune_data.inc"
+                endc

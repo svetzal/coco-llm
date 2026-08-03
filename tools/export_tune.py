@@ -50,7 +50,9 @@ def encode_cell(cell) -> tuple[int, int, int]:
     return (cell.note, min(MAX_VOLUME, cell.volume), min(255, cell.decay))
 
 
-def render_source(tune: Tune, *, sample_rate: int, repeats: int) -> str:
+def render_source(
+    tune: Tune, *, sample_rate: int, repeats: int, ram_rows: int = 0
+) -> str:
     samples_per_tick = round(sample_rate / tune.tick_hz)
     if not 1 <= samples_per_tick <= 255:
         raise ValueError(f"samples per tick {samples_per_tick} does not fit a byte")
@@ -64,7 +66,7 @@ def render_source(tune: Tune, *, sample_rate: int, repeats: int) -> str:
         "",
         f"SAMPLES_PER_TICK equ {samples_per_tick}",
         f"TICKS_PER_ROW   equ {tune.ticks_per_row}",
-        f"TUNE_ROWS       equ {len(tune.rows)}",
+        f"TUNE_ROWS       equ {ram_rows or len(tune.rows)}",
         f"TUNE_REPEATS    equ {repeats}",
         "",
         (
@@ -77,6 +79,19 @@ def render_source(tune: Tune, *, sample_rate: int, repeats: int) -> str:
     for note in range(LOW_NOTE, HIGH_NOTE + 1):
         increment = note_increment(note, sample_rate)
         lines.append(f"        fdb     ${increment:04X}    ; note {note}")
+
+    if ram_rows:
+        # A buffer the generator writes into, rather than a tune baked in at
+        # assembly time. The player cannot tell the difference: it only ever
+        # reads twelve bytes per row from this address.
+        lines += [
+            "",
+            "; Empty buffer, filled at run time by the melody generator.",
+            "tune_rows",
+            f"        rmb     {ram_rows * VOICE_COUNT * 3}",
+            "",
+        ]
+        return "\n".join(lines)
 
     lines += ["", "; Rows of four cells: note, volume, decay.", "tune_rows"]
     for number, row in enumerate(tune.rows):
@@ -96,6 +111,12 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--sample-rate", type=int, default=7300)
     parser.add_argument("--repeats", type=int, default=2)
     parser.add_argument("--tune", choices=("demo", "steady"), default="demo")
+    parser.add_argument(
+        "--ram-rows",
+        type=int,
+        default=0,
+        help="emit an empty buffer of this many rows for a generator to fill",
+    )
     return parser.parse_args()
 
 
@@ -103,7 +124,10 @@ def main() -> None:
     arguments = parse_arguments()
     tune = steady_tune() if arguments.tune == "steady" else demo_tune()
     source = render_source(
-        tune, sample_rate=arguments.sample_rate, repeats=arguments.repeats
+        tune,
+        sample_rate=arguments.sample_rate,
+        repeats=arguments.repeats,
+        ram_rows=arguments.ram_rows,
     )
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(source, encoding="ascii")

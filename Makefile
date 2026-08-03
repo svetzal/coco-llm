@@ -15,7 +15,8 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp007-sweep exp007-epoch-sweep exp008-sweep exp008-capture \
 	exp008-replay music-tune music-cycles music-bin music-test \
 	xroar-music music-dsk exp010-corpus exp010-dance exp010-model \
-	exp010-core exp010-test present tools
+	exp010-core exp010-test exp010-demo exp010-demo-test \
+	xroar-melody present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -117,6 +118,33 @@ build/melody-parity-test.asm: build/melody-core.bin \
 
 exp010-test: build/melody-parity-test.asm $(SIM6809)
 	$(SIM6809) --ram-top 65535 --run $<
+
+build/exp010/tune_frame.inc: tools/export_tune.py
+	$(UV) run python tools/export_tune.py --sample-rate $(MUSIC_RATE) \
+		--ram-rows 128 --output $@
+
+build/coco-melody-demo.bin: src/6809/coco_melody_demo.asm \
+		src/6809/melody_demo.asm src/6809/melody_inference.asm \
+		src/6809/music_player.asm build/exp010/melody_model.inc \
+		build/exp010/tune_frame.inc
+	lwasm --6809 --format=decb \
+		--symbol-dump=build/coco-melody-demo.sym --output=$@ $<
+
+exp010-demo: build/coco-melody-demo.bin
+
+build/demo-parity-test.asm: build/coco-melody-demo.bin \
+		tools/make_demo_parity_test.py
+	$(UV) run python tools/make_demo_parity_test.py --output $@
+
+exp010-demo-test: build/demo-parity-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run $<
+
+xroar-melody: build/coco-melody-demo.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-melody-demo.bin
 
 build/music-parity-test.asm: build/coco-music.bin tools/make_music_parity_test.py
 	$(UV) run python tools/make_music_parity_test.py \
