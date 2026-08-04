@@ -31,6 +31,12 @@ UI_SPACE        equ     $60
 POLCAT          equ     $A000
 UI_SEED_MAX     equ     8
 
+; Entered figures hold scale degrees 1-7 plus two tokens the corpus itself
+; uses: a hold to lengthen the note before it, and a rest. They are stored
+; above the degrees so one table of glyphs covers all three.
+UI_TOK_HOLD     equ     8
+UI_TOK_REST     equ     9
+
 ; Entered degrees are placed an octave above the tonic, not on it.
 ;
 ; Extraction puts each tune's tonic at or below its lowest note, so corpus
@@ -236,9 +242,9 @@ ui_show_seed
                 ldb     ui_seed_len
                 beq     uss_pad
                 ldu     #ui_seed
-uss_next        lda     ,u+
-                adda    #$30            ; a digit
-                anda    #$3F
+uss_next        ldy     #ui_glyph-1     ; entries are one-based
+                lda     ,u+
+                lda     a,y
                 sta     ,x+
                 lda     #UI_SPACE
                 sta     ,x+
@@ -290,13 +296,15 @@ uwk_spin        lbsr    ui_read_key
 
 ; ------------------------------------------------------------------------
 ui_title        fcb     'C,'O,'C,'O,' ,'L,'L,'M,' ,'M,'E,'L,'O,'D,'Y,0
+; Degrees 1-7, then hold and rest. The glyph is the key that enters it.
+ui_glyph        fcb     '1,'2,'3,'4,'5,'6,'7,'-,'.
 ui_label_seed   fcb     'S,'E,'E,'D,' ,0
 ui_label_key    fcb     'K,'E,'Y,' ,0
 ui_label_speed  fcb     'S,'P,'D,' ,0
 ui_word_major   fcb     'M,'A,'J,'O,'R,0
 ui_word_minor   fcb     'M,'I,'N,'O,'R,0
-ui_help1        fcb     '1,'-,'7,' ,'A,'D,'D,' ,'N,'O,'T,'E,' ,' ,'0,' ,'E,'R,'A,'S,'E,0
-ui_help2        fcb     'M,' ,'K,'E,'Y,' ,' ,'S,' ,'S,'P,'E,'E,'D,' ,' ,'E,'N,'T,'E,'R,' ,'G,'O,0
+ui_help1        fcb     '1,'-,'7,' ,'N,'O,'T,'E,' ,' ,'-,' ,'H,'O,'L,'D,' ,' ,'.,' ,'R,'E,'S,'T,0
+ui_help2        fcb     '0,' ,'E,'R,'A,'S,'E,' ,' ,'M,' ,'K,'E,'Y,' ,' ,'S,' ,'S,'P,'D,' ,' ,'E,'N,'T,'E,'R,' ,'G,'O,0
 ui_msg_ready    fcb     'R,'E,'A,'D,'Y,' ,' ,' ,' ,' ,0
 ui_msg_think    fcb     'T,'H,'I,'N,'K,'I,'N,'G,' ,' ,0
 ui_msg_play     fcb     'P,'L,'A,'Y,'I,'N,'G,' ,' ,' ,0
@@ -340,11 +348,25 @@ um_stir
 
 um_other
                 cmpa    #'0             ; delete the last degree
-                bne     um_mode
+                bne     um_hold
                 tst     ui_seed_len
                 beq     um_idle
                 dec     ui_seed_len
-                bra     um_idle
+                lbra    um_idle
+um_hold
+                cmpa    #'-
+                bne     um_rest
+                tst     ui_seed_len     ; nothing to lengthen yet
+                lbeq    um_idle
+                lda     #UI_TOK_HOLD
+                lbsr    ui_add_degree
+                lbra    um_idle
+um_rest
+                cmpa    #'.
+                bne     um_mode
+                lda     #UI_TOK_REST
+                lbsr    ui_add_degree
+                lbra    um_idle
 um_mode
                 cmpa    #'M
                 bne     um_speed
@@ -425,14 +447,22 @@ ui_build_seed
                 ldb     ui_seed_len
                 stb     demo_seed_rows
 ubs_next        lda     ,u+
+                cmpa    #UI_TOK_HOLD
+                beq     ubs_hold
+                cmpa    #UI_TOK_REST
+                beq     ubs_rest
                 deca                    ; degrees are one-based
                 pshs    b
                 ldb     ui_mode
                 lbsr    ui_step_of
                 puls    b
                 adda    #UI_SEED_OCTAVE ; into the register the corpus uses
-                sta     ,x+
-                lda     #MEL_HOLD
+                bra     ubs_store
+ubs_hold        lda     #MEL_HOLD       ; carries the previous note on
+                bra     ubs_store
+ubs_rest        lda     #MEL_REST
+ubs_store       sta     ,x+
+                lda     #MEL_HOLD       ; each entry lasts two rows
                 sta     ,x+
                 decb
                 bne     ubs_next

@@ -34,7 +34,7 @@ RUNNER_ORG = 0x0C00
 BAR_ROWS = 8
 SEED_ROWS = 16
 MODE, METRE = 0, 3
-PAD, HOLD = 34, 32
+PAD, HOLD, REST = 34, 32, 33
 PROGRESSION = (0, 0, 3, 4)
 # An octave above the tonic, matching melody_demo.asm.
 SEED_FIGURE = [
@@ -58,10 +58,21 @@ SEED_FIGURE = [
 RNG_SEED = 0x1A2B
 HOOK_SENTINEL = 0xBEEF
 CALLER_DP = 0xA5
-# The figure Stacey enters at the keyboard, as scale degrees.
-ENTERED = (1, 3, 5, 3, 7, 3, 5, 1)
+# The figure entered at the keyboard: scale degrees 1-7, plus the hold and
+# rest tokens the '-' and '.' keys add. Every entry lasts two rows.
+TOK_HOLD, TOK_REST = 8, 9
+ENTERED = (1, 3, TOK_HOLD, 5, TOK_REST, 7, 5, 1)
 MAJOR_STEPS = (0, 2, 4, 5, 7, 9, 11)
 SEED_OCTAVE = 12
+
+
+def entry_tokens(entry: int) -> list[int]:
+    """The two melody tokens one entered symbol becomes."""
+    if entry == TOK_HOLD:
+        return [HOLD, HOLD]          # carries the previous note through
+    if entry == TOK_REST:
+        return [REST, HOLD]          # silence, held
+    return [MAJOR_STEPS[entry - 1] + SEED_OCTAVE, HOLD]
 CHECKS = 12
 
 
@@ -202,8 +213,8 @@ def main() -> None:
     lines.append(f"        jsr     ${address['ui_build_seed']:04X}")
 
     expected_seed = []
-    for degree in ENTERED:
-        expected_seed += [MAJOR_STEPS[degree - 1] + SEED_OCTAVE, HOLD]
+    for entry in ENTERED:
+        expected_seed += entry_tokens(entry)
     for index, value in enumerate(expected_seed):
         lines.append(f"        lda     ${address['demo_seed'] + index:04X}")
         lines.append(f"        sta     sd{index}")
