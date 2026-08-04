@@ -12,6 +12,8 @@ Supporting presentation material includes:
 - [`exhibit-copy.md`](exhibit-copy.md) — approved abstract, bio, and table copy;
 - [`table-exercises.md`](table-exercises.md) — the audience's hands-on
   next-token exercise;
+- [`demo-rehearsal-notes.md`](demo-rehearsal-notes.md) — glanceable cues for
+  rehearsing each interactive experiment;
 - [`exp011-demo-script.md`](exp011-demo-script.md) — three-beat presenter
   runbook for visibly editing context while model weights remain locked;
 - [`card-concepts/`](card-concepts/) — exploratory visual directions for that
