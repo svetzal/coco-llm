@@ -299,3 +299,119 @@ quality metrics, and product policy are three different things.
 > What if I give the machine a fact right now, after training, and then change
 > that fact in front of you? Can it use temporary context without changing its
 > weights?
+
+## EXP-011: edit context without training
+
+### EXP-011 question
+
+Can the CoCo use a fact supplied right now, then use a changed fact without
+retraining?
+
+### Before EXP-011 launch
+
+> The 160 model bytes learned how to match a question with a context record.
+> They did not learn Lisa's answer. These eight key-value records are temporary
+> context in RAM, and their assignments can change every time.
+>
+> We are going to ask one question, edit one visible context value, and ask the
+> same question again. Watch what changes—and what does not.
+
+### Beat 1: read the current context
+
+Point to these three elements before pressing anything:
+
+1. `TEMPORARY CONTEXT IN RAM`;
+2. `LISA = CODE 2`; and
+3. `MODEL 751B WEIGHTS LOCKED`.
+
+> This table is the information available for this interaction. It currently
+> says Lisa is code two. Above it, model 751B's weights are locked.
+
+Ask the room what answer it expects, then press Enter.
+
+### Beat 2: answer from context
+
+Point to `QUESTION: LISA`, the starred best match, `ANSWER: CODE 2`, and
+`MODEL 751B DID NOT CHANGE`.
+
+> Attention matched the question with the Lisa record and copied its value.
+> The answer came from visible context. Nothing trained.
+>
+> What would it look like to change context rather than train the model?
+
+Press `E`.
+
+### Beat 3: perform the context edit
+
+The editor shows `BEFORE: LISA = CODE 2` and asks for a new code.
+
+> This is the missing action. I am changing information supplied to the model.
+> I am not changing the model.
+
+Type `6`. Pause on the confirmation screen and point in this order:
+
+1. `BEFORE: LISA = CODE 2`;
+2. `AFTER: LISA = CODE 6`; and
+3. `MODEL 751B DID NOT CHANGE`.
+
+> We can account for the change. I typed six. One byte in context RAM changed.
+> The 160 model bytes did not.
+
+Press Enter. The same `QUESTION: LISA` now produces `ANSWER: CODE 6`.
+
+### Central line
+
+> Training changes the weights. Prompting changes the context. Attention uses
+> the context to produce this answer.
+
+Pause. Do not dilute the comparison with mechanism immediately.
+
+### Optional depth: replay the scores
+
+Press `V` only if the room asks how Lisa was selected. The slow view reveals
+one stored score per Enter press and marks the best record seen so far.
+
+> The answer arrived too quickly to watch. This is a replay of work already
+> completed—not the processor pretending to think.
+>
+> Attention selected the Lisa record by its key, then copied the value we just
+> typed.
+
+Press Clear to return. Do not imply that the paced replay was required for
+inference.
+
+### Evidence and limit
+
+> A parameter-only lookup scores about chance because Lisa's value changes
+> between examples. An optimistic four-record window reaches 56 percent. This
+> tiny attention head searches all eight records and recalled every novel
+> binding in our two controlled test batches.
+>
+> But relevant is not the same as true. If I type the wrong value into context,
+> attention will use it just as faithfully. Is that an opportunity? It is
+> certainly a reason to care about what we put into context.
+
+Call this content-addressed key-value attention, not a transformer. It has no
+residual stream, normalization, feed-forward layer, or stack of causal
+self-attention blocks. The isolated mechanism is the point.
+
+### Closing the demonstration sequence
+
+> What did this old computer let us separate?
+>
+> Training changed weights. Prompts changed starting context. Pretrained
+> inference used frozen weights. Attention selected temporary information. And
+> none of those operations supplied understanding, truth, purpose, or judgment.
+>
+> Those parts still belong to us.
+
+End on agency rather than on parameter count. The machine made the mechanisms
+small enough to inspect; the audience's job is to carry that discernment back
+to systems whose scale normally hides them.
+
+### EXP-011 recovery
+
+- If a key does nothing, click the XRoar window once and try again.
+- If Lisa is not selected, use Up or Down until the question says `LISA`.
+- Clear cancels the editor or returns from an answer.
+- After the edit, Enter asks again; Clear returns to the context table.
