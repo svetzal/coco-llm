@@ -176,7 +176,21 @@ class FixedMelodyModel:
 
 # exp(-d/32) scaled to a byte, floored at 1 so no token is ever impossible.
 # The same table EXP-004 uses, so the two experiments share one approximation.
-EXP_LUT = [max(1, round(np.exp(-index / 32.0) * 255)) for index in range(256)]
+# The tail is allowed to reach zero.
+#
+# This floored at 1 so that no token was ever impossible, which sounds like
+# prudence and is not. A weight of 1 on each of thirty-odd tokens the model
+# has all but ruled out is still 3.5% of the draw, measured, and it is spent
+# uniformly over the whole vocabulary - so it lands on chromatic notes and
+# wide leaps far more often than the model would. Against the holdout that
+# floor cost 5.5% out-of-scale notes and 10.4% leaps, against the corpus's
+# own 1.9% and 5.5%; removing it gives 3.8% and 6.6%.
+#
+# Sharpening the temperature instead was measured and rejected: it undershoots
+# the corpus rather than matching it, reaching 1.2% leaps at a shift of 3,
+# which is more regular than real fiddle tunes are. See
+# tools/measure_melody_randomness.py.
+EXP_LUT = [round(np.exp(-index / 32.0) * 255) for index in range(256)]
 
 # The shift sets the temperature. Measured over the holdout, the spread
 # between the best score and the rest has a median of 3,400 and a 99th

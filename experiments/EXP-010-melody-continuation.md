@@ -705,6 +705,37 @@ The player must not be modified. If generation needs something the row format
 cannot express, that is a finding to record, not a licence to unfreeze a
 component that took two rounds of timing work to get right.
 
+## The sampler's floor (2026-08-03)
+
+Reported by ear: the melody sounded "a little too random". Measured with
+`tools/measure_melody_randomness.py`, over sixty generated tunes against the
+holdout, on the things that make a line sound random - notes outside the
+mode, mean absolute interval, and intervals wider than a fifth.
+
+| | out-of-scale | mean step | leaps | floor mass |
+| --- | --- | --- | --- | --- |
+| Real fiddle tunes (holdout) | 1.9% | 2.97 | 5.5% | - |
+| shift 4, floor 1 (as shipped) | 5.5% | 3.84 | 10.4% | 3.5% |
+| shift 4, floor 0 | 3.8% | 3.33 | 6.6% | 0% |
+| shift 3, floor 0 | 3.0% | 2.52 | 1.2% | 0% |
+| shift 2, floor 0 | 3.1% | 2.04 | 0.1% | 0% |
+
+`EXP_LUT` floored every weight at 1 so that no token would be impossible.
+With thirty-four tokens that is 3.5% of each draw spent uniformly over the
+whole vocabulary, and because it is uniform it lands on chromatic notes and
+wide leaps far more often than the model would. The floor was removed; the
+temperature was not touched.
+
+Sharpening the temperature was the obvious alternative and the measurement
+rejects it. At a shift of 3 leaps fall to 1.2% against the corpus's own 5.5%
+- the generations become *more* regular than real fiddle tunes, which is a
+different failure with the same cause: a sampler that has stopped listening
+to the model. The corpus is the target, not a floor to beat.
+
+What remains is the model's own error, not the sampler's: 3.8% out-of-scale
+against 1.9%, and a mean step of 3.33 against 2.97. Both say the generations
+are still a little more active than the real thing.
+
 ## Open questions
 
 1. Does transposing every melody to a common tonic help by removing a nuisance
@@ -719,3 +750,7 @@ component that took two rounds of timing work to get right.
    short sequence over seven tokens and would be a very small second model.
 6. Does the ragged embedding layout earn its complexity, or is rectangular at
    shorter context good enough to keep the 6809 port simple?
+7. The generations remain more active than the corpus (3.8% out-of-scale
+   against 1.9%) with the sampler now honest. Is that undertraining, the
+   fixed-point quantisation, or the fixed chord progression forcing motion
+   the model would not otherwise choose?

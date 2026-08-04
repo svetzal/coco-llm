@@ -124,7 +124,7 @@ def main() -> None:
     lines.append("")
 
     lines += [
-        "; exp(-d/32) as a byte, floored at 1 so no token is impossible",
+        "; exp(-d/32) as a byte; the tail reaches zero, which is deliberate",
         "mel_exp_lut",
     ]
     from melody_fixed import EXP_LUT
