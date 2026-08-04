@@ -358,9 +358,10 @@ def run_exp_011() -> dict[str, Any]:
         "EXP-011 — TEMPORARY FACTS THROUGH ATTENTION",
         "Can the CoCo use a fact supplied now without storing it in the model?",
     )
-    print("Launching the contextual-attention workbench in stock-rate XRoar.")
-    print("Choose with Up/Down, ask with Enter, then press S for a new context.")
-    print("V opens an explicitly paced replay; Clear returns to the main screen.")
+    print("Launching the three-beat attention demonstration in stock-rate XRoar.")
+    print("1. Read the facts.  2. Press Enter for the answer.")
+    print("3. Press S to change only the facts, then press Enter again.")
+    print("V opens an optional replay; Clear returns to the facts.")
     print()
     subprocess.run(["make", "xroar-attention"], cwd=ROOT, check=True)
     return payload
