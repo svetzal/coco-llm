@@ -141,10 +141,11 @@ mark.
 EXP-011 uses a Mac-trained 160-byte attention head. The CoCo scores eight
 temporary key-value records using forty signed byte multiply-accumulates,
 selects the highest-scoring key, and copies that record's value. Its guided UI
-separates the facts, the focused answer, and the changed facts into three
-screens. Enter asks, `S` changes the context while preserving the query, and
-`V` optionally replays the stored scores. Up and Down choose another query;
-Clear returns to the facts. A `>` marks human selection and `*` marks
+frames the records as a temporary museum exhibit-to-shelf map, making each
+value's source and purpose visible. Enter finds the selected exhibit; `S` loads
+a second prewritten map while preserving the query; and `V` optionally replays
+the stored scores. Up and Down choose another exhibit; Clear returns to the
+map. A `>` marks human selection and `*` marks
 attention, so the display does not rely on colour alone. Model identifier
 `751B` stays visible while all four contexts change.
 

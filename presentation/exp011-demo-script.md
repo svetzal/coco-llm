@@ -1,19 +1,19 @@
-# EXP-011 live demo: temporary facts through attention
+# EXP-011 live demo: finding an exhibit through attention
 
 ## The one idea
 
-The model already knows **how to find a matching record**. The screen gives it
-temporary records to search. Attention finds the record matching the question
-and returns that record's value.
+The model already knows **how to find a matching record**. A temporary museum
+map says which shelf holds each computer exhibit. Attention finds the exhibit
+matching the request and returns the shelf written on today's map.
 
 This is a three-beat demonstration:
 
-1. give it facts;
-2. ask one question; and
-3. change the facts without changing the model.
+1. load today's exhibit map;
+2. ask where Lisa is; and
+3. load a different map without changing the model.
 
-Lisa is the through-line. In context one, `LISA = CODE 2`. In context two,
-`LISA = CODE 6`. Model `751B` never changes.
+Lisa is the through-line. The first map says `LISA = SHELF 2`. The second says
+`LISA = SHELF 6`. Model `751B` never changes.
 
 ## Preflight
 
@@ -28,136 +28,136 @@ Before presenting on physical hardware, rehearse Enter, `S`, `V`, and Clear on
 the actual keyboard. The automated XRoar test reaches the real-ROM keyboard
 loop but does not inject key events.
 
-## Beat 1 — Give it facts
+## Beat 1 — Load today's map
 
-The opening screen has one job: establish the information available **right
-now**.
+The opening screen establishes where the shelf number comes from. Today's
+map—not the model—assigns Lisa to shelf two.
 
 ```text
-1. GIVE IT TEMPORARY FACTS
-MODEL 751B       CONTEXT 1 OF 4
-  AMIGA           = CODE 7
-> LISA            = CODE 2
-  TRS-80          = CODE 5
-  ARCHIMEDES      = CODE 1
-  PET             = CODE 4
-  MACINTOSH       = CODE 0
-  SPECTRUM        = CODE 6
-  ATARI ST        = CODE 3
+1. LOAD TODAY'S EXHIBIT MAP
+MODEL 751B       MAP 1 OF 4
+  AMIGA           = SHELF 7
+> LISA            = SHELF 2
+  TRS-80          = SHELF 5
+  ARCHIMEDES      = SHELF 1
+  PET             = SHELF 4
+  MACINTOSH       = SHELF 0
+  SPECTRUM        = SHELF 6
+  ATARI ST        = SHELF 3
 
-QUESTION: LISA
+LOOKING FOR: LISA
 
-ENTER: ASK THIS QUESTION
+ENTER: FIND THIS EXHIBIT
 
-UP/DOWN: CHOOSE ANOTHER
+UP/DOWN: CHOOSE AN EXHIBIT
 ```
 
 Say:
 
-> “This first screen is just a tiny document. Eight facts that exist for this
-> conversation. Lisa is code two because the document says Lisa is code two.”
+> “Imagine a little computer museum. The exhibits move around, so today's map
+> tells us which shelf holds each machine. Lisa is on shelf two because the map
+> says Lisa is on shelf two.”
 
-Point first to `LISA = CODE 2`, then to `MODEL 751B`.
+Point first to `LISA = SHELF 2`, then to `MODEL 751B`.
 
-> “That number is the model. Keep an eye on it. What should the answer be?”
+> “That other number is the model. Keep an eye on it. If I ask where Lisa is,
+> what should the answer be?”
 
-Let the room say “code two,” then press **Enter**.
+Let the room say “shelf two,” then press **Enter**.
 
-## Beat 2 — Ask one question
+## Beat 2 — Find Lisa
 
-The facts disappear. The result gets the whole screen.
+The map disappears. The result gets the whole screen.
 
 ```text
-2. ATTENTION FOUND AN ANSWER
+2. ATTENTION FOUND THE RECORD
 
-QUESTION: LISA
+LOOKING FOR: LISA
 
-SEARCHED 8 TEMPORARY FACTS
+SEARCHED TODAY'S EXHIBIT MAP
 
 BEST MATCH:
-  * LISA = CODE 2
+  * LISA = SHELF 2
 
-ANSWER: CODE 2
+LOCATION: SHELF 2
 
 MODEL 751B DID NOT CHANGE
 
-S: CHANGE THE FACTS
+S: LOAD A DIFFERENT MAP
 V: SHOW HOW IT LOOKED
-CLEAR: BACK TO THE FACTS
+CLEAR: BACK TO THE MAP
 ```
 
 Say:
 
-> “It searched the temporary facts, found the Lisa record, and copied the
-> value attached to it. It used the fact. It did not learn the fact.”
+> “It searched the map, found the Lisa record, and copied the shelf attached
+> to it. Shelf two came from the map. It did not come from the model.”
 
 Pause on `MODEL 751B DID NOT CHANGE`.
 
 > “Using information is not the same thing as training. Think about that a
 > minute.”
 
-Do not open the score replay yet. First establish that the answer follows the
-context.
+Do not open the score replay yet. First establish that the location follows
+the map.
 
-## Beat 3 — Change the facts, not the model
+## Beat 3 — Load a different map
 
-Press **S**. The interface returns to the facts, now with an explicit changed
-heading:
+Press **S**. This loads a second prewritten map; nothing is randomized at
+runtime. In the scenario, the museum rearranged its exhibits:
 
 ```text
-3. THE FACTS HAVE CHANGED
-MODEL 751B       CONTEXT 2 OF 4
-  ARCHIMEDES      = CODE 5
-  AMIGA           = CODE 1
-  SPECTRUM        = CODE 3
-> LISA            = CODE 6
-  MACINTOSH       = CODE 7
-  ATARI ST        = CODE 4
-  TRS-80          = CODE 0
-  PET             = CODE 2
+3. A DIFFERENT MAP ARRIVED
+MODEL 751B       MAP 2 OF 4
+  ARCHIMEDES      = SHELF 5
+  AMIGA           = SHELF 1
+  SPECTRUM        = SHELF 3
+> LISA            = SHELF 6
+  MACINTOSH       = SHELF 7
+  ATARI ST        = SHELF 4
+  TRS-80          = SHELF 0
+  PET             = SHELF 2
 
-QUESTION: LISA
+LOOKING FOR: LISA
 
-ENTER: ASK THIS QUESTION
+ENTER: FIND THIS EXHIBIT
 ```
 
 Point to three things, in order:
 
-1. Lisa moved;
-2. Lisa is now code six; and
+1. a different map arrived;
+2. Lisa moved to shelf six; and
 3. the model is still `751B`.
 
-Ask what the new answer should be, then press **Enter**.
+Ask where Lisa is now, then press **Enter**.
 
-> “Same model. Same question. Different temporary facts. Now the answer is
-> code six.”
+> “Same model. Same exhibit. Different map. The museum moved Lisa, so the
+> answer is now shelf six.”
 
 Land the central line:
 
-> “The weights taught it how to look. The context gave it something to look
-> at. Attention decided where to look.”
+> “The weights taught it how to search. The map gave it somewhere to search.
+> Attention found the relevant record.”
 
 That completes the main demonstration.
 
-## Optional depth — Show how it looked
+## Optional depth — Show how it searched
 
-Only press **V** if the room wants the mechanism. This is progressive
-disclosure, not a required fourth beat.
-
-The slow view reveals one signed matching score per Enter press. Say:
+Only press **V** if the room wants the mechanism. The slow view reveals one
+signed matching score per Enter press.
 
 > “The answer arrived too quickly to watch. This is a replay of work already
 > completed—not the processor pretending to think.”
 
 After two or three scores:
 
-> “Each number asks one narrow question: how well does this key match Lisa?
-> It is a ranking, not truth, confidence, or understanding.”
+> “Each number asks one narrow question: how well does this exhibit name match
+> Lisa? It is a ranking, not truth, confidence, or understanding.”
 
 When Lisa becomes the best match:
 
-> “There it is. Attention selects the matching row, then copies that row's
-> value.”
+> “There it is. Attention selects the matching map record, then copies its
+> shelf.”
 
 Press **Clear** to return to the answer.
 
@@ -169,35 +169,35 @@ Press **Clear** to return to the answer.
 
 Then connect it to familiar use:
 
-> “When you paste a document into a prompt, the document becomes context. It
-> does not instantly become trained knowledge. Attention helps the model use
-> pieces of that context while producing an answer.”
+> “When you paste a document into a prompt, that document is like today's map.
+> It becomes context; it does not instantly become trained knowledge. Attention
+> helps the model use relevant pieces of it while producing an answer.”
 
 And the caution:
 
-> “Attention would retrieve a false assignment just as faithfully. Relevant
-> is not the same thing as true. Is that an opportunity? It is certainly a
-> reason to care about the context we provide.”
+> “Attention would retrieve a wrong map entry just as faithfully. Relevant is
+> not the same thing as true. Is that an opportunity? It is certainly a reason
+> to care about the context we provide.”
 
 ## Recovery paths
 
 - If a key does nothing, click XRoar once and try again.
-- If the wrong question is selected, use Up or Down until it says Lisa.
-- Press Clear to return from an answer or replay to the facts.
-- Press `S` until context one appears if you need to restart.
-- If physical hardware behaves differently, use the emulator as explicitly
-  labelled evidence and stop making a physical-hardware claim.
+- If the wrong exhibit is selected, use Up or Down until it says Lisa.
+- Press Clear to return from an answer or replay to the map.
+- Press `S` until map one appears if you need to restart.
+- If physical hardware behaves differently, stop making a physical-hardware
+  claim and use the emulator as explicitly labelled evidence.
 
 ## Claims discipline
 
 Safe claims:
 
 - the Mac exported 160 signed Q4.4 parameter bytes;
-- the 6809 performs forty signed multiply-accumulates per question;
+- the 6809 performs forty signed multiply-accumulates per lookup;
 - direct simulation matches 96 scores across twelve novel contexts;
-- changing context preserves the question and changes its answer; and
-- model `751B` remains byte-identical while the context changes.
+- loading a different map preserves the exhibit and changes its shelf; and
+- model `751B` remains byte-identical while the map changes.
 
 Do not yet claim measured physical CoCo latency or keyboard compatibility. Do
-not claim that the assignments become trained knowledge, that the model
-understands the names, or that this one attention head is a transformer.
+not claim that the shelf assignments become trained knowledge, that the model
+understands the exhibits, or that this one attention head is a transformer.

@@ -660,45 +660,45 @@ attention_ui_key_color_computer fcc     "COLOR COMPUTER"
 attention_ui_key_sinclair       fcc     "SINCLAIR"
                                 fcb     0
 
-attention_ui_facts_title        fcc     "1. GIVE IT TEMPORARY FACTS"
+attention_ui_facts_title        fcc     "1. LOAD TODAY'S EXHIBIT MAP"
                                 fcb     0
-attention_ui_changed_title      fcc     "3. THE FACTS HAVE CHANGED"
+attention_ui_changed_title      fcc     "3. A DIFFERENT MAP ARRIVED"
                                 fcb     0
-attention_ui_answer_title       fcc     "2. ATTENTION FOUND AN ANSWER"
+attention_ui_answer_title       fcc     "2. ATTENTION FOUND THE RECORD"
                                 fcb     0
 attention_ui_model              fcc     "MODEL "
                                 fcb     0
-attention_ui_code               fcc     "CODE "
+attention_ui_code               fcc     "SHELF "
                                 fcb     0
-attention_ui_equals_code        fcc     "= CODE "
+attention_ui_equals_code        fcc     "= SHELF "
                                 fcb     0
-attention_ui_query_label        fcc     "QUESTION: "
+attention_ui_query_label        fcc     "LOOKING FOR: "
                                 fcb     0
-attention_ui_answer_label       fcc     "ANSWER: "
+attention_ui_answer_label       fcc     "LOCATION: "
                                 fcb     0
-attention_ui_searched           fcc     "SEARCHED 8 TEMPORARY FACTS"
+attention_ui_searched           fcc     "SEARCHED TODAY'S EXHIBIT MAP"
                                 fcb     0
 attention_ui_best_match         fcc     "BEST MATCH:"
                                 fcb     0
 attention_ui_unchanged          fcc     "MODEL 751B DID NOT CHANGE"
                                 fcb     0
-attention_ui_context_label      fcc     "CONTEXT "
+attention_ui_context_label      fcc     "MAP "
                                 fcb     0
 attention_ui_of_four            fcc     " OF 4"
                                 fcb     0
-attention_ui_enter_ask          fcc     "ENTER: ASK THIS QUESTION"
+attention_ui_enter_ask          fcc     "ENTER: FIND THIS EXHIBIT"
                                 fcb     0
-attention_ui_choose             fcc     "UP/DOWN: CHOOSE ANOTHER"
+attention_ui_choose             fcc     "UP/DOWN: CHOOSE AN EXHIBIT"
                                 fcb     0
-attention_ui_change_facts       fcc     "S: CHANGE THE FACTS"
+attention_ui_change_facts       fcc     "S: LOAD A DIFFERENT MAP"
                                 fcb     0
 attention_ui_show_lookup        fcc     "V: SHOW HOW IT LOOKED"
                                 fcb     0
-attention_ui_back_facts         fcc     "CLEAR: BACK TO THE FACTS"
+attention_ui_back_facts         fcc     "CLEAR: BACK TO THE MAP"
                                 fcb     0
-attention_ui_slow_title         fcc     "ATTENTION - SLOW VIEW"
+attention_ui_slow_title         fcc     "HOW ATTENTION SEARCHED"
                                 fcb     0
-attention_ui_one_per_enter      fcc     "ONE RECORD PER ENTER"
+attention_ui_one_per_enter      fcc     "ONE EXHIBIT PER ENTER"
                                 fcb     0
 attention_ui_best_none          fcc     "BEST SO FAR -"
                                 fcb     0
@@ -708,7 +708,7 @@ attention_ui_enter_step         fcc     "ENTER STEP"
                                 fcb     0
 attention_ui_clear_back         fcc     "CLEAR BACK"
                                 fcb     0
-attention_ui_selects            fcc     "SELECTS CODE "
+attention_ui_selects            fcc     "LOCATION: SHELF "
                                 fcb     0
 attention_ui_complete           fcc     "ATTENTION COMPLETE"
                                 fcb     0

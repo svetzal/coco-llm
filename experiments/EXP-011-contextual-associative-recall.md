@@ -220,18 +220,20 @@ these are arithmetic projections rather than measurements.
 
 ## Implemented CoCo interface
 
-The 32-by-16 interface uses three separate screens instead of presenting every
-idea at once. The first establishes eight temporary key-value facts and one
-question. Enter replaces it with a focused answer screen showing the best
-match, copied value, and `MODEL 751B DID NOT CHANGE`. `S` returns to a visibly
-changed fact set while preserving both the question and model identifier. Up
-and Down remain available as a secondary way to choose another question.
+The 32-by-16 interface frames the key-value records as a temporary computer
+museum map: each exhibit name points to the shelf holding it today. This makes
+the arbitrary value's source and purpose visible. Three separate screens avoid
+presenting every idea at once. The first loads today's map and asks where Lisa
+is. Enter replaces it with a focused result showing the matched record,
+location, and `MODEL 751B DID NOT CHANGE`. `S` loads a second prewritten map in
+which the exhibits moved; nothing is randomized at runtime. The requested
+exhibit and model identifier remain unchanged.
 
 The selected question uses `>` and the best match uses `*` as well as dark
 text, so neither state is communicated by colour alone.
 
 `S` cycles through four deterministic shuffled contexts while preserving the
-query token. The selected computer therefore changes row and code without any
+query token. The selected exhibit therefore changes row and shelf without any
 change to model `751B`. `V` progressively discloses an explicitly labelled
 `SLOW VIEW`: each Enter press reveals one score and the best record so far. The
 computation has already happened; the pacing belongs to the explanation, not

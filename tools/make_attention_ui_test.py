@@ -81,7 +81,7 @@ def main() -> None:
         "        sta     firstvalue",
         f"        lda     ${SCREEN + 7 * 32 + 2:04x}",
         "        sta     firstmarker",
-        f"        lda     ${SCREEN + 9 * 32 + 13:04x}",
+        f"        lda     ${SCREEN + 9 * 32 + 16:04x}",
         "        sta     firstanswer",
         f"        jsr     ${address['attention_ui_next_context']:04x}",
         f"        lda     ${SCREEN:04x}",
