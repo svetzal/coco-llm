@@ -202,10 +202,11 @@ Inference needs 40 signed byte multiplications and a signed 16-bit score
 accumulator.
 
 The 6809 core now matches 96 reference scores across twelve novel contexts,
-including every winning slot and copied value. Its 32-by-16 workbench keeps the
-model identifier visible while cycling four temporary contexts and provides an
-explicitly paced score replay. Real-ROM XRoar reaches the keyboard loop;
-physical timing and keyboard behaviour remain unmeasured.
+including every winning slot and copied value. Its 32-by-16 interface separates
+the fact set, focused answer, and changed fact set into successive reveals. The
+model identifier remains visible while cycling four temporary contexts; an
+explicitly paced score replay is optional. Real-ROM XRoar reaches the keyboard
+loop; physical timing and keyboard behaviour remain unmeasured.
 
 This is key-value attention, not a transformer. It deliberately omits causal
 self-attention over a token stream, learned value projections, positional

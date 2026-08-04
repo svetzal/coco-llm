@@ -12,8 +12,8 @@ Supporting presentation material includes:
 - [`exhibit-copy.md`](exhibit-copy.md) — approved abstract, bio, and table copy;
 - [`table-exercises.md`](table-exercises.md) — the audience's hands-on
   next-token exercise;
-- [`exp011-demo-script.md`](exp011-demo-script.md) — presenter runbook for the
-  temporary-facts and slow-attention workbench;
+- [`exp011-demo-script.md`](exp011-demo-script.md) — three-beat presenter
+  runbook for temporary facts, one question, and an optional attention replay;
 - [`card-concepts/`](card-concepts/) — exploratory visual directions for that
   exercise, not final print artwork.
 
@@ -47,8 +47,9 @@ keyboard behaviour and stock-rate latency are measured on the CoCo 1.
 
 EXP-011 follows that practical branch with a different capability. Its
 160-parameter head keeps a query stable while a temporary key-value assignment
-changes row and value. The screen keeps model `751B` visible, marks the source
-record with `*`, and offers an explicitly paced score replay. It is key-value
+changes row and value. Separate fact, answer, and changed-fact screens reveal
+one idea at a time; the score replay is optional depth. The interface keeps
+model `751B` visible and marks the source record with `*`. It is key-value
 attention, not a transformer, and remains an emulator demonstration until the
 physical keyboard and latency are measured.
 

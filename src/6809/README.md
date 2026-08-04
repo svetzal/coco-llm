@@ -140,11 +140,13 @@ mark.
 
 EXP-011 uses a Mac-trained 160-byte attention head. The CoCo scores eight
 temporary key-value records using forty signed byte multiply-accumulates,
-selects the highest-scoring key, and copies that record's value. Up and Down
-choose a query, Enter asks, `S` changes the context while preserving the query,
-and `V` replays the stored scores one row at a time. A `>` marks human
-selection and `*` marks attention, so the display does not rely on colour
-alone. Model identifier `751B` stays visible while all four contexts change.
+selects the highest-scoring key, and copies that record's value. Its guided UI
+separates the facts, the focused answer, and the changed facts into three
+screens. Enter asks, `S` changes the context while preserving the query, and
+`V` optionally replays the stored scores. Up and Down choose another query;
+Clear returns to the facts. A `>` marks human selection and `*` marks
+attention, so the display does not rely on colour alone. Model identifier
+`751B` stays visible while all four contexts change.
 
 The original two-MUL signed 8×16 routine remains on EXP-004's hot path.
 EXP-005's wider training data eventually creates context-vector values outside

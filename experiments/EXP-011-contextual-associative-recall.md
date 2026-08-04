@@ -220,17 +220,22 @@ these are arithmetic projections rather than measurements.
 
 ## Implemented CoCo interface
 
-The 32-by-16 workbench shows eight temporary key-value records. Up and Down
-select a query; Enter runs attention. The selected record receives a visible
-`*` marker as well as dark text, so selection is not communicated by colour
-alone. The answer names its source row and the next line states
-`MODEL UNCHANGED`.
+The 32-by-16 interface uses three separate screens instead of presenting every
+idea at once. The first establishes eight temporary key-value facts and one
+question. Enter replaces it with a focused answer screen showing the best
+match, copied value, and `MODEL 751B DID NOT CHANGE`. `S` returns to a visibly
+changed fact set while preserving both the question and model identifier. Up
+and Down remain available as a secondary way to choose another question.
+
+The selected question uses `>` and the best match uses `*` as well as dark
+text, so neither state is communicated by colour alone.
 
 `S` cycles through four deterministic shuffled contexts while preserving the
 query token. The selected computer therefore changes row and code without any
-change to model `751B`. `V` opens an explicitly labelled `SLOW VIEW`: each
-Enter press reveals one score and the best record so far. The computation has
-already happened; the pacing belongs to the explanation, not the inference.
+change to model `751B`. `V` progressively discloses an explicitly labelled
+`SLOW VIEW`: each Enter press reveals one score and the best record so far. The
+computation has already happened; the pacing belongs to the explanation, not
+the inference.
 
 The presenter runbook and exact Lisa path live in
 [`presentation/exp011-demo-script.md`](../presentation/exp011-demo-script.md).

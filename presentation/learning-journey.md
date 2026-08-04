@@ -906,20 +906,21 @@ it predicted. Is that an opportunity? Absolutely.
 
 EXP-011 begins a new chapter after the fixed-window text models: “Can the CoCo
 use a fact I give it right now, without training on that fact?” Eight temporary
-records assign codes to familiar computer names. The selected query is Lisa.
-Enter retrieves `CODE 2`; `S` changes both Lisa's row and assignment; Enter now
-retrieves `CODE 6`. `MODEL 751B` remains visible and unchanged.
+records assign codes to familiar computer names. A facts screen establishes
+`LISA = CODE 2`; Enter replaces it with a focused answer screen. `S` then
+returns to visibly changed facts where Lisa has moved and become `CODE 6`.
+Enter produces the new answer. `MODEL 751B` remains visible and unchanged.
 
 The central line is:
 
 > The weights taught it how to look. The context gave it something to look at.
 > Attention decided where to look.
 
-Then press `V`. The explicitly labelled slow view reveals one signed score per
-record and marks the best seen so far. Do not imply that the CoCo needed the
-dramatic pacing: all forty multiply-accumulates already ran before the replay.
-The model compares the query with every key, chooses the highest score, and
-copies that record's value.
+If the room wants the mechanism, press `V`. The explicitly labelled slow view
+reveals one signed score per record and marks the best seen so far. Do not
+imply that the CoCo needed the dramatic pacing: all forty multiply-accumulates
+already ran before the replay. The model compares the query with every key,
+chooses the highest score, and copies that record's value.
 
 This makes three distinctions visible that modern interfaces normally blur:
 

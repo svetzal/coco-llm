@@ -1,255 +1,203 @@
 # EXP-011 live demo: temporary facts through attention
 
-## Purpose
+## The one idea
 
-This demonstration answers one question:
+The model already knows **how to find a matching record**. The screen gives it
+temporary records to search. Attention finds the record matching the question
+and returns that record's value.
 
-> Can the CoCo use a fact supplied right now without storing that fact in its
-> model?
+This is a three-beat demonstration:
 
-The audience should leave able to distinguish three things:
+1. give it facts;
+2. ask one question; and
+3. change the facts without changing the model.
 
-- **weights** — the learned matching operation;
-- **context** — temporary facts available for this interaction; and
-- **attention** — the mechanism that selects the relevant fact.
-
-The through-line is `LISA`. In the first context, `LISA = CODE 2`. In the
-second, Lisa moves to another row and becomes `CODE 6`. The model identifier
-stays `751B` throughout.
+Lisa is the through-line. In context one, `LISA = CODE 2`. In context two,
+`LISA = CODE 6`. Model `751B` never changes.
 
 ## Preflight
-
-Run the automated evidence before rehearsal:
 
 ```sh
 make attention-test
 make attention-ui-test
 make xroar-test-attention
-```
-
-Launch through the presentation menu:
-
-```sh
 make present EXP=11
 ```
 
-Before using this on stage, validate the Up, Down, Enter, `S`, `V`, and Clear
-keys on the actual presentation keyboard and CoCo or emulator. The automated
-XRoar test reaches the real-ROM keyboard loop but does not inject key events.
+Before presenting on physical hardware, rehearse Enter, `S`, `V`, and Clear on
+the actual keyboard. The automated XRoar test reaches the real-ROM keyboard
+loop but does not inject key events.
 
-## Screen language
+## Beat 1 — Give it facts
 
-The interface uses more than colour to communicate state:
-
-- `>` is the query selected by the person;
-- `*` is the record selected by attention;
-- dark text is model-selected material;
-- `MODEL 751B` identifies the unchanged 160-byte parameter image; and
-- `SLOW VIEW` explicitly labels the paced explanation as a replay, not actual
-  inference speed.
-
-## Run of show
-
-### 1. Begin with a question
-
-The initial screen selects Lisa:
+The opening screen has one job: establish the information available **right
+now**.
 
 ```text
-COCO CONTEXT MEMORY
-TEMP FACTS       MODEL 751B
-  AMIGA          CODE 7
-> LISA           CODE 2
-  TRS-80         CODE 5
-  ARCHIMEDES     CODE 1
-  PET            CODE 4
-  MACINTOSH      CODE 0
-  SPECTRUM       CODE 6
-  ATARI ST       CODE 3
+1. GIVE IT TEMPORARY FACTS
+MODEL 751B       CONTEXT 1 OF 4
+  AMIGA           = CODE 7
+> LISA            = CODE 2
+  TRS-80          = CODE 5
+  ARCHIMEDES      = CODE 1
+  PET             = CODE 4
+  MACINTOSH       = CODE 0
+  SPECTRUM        = CODE 6
+  ATARI ST        = CODE 3
 
-QUERY LISA
-ANSWER -
-CONTEXT 1 OF 4
-UP/DOWN SELECT  ENTER ASK
-S NEW CONTEXT   V SLOW VIEW
+QUESTION: LISA
+
+ENTER: ASK THIS QUESTION
+
+UP/DOWN: CHOOSE ANOTHER
 ```
 
-Suggested words:
+Say:
 
-> “Fair warning, we are about to call eight arbitrary code assignments facts.
-> They are facts only inside this screen. Lisa is code two because I just told
-> the machine Lisa is code two.”
+> “This first screen is just a tiny document. Eight facts that exist for this
+> conversation. Lisa is code two because the document says Lisa is code two.”
 
-Point to `MODEL 751B`.
+Point first to `LISA = CODE 2`, then to `MODEL 751B`.
 
-> “That is the model—the learned numbers. Keep an eye on it.”
+> “That number is the model. Keep an eye on it. What should the answer be?”
 
-Ask the room what answer they expect, then press **Enter**.
+Let the room say “code two,” then press **Enter**.
 
-### 2. Let it answer
+## Beat 2 — Ask one question
 
-The Lisa row gains `*`, and the lower rows show:
+The facts disappear. The result gets the whole screen.
 
 ```text
-QUERY LISA
-ANSWER CODE 2 FROM ROW 2
-MODEL UNCHANGED
+2. ATTENTION FOUND AN ANSWER
+
+QUESTION: LISA
+
+SEARCHED 8 TEMPORARY FACTS
+
+BEST MATCH:
+  * LISA = CODE 2
+
+ANSWER: CODE 2
+
+MODEL 751B DID NOT CHANGE
+
+S: CHANGE THE FACTS
+V: SHOW HOW IT LOOKED
+CLEAR: BACK TO THE FACTS
 ```
 
-Suggested words:
+Say:
 
-> “Well, that was not exactly a suspense thriller. Lisa was right there. But
-> notice what the screen says: model unchanged. It used the fact; it did not
-> train on the fact.”
+> “It searched the temporary facts, found the Lisa record, and copied the
+> value attached to it. It used the fact. It did not learn the fact.”
 
-Pause.
+Pause on `MODEL 751B DID NOT CHANGE`.
 
-> “Using information is not the same thing as learning it. Think about that a
+> “Using information is not the same thing as training. Think about that a
 > minute.”
 
-### 3. Change the context, not the model
+Do not open the score replay yet. First establish that the answer follows the
+context.
 
-Press **S** once. Lisa remains the query but moves to row four and becomes
-`CODE 6`:
+## Beat 3 — Change the facts, not the model
 
-```text
-  ARCHIMEDES     CODE 5
-  AMIGA          CODE 1
-  SPECTRUM       CODE 3
-> LISA           CODE 6
-  MACINTOSH      CODE 7
-  ATARI ST       CODE 4
-  TRS-80         CODE 0
-  PET            CODE 2
-
-QUERY LISA
-ANSWER -
-CONTEXT 2 OF 4
-```
-
-Point to `MODEL 751B` again.
-
-> “Same model. Same question. Lisa moved, and now Lisa is code six. What do we
-> expect?”
-
-Let the room answer. Press **Enter**.
+Press **S**. The interface returns to the facts, now with an explicit changed
+heading:
 
 ```text
-QUERY LISA
-ANSWER CODE 6 FROM ROW 4
-MODEL UNCHANGED
+3. THE FACTS HAVE CHANGED
+MODEL 751B       CONTEXT 2 OF 4
+  ARCHIMEDES      = CODE 5
+  AMIGA           = CODE 1
+  SPECTRUM        = CODE 3
+> LISA            = CODE 6
+  MACINTOSH       = CODE 7
+  ATARI ST        = CODE 4
+  TRS-80          = CODE 0
+  PET             = CODE 2
+
+QUESTION: LISA
+
+ENTER: ASK THIS QUESTION
 ```
 
-Then land the central line:
+Point to three things, in order:
+
+1. Lisa moved;
+2. Lisa is now code six; and
+3. the model is still `751B`.
+
+Ask what the new answer should be, then press **Enter**.
+
+> “Same model. Same question. Different temporary facts. Now the answer is
+> code six.”
+
+Land the central line:
 
 > “The weights taught it how to look. The context gave it something to look
 > at. Attention decided where to look.”
 
-### 4. Reveal the mechanism
+That completes the main demonstration.
 
-Press **V**.
+## Optional depth — Show how it looked
 
-> “That answer arrived too quickly to watch, so this next screen is a replay.
-> It says slow view because I am slowing down the explanation, not pretending
-> the processor took eight dramatic pauses.”
+Only press **V** if the room wants the mechanism. This is progressive
+disclosure, not a required fourth beat.
 
-Press **Enter** once per record. The raw signed dot-product score appears on
-each row:
+The slow view reveals one signed matching score per Enter press. Say:
 
-| Step | Record | Score | Best so far |
-| ---: | --- | ---: | --- |
-| 1 | ARCHIMEDES | -2251 | ARCHIMEDES |
-| 2 | AMIGA | -0757 | AMIGA |
-| 3 | SPECTRUM | -0827 | AMIGA |
-| 4 | LISA | +3155 | LISA |
-| 5 | MACINTOSH | -0420 | LISA |
-| 6 | ATARI ST | -1325 | LISA |
-| 7 | TRS-80 | +0390 | LISA |
-| 8 | PET | +0676 | LISA |
+> “The answer arrived too quickly to watch. This is a replay of work already
+> completed—not the processor pretending to think.”
 
-Do not explain every number. After two or three rows:
+After two or three scores:
 
-> “Each score asks one narrow question: how well does this record's key match
-> the query? The score is not truth, confidence, or understanding. It is a
-> ranking.”
+> “Each number asks one narrow question: how well does this key match Lisa?
+> It is a ranking, not truth, confidence, or understanding.”
 
-When Lisa becomes best:
+When Lisa becomes the best match:
 
-> “There it is. Lisa does not have to be the last thing it saw. The content of
-> the row—not merely its position—made that row relevant.”
+> “There it is. Attention selects the matching row, then copies that row's
+> value.”
 
-After the eighth step the screen says `SELECTS CODE 6` and
-`ATTENTION COMPLETE`.
+Press **Clear** to return to the answer.
 
-> “It selected the row by comparing keys, then copied the value attached to
-> that row. That is content-addressed key-value attention in its smallest
-> useful form.”
+## Close with the boundary
 
-Press **Clear** to return.
+> “This is attention, but it is not a transformer and it is definitely not
+> ChatGPT running on a CoCo. We isolated one useful mechanism so we could
+> actually watch it work.”
 
-### 5. Name the boundary
+Then connect it to familiar use:
 
-Close the branch with precision:
+> “When you paste a document into a prompt, the document becomes context. It
+> does not instantly become trained knowledge. Attention helps the model use
+> pieces of that context while producing an answer.”
 
-> “This is attention. It is not a transformer, and it is definitely not
-> ChatGPT running on a CoCo. There is no stack of layers, no residual stream,
-> no natural-language answer. We isolated one mechanism so we could actually
-> watch it work.”
+And the caution:
 
-Then connect it to ordinary model use:
-
-> “When you paste a document into a prompt, the model does not instantly add
-> that document to its trained knowledge. The document becomes context.
-> Attention helps select pieces of it while producing an answer.”
-
-And the final caution:
-
-> “Attention can retrieve `LISA = CODE 6` just as faithfully as any other
-> assignment. Access is not verification. Relevant is not the same thing as
-> true. Is that an opportunity? It is certainly a reason to care about the
-> context we provide.”
-
-## Optional audience variation
-
-Before the first Enter, use Up and Down to let someone choose another computer.
-After asking once, press `S`; the chosen query follows that computer to its new
-row. Ask the audience to call the new code before pressing Enter.
-
-Use this only after rehearsing the chosen name across all four contexts. The
-scripted Lisa path is the recovery path because its exact positions, values,
-and slow-view scores are recorded above.
+> “Attention would retrieve a false assignment just as faithfully. Relevant
+> is not the same thing as true. Is that an opportunity? It is certainly a
+> reason to care about the context we provide.”
 
 ## Recovery paths
 
-- **A key does nothing:** click the XRoar window once and try again. Do not use
-  emulator speed-control shortcuts during the demonstration.
-- **The wrong query is selected:** use Up or Down until `QUERY LISA` appears.
-- **The wrong context is showing:** press `S` until `CONTEXT 1 OF 4`, then begin
-  again. Context two is one additional `S` press.
-- **Slow view was opened too early:** it automatically computes the current
-  query first. Press Clear, restore the scripted context, and continue.
-- **The audience asks whether the model trained on the codes:** point to the
-  unchanged `MODEL 751B`, then say that the four visible contexts are program
-  data while the 160 parameter bytes encode only the learned matching
-  operation.
-- **Physical hardware behaves differently:** stop making a hardware claim.
-  Use the emulator as explicitly labelled evidence and record the physical
-  discrepancy as the next experiment boundary.
+- If a key does nothing, click XRoar once and try again.
+- If the wrong question is selected, use Up or Down until it says Lisa.
+- Press Clear to return from an answer or replay to the facts.
+- Press `S` until context one appears if you need to restart.
+- If physical hardware behaves differently, use the emulator as explicitly
+  labelled evidence and stop making a physical-hardware claim.
 
 ## Claims discipline
 
 Safe claims:
 
-- the Mac trained and exported the 160 signed Q4.4 parameter bytes;
-- the 6809 calculates forty signed multiply-accumulates per query;
-- direct simulation matches 96 reference scores across twelve novel contexts;
-- the tested UI keeps the query while changing its row and value;
-- the real-ROM XRoar build reaches the keyboard loop; and
+- the Mac exported 160 signed Q4.4 parameter bytes;
+- the 6809 performs forty signed multiply-accumulates per question;
+- direct simulation matches 96 scores across twelve novel contexts;
+- changing context preserves the question and changes its answer; and
 - model `751B` remains byte-identical while the context changes.
 
-Do not yet claim:
-
-- measured physical CoCo 1 latency;
-- physical keyboard compatibility;
-- that the model understands the computer names;
-- that the assignments become trained knowledge; or
-- that this one attention head is a transformer.
+Do not yet claim measured physical CoCo latency or keyboard compatibility. Do
+not claim that the assignments become trained knowledge, that the model
+understands the names, or that this one attention head is a transformer.

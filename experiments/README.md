@@ -56,8 +56,9 @@ Current experiments:
   — supported reference experiment in content-addressed key-value attention.
   A 160-parameter head recalls 100% of novel contextual bindings across two
   data batches and ten seeds after Q4.4 quantization. Its fixed-point 6809
-  inference, interactive context UI, and slow attention replay pass direct and
-  real-ROM emulator gates; physical hardware remains unverified.
+  inference and guided facts/answer/context UI pass direct and real-ROM
+  emulator gates. A slow attention replay is available as optional depth;
+  physical hardware remains unverified.
 
 ## Presentation commands
 
@@ -84,8 +85,9 @@ interactive six-prompt workbench. Its larger training workload has not yet
 been timed on physical stock-rate hardware. EXP-006 and EXP-007 launch
 pretrained completion workbenches; say explicitly that the Mac trained their
 weights and the CoCo performs integer inference.
-EXP-011 launches the temporary-facts attention workbench. Its Mac-trained
-160-byte head runs fixed-point scoring on the CoCo; `V` replays the stored
+EXP-011 launches a guided temporary-facts demonstration. Its Mac-trained
+160-byte head runs fixed-point scoring on the CoCo. The primary path reveals
+facts, answer, and changed facts separately; `V` optionally replays the stored
 scores at presentation speed.
 
 | Experiment | Useful when the conversation asks… | Surface |

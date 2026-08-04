@@ -30,6 +30,8 @@ attention_ui_wait
         beq     attention_ui_key_shuffle
         cmpa    #ATT_UI_KEY_VIEW
         beq     attention_ui_key_view
+        cmpa    #ATT_UI_KEY_CLEAR
+        beq     attention_ui_key_clear
         bra     attention_ui_main_loop
 
 attention_ui_key_up
@@ -70,6 +72,11 @@ attention_ui_key_view
         lbsr    attention_ui_ask
 attention_ui_view_ready
         lbsr    attention_ui_slow_start
+        lbsr    attention_ui_draw_main
+        bra     attention_ui_main_loop
+
+attention_ui_key_clear
+        clr     attention_ui_has_answer
         lbsr    attention_ui_draw_main
         bra     attention_ui_main_loop
 
@@ -152,20 +159,33 @@ attention_ui_draw_main
         ldx     #ATT_UI_SCREEN
         lbsr    attention_ui_fill_dark_row
         ldx     #ATT_UI_SCREEN
-        ldu     #attention_ui_title
+        tst     attention_ui_has_answer
+        lbne    attention_ui_draw_answer
+        tst     attention_ui_context_index
+        bne     attention_ui_draw_changed_title
+        ldu     #attention_ui_facts_title
+        bra     attention_ui_draw_facts_title
+attention_ui_draw_changed_title
+        ldu     #attention_ui_changed_title
+attention_ui_draw_facts_title
         lbsr    attention_ui_print_dark
 
         lda     #1
         lbsr    attention_ui_row_address
-        ldu     #attention_ui_temp_facts
-        lbsr    attention_ui_print_normal
-        lda     #1
-        lbsr    attention_ui_row_address
-        leax    17,x
         ldu     #attention_ui_model
         lbsr    attention_ui_print_normal
         ldd     #ATT_MODEL_ID
         lbsr    attention_ui_print_hex16
+        lda     #1
+        lbsr    attention_ui_row_address
+        leax    17,x
+        ldu     #attention_ui_context_label
+        lbsr    attention_ui_print_normal
+        lda     attention_ui_context_index
+        inca
+        lbsr    attention_ui_print_digit
+        ldu     #attention_ui_of_four
+        lbsr    attention_ui_print_normal
 
         clr     attention_ui_draw_slot
 attention_ui_draw_record
@@ -174,15 +194,6 @@ attention_ui_draw_record
         lbsr    attention_ui_row_address
         lda     #$60
         sta     ,x
-        tst     attention_ui_has_answer
-        beq     attention_ui_draw_selection
-        lda     attention_ui_draw_slot
-        cmpa    attention_best_slot
-        bne     attention_ui_draw_selection
-        lda     #$2a                    ; dark-field * marks attention
-        sta     ,x
-        bra     attention_ui_draw_record_text
-attention_ui_draw_selection
         lda     attention_ui_draw_slot
         cmpa    attention_ui_selected_slot
         bne     attention_ui_draw_record_text
@@ -194,21 +205,13 @@ attention_ui_draw_record_text
         ldb     attention_ui_draw_slot
         leay    b,y
         lda     ,y
-        tst     attention_ui_has_answer
-        beq     attention_ui_record_normal
-        ldb     attention_ui_draw_slot
-        cmpb    attention_best_slot
-        bne     attention_ui_record_normal
-        lbsr    attention_ui_print_key_dark
-        bra     attention_ui_draw_code
-attention_ui_record_normal
         lbsr    attention_ui_print_key_normal
 attention_ui_draw_code
         lda     attention_ui_draw_slot
         adda    #2
         lbsr    attention_ui_row_address
         leax    18,x
-        ldu     #attention_ui_code
+        ldu     #attention_ui_equals_code
         lbsr    attention_ui_print_normal
         ldy     #attention_memory_values
         ldb     attention_ui_draw_slot
@@ -227,51 +230,77 @@ attention_ui_draw_code
         lda     attention_query
         lbsr    attention_ui_print_key_dark
 
-        lda     #12
+        lda     #13
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_enter_ask
+        lbsr    attention_ui_print_normal
+        lda     #15
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_choose
+        lbsr    attention_ui_print_normal
+        rts
+
+attention_ui_draw_answer
+        ldu     #attention_ui_answer_title
+        lbsr    attention_ui_print_dark
+
+        lda     #2
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_query_label
+        lbsr    attention_ui_print_normal
+        lda     attention_query
+        lbsr    attention_ui_print_key_dark
+
+        lda     #4
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_searched
+        lbsr    attention_ui_print_normal
+
+        lda     #6
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_best_match
+        lbsr    attention_ui_print_normal
+        lda     #7
+        lbsr    attention_ui_row_address
+        leax    2,x
+        lda     #$2a
+        sta     ,x+
+        lda     #$60
+        sta     ,x+
+        ldy     #attention_memory_keys
+        ldb     attention_best_slot
+        leay    b,y
+        lda     ,y
+        lbsr    attention_ui_print_key_dark
+        ldu     #attention_ui_equals_code
+        lbsr    attention_ui_print_normal
+        lda     attention_result
+        lbsr    attention_ui_print_digit_dark
+
+        lda     #9
         lbsr    attention_ui_row_address
         ldu     #attention_ui_answer_label
         lbsr    attention_ui_print_normal
-        tst     attention_ui_has_answer
-        beq     attention_ui_draw_no_answer
         ldu     #attention_ui_code
         lbsr    attention_ui_print_dark
         lda     attention_result
         lbsr    attention_ui_print_digit_dark
-        ldu     #attention_ui_from_row
-        lbsr    attention_ui_print_normal
-        lda     attention_best_slot
-        inca
-        lbsr    attention_ui_print_digit
-        bra     attention_ui_draw_model_state
-attention_ui_draw_no_answer
-        ldu     #attention_ui_dash
-        lbsr    attention_ui_print_normal
 
-attention_ui_draw_model_state
-        lda     #13
+        lda     #11
         lbsr    attention_ui_row_address
-        tst     attention_ui_has_answer
-        beq     attention_ui_draw_context_number
         ldu     #attention_ui_unchanged
         lbsr    attention_ui_print_normal
-        bra     attention_ui_draw_controls
-attention_ui_draw_context_number
-        ldu     #attention_ui_context_label
+        lda     #13
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_change_facts
         lbsr    attention_ui_print_normal
-        lda     attention_ui_context_index
-        inca
-        lbsr    attention_ui_print_digit
-        ldu     #attention_ui_of_four
-        lbsr    attention_ui_print_normal
-
-attention_ui_draw_controls
         lda     #14
         lbsr    attention_ui_row_address
-        ldu     #attention_ui_controls_one
+        ldu     #attention_ui_show_lookup
         lbsr    attention_ui_print_normal
         lda     #15
         lbsr    attention_ui_row_address
-        ldu     #attention_ui_controls_two
+        ldu     #attention_ui_back_facts
         lbsr    attention_ui_print_normal
         rts
 
@@ -631,31 +660,41 @@ attention_ui_key_color_computer fcc     "COLOR COMPUTER"
 attention_ui_key_sinclair       fcc     "SINCLAIR"
                                 fcb     0
 
-attention_ui_title              fcc     "COCO CONTEXT MEMORY"
+attention_ui_facts_title        fcc     "1. GIVE IT TEMPORARY FACTS"
                                 fcb     0
-attention_ui_temp_facts         fcc     "TEMP FACTS"
+attention_ui_changed_title      fcc     "3. THE FACTS HAVE CHANGED"
+                                fcb     0
+attention_ui_answer_title       fcc     "2. ATTENTION FOUND AN ANSWER"
                                 fcb     0
 attention_ui_model              fcc     "MODEL "
                                 fcb     0
 attention_ui_code               fcc     "CODE "
                                 fcb     0
-attention_ui_query_label        fcc     "QUERY "
+attention_ui_equals_code        fcc     "= CODE "
                                 fcb     0
-attention_ui_answer_label       fcc     "ANSWER "
+attention_ui_query_label        fcc     "QUESTION: "
                                 fcb     0
-attention_ui_from_row           fcc     " FROM ROW "
+attention_ui_answer_label       fcc     "ANSWER: "
                                 fcb     0
-attention_ui_dash               fcc     "-"
+attention_ui_searched           fcc     "SEARCHED 8 TEMPORARY FACTS"
                                 fcb     0
-attention_ui_unchanged          fcc     "MODEL UNCHANGED"
+attention_ui_best_match         fcc     "BEST MATCH:"
+                                fcb     0
+attention_ui_unchanged          fcc     "MODEL 751B DID NOT CHANGE"
                                 fcb     0
 attention_ui_context_label      fcc     "CONTEXT "
                                 fcb     0
 attention_ui_of_four            fcc     " OF 4"
                                 fcb     0
-attention_ui_controls_one       fcc     "UP/DOWN SELECT  ENTER ASK"
+attention_ui_enter_ask          fcc     "ENTER: ASK THIS QUESTION"
                                 fcb     0
-attention_ui_controls_two       fcc     "S NEW CONTEXT   V SLOW VIEW"
+attention_ui_choose             fcc     "UP/DOWN: CHOOSE ANOTHER"
+                                fcb     0
+attention_ui_change_facts       fcc     "S: CHANGE THE FACTS"
+                                fcb     0
+attention_ui_show_lookup        fcc     "V: SHOW HOW IT LOOKED"
+                                fcb     0
+attention_ui_back_facts         fcc     "CLEAR: BACK TO THE FACTS"
                                 fcb     0
 attention_ui_slow_title         fcc     "ATTENTION - SLOW VIEW"
                                 fcb     0
