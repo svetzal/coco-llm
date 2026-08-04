@@ -49,6 +49,41 @@ Keep these distinctions explicit:
 - this model shares the learning objective of modern generative language
   models, but not their transformer architecture or scale.
 
+## Lesson and demonstration design
+
+Make causality visible before adding explanation or metaphor. A learner should
+be able to point to the source of a value, the action that changed it, the state
+that was modified, and the resulting behaviour. Do not use a magic shuffle,
+silent reassignment, or presenter narration to bridge a causal step the
+interface does not show.
+
+When teaching a distinction such as training versus context:
+
+1. Label the relevant state stores in the interface (`WEIGHTS`, `CONTEXT`,
+   working state) and keep those labels visible at the moment of change.
+2. Let a person perform the material action. Prefer an explicit edit over a
+   button that swaps in prepared state.
+3. Show before and after values, name what changed, and name what did not.
+4. Repeat the same query or operation so the changed outcome has one visible
+   cause.
+5. Test both the intended change and the claimed invariant—for example, the
+   context byte changed while the weight bytes remained unchanged.
+
+Introduce one new idea per screen or beat. Establish the input first, show the
+outcome second, and reveal internal arithmetic only as optional depth. The
+primary path should teach the concept without requiring the slow or diagnostic
+view.
+
+Prefer the project's sustained vintage-computer example over a new metaphor.
+A metaphor may reinforce an already-visible mechanism; it must not replace the
+missing mechanism or invent a second scenario the audience must decode.
+
+Treat audience confusion as evidence about the artifact, not merely a cue to
+rewrite the script. If a reasonable viewer asks where a value came from or why
+it changed, improve the interface and add a deterministic check that protects
+the clarified causal path. Keep screen language, presenter words, controls,
+tests, and recorded claims aligned.
+
 ## Repository practice
 
 - Work directly on `main`.
