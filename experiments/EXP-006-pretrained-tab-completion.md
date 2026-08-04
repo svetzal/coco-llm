@@ -164,6 +164,7 @@ make xroar-exp6
 
 The 32×16 screen contains:
 
+- a persistent `MAC TRAINED - COCO PREDICTS` title naming the division of work;
 - a ten-row, cursor-only phrase editor that wraps complete words;
 - a measured popover containing up to three reverse-field model suggestions;
 - visible controls for prediction, selection, acceptance, deletion, and reset;
@@ -180,6 +181,8 @@ shifts left or upward as needed so its complete rectangle remains within the
 32×16 display. It saves the covered screen bytes before drawing and restores
 them when dismissed. Model-generated suggestions use the green-on-dark reverse
 field, preserving the visual convention established by EXP-004 and EXP-005.
+The title means that distinction does not depend on presenter narration or
+colour alone.
 
 Completed, space-terminated words are looked up in the fixed vocabulary and
 reassembled into the model's four-token context on every prediction. The final

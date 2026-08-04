@@ -15,6 +15,10 @@ Use the filename pattern `EXP-NNN-short-name.md`. Do not rewrite an experiment's
 original hypothesis after observing the result. Append evidence and conclusions
 so the learning remains visible.
 
+The cross-experiment [`lesson-design-audit.md`](lesson-design-audit.md) records
+which causal relationships are already legible in their artifacts, which were
+improved, and which rejected experiments should remain deliberately unbuilt.
+
 Current experiments:
 
 - [`EXP-001-model-feasibility.md`](EXP-001-model-feasibility.md) — rejected

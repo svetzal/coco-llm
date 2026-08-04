@@ -4,12 +4,14 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).parents[1] / "tools"))
 
+import present_experiment
 from present_experiment import (
     EXPERIMENTS,
     build_exp_005_reference,
     fan_counts,
     normalize_experiment,
 )
+from run_bias_demo import BiasResult
 
 
 def test_experiment_aliases_are_easy_to_type() -> None:
@@ -66,3 +68,31 @@ def test_fan_counts_group_non_brand_outputs_as_other() -> None:
     )
 
     assert fan_counts(result) == (10, 4, 3, 3)
+
+
+def test_bias_presentation_names_changed_and_held_factors(monkeypatch, capsys) -> None:
+    result = BiasResult(
+        label="APPLE FAN",
+        training_names=18,
+        examples_per_epoch=54,
+        epochs=30,
+        training_updates=1620,
+        initial_loss=1.0,
+        final_loss=0.5,
+        checksum="fixture",
+        first_token_counts={"APPLE": 20},
+        samples=["APPLE MACINTOSH"],
+    )
+    monkeypatch.setattr(
+        present_experiment,
+        "run_comparison",
+        lambda sample_count: [result],
+    )
+
+    present_experiment.run_exp_003()
+
+    output = capsys.readouterr().out
+    assert "WHAT CHANGED: TRAINING DATA" in output
+    assert "APPLE BLOCK -> COMMODORE BLOCK -> TANDY BLOCK" in output
+    assert "WHAT DID NOT CHANGE" in output
+    assert "Architecture, initialization seed, 1,620 updates" in output

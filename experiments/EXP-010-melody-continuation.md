@@ -697,6 +697,10 @@ directly rather than choosing from a menu. Because entry is in scale degrees,
 fumble the seed, and it is guaranteed to be in the same world as the training
 data.
 
+The panel title is `YOU SEED - MODEL CONTINUES`. The entered figure is also
+labelled `SEED` and drawn in yellow while the continuation is green, so human
+and model authorship remains legible in words, position, and colour.
+
 The generated tune is written into the frozen row format and handed to the
 EXP-009 player. Bass, arpeggio and percussion come from fixed rules keyed to
 the chord progression.
@@ -728,6 +732,7 @@ temperature was not touched.
 
 Sharpening the temperature was the obvious alternative and the measurement
 rejects it. At a shift of 3 leaps fall to 1.2% against the corpus's own 5.5%
+
 - the generations become *more* regular than real fiddle tunes, which is a
 different failure with the same cause: a sampler that has stopped listening
 to the model. The corpus is the target, not a floor to beat.

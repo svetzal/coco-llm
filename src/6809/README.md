@@ -3,7 +3,8 @@
 This folder contains the first complete bit-exact training implementation:
 
 - `experiments/experiment_004.asm` — the complete EXP-004 lesson driver:
-  train, verify, then generate a sampled gallery from a boundary seed;
+  capture one initialized-model sample, train, verify, then repeat its seed
+  before generating a sampled gallery;
 - `experiments/experiment_005.asm` — the complete EXP-005 lesson driver:
   train the expanded model, then run prompted greedy inference;
 - `model_core.asm` — initialization, the shared forward pass, approximate
@@ -104,11 +105,12 @@ every example. Context is black-on-green; the expected token is green-on-dark.
 `#` represents the model's `<END>` boundary token.
 
 After training, the program displays `PRESS ANY KEY` and waits for a keyboard
-event. It then preserves `TRAINING COMPLETE`, leaves one blank row, and fills
-the remaining twelve rows with inference samples. Each sample starts with a
-black-on-green `# # >` seed and shows generated tokens in green-on-dark fields.
-A final-column `+` marks a generated sequence wider than the screen without
-stopping or altering the underlying inference.
+event. It then shows seed 6809 before and after training under explicit
+`RANDOM WEIGHTS` and `LEARNED WEIGHTS` headings. Eleven additional trained
+samples follow. Each starts with a black-on-green `# # >` seed and shows
+generated tokens in green-on-dark fields. A final-column `+` marks a generated
+sequence wider than the screen without stopping or altering the underlying
+inference.
 The completed screen remains visible until XRoar is closed. Do not press `F12`
 or `Shift+F12` unless you intentionally want maximum-speed emulation.
 
@@ -122,7 +124,12 @@ fixture. After the post-training pause, it shows six prompt rows with a
 completion row beneath each. The CoCo Up (`$5E`) and Down (`$0A`) key codes move
 the visible `>` cursor; Enter (`$0D`) runs greedy inference from the selected
 two-token context and advances to the next prompt. Previous completions remain
-visible.
+visible. Its title, `SAME MODEL - CHANGE THE PROMPT`, keeps the controlled
+variable visible throughout the interaction.
+
+The shared EXP-006/007 completion screen similarly names its provenance:
+`MAC TRAINED - COCO PREDICTS`. The pretrained-weight boundary therefore stays
+visible while the audience types and accepts suggestions.
 
 EXP-007 uses a Mac-trained model with 255 tokens, five context positions,
 21 embedding dimensions, and 32,385 signed Q2.2 parameters. Two parameters are

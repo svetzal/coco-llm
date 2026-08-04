@@ -10,9 +10,30 @@ start
         lds     #$7f00
         lbsr    initialize_training_screen
         lbsr    initialize_model
+        lbsr    capture_untrained_sample
+        lbsr    initialize_training_screen
         lbsr    train_model
         lbsr    finish_training
         lbra    show_sample_gallery
+
+; Preserve one deterministic generation from the initialized weights. The
+; final screen will run seed 6809 again after training, putting the causal
+; before/after comparison in the artifact rather than only in the narration.
+capture_untrained_sample
+        ldd     #6809
+        std     rng_state
+        ldd     #SCREEN+96
+        std     screen_pointer
+        lbsr    generate_name
+        ldx     #SCREEN+96
+        ldu     #untrained_sample_display
+        ldb     #32
+capture_untrained_cell
+        lda     ,x+
+        sta     ,u+
+        decb
+        bne     capture_untrained_cell
+        rts
 
 ; EXP-004's context values fit signed eight bits, so only their low byte needs
 ; to be multiplied by the signed 16-bit output error.

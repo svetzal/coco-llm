@@ -56,6 +56,13 @@ Run:
 uv run python src/reference/run_bias_demo.py
 ```
 
+The presentation output names the manipulated data before displaying any
+results: concatenated Apple block → Commodore block → Tandy block, versus
+Apple/Commodore/Tandy repeated. It then names the held architecture,
+initialization seed, 1,620 updates, and generation seeds. The ordering effect
+is therefore a visible controlled comparison, not a conclusion supplied later
+by the presenter.
+
 ## Evidence
 
 | Training run | Apple | Commodore | Tandy | Other | Final loss |

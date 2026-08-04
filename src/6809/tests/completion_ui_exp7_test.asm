@@ -12,6 +12,11 @@ exp7_ui_test_start
         lbsr    completion_policy_initialize
         lbsr    completion_initialize_screen
 
+        ; Keep the pretrained/inference boundary visible without narration.
+        ldd     COMPLETION_SCREEN
+        cmpd    #$0d01                 ; dark "MA" from "MAC TRAINED"
+        lbne    exp7_ui_test_failed
+
         ; The shared screen is bound to EXP-007's measured model shape.
         ldd     COMPLETION_SCREEN+480
         cmpd    #$7275                 ; normal-field "25"

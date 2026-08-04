@@ -276,6 +276,10 @@ Run it:
 make xroar-exp7
 ```
 
+The shared workbench title reads `MAC TRAINED - COCO PREDICTS`. The larger
+weight image can therefore remain the subject of the demonstration without
+creating the impression that the CoCo trained it live.
+
 Run the non-interactive checks:
 
 ```sh

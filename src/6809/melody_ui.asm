@@ -295,7 +295,7 @@ uwk_spin        lbsr    ui_read_key
                 rts
 
 ; ------------------------------------------------------------------------
-ui_title        fcb     'C,'O,'C,'O,' ,'L,'L,'M,' ,'M,'E,'L,'O,'D,'Y,0
+ui_title        fcb     'Y,'O,'U,' ,'S,'E,'E,'D,' ,'-,' ,'M,'O,'D,'E,'L,' ,'C,'O,'N,'T,'I,'N,'U,'E,'S,0
 ; Degrees 1-7, then hold and rest. The glyph is the key that enters it.
 ui_glyph        fcb     '1,'2,'3,'4,'5,'6,'7,'-,'.
 ui_label_seed   fcb     'S,'E,'E,'D,' ,0

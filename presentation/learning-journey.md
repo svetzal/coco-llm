@@ -396,16 +396,22 @@ The colour convention is not a slide simulation. The program writes different
 VDG character codes so the audience can distinguish supplied context from the
 model's prediction.
 
-After the keypress, twelve rows make the same distinction explicit:
+After the keypress, make training itself the controlled comparison:
 
 ```text
+SAME GENERATION SEED 6809
+BEFORE TRAINING - RANDOM WEIGHTS
+# # > 80 128 ...
+AFTER TRAINING - LEARNED WEIGHTS
 # # > COMMODORE 128 #
-# # > TANDY COMPUTER #
 ```
 
-The seed is black-on-green. Every token selected by inference, including the
-ending `#`, is green-on-dark. A final-column `+` honestly marks an output that
-is wider than the screen rather than allowing it to corrupt the following row.
+Ask: “What did we hold still?” The generation seed. “What did we change?” The
+weights, by training. The seed is black-on-green. Every token selected by
+inference, including the ending `#`, is green-on-dark. Eleven trained samples
+below the comparison show that one result is not the whole distribution. A
+final-column `+` honestly marks an output that is wider than the screen rather
+than allowing it to corrupt the following row.
 
 Now reveal the shared inference loop:
 
@@ -740,7 +746,7 @@ The talk should have one genuine run, not a sequence of canned simulations:
    the epochs run.
 10. Reach the predeclared training boundary and pause at `PRESS ANY KEY`.
 11. Let the audience choose when to begin inference.
-12. Fill the screen with twelve deterministic inference samples.
+12. Repeat seed 6809 and compare random weights with learned weights on screen.
 13. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
 14. Reveal the ordering effect in concatenated versus interleaved balanced
     data.
@@ -774,9 +780,11 @@ inference. Do not cue it from the cycle-model runtime projection; rehearse and
 measure the actual presentation hardware.
 
 EXP-005 begins from `I ADORE` rather than `# #`, then reveals `MY 64` as the
-model's completion. Ask the room to call the next words before showing the
-result. The strongest second reveal is `ARE YOU` becoming `KEEPING UP IN LITTLE
-COMPUTERS`: the model blends two campaigns into something plausible. It can
+model's completion. The screen keeps `SAME MODEL - CHANGE THE PROMPT` visible,
+so ask: “What stays fixed this time?” Ask the room to call the next words before
+showing the result. The strongest second reveal is `ARE YOU` becoming
+`KEEPING UP IN LITTLE COMPUTERS`: the model blends two campaigns into something
+plausible. It can
 predict the shape without understanding either advertisement. Think about that
 a minute.
 
@@ -813,15 +821,16 @@ to turn scores into probabilities for training and sampling, but it cannot
 change which score is largest.
 
 The first workbench now fits the complete interaction on the CoCo's 32×16
-screen. Typed text is black-on-green. Prediction opens a compact green-on-dark
+screen. Its title says `MAC TRAINED - COCO PREDICTS`; the provenance no longer
+depends on a warning delivered before launch. Typed text is black-on-green.
+Prediction opens a compact green-on-dark
 popover at the text cursor, sized to its widest candidate and shifted away from
 the right or bottom edge when necessary. Dismissing it restores the covered
 screen bytes. Right Arrow serves as the original keyboard's Tab-equivalent: it
 predicts, then accepts. Up and Down choose; Enter also accepts; Left erases;
 Clear restarts. The last row identifies the 178-word vocabulary and four-word
-context. The presenter must state before launching it that the Mac trained the
-weights and the CoCo is performing inference; the practical improvement must
-not obscure where training happened.
+context. Say the division of work aloud, then point to the same claim on the
+machine: the Mac trained the weights and the CoCo is performing inference.
 
 EXP-006 is now in `make present` as an emulator demonstration. Its frozen
 experiment saved 58.8% of held-out word keystrokes and passed quantization and

@@ -69,10 +69,12 @@ SEED_OCTAVE = 12
 def entry_tokens(entry: int) -> list[int]:
     """The two melody tokens one entered symbol becomes."""
     if entry == TOK_HOLD:
-        return [HOLD, HOLD]          # carries the previous note through
+        return [HOLD, HOLD]  # carries the previous note through
     if entry == TOK_REST:
-        return [REST, HOLD]          # silence, held
+        return [REST, HOLD]  # silence, held
     return [MAJOR_STEPS[entry - 1] + SEED_OCTAVE, HOLD]
+
+
 CHECKS = 12
 
 
@@ -147,6 +149,7 @@ def main() -> None:
             "row_hook",
             "tune_reset",
             "music_start",
+            "ui_panel",
             "ui_build_seed",
             "ui_seed",
             "ui_seed_len",
@@ -163,6 +166,9 @@ def main() -> None:
         f"; {rows} rows composed, {CHECKS} sampled for comparison",
         f"        org     ${RUNNER_ORG:04X}",
         f"start   lds     #${RUNNER_ORG - 1:04X}",
+        f"        jsr     ${address['ui_panel']:04X}",
+        "        ldd     $0400",
+        "        std     title_first",
         "        clra",
         f"        sta     ${address['demo_mode']:04X}",
         f"        sta     ${address['ui_last']:04X}",
@@ -175,6 +181,7 @@ def main() -> None:
     ]
 
     expectations = []
+    expectations.append(";! title_first = #$190F")  # dark "YO" from "YOU SEED"
     stride = max(1, rows // CHECKS)
     for index in range(CHECKS):
         row = index * stride
@@ -252,6 +259,7 @@ def main() -> None:
     lines.append("first_note rmb 1")
     lines.append("hook_kept rmb 2")
     lines.append("dp_kept rmb 1")
+    lines.append("title_first rmb 2")
     lines.append("seed_rows rmb 1")
     for index in range(2 * len(ENTERED)):
         lines.append(f"sd{index} rmb 1")

@@ -114,8 +114,9 @@ memory must also include:
 - screen memory and platform state;
 - code and stack.
 
-The current writable image is 3,850 bytes at `$2000`, including code,
-parameters, generated lookup data, verification data, and work buffers. It
+The current writable image is 4,168 bytes at `$2000`, including code,
+parameters, generated lookup data, verification data, work buffers, and the
+initialized-model sample retained for the same-seed training comparison. It
 comfortably targets a 32K CoCo 1. A smaller-memory build is a later
 optimization, not an initial constraint.
 

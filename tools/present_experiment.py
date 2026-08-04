@@ -201,7 +201,12 @@ def run_exp_003() -> dict[str, Any]:
         "EXP-003 — TRAINING-DATA BIAS",
         "Can identical models learn the preference we put into their data?",
     )
-    print("Every run: same model, seed, updates, and generation seeds.")
+    print("WHAT CHANGED: TRAINING DATA")
+    print("  CONCATENATED: APPLE BLOCK -> COMMODORE BLOCK -> TANDY BLOCK")
+    print("  INTERLEAVED: APPLE, COMMODORE, TANDY, REPEAT")
+    print()
+    print("WHAT DID NOT CHANGE")
+    print("  Architecture, initialization seed, 1,620 updates, generation seeds")
     print()
     print("TRAINING DATA           APPLE  COMMODORE  TANDY  OTHER")
     print("----------------------  -----  ---------  -----  -----")

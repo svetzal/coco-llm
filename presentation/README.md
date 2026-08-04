@@ -34,6 +34,10 @@ The presentation has five connected teaching threads:
    supplies temporary facts, and attention selects a relevant record without
    adding that fact to the model's weights.
 
+The experiment-wide [`lesson-design audit`](../experiments/lesson-design-audit.md)
+checks that those claims are visible in the artifacts themselves: learner
+action, changed state, held state, and result should not live only in narration.
+
 The practical branch now has two explicitly pretrained completion models.
 EXP-006 spends 8 KiB on a 178-token, four-word completion model. EXP-007 asks,
 “What if I use the memory the ROM normally occupies?” Its 32 KiB model uses all

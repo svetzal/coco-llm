@@ -57,6 +57,7 @@ The direct simulator passes:
 
 - every one of the 580 final parameter bytes;
 - the complete reference parameter checksum represented by that byte image;
+- the screen's same-seed comparison before and after training;
 - the expected first token of each of the first five generated names;
 - the seed/generated display attributes and safe clipping of a long sample.
 
@@ -76,11 +77,11 @@ matching the integer reference run.
 
 | Artifact | Size |
 | --- | ---: |
-| CoCo DECB executable | 3,049 bytes |
-| Writable RAM image including work buffers | 3,850 bytes |
+| CoCo DECB executable | 3,338 bytes |
+| Writable RAM image including work buffers | 4,168 bytes |
 | Trainable parameters | 580 bytes |
 
-The writable image occupies `$2000` through `$2F60`, well inside
+The writable image occupies `$2000` through `$3047`, well inside
 a 32K CoCo 1.
 
 ### Performance
@@ -89,9 +90,9 @@ The initial bit-at-a-time signed multiplication routine executed about
 38.6 million instructions. The two-`MUL` kernel reduced the same bit-exact run
 to 15,824,366 instructions with the epoch and generation display. Showing the
 complete two-token context and target for every example brings the interactive
-run, including twelve displayed inference samples, to 16,354,392 instructions
-after extracting the named experiment-policy calls, excluding the human-length
-pause.
+run to 16,368,255 instructions after extracting the named experiment-policy
+calls, excluding the human-length pause. That run includes one pre-training
+sample and eleven post-training samples.
 
 The direct simulator reports an effective cycle rate which, combined with its
 wall time, implies approximately 66.7 million emulated 6809 cycles. At the
@@ -108,14 +109,17 @@ epoch counter from 1 through 20. The full-width row below cycles through all
 58 examples as `context context > expected token`; the expected token is
 green-on-dark while its context remains black-on-green. `#` replaces `<END>`
 on screen. After its internal model check, the program pauses at
-`PRESS ANY KEY`. A keyboard event leaves a blank row below
-`TRAINING COMPLETE`, then fills the final twelve rows with black-on-green
-`# # >` seeds and green-on-dark generated tokens.
+`PRESS ANY KEY`. A keyboard event replaces the progress display with one
+controlled comparison: `SAME GENERATION SEED 6809`, followed by the initialized
+model's output and the trained model's output. The headings name the other
+changed state explicitly: `RANDOM WEIGHTS` before training and `LEARNED WEIGHTS`
+after it. Eleven trained samples remain below the comparison so the audience
+can still see a small distribution rather than one lucky output.
 
-The presentation uses twelve consecutive seeds, 6809 through 6820. Seed 6818
-genuinely produces more text than one 32-column row can hold. Its display ends
-with `+`, while the complete inference continues in memory; the following row
-is never overwritten.
+The trained gallery uses eleven consecutive seeds, 6809 through 6819. Seed
+6818 genuinely produces more text than one 32-column row can hold. Its display
+ends with `+`, while the complete inference continues in memory; the following
+row is never overwritten.
 
 ### Multiply range
 
@@ -138,7 +142,7 @@ Supported.
 The complete training and generation path now runs in 6809 assembly and is
 bit-exact with the integer reference for the controlled corpus. Its projected
 stock-clock runtime is comfortably inside three minutes. The approximately
-74-second figure is a cycle-model projection, not a cueing or screenshot
+75-second figure is a cycle-model projection, not a cueing or screenshot
 schedule; emulator wall-clock behaviour and physical hardware still require
 direct measurement.
 

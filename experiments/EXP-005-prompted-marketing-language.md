@@ -133,6 +133,10 @@ black-on-green; generated text, including the boundary `#`, uses
 green-on-dark. A visible `+` marks a continuation clipped at the 32-column
 display edge without changing inference.
 
+The persistent title reads `SAME MODEL - CHANGE THE PROMPT`. It names the
+controlled comparison on the artifact: the weights stay fixed after training;
+only the audience-selected starting context changes.
+
 The original two-MUL output-update path assumes the context vector fits a
 signed byte. EXP-005 first exceeds that assumption during epoch 77. Its
 output-weight update therefore uses a three-MUL signed 16×16 low-word routine.

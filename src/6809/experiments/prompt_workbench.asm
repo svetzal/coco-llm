@@ -135,7 +135,7 @@ clear_prompt_completion
         rts
 
 message_prompting
-        fcc     "COCO LLM PROMPTING"
+        fcc     "SAME MODEL - CHANGE THE PROMPT"
         fcb     0
 message_prompt_help
         fcc     "UP/DOWN SELECT  ENTER GENERATE"

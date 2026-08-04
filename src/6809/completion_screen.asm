@@ -333,7 +333,7 @@ completion_print_dark_done
         rts
 
 completion_message_title
-        fcc     "COCO LLM COMPLETION"
+        fcc     "MAC TRAINED - COCO PREDICTS"
         fcb     0
 completion_message_type
         fcc     "TYPE A PHRASE"

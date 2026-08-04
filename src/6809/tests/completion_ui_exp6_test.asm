@@ -9,6 +9,9 @@ EXP6_UI_TEST equ     1
 
 exp6_ui_test_start
         lbsr    completion_initialize_screen
+        ldd     COMPLETION_SCREEN
+        cmpd    #$0d01                 ; dark "MA": where training happened
+        lbne    exp6_ui_test_failed
         lda     COMPLETION_INPUT_SCREEN
         cmpa    #$20                   ; cursor, with no prompt marker
         lbne    exp6_ui_test_failed
