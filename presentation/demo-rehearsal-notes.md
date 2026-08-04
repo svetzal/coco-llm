@@ -204,3 +204,98 @@ division of work: modern training, vintage inference, bounded human utility.
 > use the RAM normally hidden beneath the CoCo's ROM? More vocabulary, more
 > context, and punctuation become possible. Bigger is not the same as smarter,
 > so let's call another shot.
+
+## EXP-007: all-RAM sentence completion
+
+### EXP-007 question
+
+What does four times the model memory buy us—and what does it not buy us?
+
+### Before EXP-007 launch
+
+> The Mac trained this model too. The CoCo receives 16,193 packed bytes,
+> switches into its 64 KiB all-RAM map, and expands them into 32,385 working
+> parameters underneath the address range normally occupied by BASIC ROM.
+>
+> This buys us all 255 token identifiers, five tokens of context, and real
+> punctuation tokens. It does not make the machine understand sentences.
+
+Point again to `MAC TRAINED - COCO PREDICTS`. The provenance remains fixed;
+memory layout and the inference task changed.
+
+### First phrase: a larger context
+
+Type `THE MODEL CAN`, then press Right Arrow. The frozen test vector ranks
+`SUGGEST`, `BE`, and `REMEMBER`.
+
+> We have a broader sentence corpus now, but this is still the same basic act:
+> combine recent-token embeddings, score every possible next token, and let a
+> person choose.
+
+Accept `SUGGEST` only if it helps the flow. Do not build a long sentence merely
+to show that the editor can hold one.
+
+### Second phrase: punctuation and stopping
+
+Press Clear and type `RUN THE PROGRAM.` with the period attached normally.
+Press Right Arrow. The top suggestion should be `<END>`, followed by `THEN` and
+`?`. Accept `<END>`; the sentence remains unchanged and the status reads
+`END OF PHRASE`.
+
+> The period is a token in the five-token context. And `<END>` is the model
+> saying, “This phrase should stop here.” It is not a character we need to add
+> to the sentence.
+
+### The interface failure
+
+> Our first interface hid `<END>` because token zero also meant “no
+> suggestion.” So when the model's first choice was “stop,” the screen showed
+> the runner-up—often another punctuation mark.
+>
+> The model said “stop.” Our product said, “Pick something else,” and then made
+> the model look foolish.
+>
+> We fixed the interface and did not retrain a single weight. Some apparent AI
+> failures are product-policy failures. Think about that a minute.
+
+This before-and-after is recorded evidence, not a reason to reproduce the
+misleading UI during the live demonstration.
+
+### The bigger-model call
+
+> Four times as many parameters: did it become four times better? Top-three
+> accuracy moved from 59.3 to 60.0 percent. Simulated keystroke savings fell
+> from 58.8 to 51.7 percent.
+>
+> What did the memory buy? A broader 255-token vocabulary, another context
+> position, punctuation, and a more expressive task. It did not buy a general
+> quality improvement.
+>
+> Bigger can mean capable of attempting more—not reliably better at what it
+> already did.
+
+The current model still misses its declared 60 percent keystroke-savings gate.
+Keep that rejection visible. Physical keyboard latency and behaviour also
+remain unverified.
+
+### Optional mechanism: RAM beneath ROM
+
+> Loading directly above `$7FFF` in the normal map wraps into lower RAM and
+> paints the screen with model bytes. So the CoCo loads packed nibbles below
+> ROM, masks interrupts, enters the contiguous all-RAM map, and expands the
+> model at `$8000-$FE80`.
+>
+> When it needs the BASIC keyboard routine, it briefly restores the ROM map,
+> reads a key, and switches the model back into view. Vintage-computer memory
+> management in service of a tiny language model. Because apparently this is
+> how I relax.
+
+Keep this as optional depth. The central lesson is that model capability,
+quality metrics, and product policy are three different things.
+
+### Transition to EXP-011
+
+> These completion models can only use the last four or five token identifiers.
+> What if I give the machine a fact right now, after training, and then change
+> that fact in front of you? Can it use temporary context without changing its
+> weights?
