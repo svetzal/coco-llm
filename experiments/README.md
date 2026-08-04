@@ -52,6 +52,11 @@ Current experiments:
   Records corpus vetting, including one dataset whose licence forbids LLM
   training. Phase A passed: the model beats the strongest table by 0.243
   bits per row, and situational context supplies most of that.
+- [`EXP-011-contextual-associative-recall.md`](EXP-011-contextual-associative-recall.md)
+  — supported reference experiment in content-addressed key-value attention.
+  A 160-parameter head recalls 100% of novel contextual bindings across two
+  data batches and ten seeds after Q4.4 quantization; 6809 inference remains
+  the next gate.
 
 ## Presentation commands
 

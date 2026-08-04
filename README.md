@@ -90,7 +90,7 @@ assembly implementation emerged. Emulator execution is proven; physical CoCo
 
 ## Current status
 
-Seven experiments now form one evidence trail:
+Eleven experiments now form one evidence trail:
 
 - EXP-001 rejects an impractical character-level model.
 - EXP-002 establishes the small token model and fixed-point direction.
@@ -100,6 +100,13 @@ Seven experiments now form one evidence trail:
 - EXP-006 loads an 8 KiB pretrained model into an interactive completion UI.
 - EXP-007 uses the CoCo 1 all-RAM map for a 32 KiB, 255-token,
   punctuation-aware sentence-completion model.
+- EXP-008 tests online adaptation against a moving human target and accepts the
+  table baseline's win.
+- EXP-009 builds the fixed four-voice CoCo performer required for music work.
+- EXP-010 tests prompted melody continuation and remains in progress.
+- EXP-011 demonstrates contextual associative recall with a tiny attention
+  head; its reference and quantization gates pass, while its 6809 port remains
+  unattempted.
 
 EXP-004 through EXP-007 are individually runnable from the presentation menu.
 The complete reference, assembly, UI, and XRoar integration suite passes on

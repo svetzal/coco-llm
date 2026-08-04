@@ -187,6 +187,26 @@ sentences. At five epochs the deployed Q2.2 model reaches 39.5% top-one and
 word-prefix completion, punctuation tokens, and a visible `<END>` choice. The
 Mac trains and exports; the 6809 performs fixed-point ranking and interaction.
 
+## Contextual attention direction
+
+EXP-011 adds the first mechanism whose answer can depend on a binding supplied
+only in the current context. Eight key-value records change on every example,
+so the answer cannot be memorized in the parameters. A learned query vector
+scores the learned key vector in every record, and the value belonging to the
+highest-scoring record is copied.
+
+The selected head uses sixteen key tokens, five dimensions, and separate query
+and key tables: 160 parameters in total. Across two data batches and ten seeds
+it recalls 100% of 4,096 novel test bindings after signed Q4.4 quantization.
+Inference needs 40 signed byte multiplications and a signed 16-bit score
+accumulator.
+
+This is key-value attention, not a transformer. It deliberately omits causal
+self-attention over a token stream, learned value projections, positional
+encoding, residual connections, normalization, and a feed-forward layer. The
+minimal form isolates content-addressed selection before any of those costs are
+considered.
+
 ## Open questions
 
 1. Does the approximately 72-second cycle-model projection hold on a physical
@@ -199,3 +219,7 @@ Mac trains and exports; the 6809 performs fixed-point ranking and interaction.
    stock CoCo 1?
 5. Does the CoCo 3 HDMI presentation path preserve keyboard and display
    behaviour?
+6. Does the EXP-011 fixed-point attention scan remain bit-exact and fast on the
+   6809?
+7. After associative recall, which additional transformer mechanism would add
+   enough learning value to justify its memory and arithmetic cost?

@@ -8,6 +8,8 @@ vectors before optimization begins.
 - `fixed_token_lm.py` specifies its integer-only training arithmetic.
 - `run_bias_demo.py` compares controlled Apple, Commodore, Tandy, concatenated,
   and interleaved training runs from EXP-003.
+- `associative_attention.py` isolates contextual key-value attention and its
+  fixed-point direction for EXP-011.
 
 The implementation sequence is:
 

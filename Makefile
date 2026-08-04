@@ -16,7 +16,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp008-replay music-tune music-cycles music-bin music-test \
 	xroar-music music-dsk exp010-corpus exp010-dance exp010-model \
 	exp010-core exp010-test exp010-demo exp010-demo-test \
-	xroar-melody present tools
+	xroar-melody exp011-sweep exp011-replicate present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -61,6 +61,13 @@ endif
 
 exp008-replay:
 	$(UV) run python tools/replay_exp_008.py
+
+exp011-sweep:
+	$(UV) run python tools/run_exp_011.py --sweep
+
+exp011-replicate:
+	$(UV) run python tools/run_exp_011.py --training-seed 1111 \
+		--test-seed 1112 --seed 6814 --sweep-seed-start 6814 --sweep
 
 MUSIC_RATE ?= 5679
 # Toolshed's decb is the reference DECB disk tool; override if it moves.
