@@ -125,3 +125,82 @@ all six risks turning the lesson into a memory trick.
 > spectacularly impractical. What if a modern machine trains a larger model,
 > then hands the old machine only the weights needed to predict? Is that an
 > opportunity?
+
+## EXP-006: pretrained completion
+
+### EXP-006 question
+
+Can a model trained on the Mac save typing on a stock CoCo?
+
+### Before EXP-006 launch
+
+> This time there will be no epoch counter. The Mac has already trained 8,188
+> one-byte parameters. The CoCo receives those frozen weights and ranks 178
+> possible next words using four words of context.
+>
+> Point to the title when it appears: `MAC TRAINED - COCO PREDICTS`. We are not
+> disguising where the expensive work happened.
+
+### Orient to the workbench
+
+Right Arrow is the original CoCo keyboard's Tab-equivalent. It predicts when
+the popover is closed and accepts the selected word when it is open. Up and
+Down choose, Enter also accepts, Left erases, and Clear resets the editor.
+
+> Black on green is what we type. Green on dark is what the model proposes.
+> The text and position carry those roles too; colour is reinforcement.
+
+### First phrase: prefix completion
+
+Type `PRESS TAB TO C`, then press Right Arrow. The `C` masks suggestions that
+do not match the prefix, leaving `COMPLETE` as the intended result. Press Right
+Arrow again to accept it.
+
+> The model predicted a complete word, but the editor also did ordinary useful
+> work: it filtered the vocabulary using the `C` we supplied. Not every useful
+> behaviour in an AI interface needs to be attributed to the model.
+>
+> We typed one letter and accepted the remaining seven. That is the task we
+> are testing—not whether the CoCo can hold a conversation.
+
+### Second phrase: ranked alternatives
+
+Press Clear, type `THE COMMODORE`, and press Right Arrow. The frozen test vector
+ranks `64`, `VIC`, and `AMIGA` as its top three suggestions.
+
+> One context, three plausible continuations. The model is ranking words, not
+> retrieving one required answer. Up and Down expose that distribution as a
+> choice for the person.
+
+Accept one suggestion if useful, then stop. The interaction is the lesson;
+filling the editor adds little.
+
+### The failed call
+
+> We called our shot before training: the intended held-out word should appear
+> in the top three at least 70 percent of the time. We got 59.3 percent. The
+> hypothesis failed.
+>
+> Why show it? Because the same prototype saved 58.8 percent of held-out word
+> keystrokes and beat both simple baselines. Failed experiment, useful bounded
+> prototype. Those can both be true.
+
+Do not describe 58.8 percent as a measured physical typing improvement. It is
+an offline held-out keystroke simulation; physical keyboard latency and
+behaviour remain unverified.
+
+### Teaching point for EXP-006
+
+> Inference does not require softmax here. Softmax changes scores into
+> probabilities, but it cannot change their order. To choose the largest three,
+> the CoCo can rank the raw integer scores.
+
+Keep this arithmetic as optional depth. The primary lesson is the visible
+division of work: modern training, vintage inference, bounded human utility.
+
+### Transition to EXP-007
+
+> We limited this model to 8 KiB and four words of context. What happens if we
+> use the RAM normally hidden beneath the CoCo's ROM? More vocabulary, more
+> context, and punctuation become possible. Bigger is not the same as smarter,
+> so let's call another shot.
