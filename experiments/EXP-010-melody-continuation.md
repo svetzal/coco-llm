@@ -736,6 +736,46 @@ What remains is the model's own error, not the sampler's: 3.8% out-of-scale
 against 1.9%, and a mean step of 3.33 against 2.97. Both say the generations
 are still a little more active than the real thing.
 
+## The fixed progression is atypical, and it is not the problem (2026-08-03)
+
+`demo_prog` is `I I IV V`, one bar of eight rows each. It exists because the
+model consumes a chord per row as context and does not produce one: at
+training time the chords came from each tune's own melody via
+`chord_inference.py`, and at generation time there is no melody yet to infer
+from. It also feeds the arranger's bass root and arpeggio.
+
+Measured against the corpus, it is representative in its vocabulary and
+wrong in its motion:
+
+| | corpus | demo_prog |
+| --- | --- | --- |
+| share of rows on I, IV, V | 95.5% | 100% |
+| rows per chord | median 16, mean 21.3 | 8 |
+| `IV -> V` share of changes | 5.2% | 33% |
+
+Corpus changes are dominated by motion to and from the tonic: `I->V` 20.9%,
+`V->I` 20.6%, `I->IV` 17.0%, `IV->I` 15.7%, together 74% of all changes.
+`I I IV V` spends a third of its changes on `IV->V`, which the corpus barely
+uses.
+
+It was then tested as a cause of the generations' excess activity, and it is
+not one. Holding the sampler fixed and varying the progression - slowing it
+to sixteen rows, reshaping it to alternate with the tonic, `I V I V` -
+changes nothing measurable:
+
+| progression | rows/chord | out-of-scale | mean step | leaps |
+| --- | --- | --- | --- | --- |
+| I I IV V | 8 | 3.8% | 3.33 | 6.6% |
+| I I IV V | 16 | 4.0% | 3.33 | 6.6% |
+| I V I IV | 16 | 3.8% | 3.33 | 6.4% |
+| I IV I V | 16 | 3.9% | 3.34 | 6.8% |
+| I V I V | 16 | 3.7% | 3.36 | 6.9% |
+
+All within noise of each other, none near the corpus's 1.9 / 2.97 / 5.5. So
+the progression's shape is worth fixing for its own sake if a listener wants
+it more idiomatic, but it does not explain why the generations move more
+than real tunes do. That remains open.
+
 ## Open questions
 
 1. Does transposing every melody to a common tonic help by removing a nuisance
@@ -751,6 +791,6 @@ are still a little more active than the real thing.
 6. Does the ragged embedding layout earn its complexity, or is rectangular at
    shorter context good enough to keep the 6809 port simple?
 7. The generations remain more active than the corpus (3.8% out-of-scale
-   against 1.9%) with the sampler now honest. Is that undertraining, the
-   fixed-point quantisation, or the fixed chord progression forcing motion
-   the model would not otherwise choose?
+   against 1.9%) with the sampler now honest. Undertraining or the
+   fixed-point quantisation are still open. The fixed chord progression is
+   not - see below.

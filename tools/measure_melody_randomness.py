@@ -43,6 +43,7 @@ CORPUS = ROOT / "experiments" / "data" / "EXP-010-dance.jsonl"
 
 BAR_ROWS = 8
 PROGRESSION = (0, 0, 3, 4)
+CHORD_ROWS = 8
 METRE = 3
 PAD = 34
 SEED_ROWS = 16
@@ -80,7 +81,8 @@ def draw(scores, random: XorShift16, shift: int, floor: int) -> int:
 
 
 def generate(manifest: dict, seed: int, rows: int, shift: int, floor: int,
-             mode: int) -> tuple[list[int], float]:
+             mode: int, progression=PROGRESSION,
+             chord_rows: int = CHORD_ROWS) -> tuple[list[int], float]:
     embeddings = [np.asarray(t, dtype=np.int64) for t in manifest["embeddings"]]
     weights = np.asarray(manifest["weights"], dtype=np.int64)
     biases = np.asarray(manifest["biases"], dtype=np.int64)
@@ -91,7 +93,7 @@ def generate(manifest: dict, seed: int, rows: int, shift: int, floor: int,
 
     for row in range(rows):
         beat = row % BAR_ROWS
-        chord = PROGRESSION[(row // BAR_ROWS) % len(PROGRESSION)]
+        chord = progression[(row // chord_rows) % len(progression)]
         context = [mode, METRE, chord, beat, *history]
         if row < SEED_ROWS:
             token = SEED_FIGURE[row]
@@ -157,6 +159,8 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tunes", type=int, default=60)
     parser.add_argument("--rows", type=int, default=128)
+    parser.add_argument("--progression", default="0,0,3,4")
+    parser.add_argument("--chord-rows", type=int, default=8)
     parser.add_argument(
         "--settings",
         default="4:1,3:1,2:1,4:0,3:0,2:0",
@@ -185,7 +189,10 @@ def main() -> None:
         for index in range(arguments.tunes):
             mode = index % 2
             tokens, mass = generate(
-                manifest, 0x1A2B + index * 977, arguments.rows, shift, floor, mode
+                manifest, 0x1A2B + index * 977, arguments.rows, shift, floor,
+                mode,
+                tuple(int(c) for c in arguments.progression.split(",")),
+                arguments.chord_rows,
             )
             sequences.append(tokens)
             masses.append(mass)
