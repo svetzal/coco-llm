@@ -13,7 +13,7 @@ Supporting presentation material includes:
 - [`table-exercises.md`](table-exercises.md) — the audience's hands-on
   next-token exercise;
 - [`exp011-demo-script.md`](exp011-demo-script.md) — three-beat presenter
-  runbook for searching and replacing a temporary museum exhibit map;
+  runbook for visibly editing context while model weights remain locked;
 - [`card-concepts/`](card-concepts/) — exploratory visual directions for that
   exercise, not final print artwork.
 
@@ -46,12 +46,11 @@ demonstrations. Neither should be described as physically validated until
 keyboard behaviour and stock-rate latency are measured on the CoCo 1.
 
 EXP-011 follows that practical branch with a different capability. Its
-160-parameter head keeps a query stable while a temporary museum map changes
-an exhibit's shelf. Separate map, location, and replacement-map screens reveal
-one idea at a time; the score replay is optional depth. The interface keeps
-model `751B` visible and marks the source record with `*`. It is key-value
-attention, not a transformer, and remains an emulator demonstration until the
-physical keyboard and latency are measured.
+160-parameter head keeps a query stable while a person edits its selected
+context value from `CODE 2` to `CODE 6`. A dedicated editor shows the write to
+context RAM and labels model `751B`'s weights locked; the score replay is
+optional depth. It is key-value attention, not a transformer, and remains an
+emulator demonstration until the physical keyboard and latency are measured.
 
 The bias demonstration is therefore part of the main argument, not a detached
 ethics aside. It connects the mechanics of learning directly to the need for

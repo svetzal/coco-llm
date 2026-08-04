@@ -40,8 +40,8 @@ EXPERIMENTS = {
         "Interactive 32 KiB model with five-token context and punctuation.",
     ),
     "EXP-011": (
-        "Find an exhibit through attention",
-        "Search a temporary museum map, replace it, and optionally replay attention.",
+        "Edit context without training",
+        "Change one context record, keep weights locked, and ask again.",
     ),
 }
 
@@ -355,13 +355,14 @@ def run_exp_011() -> dict[str, Any]:
         "command": "make xroar-attention",
     }
     heading(
-        "EXP-011 — FIND AN EXHIBIT THROUGH ATTENTION",
-        "Can the CoCo search today's map without learning today's locations?",
+        "EXP-011 — EDIT CONTEXT WITHOUT TRAINING",
+        "Can the CoCo use changed context while keeping model weights locked?",
     )
     print("Launching the three-beat attention demonstration in stock-rate XRoar.")
-    print("1. Read today's exhibit map.  2. Press Enter to find Lisa.")
-    print("3. Press S to load a different map, then find Lisa again.")
-    print("V opens an optional replay; Clear returns to the map.")
+    print("1. Press Enter to ask about Lisa in the current context.")
+    print("2. Press E, type 6, and watch only the context record change.")
+    print("3. Press Enter to ask again with model 751B still locked.")
+    print("V opens an optional replay; Clear returns to context.")
     print()
     subprocess.run(["make", "xroar-attention"], cwd=ROOT, check=True)
     return payload

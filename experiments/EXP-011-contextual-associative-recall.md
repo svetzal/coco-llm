@@ -220,21 +220,20 @@ these are arithmetic projections rather than measurements.
 
 ## Implemented CoCo interface
 
-The 32-by-16 interface frames the key-value records as a temporary computer
-museum map: each exhibit name points to the shelf holding it today. This makes
-the arbitrary value's source and purpose visible. Three separate screens avoid
-presenting every idea at once. The first loads today's map and asks where Lisa
-is. Enter replaces it with a focused result showing the matched record,
-location, and `MODEL 751B DID NOT CHANGE`. `S` loads a second prewritten map in
-which the exhibits moved; nothing is randomized at runtime. The requested
-exhibit and model identifier remain unchanged.
+The 32-by-16 interface makes the context change an explicit user action. It
+begins with eight key-value records in context RAM and labels model `751B`'s
+weights locked. Enter answers from the selected Lisa record. `E` then opens a
+context editor showing `BEFORE: LISA = CODE 2`; typing `6` writes only that
+value byte and produces a before/after confirmation beside
+`MODEL 751B DID NOT CHANGE`. Enter asks the same question again and retrieves
+`CODE 6`. There is no random reassignment and no training step.
 
 The selected question uses `>` and the best match uses `*` as well as dark
 text, so neither state is communicated by colour alone.
 
 `S` cycles through four deterministic shuffled contexts while preserving the
-query token. The selected exhibit therefore changes row and shelf without any
-change to model `751B`. `V` progressively discloses an explicitly labelled
+query token. The selected record therefore changes value in context RAM
+without any change to model `751B`. `V` progressively discloses an explicitly labelled
 `SLOW VIEW`: each Enter press reveals one score and the best record so far. The
 computation has already happened; the pacing belongs to the explanation, not
 the inference.

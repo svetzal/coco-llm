@@ -163,7 +163,7 @@ The menu starts at EXP-004, the first complete 6809 learning loop. Run without
 | EXP-005 | Prompted 1980s-style marketing language | `make present EXP=5` |
 | EXP-006 | 8 KiB, four-word completion workbench | `make present EXP=6` |
 | EXP-007 | 32 KiB all-RAM sentence completion | `make present EXP=7` |
-| EXP-011 | Find an exhibit through attention | `make present EXP=11` |
+| EXP-011 | Edit context without training | `make present EXP=11` |
 
 ## Watch it train in XRoar
 

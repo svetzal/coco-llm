@@ -11,8 +11,8 @@ ATT_UI_KEY_DOWN         equ     $0a
 ATT_UI_KEY_CLEAR        equ     $0c
 ATT_UI_KEY_ENTER        equ     $0d
 ATT_UI_KEY_UP           equ     $5e
-ATT_UI_KEY_SHUFFLE      equ     $53
 ATT_UI_KEY_VIEW         equ     $56
+ATT_UI_KEY_EDIT         equ     $45
 
 attention_ui_start
         lbsr    attention_ui_initialize
@@ -26,10 +26,10 @@ attention_ui_wait
         beq     attention_ui_key_down
         cmpa    #ATT_UI_KEY_ENTER
         beq     attention_ui_key_ask
-        cmpa    #ATT_UI_KEY_SHUFFLE
-        beq     attention_ui_key_shuffle
         cmpa    #ATT_UI_KEY_VIEW
         beq     attention_ui_key_view
+        cmpa    #ATT_UI_KEY_EDIT
+        beq     attention_ui_key_edit
         cmpa    #ATT_UI_KEY_CLEAR
         beq     attention_ui_key_clear
         bra     attention_ui_main_loop
@@ -62,8 +62,8 @@ attention_ui_key_ask
         lbsr    attention_ui_ask
         bra     attention_ui_main_loop
 
-attention_ui_key_shuffle
-        lbsr    attention_ui_next_context
+attention_ui_key_edit
+        lbsr    attention_ui_edit_start
         bra     attention_ui_main_loop
 
 attention_ui_key_view
@@ -79,6 +79,54 @@ attention_ui_key_clear
         clr     attention_ui_has_answer
         lbsr    attention_ui_draw_main
         bra     attention_ui_main_loop
+
+; Edit one value in context RAM. No address in the exported query/key weight
+; tables is touched. The UI makes the write and the locked model explicit.
+attention_ui_edit_start
+        ldx     #attention_memory_values
+        ldb     attention_ui_selected_slot
+        abx
+        lda     ,x
+        sta     attention_ui_edit_old_value
+        lbsr    attention_ui_draw_edit
+attention_ui_edit_loop
+attention_ui_edit_wait
+        jsr     [ATT_UI_POLCAT]
+        beq     attention_ui_edit_loop
+        cmpa    #ATT_UI_KEY_CLEAR
+        beq     attention_ui_edit_cancel
+        cmpa    #$30
+        blo     attention_ui_edit_loop
+        cmpa    #$37
+        bhi     attention_ui_edit_loop
+        suba    #$30
+        lbsr    attention_ui_apply_edit
+        lbsr    attention_ui_draw_edit_done
+attention_ui_edit_done_loop
+attention_ui_edit_done_wait
+        jsr     [ATT_UI_POLCAT]
+        beq     attention_ui_edit_done_loop
+        cmpa    #ATT_UI_KEY_ENTER
+        beq     attention_ui_edit_ask
+        cmpa    #ATT_UI_KEY_CLEAR
+        bne     attention_ui_edit_done_loop
+attention_ui_edit_cancel
+        clr     attention_ui_has_answer
+        lbsr    attention_ui_draw_main
+        rts
+attention_ui_edit_ask
+        lbsr    attention_ui_ask
+        rts
+
+; A is the new value. This routine is also the direct-simulator evidence seam.
+attention_ui_apply_edit
+        sta     attention_ui_edit_new_value
+        ldx     #attention_memory_values
+        ldb     attention_ui_selected_slot
+        abx
+        sta     ,x
+        clr     attention_ui_has_answer
+        rts
 
 attention_ui_initialize
         clr     attention_ui_context_index
@@ -105,22 +153,6 @@ attention_ui_ask
         lbsr    attention_ui_draw_main
         rts
 
-; Cycle through four deterministic shuffled contexts. The query token is kept,
-; then relocated in the new row order, so one name visibly changes position and
-; value while the model bytes remain untouched.
-attention_ui_next_context
-        inc     attention_ui_context_index
-        lda     attention_ui_context_index
-        cmpa    #ATT_CONTEXT_COUNT
-        blo     attention_ui_context_ready
-        clr     attention_ui_context_index
-attention_ui_context_ready
-        lbsr    attention_ui_load_context
-        lbsr    attention_ui_find_query
-        clr     attention_ui_has_answer
-        lbsr    attention_ui_draw_main
-        rts
-
 attention_ui_load_context
         lda     attention_ui_context_index
         ldb     #ATT_MEMORY_SIZE*2
@@ -139,21 +171,6 @@ attention_ui_copy_record
         bne     attention_ui_copy_record
         rts
 
-attention_ui_find_query
-        ldx     #attention_memory_keys
-        clrb
-attention_ui_find_next
-        lda     ,x+
-        cmpa    attention_query
-        beq     attention_ui_query_found
-        incb
-        cmpb    #ATT_MEMORY_SIZE
-        blo     attention_ui_find_next
-        clrb
-attention_ui_query_found
-        stb     attention_ui_selected_slot
-        rts
-
 attention_ui_draw_main
         lbsr    attention_ui_clear
         ldx     #ATT_UI_SCREEN
@@ -161,13 +178,7 @@ attention_ui_draw_main
         ldx     #ATT_UI_SCREEN
         tst     attention_ui_has_answer
         lbne    attention_ui_draw_answer
-        tst     attention_ui_context_index
-        bne     attention_ui_draw_changed_title
         ldu     #attention_ui_facts_title
-        bra     attention_ui_draw_facts_title
-attention_ui_draw_changed_title
-        ldu     #attention_ui_changed_title
-attention_ui_draw_facts_title
         lbsr    attention_ui_print_dark
 
         lda     #1
@@ -179,12 +190,7 @@ attention_ui_draw_facts_title
         lda     #1
         lbsr    attention_ui_row_address
         leax    17,x
-        ldu     #attention_ui_context_label
-        lbsr    attention_ui_print_normal
-        lda     attention_ui_context_index
-        inca
-        lbsr    attention_ui_print_digit
-        ldu     #attention_ui_of_four
+        ldu     #attention_ui_weights_locked
         lbsr    attention_ui_print_normal
 
         clr     attention_ui_draw_slot
@@ -231,6 +237,10 @@ attention_ui_draw_code
         lbsr    attention_ui_print_key_dark
 
         lda     #13
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_edit_selected
+        lbsr    attention_ui_print_normal
+        lda     #14
         lbsr    attention_ui_row_address
         ldu     #attention_ui_enter_ask
         lbsr    attention_ui_print_normal
@@ -292,11 +302,114 @@ attention_ui_draw_answer
         lbsr    attention_ui_print_normal
         lda     #13
         lbsr    attention_ui_row_address
-        ldu     #attention_ui_change_facts
+        ldu     #attention_ui_edit_context
         lbsr    attention_ui_print_normal
         lda     #14
         lbsr    attention_ui_row_address
         ldu     #attention_ui_show_lookup
+        lbsr    attention_ui_print_normal
+        lda     #15
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_back_facts
+        lbsr    attention_ui_print_normal
+        rts
+
+attention_ui_draw_edit
+        lbsr    attention_ui_clear
+        ldx     #ATT_UI_SCREEN
+        lbsr    attention_ui_fill_dark_row
+        ldx     #ATT_UI_SCREEN
+        ldu     #attention_ui_edit_title
+        lbsr    attention_ui_print_dark
+        lda     #2
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_selected_record
+        lbsr    attention_ui_print_normal
+        lda     #4
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_before
+        lbsr    attention_ui_print_normal
+        ldy     #attention_memory_keys
+        ldb     attention_ui_selected_slot
+        leay    b,y
+        lda     ,y
+        lbsr    attention_ui_print_key_dark
+        ldu     #attention_ui_equals_code
+        lbsr    attention_ui_print_normal
+        lda     attention_ui_edit_old_value
+        lbsr    attention_ui_print_digit_dark
+        lda     #6
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_type_new
+        lbsr    attention_ui_print_normal
+        lda     #8
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_new_code
+        lbsr    attention_ui_print_normal
+        lda     #$7f
+        sta     ,x
+        lda     #10
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_model_locked
+        lbsr    attention_ui_print_normal
+        lda     #14
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_number_apply
+        lbsr    attention_ui_print_normal
+        lda     #15
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_clear_cancel
+        lbsr    attention_ui_print_normal
+        rts
+
+attention_ui_draw_edit_done
+        lbsr    attention_ui_clear
+        ldx     #ATT_UI_SCREEN
+        lbsr    attention_ui_fill_dark_row
+        ldx     #ATT_UI_SCREEN
+        ldu     #attention_ui_changed_title
+        lbsr    attention_ui_print_dark
+        lda     #2
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_you_changed
+        lbsr    attention_ui_print_normal
+        lda     #4
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_before
+        lbsr    attention_ui_print_normal
+        ldy     #attention_memory_keys
+        ldb     attention_ui_selected_slot
+        leay    b,y
+        lda     ,y
+        lbsr    attention_ui_print_key_normal
+        ldu     #attention_ui_equals_code
+        lbsr    attention_ui_print_normal
+        lda     attention_ui_edit_old_value
+        lbsr    attention_ui_print_digit
+        lda     #6
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_after
+        lbsr    attention_ui_print_normal
+        ldy     #attention_memory_keys
+        ldb     attention_ui_selected_slot
+        leay    b,y
+        lda     ,y
+        lbsr    attention_ui_print_key_dark
+        ldu     #attention_ui_equals_code
+        lbsr    attention_ui_print_normal
+        lda     attention_ui_edit_new_value
+        lbsr    attention_ui_print_digit_dark
+        lda     #9
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_context_edited
+        lbsr    attention_ui_print_normal
+        lda     #11
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_unchanged
+        lbsr    attention_ui_print_normal
+        lda     #14
+        lbsr    attention_ui_row_address
+        ldu     #attention_ui_enter_again
         lbsr    attention_ui_print_normal
         lda     #15
         lbsr    attention_ui_row_address
@@ -660,45 +773,69 @@ attention_ui_key_color_computer fcc     "COLOR COMPUTER"
 attention_ui_key_sinclair       fcc     "SINCLAIR"
                                 fcb     0
 
-attention_ui_facts_title        fcc     "1. LOAD TODAY'S EXHIBIT MAP"
+attention_ui_facts_title        fcc     "1. TEMPORARY CONTEXT IN RAM"
                                 fcb     0
-attention_ui_changed_title      fcc     "3. A DIFFERENT MAP ARRIVED"
+attention_ui_changed_title      fcc     "CONTEXT CHANGED - NO TRAINING"
                                 fcb     0
-attention_ui_answer_title       fcc     "2. ATTENTION FOUND THE RECORD"
+attention_ui_answer_title       fcc     "2. ANSWER FROM CONTEXT"
                                 fcb     0
 attention_ui_model              fcc     "MODEL "
                                 fcb     0
-attention_ui_code               fcc     "SHELF "
+attention_ui_weights_locked     fcc     "WEIGHTS LOCKED"
                                 fcb     0
-attention_ui_equals_code        fcc     "= SHELF "
+attention_ui_code               fcc     "CODE "
                                 fcb     0
-attention_ui_query_label        fcc     "LOOKING FOR: "
+attention_ui_equals_code        fcc     "= CODE "
                                 fcb     0
-attention_ui_answer_label       fcc     "LOCATION: "
+attention_ui_query_label        fcc     "QUESTION: "
                                 fcb     0
-attention_ui_searched           fcc     "SEARCHED TODAY'S EXHIBIT MAP"
+attention_ui_answer_label       fcc     "ANSWER: "
+                                fcb     0
+attention_ui_searched           fcc     "SEARCHED 8 CONTEXT RECORDS"
                                 fcb     0
 attention_ui_best_match         fcc     "BEST MATCH:"
                                 fcb     0
 attention_ui_unchanged          fcc     "MODEL 751B DID NOT CHANGE"
                                 fcb     0
-attention_ui_context_label      fcc     "MAP "
+attention_ui_enter_ask          fcc     "ENTER: ASK THIS QUESTION"
                                 fcb     0
-attention_ui_of_four            fcc     " OF 4"
+attention_ui_choose             fcc     "UP/DOWN: CHOOSE ANOTHER"
                                 fcb     0
-attention_ui_enter_ask          fcc     "ENTER: FIND THIS EXHIBIT"
+attention_ui_edit_selected      fcc     "E: EDIT SELECTED RECORD"
                                 fcb     0
-attention_ui_choose             fcc     "UP/DOWN: CHOOSE AN EXHIBIT"
-                                fcb     0
-attention_ui_change_facts       fcc     "S: LOAD A DIFFERENT MAP"
+attention_ui_edit_context       fcc     "E: CHANGE THE CONTEXT"
                                 fcb     0
 attention_ui_show_lookup        fcc     "V: SHOW HOW IT LOOKED"
                                 fcb     0
-attention_ui_back_facts         fcc     "CLEAR: BACK TO THE MAP"
+attention_ui_back_facts         fcc     "CLEAR: BACK TO CONTEXT"
+                                fcb     0
+attention_ui_edit_title         fcc     "EDIT CONTEXT - NOT TRAINING"
+                                fcb     0
+attention_ui_selected_record    fcc     "SELECTED CONTEXT RECORD"
+                                fcb     0
+attention_ui_before             fcc     "BEFORE: "
+                                fcb     0
+attention_ui_after              fcc     "AFTER:  "
+                                fcb     0
+attention_ui_type_new           fcc     "TYPE A NEW CODE (0-7)"
+                                fcb     0
+attention_ui_new_code           fcc     "NEW CODE: "
+                                fcb     0
+attention_ui_model_locked       fcc     "MODEL 751B IS LOCKED"
+                                fcb     0
+attention_ui_number_apply       fcc     "NUMBER: EDIT CONTEXT"
+                                fcb     0
+attention_ui_clear_cancel       fcc     "CLEAR: CANCEL"
+                                fcb     0
+attention_ui_you_changed        fcc     "YOU CHANGED THIS RECORD"
+                                fcb     0
+attention_ui_context_edited     fcc     "CONTEXT MEMORY WAS EDITED"
+                                fcb     0
+attention_ui_enter_again        fcc     "ENTER: ASK AGAIN"
                                 fcb     0
 attention_ui_slow_title         fcc     "HOW ATTENTION SEARCHED"
                                 fcb     0
-attention_ui_one_per_enter      fcc     "ONE EXHIBIT PER ENTER"
+attention_ui_one_per_enter      fcc     "ONE RECORD PER ENTER"
                                 fcb     0
 attention_ui_best_none          fcc     "BEST SO FAR -"
                                 fcb     0
@@ -708,7 +845,7 @@ attention_ui_enter_step         fcc     "ENTER STEP"
                                 fcb     0
 attention_ui_clear_back         fcc     "CLEAR BACK"
                                 fcb     0
-attention_ui_selects            fcc     "LOCATION: SHELF "
+attention_ui_selects            fcc     "SELECTS CODE "
                                 fcb     0
 attention_ui_complete           fcc     "ATTENTION COMPLETE"
                                 fcb     0
@@ -726,3 +863,5 @@ attention_ui_hex_byte           rmb     1
 attention_ui_number             rmb     2
 attention_ui_digit              rmb     1
 attention_ui_digits_left        rmb     1
+attention_ui_edit_old_value     rmb     1
+attention_ui_edit_new_value     rmb     1

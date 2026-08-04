@@ -141,11 +141,11 @@ mark.
 EXP-011 uses a Mac-trained 160-byte attention head. The CoCo scores eight
 temporary key-value records using forty signed byte multiply-accumulates,
 selects the highest-scoring key, and copies that record's value. Its guided UI
-frames the records as a temporary museum exhibit-to-shelf map, making each
-value's source and purpose visible. Enter finds the selected exhibit; `S` loads
-a second prewritten map while preserving the query; and `V` optionally replays
-the stored scores. Up and Down choose another exhibit; Clear returns to the
-map. A `>` marks human selection and `*` marks
+labels the records as temporary context in RAM and the model weights locked.
+Enter asks; `E` opens a context editor where digits `0` through `7` change only
+the selected value byte; and `V` optionally replays the stored scores. The
+editor shows the record before and after the write. Up and Down choose another
+record; Clear returns to context. A `>` marks human selection and `*` marks
 attention, so the display does not rely on colour alone. Model identifier
 `751B` stays visible while all four contexts change.
 

@@ -905,16 +905,17 @@ says `END OF PHRASE`. We did not retrain the model. We stopped lying about what
 it predicted. Is that an opportunity? Absolutely.
 
 EXP-011 begins a new chapter after the fixed-window text models: “Can the CoCo
-use a fact I give it right now, without training on that fact?” A temporary
-museum map assigns computer exhibits to shelves. The first screen establishes
-`LISA = SHELF 2`; Enter replaces it with a focused location screen. `S` loads
-a second prewritten map where the exhibits moved and Lisa is now on shelf six.
-Enter retrieves the new location. `MODEL 751B` remains visible and unchanged.
+use a fact I give it right now, without training on that fact?” The first
+screen labels eight records as temporary context in RAM and the model weights
+locked. Enter retrieves `LISA = CODE 2`. Then `E` opens a visible context
+editor. Type `6`; the screen shows `BEFORE: LISA = CODE 2`,
+`AFTER: LISA = CODE 6`, and `MODEL 751B DID NOT CHANGE`. Enter asks the same
+question again and retrieves the edited value.
 
 The central line is:
 
-> The weights taught it how to search. The map gave it somewhere to search.
-> Attention found the relevant record.
+> Training changes the weights. Prompting changes the context. Attention uses
+> the context to produce this answer.
 
 If the room wants the mechanism, press `V`. The explicitly labelled slow view
 reveals one signed score per record and marks the best seen so far. Do not

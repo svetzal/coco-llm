@@ -85,11 +85,11 @@ interactive six-prompt workbench. Its larger training workload has not yet
 been timed on physical stock-rate hardware. EXP-006 and EXP-007 launch
 pretrained completion workbenches; say explicitly that the Mac trained their
 weights and the CoCo performs integer inference.
-EXP-011 launches a guided temporary-map demonstration. Its Mac-trained
-160-byte head runs fixed-point scoring on the CoCo. A museum scenario gives
-the values a visible purpose: each computer exhibit has a shelf on today's
-map. The primary path reveals the map, location, and a replacement map
-separately; `V` optionally replays the stored scores at presentation speed.
+EXP-011 launches a guided context-editing demonstration. Its Mac-trained
+160-byte head runs fixed-point scoring on the CoCo. A person edits Lisa's value
+from `CODE 2` to `CODE 6` in context RAM while the model weights are visibly
+locked, then asks the same question again. `V` optionally replays the stored
+scores at presentation speed.
 
 | Experiment | Useful when the conversation asks… | Surface |
 | --- | --- | --- |

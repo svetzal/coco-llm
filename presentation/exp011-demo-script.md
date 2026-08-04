@@ -1,19 +1,16 @@
-# EXP-011 live demo: finding an exhibit through attention
+# EXP-011 live demo: editing context without training
 
 ## The one idea
 
-The model already knows **how to find a matching record**. A temporary museum
-map says which shelf holds each computer exhibit. Attention finds the exhibit
-matching the request and returns the shelf written on today's map.
+The audience should see the distinction happen, not take our word for it:
 
-This is a three-beat demonstration:
+1. attention answers from the current context;
+2. a person edits one context record in RAM; and
+3. attention gives a new answer while the model weights remain locked.
 
-1. load today's exhibit map;
-2. ask where Lisa is; and
-3. load a different map without changing the model.
-
-Lisa is the through-line. The first map says `LISA = SHELF 2`. The second says
-`LISA = SHELF 6`. Model `751B` never changes.
+Lisa is the through-line. We change `LISA = CODE 2` to `LISA = CODE 6` by
+typing `6` into the context editor. There is no random reassignment and no
+training step.
 
 ## Preflight
 
@@ -24,167 +21,161 @@ make xroar-test-attention
 make present EXP=11
 ```
 
-Before presenting on physical hardware, rehearse Enter, `S`, `V`, and Clear on
-the actual keyboard. The automated XRoar test reaches the real-ROM keyboard
-loop but does not inject key events.
+Before presenting on physical hardware, rehearse Enter, `E`, `6`, `V`, and
+Clear on the actual keyboard. The automated XRoar test reaches the real-ROM
+keyboard loop but does not inject key events.
 
-## Beat 1 — Load today's map
-
-The opening screen establishes where the shelf number comes from. Today's
-map—not the model—assigns Lisa to shelf two.
+## Beat 1 — Read the current context
 
 ```text
-1. LOAD TODAY'S EXHIBIT MAP
-MODEL 751B       MAP 1 OF 4
-  AMIGA           = SHELF 7
-> LISA            = SHELF 2
-  TRS-80          = SHELF 5
-  ARCHIMEDES      = SHELF 1
-  PET             = SHELF 4
-  MACINTOSH       = SHELF 0
-  SPECTRUM        = SHELF 6
-  ATARI ST        = SHELF 3
+1. TEMPORARY CONTEXT IN RAM
+MODEL 751B       WEIGHTS LOCKED
+  AMIGA           = CODE 7
+> LISA            = CODE 2
+  TRS-80          = CODE 5
+  ARCHIMEDES      = CODE 1
+  PET             = CODE 4
+  MACINTOSH       = CODE 0
+  SPECTRUM        = CODE 6
+  ATARI ST        = CODE 3
 
-LOOKING FOR: LISA
+QUESTION: LISA
 
-ENTER: FIND THIS EXHIBIT
-
-UP/DOWN: CHOOSE AN EXHIBIT
+E: EDIT SELECTED RECORD
+ENTER: ASK THIS QUESTION
+UP/DOWN: CHOOSE ANOTHER
 ```
 
 Say:
 
-> “Imagine a little computer museum. The exhibits move around, so today's map
-> tells us which shelf holds each machine. Lisa is on shelf two because the map
-> says Lisa is on shelf two.”
+> “This table is the context—the information available for this interaction.
+> It currently says Lisa is code two. Above it, the model weights are locked.”
 
-Point first to `LISA = SHELF 2`, then to `MODEL 751B`.
+Ask the room what answer they expect, then press **Enter**.
 
-> “That other number is the model. Keep an eye on it. If I ask where Lisa is,
-> what should the answer be?”
-
-Let the room say “shelf two,” then press **Enter**.
-
-## Beat 2 — Find Lisa
-
-The map disappears. The result gets the whole screen.
+## Beat 2 — Answer from context
 
 ```text
-2. ATTENTION FOUND THE RECORD
+2. ANSWER FROM CONTEXT
 
-LOOKING FOR: LISA
+QUESTION: LISA
 
-SEARCHED TODAY'S EXHIBIT MAP
+SEARCHED 8 CONTEXT RECORDS
 
 BEST MATCH:
-  * LISA = SHELF 2
+  * LISA = CODE 2
 
-LOCATION: SHELF 2
+ANSWER: CODE 2
 
 MODEL 751B DID NOT CHANGE
 
-S: LOAD A DIFFERENT MAP
+E: CHANGE THE CONTEXT
 V: SHOW HOW IT LOOKED
-CLEAR: BACK TO THE MAP
+CLEAR: BACK TO CONTEXT
 ```
 
 Say:
 
-> “It searched the map, found the Lisa record, and copied the shelf attached
-> to it. Shelf two came from the map. It did not come from the model.”
+> “Attention found the Lisa record and copied its value. The answer came from
+> the visible context. Nothing trained.”
 
-Pause on `MODEL 751B DID NOT CHANGE`.
+Now ask the useful question:
 
-> “Using information is not the same thing as training. Think about that a
-> minute.”
+> “What would it look like to change context rather than train the model?”
 
-Do not open the score replay yet. First establish that the location follows
-the map.
+Press **E**.
 
-## Beat 3 — Load a different map
-
-Press **S**. This loads a second prewritten map; nothing is randomized at
-runtime. In the scenario, the museum rearranged its exhibits:
+## Beat 3 — Edit context in front of the audience
 
 ```text
-3. A DIFFERENT MAP ARRIVED
-MODEL 751B       MAP 2 OF 4
-  ARCHIMEDES      = SHELF 5
-  AMIGA           = SHELF 1
-  SPECTRUM        = SHELF 3
-> LISA            = SHELF 6
-  MACINTOSH       = SHELF 7
-  ATARI ST        = SHELF 4
-  TRS-80          = SHELF 0
-  PET             = SHELF 2
+EDIT CONTEXT - NOT TRAINING
 
-LOOKING FOR: LISA
+SELECTED CONTEXT RECORD
 
-ENTER: FIND THIS EXHIBIT
+BEFORE: LISA = CODE 2
+
+TYPE A NEW CODE (0-7)
+
+NEW CODE: _
+
+MODEL 751B IS LOCKED
+
+NUMBER: EDIT CONTEXT
+CLEAR: CANCEL
 ```
 
-Point to three things, in order:
+Say:
 
-1. a different map arrived;
-2. Lisa moved to shelf six; and
-3. the model is still `751B`.
+> “This is the missing action. I am changing the information supplied to the
+> model. I am not changing the model.”
 
-Ask where Lisa is now, then press **Enter**.
+Type **6**. The CoCo writes `6` into Lisa's value in context RAM and shows:
 
-> “Same model. Same exhibit. Different map. The museum moved Lisa, so the
-> answer is now shelf six.”
+```text
+CONTEXT CHANGED - NO TRAINING
+
+YOU CHANGED THIS RECORD
+
+BEFORE: LISA = CODE 2
+
+AFTER:  LISA = CODE 6
+
+CONTEXT MEMORY WAS EDITED
+
+MODEL 751B DID NOT CHANGE
+
+ENTER: ASK AGAIN
+CLEAR: BACK TO CONTEXT
+```
+
+Pause. Point to `BEFORE`, `AFTER`, and `MODEL 751B DID NOT CHANGE` in that
+order.
+
+> “We can account for the change. I typed six. One byte in context RAM changed.
+> The 160 model bytes did not.”
+
+Press **Enter**. The same question now produces `ANSWER: CODE 6`.
 
 Land the central line:
 
-> “The weights taught it how to search. The map gave it somewhere to search.
-> Attention found the relevant record.”
+> “Training changes the weights. Prompting changes the context. Attention uses
+> the context to produce this answer.”
 
-That completes the main demonstration.
+Think about that a minute.
 
-## Optional depth — Show how it searched
+## Optional depth — Show the lookup
 
-Only press **V** if the room wants the mechanism. The slow view reveals one
-signed matching score per Enter press.
+Only press **V** if the room wants the mechanism. The slow view replays one
+matching score per Enter press.
 
 > “The answer arrived too quickly to watch. This is a replay of work already
 > completed—not the processor pretending to think.”
 
-After two or three scores:
-
-> “Each number asks one narrow question: how well does this exhibit name match
-> Lisa? It is a ranking, not truth, confidence, or understanding.”
-
 When Lisa becomes the best match:
 
-> “There it is. Attention selects the matching map record, then copies its
-> shelf.”
+> “Attention selected the Lisa record by its key, then copied the value we just
+> typed.”
 
-Press **Clear** to return to the answer.
+Press **Clear** to return.
 
-## Close with the boundary
+## Connect it to an LLM
 
-> “This is attention, but it is not a transformer and it is definitely not
-> ChatGPT running on a CoCo. We isolated one useful mechanism so we could
-> actually watch it work.”
-
-Then connect it to familiar use:
-
-> “When you paste a document into a prompt, that document is like today's map.
-> It becomes context; it does not instantly become trained knowledge. Attention
-> helps the model use relevant pieces of it while producing an answer.”
+> “When you edit a prompt or paste in a document, you are doing the same kind
+> of thing: changing the model's current context, not retraining its weights.
+> Attention helps the model use that temporary information.”
 
 And the caution:
 
-> “Attention would retrieve a wrong map entry just as faithfully. Relevant is
+> “The machine will use a wrong context value just as faithfully. Relevant is
 > not the same thing as true. Is that an opportunity? It is certainly a reason
-> to care about the context we provide.”
+> to care about what we put into context.”
 
 ## Recovery paths
 
 - If a key does nothing, click XRoar once and try again.
-- If the wrong exhibit is selected, use Up or Down until it says Lisa.
-- Press Clear to return from an answer or replay to the map.
-- Press `S` until map one appears if you need to restart.
+- If the wrong record is selected, use Up or Down until it says Lisa.
+- Press Clear to leave the editor without changing context.
+- After an edit, press Clear to inspect the changed table or Enter to ask.
 - If physical hardware behaves differently, stop making a physical-hardware
   claim and use the emulator as explicitly labelled evidence.
 
@@ -193,11 +184,11 @@ And the caution:
 Safe claims:
 
 - the Mac exported 160 signed Q4.4 parameter bytes;
-- the 6809 performs forty signed multiply-accumulates per lookup;
-- direct simulation matches 96 scores across twelve novel contexts;
-- loading a different map preserves the exhibit and changes its shelf; and
-- model `751B` remains byte-identical while the map changes.
+- typing `6` changes Lisa's value byte in context RAM;
+- that edit does not write to the exported weight tables;
+- the same query changes from `CODE 2` to `CODE 6`; and
+- direct simulation checks the context edit and both answers.
 
 Do not yet claim measured physical CoCo latency or keyboard compatibility. Do
-not claim that the shelf assignments become trained knowledge, that the model
-understands the exhibits, or that this one attention head is a transformer.
+not claim that the edited record becomes trained knowledge, that the model
+understands Lisa, or that this one attention head is a transformer.
