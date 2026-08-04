@@ -2,22 +2,31 @@
 
 ## Status
 
-**Phase A supported.** A 160-parameter, width-five key-value attention head
-recalls 100% of 4,096 novel bindings after Q4.4 quantization. The result holds
-across two independent data batches and ten initialization seeds. A
-parameter-only lookup scores 12.18%, and
-an optimistic oracle limited to the last four of eight records scores 56.40%.
+**Phase A supported; Phase B implemented and emulator-supported.** A
+160-parameter, width-five key-value attention head recalls 100% of 4,096 novel
+bindings after Q4.4 quantization. The result holds across two independent data
+batches and ten initialization seeds. A parameter-only lookup scores 12.18%,
+and an optimistic oracle limited to the last four of eight records scores
+56.40%.
 
 The reference implementation, deterministic data generator, baselines, width
-sweep, quantization check, and tests exist. Run them with:
+sweep, quantization check, fixed-point 6809 inference core, interactive UI, and
+tests exist. Run them with:
 
 ```sh
 make exp011-sweep
 make exp011-replicate
+make attention-test
+make attention-ui-test
+make xroar-test-attention
+make xroar-attention
 ```
 
-No 6809 code or audience interface exists yet. Phase A establishes that the
-mechanism earns a port; it does not establish CoCo timing or behaviour.
+The direct simulator matches all eight raw scores, winning slots, and copied
+values for twelve novel contexts: 120 parity criteria in total. A second test
+proves the initial query, first answer, context change, persistent query, new
+answer, and slow-view winner. The real-ROM XRoar build reaches its keyboard
+loop. Physical CoCo timing and keyboard behaviour remain unmeasured.
 
 ## Question
 
@@ -209,18 +218,27 @@ one query byte. No softmax, probability table, or value matrix is needed at
 inference. The projected core fits easily beside a simple CoCo interface, but
 these are arithmetic projections rather than measurements.
 
+## Implemented CoCo interface
+
+The 32-by-16 workbench shows eight temporary key-value records. Up and Down
+select a query; Enter runs attention. The selected record receives a visible
+`*` marker as well as dark text, so selection is not communicated by colour
+alone. The answer names its source row and the next line states
+`MODEL UNCHANGED`.
+
+`S` cycles through four deterministic shuffled contexts while preserving the
+query token. The selected computer therefore changes row and code without any
+change to model `751B`. `V` opens an explicitly labelled `SLOW VIEW`: each
+Enter press reveals one score and the best record so far. The computation has
+already happened; the pacing belongs to the explanation, not the inference.
+
+The presenter runbook and exact Lisa path live in
+[`presentation/exp011-demo-script.md`](../presentation/exp011-demo-script.md).
+
 ## Next step
 
-Phase B should implement only fixed-point inference and a parity harness first:
-
-1. export the selected Q4.4 query and key tables;
-2. scan eight key-value records with the existing signed multiply primitive;
-3. compare every record score, winning slot, and copied value against the
-   reference implementation; and
-4. measure real instruction and cycle counts before designing the audience
-   interface.
-
-If parity and timing hold, the interface can let an audience assign temporary
-codes to familiar computer names, then query a name whose record may be
-anywhere on screen. The language should remain precise: the CoCo is consulting
-its current context, not adding the assignments to its trained knowledge.
+Run the complete interaction on a physical stock-rate CoCo 1 and the CoCo 3
+HDMI presentation path. Measure query latency, verify every keyboard control,
+and inspect the slow-view screen. Until then, describe this as emulator and
+direct-simulator evidence: the CoCo is consulting its current context, not
+adding the assignments to its trained knowledge.

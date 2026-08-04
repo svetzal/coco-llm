@@ -25,10 +25,15 @@ This folder contains the first complete bit-exact training implementation:
   integer scorer;
 - `completion_policy_exp7.asm` — punctuation tokenization and spacing plus the
   all-RAM keyboard adapter;
+- `attention_inference.asm` — EXP-011's signed Q4.4 query-key scoring and
+  parameter-free value copy;
+- `attention_ui.asm` — the eight-record context workbench and explicitly paced
+  attention-score replay;
 - `experiments/sample_gallery.asm` and
   `experiments/prompt_workbench.asm` — the lesson-specific presentation shells;
 - `coco_llm.asm` — the writable CoCo program at `$2000`;
 - `coco_llm_exp5.asm` — the prompted advertising-language variant;
+- `coco_attention.asm` — the EXP-011 stock CoCo attention workbench;
 - `tests/model_test.asm` and `tests/model_exp5_test.asm` — direct-simulator
   wrappers.
 
@@ -76,6 +81,9 @@ make xroar-test-exp6
 make model-test-exp7
 make workbench-test-exp7
 make xroar-test-exp7
+make attention-test
+make attention-ui-test
+make xroar-test-attention
 ```
 
 Launch the whole-machine demonstration:
@@ -85,6 +93,7 @@ make xroar
 make xroar-exp5
 make xroar-exp6
 make xroar-exp7
+make xroar-attention
 ```
 
 The interactive launcher explicitly enables XRoar's stock-rate limiter. The
@@ -128,6 +137,14 @@ the next word. `<END>` is also a visible ranked suggestion. Accepting it
 removes that pending separator, leaves the sentence unchanged, and displays
 `END OF PHRASE` rather than substituting a lower-ranked word or punctuation
 mark.
+
+EXP-011 uses a Mac-trained 160-byte attention head. The CoCo scores eight
+temporary key-value records using forty signed byte multiply-accumulates,
+selects the highest-scoring key, and copies that record's value. Up and Down
+choose a query, Enter asks, `S` changes the context while preserving the query,
+and `V` replays the stored scores one row at a time. A `>` marks human
+selection and `*` marks attention, so the display does not rely on colour
+alone. Model identifier `751B` stays visible while all four contexts change.
 
 The original two-MUL signed 8×16 routine remains on EXP-004's hot path.
 EXP-005's wider training data eventually creates context-vector values outside

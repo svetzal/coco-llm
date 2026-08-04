@@ -767,6 +767,7 @@ training loop. Run `make present` to see the choices, then follow the room:
 - “Can my starting words steer it?” — `make present EXP=5`
 - “Can a pretrained model do useful work?” — `make present EXP=6`
 - “What if we use the RAM hidden beneath ROM?” — `make present EXP=7`
+- “Can it use a fact I give it right now?” — `make present EXP=11`
 
 EXP-004 is the hardware centerpiece and controls its own pause before
 inference. Do not cue it from the cycle-model runtime projection; rehearse and
@@ -902,6 +903,35 @@ Then show the correction. `<END>` becomes a real popover option. Accepting it
 adds no strange marker to the sentence; the workbench closes the popover and
 says `END OF PHRASE`. We did not retrain the model. We stopped lying about what
 it predicted. Is that an opportunity? Absolutely.
+
+EXP-011 begins a new chapter after the fixed-window text models: “Can the CoCo
+use a fact I give it right now, without training on that fact?” Eight temporary
+records assign codes to familiar computer names. The selected query is Lisa.
+Enter retrieves `CODE 2`; `S` changes both Lisa's row and assignment; Enter now
+retrieves `CODE 6`. `MODEL 751B` remains visible and unchanged.
+
+The central line is:
+
+> The weights taught it how to look. The context gave it something to look at.
+> Attention decided where to look.
+
+Then press `V`. The explicitly labelled slow view reveals one signed score per
+record and marks the best seen so far. Do not imply that the CoCo needed the
+dramatic pacing: all forty multiply-accumulates already ran before the replay.
+The model compares the query with every key, chooses the highest score, and
+copies that record's value.
+
+This makes three distinctions visible that modern interfaces normally blur:
+
+- parameters hold the learned matching operation;
+- context holds temporary information; and
+- attention selects relevant context without verifying that it is true.
+
+Close the branch by naming the omission. This is key-value attention, not a
+transformer: no residual stream, normalization, feed-forward layer, stack of
+causal blocks, or natural-language answer. We isolated one mechanism so the
+audience can watch it work. The exact stage sequence and recovery paths live in
+[`exp011-demo-script.md`](exp011-demo-script.md).
 
 ## Presentation stance
 

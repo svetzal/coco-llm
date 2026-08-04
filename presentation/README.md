@@ -12,10 +12,12 @@ Supporting presentation material includes:
 - [`exhibit-copy.md`](exhibit-copy.md) — approved abstract, bio, and table copy;
 - [`table-exercises.md`](table-exercises.md) — the audience's hands-on
   next-token exercise;
+- [`exp011-demo-script.md`](exp011-demo-script.md) — presenter runbook for the
+  temporary-facts and slow-attention workbench;
 - [`card-concepts/`](card-concepts/) — exploratory visual directions for that
   exercise, not final print artwork.
 
-The presentation has four connected teaching threads:
+The presentation has five connected teaching threads:
 
 1. **Mechanism:** tokens, next-token prediction, error, and parameter updates
    are small enough to watch on a CoCo. The two-`MUL` optimization shows how
@@ -28,6 +30,9 @@ The presentation has four connected teaching threads:
    but a bounded model can still do a bounded job well.
 4. **Human agency:** people choose the task, data, training procedure, success
    criteria, verification, and acceptable consequences.
+5. **Context and attention:** training teaches a matching operation, a prompt
+   supplies temporary facts, and attention selects a relevant record without
+   adding that fact to the model's weights.
 
 The practical branch now has two explicitly pretrained completion models.
 EXP-006 spends 8 KiB on a 178-token, four-word completion model. EXP-007 asks,
@@ -39,6 +44,13 @@ trains and exports; the CoCo performs integer inference.
 Both are in the presentation launcher for conversation-driven XRoar
 demonstrations. Neither should be described as physically validated until
 keyboard behaviour and stock-rate latency are measured on the CoCo 1.
+
+EXP-011 follows that practical branch with a different capability. Its
+160-parameter head keeps a query stable while a temporary key-value assignment
+changes row and value. The screen keeps model `751B` visible, marks the source
+record with `*`, and offers an explicitly paced score replay. It is key-value
+attention, not a transformer, and remains an emulator demonstration until the
+physical keyboard and latency are measured.
 
 The bias demonstration is therefore part of the main argument, not a detached
 ethics aside. It connects the mechanics of learning directly to the need for

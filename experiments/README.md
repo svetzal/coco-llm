@@ -55,8 +55,9 @@ Current experiments:
 - [`EXP-011-contextual-associative-recall.md`](EXP-011-contextual-associative-recall.md)
   — supported reference experiment in content-addressed key-value attention.
   A 160-parameter head recalls 100% of novel contextual bindings across two
-  data batches and ten seeds after Q4.4 quantization; 6809 inference remains
-  the next gate.
+  data batches and ten seeds after Q4.4 quantization. Its fixed-point 6809
+  inference, interactive context UI, and slow attention replay pass direct and
+  real-ROM emulator gates; physical hardware remains unverified.
 
 ## Presentation commands
 
@@ -73,6 +74,7 @@ make present EXP=4
 make present EXP=5
 make present EXP=6
 make present EXP=7
+make present EXP=11
 ```
 
 EXP-004 launches the stock-rate-limited XRoar program and pauses before
@@ -82,6 +84,9 @@ interactive six-prompt workbench. Its larger training workload has not yet
 been timed on physical stock-rate hardware. EXP-006 and EXP-007 launch
 pretrained completion workbenches; say explicitly that the Mac trained their
 weights and the CoCo performs integer inference.
+EXP-011 launches the temporary-facts attention workbench. Its Mac-trained
+160-byte head runs fixed-point scoring on the CoCo; `V` replays the stored
+scores at presentation speed.
 
 | Experiment | Useful when the conversation asks… | Surface |
 | --- | --- | --- |
@@ -89,10 +94,11 @@ weights and the CoCo performs integer inference.
 | EXP-005 | Can starting words steer it? | Interactive prompted CoCo |
 | EXP-006 | Can a pretrained model save typing? | 8 KiB completion workbench |
 | EXP-007 | What changes with more memory and punctuation? | 32 KiB all-RAM |
+| EXP-011 | Can it use a fact supplied right now? | Context-attention bench |
 
 EXP-001 through EXP-003 remain recorded as architectural evidence, but are no
 longer in the runnable presentation menu. Presenter output deliberately shows
 conclusions rather than dumping every sample. The recorded evidence remains
-available for deeper inspection. The menu labels EXP-006 and EXP-007 as
-emulator demonstrations until physical keyboard behaviour and stock-rate
+available for deeper inspection. The menu labels EXP-006, EXP-007, and EXP-011
+as emulator demonstrations until physical keyboard behaviour and stock-rate
 latency are measured.

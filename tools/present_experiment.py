@@ -39,6 +39,10 @@ EXPERIMENTS = {
         "All-RAM sentence completion",
         "Interactive 32 KiB model with five-token context and punctuation.",
     ),
+    "EXP-011": (
+        "Temporary facts through attention",
+        "Interactive key-value context, reshuffle, and slow attention replay.",
+    ),
 }
 
 
@@ -55,12 +59,12 @@ def normalize_experiment(value: str) -> str:
         number = int(normalized)
     except ValueError as error:
         raise argparse.ArgumentTypeError(
-            f"unknown experiment {value!r}; try 4, 5, 6, or 7"
+            f"unknown experiment {value!r}; try 4, 5, 6, 7, or 11"
         ) from error
     experiment = f"EXP-{number:03d}"
     if experiment not in EXPERIMENTS:
         raise argparse.ArgumentTypeError(
-            f"unknown experiment {value!r}; try 4, 5, 6, or 7"
+            f"unknown experiment {value!r}; try 4, 5, 6, 7, or 11"
         )
     return experiment
 
@@ -342,11 +346,32 @@ def run_exp_007() -> dict[str, Any]:
     return payload
 
 
+def run_exp_011() -> dict[str, Any]:
+    payload = {
+        "experiment": "EXP-011",
+        "status": "interactive",
+        "parameters": 160,
+        "context_records": 8,
+        "command": "make xroar-attention",
+    }
+    heading(
+        "EXP-011 — TEMPORARY FACTS THROUGH ATTENTION",
+        "Can the CoCo use a fact supplied now without storing it in the model?",
+    )
+    print("Launching the contextual-attention workbench in stock-rate XRoar.")
+    print("Choose with Up/Down, ask with Enter, then press S for a new context.")
+    print("V opens an explicitly paced replay; Clear returns to the main screen.")
+    print()
+    subprocess.run(["make", "xroar-attention"], cwd=ROOT, check=True)
+    return payload
+
+
 RUNNERS: dict[str, Callable[[], dict[str, Any]]] = {
     "EXP-004": run_exp_004,
     "EXP-005": run_exp_005,
     "EXP-006": run_exp_006,
     "EXP-007": run_exp_007,
+    "EXP-011": run_exp_011,
 }
 
 
@@ -388,7 +413,7 @@ def parse_arguments() -> argparse.Namespace:
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    list_parser = subparsers.add_parser("list", help="list the four experiments")
+    list_parser = subparsers.add_parser("list", help="list the interactive experiments")
     list_parser.add_argument("--json", action="store_true")
 
     run_parser = subparsers.add_parser("run", help="run one experiment")

@@ -105,15 +105,16 @@ Eleven experiments now form one evidence trail:
 - EXP-009 builds the fixed four-voice CoCo performer required for music work.
 - EXP-010 tests prompted melody continuation and remains in progress.
 - EXP-011 demonstrates contextual associative recall with a tiny attention
-  head; its reference and quantization gates pass, while its 6809 port remains
-  unattempted.
+  head; its reference, quantization, 6809 parity, UI, and real-ROM emulator
+  gates pass.
 
-EXP-004 through EXP-007 are individually runnable from the presentation menu.
+EXP-004 through EXP-007 and EXP-011 are individually runnable from the
+presentation menu.
 The complete reference, assembly, UI, and XRoar integration suite passes on
-macOS. EXP-006 and EXP-007 are explicitly pretrained: the Mac trains and
-exports their weights; the CoCo performs fixed-point inference. Physical CoCo
-1 and CoCo 3 timing and keyboard validation remain the next evidence boundary,
-not a hidden completion claim.
+macOS. EXP-006, EXP-007, and EXP-011 are explicitly pretrained: the Mac trains
+and exports their weights; the CoCo performs fixed-point inference. Physical
+CoCo 1 and CoCo 3 timing and keyboard validation remain the next evidence
+boundary, not a hidden completion claim.
 
 Read [`experiments/README.md`](experiments/README.md) for the experiment index,
 [`research/model-design.md`](research/model-design.md) for the implemented
@@ -133,6 +134,7 @@ make xroar-test
 make xroar-test-exp5
 make xroar-test-exp6
 make xroar-test-exp7
+make xroar-test-attention
 ```
 
 The XRoar checks use Stacey's locally owned Tandy ROM images. See
@@ -149,10 +151,11 @@ experiments:
 make present
 make present EXP=4
 make present EXP=5
+make present EXP=11
 ```
 
 The menu starts at EXP-004, the first complete 6809 learning loop. Run without
-`EXP` to list all four demonstrations:
+`EXP` to list all five demonstrations:
 
 | Experiment | Demonstration | Command |
 | --- | --- | --- |
@@ -160,6 +163,7 @@ The menu starts at EXP-004, the first complete 6809 learning loop. Run without
 | EXP-005 | Prompted 1980s-style marketing language | `make present EXP=5` |
 | EXP-006 | 8 KiB, four-word completion workbench | `make present EXP=6` |
 | EXP-007 | 32 KiB all-RAM sentence completion | `make present EXP=7` |
+| EXP-011 | Temporary facts through attention | `make present EXP=11` |
 
 ## Watch it train in XRoar
 

@@ -16,7 +16,9 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp008-replay music-tune music-cycles music-bin music-test \
 	xroar-music music-dsk exp010-corpus exp010-dance exp010-model \
 	exp010-core exp010-test exp010-demo exp010-demo-test \
-	xroar-melody exp011-sweep exp011-replicate present tools
+	xroar-melody exp011-sweep exp011-replicate exp011-model \
+	attention-bin attention-test attention-ui-test xroar-test-attention \
+	xroar-attention present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -68,6 +70,33 @@ exp011-sweep:
 exp011-replicate:
 	$(UV) run python tools/run_exp_011.py --training-seed 1111 \
 		--test-seed 1112 --seed 6814 --sweep-seed-start 6814 --sweep
+
+exp011-model:
+	$(UV) run python tools/export_exp_011.py
+
+attention-bin: build/coco-attention.bin
+
+attention-test: build/attention-parity-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run $<
+
+attention-ui-test: build/attention-ui-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run $<
+
+xroar-test-attention: build/coco-attention.bin build/coco-attention.sym \
+		build/roms/.coco1-roms
+	$(UV) run python tools/test_xroar.py \
+		--xroar $(XROAR) --binary build/coco-attention.bin \
+		--basic-rom $(COCO_BASIC_ROM) \
+		--extended-basic-rom $(COCO_EXTBASIC_ROM) \
+		--symbols build/coco-attention.sym \
+		--trap-symbol attention_ui_wait
+
+xroar-attention: build/coco-attention.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-attention.bin
 
 MUSIC_RATE ?= 5679
 # Toolshed's decb is the reference DECB disk tool; override if it moves.
@@ -170,7 +199,8 @@ xroar-music: build/coco-music.bin build/roms/.coco1-roms
 		-ratelimit -run build/coco-music.bin
 
 test: reference-test asm-test model-test model-test-exp5 model-test-exp6 \
-	workbench-test-exp6 model-test-exp7 workbench-test-exp7
+	workbench-test-exp6 model-test-exp7 workbench-test-exp7 \
+	attention-test attention-ui-test
 
 reference-test:
 	$(UV) sync
@@ -400,6 +430,32 @@ build/exp007/model_data.inc build/exp007/weights.bin \
 		experiments/data/EXP-007-sentence-training.txt \
 		experiments/data/EXP-007-sentence-holdout.txt
 	$(UV) run python tools/export_exp_007.py
+
+build/exp011/attention_data.inc build/exp011/weights.bin \
+		build/exp011/manifest.json build/exp011/test-vectors.json: \
+		tools/export_exp_011.py src/reference/associative_attention.py
+	$(UV) run python tools/export_exp_011.py
+
+build/coco-attention.bin: src/6809/coco_attention.asm \
+		src/6809/attention_inference.asm src/6809/attention_ui.asm \
+		build/exp011/attention_data.inc
+	lwasm --6809 --format=decb --output=$@ $<
+
+build/coco-attention.raw build/coco-attention.sym: src/6809/coco_attention.asm \
+		src/6809/attention_inference.asm src/6809/attention_ui.asm \
+		build/exp011/attention_data.inc
+	lwasm --6809 --format=raw --symbol-dump=build/coco-attention.sym \
+		--output=build/coco-attention.raw $<
+
+build/attention-parity-test.asm: build/coco-attention.raw \
+		build/coco-attention.sym build/exp011/test-vectors.json \
+		tools/make_attention_parity_test.py
+	$(UV) run python tools/make_attention_parity_test.py --output $@
+
+build/attention-ui-test.asm: build/coco-attention.raw \
+		build/coco-attention.sym build/exp011/manifest.json \
+		tools/make_attention_ui_test.py
+	$(UV) run python tools/make_attention_ui_test.py --output $@
 
 build/coco-llm.bin: src/6809/coco_llm.asm \
 		$(6809_COMMON_SOURCES) $(6809_EXP004_SOURCES) build/model_data.inc

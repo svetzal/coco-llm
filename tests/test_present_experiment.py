@@ -17,6 +17,7 @@ def test_experiment_aliases_are_easy_to_type() -> None:
     assert normalize_experiment("EXP-004") == "EXP-004"
     assert normalize_experiment("005") == "EXP-005"
     assert normalize_experiment("7") == "EXP-007"
+    assert normalize_experiment("11") == "EXP-011"
 
 
 def test_presentation_menu_follows_the_6809_learning_journey() -> None:
@@ -25,6 +26,7 @@ def test_presentation_menu_follows_the_6809_learning_journey() -> None:
         "EXP-005",
         "EXP-006",
         "EXP-007",
+        "EXP-011",
     ]
 
 

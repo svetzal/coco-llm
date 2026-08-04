@@ -201,6 +201,12 @@ it recalls 100% of 4,096 novel test bindings after signed Q4.4 quantization.
 Inference needs 40 signed byte multiplications and a signed 16-bit score
 accumulator.
 
+The 6809 core now matches 96 reference scores across twelve novel contexts,
+including every winning slot and copied value. Its 32-by-16 workbench keeps the
+model identifier visible while cycling four temporary contexts and provides an
+explicitly paced score replay. Real-ROM XRoar reaches the keyboard loop;
+physical timing and keyboard behaviour remain unmeasured.
+
 This is key-value attention, not a transformer. It deliberately omits causal
 self-attention over a token stream, learned value projections, positional
 encoding, residual connections, normalization, and a feed-forward layer. The
@@ -219,7 +225,6 @@ considered.
    stock CoCo 1?
 5. Does the CoCo 3 HDMI presentation path preserve keyboard and display
    behaviour?
-6. Does the EXP-011 fixed-point attention scan remain bit-exact and fast on the
-   6809?
+6. What is EXP-011's measured query latency on a physical stock-rate CoCo 1?
 7. After associative recall, which additional transformer mechanism would add
    enough learning value to justify its memory and arithmetic cost?
