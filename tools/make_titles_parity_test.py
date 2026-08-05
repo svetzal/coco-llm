@@ -86,7 +86,13 @@ def main() -> None:
     symbols = SYMBOLS.read_text()
     address = {
         name: symbol(symbols, name)
-        for name in ("load_parameters", "fill_screen", "rng_state")
+        for name in (
+            "load_parameters",
+            "fill_screen",
+            "level_name",
+            "reset_level_names",
+            "rng_state",
+        )
     }
     cells, titles = expected_screen()
 
@@ -132,12 +138,33 @@ def main() -> None:
         "        std     sum",
         f"        cmpx    #${SCREEN + ROWS * COLUMNS:04X}",
         "        blo     sum_next",
-        "        swi",
-        "sum     rmb     2",
     ]
     expectations.append(f";! sum = #${checksum:04X}")
+
+    # The game shows one name on the top row, centred. Same generator, same
+    # stream, so the first level name is the first title of the screen above.
+    first = titles[0]
+    indent = (COLUMNS - len(first)) // 2
+    centred = [BLANK] * COLUMNS
+    for offset, character in enumerate(first):
+        centred[indent + offset] = ord(character) & 0x3F
+    lines += [
+        "; --- one centred level name ---",
+        f"        jsr     ${address['reset_level_names']:04X}",
+        f"        ldd     #${RNG_SEED:04X}",
+        f"        std     ${address['rng_state']:04X}",
+        f"        jsr     ${address['level_name']:04X}",
+    ]
     for column in range(COLUMNS):
-        lines.append(f"c{column:02d} rmb 1")
+        lines.append(f"        lda     ${SCREEN + column:04X}")
+        lines.append(f"        sta     L{column:02d}")
+        expectations.append(f";! L{column:02d} = #${centred[column]:02X}")
+    # Every reservation sits past the final swi. Left among the code, they are
+    # executed: a block of rmb between two phases ran as instructions.
+    lines.append("        swi")
+    lines.append("sum     rmb     2")
+    lines += [f"c{column:02d} rmb 1" for column in range(COLUMNS)]
+    lines += [f"L{column:02d} rmb 1" for column in range(COLUMNS)]
     lines.append("")
 
     for load, data in decb_segments(BINARY.read_bytes()):

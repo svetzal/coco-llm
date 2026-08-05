@@ -33,8 +33,9 @@ start
         ldd     #$1a2b
         std     rng_state
 
+        lbsr    reset_level_names
 titles_again
-        lbsr    fill_screen
+        lbsr    level_name
         ifdef   DIRECT_TEST
         swi
         else
@@ -56,6 +57,38 @@ copy_parameter
         blo     copy_parameter
         rts
 
+; The game's entry point: one name, centred on the top row. Names already
+; used this session are refused along with the real episodes, so a player does
+; not meet the same level twice.
+level_name
+        ldx     #SCREEN
+        lda     #$60
+clear_top
+        sta     ,x+
+        cmpx    #SCREEN+SCREEN_COLS
+        blo     clear_top
+
+        lbsr    make_title
+        tst     title_length
+        beq     level_name_done
+        lda     #SCREEN_COLS
+        suba    title_length
+        lsra
+        ldx     #SCREEN
+        leax    a,x
+        stx     row_pointer
+        lbsr    print_title
+        lbsr    remember_title
+level_name_done
+        rts
+
+reset_level_names
+        clr     seen_count
+        rts
+
+; Sixteen names at once. This is the evidence surface rather than the game
+; surface: a whole screen makes a wrong one obvious, and the parity test
+; compares all 512 cells against the Mac.
 fill_screen
         ldx     #SCREEN
         lda     #$60
@@ -64,7 +97,7 @@ clear_cell
         cmpx    #SCREEN+SCREEN_ROWS*SCREEN_COLS
         blo     clear_cell
 
-        clr     seen_count
+        lbsr    reset_level_names
         ldx     #SCREEN
         stx     row_pointer
         lda     #SCREEN_ROWS
