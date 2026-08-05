@@ -72,6 +72,12 @@ Current experiments:
   400-byte frame model plus a tagged noun table, 3,874 bytes in total,
   agreeing with the Mac on all 512 screen cells. Its training is capped at
   eleven epochs by 16-bit logit accumulation, which visibly costs style.
+- [`EXP-013-rpsls-opponent.md`](EXP-013-rpsls-opponent.md) — an RPSLS opponent
+  that learns its player. Starts from EXP-008's null result rather than from a
+  model: a 75-byte table conditioned on the last move and the last outcome
+  scores 80.0% against six declared synthetic players, beating tables six times
+  its size. Replicates EXP-008's secondary hypothesis — situation beats
+  history. No human has played it and nothing is written for the 6809.
 
 ## Presentation commands
 
