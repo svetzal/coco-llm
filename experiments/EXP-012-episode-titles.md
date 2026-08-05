@@ -148,6 +148,73 @@ audience could.
   something the player supplies is a different proposition from a free-running
   one.
 
+## Entities as units (2026-08-04)
+
+Stacey asked whether there is an opportunity to treat an entity like "Squire of
+Gothos" as one token instead of three. There is, but the measurement moves the
+idea somewhere other than where it was aimed. Three schemes were compared with
+`tools/measure_tos_tokenizations.py`:
+
+| scheme | vocabulary | tokens | bigrams | **repeated** | bytes |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| words (baseline) | 180 | 259 | 174/180 | **3%** | 2,977 |
+| merged — `SQUIRE OF GOTHOS` is one token | 136 | 197 | 112/118 | **5%** | 2,612 |
+| slotted — `<X> OF <X>`, entities lifted out | **35** | 223 | 55/144 | **62%** | **491** |
+
+Read literally, the proposal is the middle row, and it works as advertised:
+the vocabulary drops by a quarter and the corpus shortens to 2.5 tokens per
+title. But the share of adjacent pairs that occur more than once goes from 3%
+to 5%. Merging makes the corpus cheaper without making it learnable, because
+the pairs that repeat were never the content ones — they are `OF THE` and
+`IN THE`, and they still are.
+
+The version that works does the opposite of merging. Rather than swallowing the
+`OF` into a bigger token, it **lifts the entities out** and keeps the frame:
+
+```
+THE SQUIRE OF GOTHOS       ->  THE <X> OF <X>            + { SQUIRE, GOTHOS }
+A TASTE OF ARMAGEDDON      ->  A <X> OF <X>              + { TASTE, ARMAGEDDON }
+THE TROUBLE WITH TRIBBLES  ->  THE <X> WITH <X>          + { TROUBLE, TRIBBLES }
+THE CITY ON THE EDGE OF..  ->  THE <X> ON THE <X> OF <X> + { CITY, EDGE, FOREVER }
+```
+
+79 titles collapse to **32 distinct frames**, and 54 of them use a frame that
+occurs more than once. The four commonest account for 47 titles: `THE <X>`
+(21), `<X>` alone (18), `<X> OF <X>` (4), `THE <X> OF <X>` (4). Adjacent-pair
+repetition rises from 3% to **62%** — the corpus finally contains the same
+thing happening twice, which is the precondition for learning anything.
+
+The cost collapses too. The frame model needs a 35-token vocabulary and **491
+bytes**, against 2,977 for the word model. The 113 distinct entity phrases lift
+out into a separate table costing 1,067 bytes to spell and no parameters at
+all if they are drawn from rather than modelled.
+
+### This is naturally two models
+
+Which is the more interesting consequence, given that the motivating idea was
+several models in a game. The decomposition falls out into:
+
+- a **frame model** — small, with real repeated evidence, learning that Star
+  Trek titles look like `THE <X> OF <X>`;
+- an **entity lexicon** — 113 phrases with no internal structure worth
+  learning, sampled from rather than predicted.
+
+Recombining them generates titles that are genuinely new while staying in the
+idiom, which is the thing the word-level model could not do. Only two entity
+phrases are ever reused across titles (`TOMORROW`, `RETURN`), so a recombining
+generator has a large space to work in.
+
+Two cautions on this result. The frame-word list is **hand-authored** — a
+closed-class list of articles, prepositions, auxiliaries and determiners — and
+the 62% figure depends on it; a different list gives a different number. And
+the claim that a frame model would *learn* these frames is still inference from
+the corpus statistics, not an observed training result.
+
+A smaller free saving noted along the way: three vocabulary entries exist only
+because punctuation is attached to the word (`OF` and `OF?`, `MIRROR` and
+`MIRROR,`, `I` and `I,`). Stripping it to a separate token takes the word
+vocabulary from 179 to 176.
+
 ## Open questions
 
 1. **What is the game?** This is Stacey's to answer and everything else waits on

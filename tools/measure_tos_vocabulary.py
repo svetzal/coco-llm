@@ -71,14 +71,19 @@ def main() -> None:
     print(f"  per title     {len(words) / len(titles):.1f}")
     print(f"  longest       {max(len(t.split()) for t in titles)} words")
     print()
-    print(f"vocabulary      {len(vocabulary)} tokens "
-          f"({len(spelled)} words + 1 boundary)")
+    print(
+        f"vocabulary      {len(vocabulary)} tokens ({len(spelled)} words + 1 boundary)"
+    )
 
     once = [word for word, n in counts.items() if n == 1]
-    print(f"  used once     {len(once)} ({100 * len(once) / len(spelled):.0f}% "
-          f"of the words, {100 * len(once) / len(words):.0f}% of the corpus)")
-    print(f"  commonest     " + ", ".join(
-        f"{word} x{n}" for word, n in counts.most_common(8)))
+    print(
+        f"  used once     {len(once)} ({100 * len(once) / len(spelled):.0f}% "
+        f"of the words, {100 * len(once) / len(words):.0f}% of the corpus)"
+    )
+    print(
+        "  commonest     "
+        + ", ".join(f"{word} x{n}" for word, n in counts.most_common(8))
+    )
     print()
 
     print("coverage of the corpus by the commonest words")
@@ -91,21 +96,26 @@ def main() -> None:
             if target not in marks and share >= target:
                 marks[target] = index
     for target, index in sorted(marks.items()):
-        print(f"  {100 * target:>3.0f}%  {index:>4} words  "
-              f"(+1 boundary = {index + 1} tokens)")
+        print(
+            f"  {100 * target:>3.0f}%  {index:>4} words  "
+            f"(+1 boundary = {index + 1} tokens)"
+        )
     print()
 
     print(f"cost at context={config.context}, embedding={config.embedding}")
-    print(f"  {'vocab':>6} {'params':>7} {'Q4.4 bytes':>11} "
-          f"{'spelling':>9} {'total':>7}")
+    print(
+        f"  {'vocab':>6} {'params':>7} {'Q4.4 bytes':>11} {'spelling':>9} {'total':>7}"
+    )
     for target in sorted(marks):
         keep = [word for word, _ in counts.most_common(marks[target])]
         size = len(keep) + 1
         params = parameter_count(size, config)
         spelling = spelling_bytes(keep)
         label = f"{100 * target:.0f}%"
-        print(f"  {size:>6} {params:>7} {params:>11} {spelling:>9} "
-              f"{params + spelling:>7}   {label} coverage")
+        print(
+            f"  {size:>6} {params:>7} {params:>11} {spelling:>9} "
+            f"{params + spelling:>7}   {label} coverage"
+        )
 
 
 if __name__ == "__main__":

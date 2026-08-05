@@ -57,7 +57,14 @@ LISTING = re.compile(r"^([0-9A-F]{4}) ([0-9A-F]*)\s+\(\s*(\S+?)\s*\):\d+\s+(.*)$
 def listing() -> list[tuple[str, str, str]]:
     """(object bytes, source file, source text) for every assembled line."""
     with_list = subprocess.run(
-        ["lwasm", "--6809", "--format=decb", "--list=-", "--output=/dev/null", str(TOP)],
+        [
+            "lwasm",
+            "--6809",
+            "--format=decb",
+            "--list=-",
+            "--output=/dev/null",
+            str(TOP),
+        ],
         capture_output=True,
         text=True,
         check=True,

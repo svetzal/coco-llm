@@ -49,8 +49,7 @@ TITLE_LINE = re.compile(r"^\|Title=(.*)$")
 # an en dash and "Mudd's Women" with a typographic apostrophe; both are folded
 # to what the machine can actually print, and anything left over is an error
 # rather than a silent substitution.
-ASCII_FOLD = {"–": "-", "—": "-", "‘": "'", "’": "'",
-              "“": '"', "”": '"', "…": "..."}
+ASCII_FOLD = {"–": "-", "—": "-", "‘": "'", "’": "'", "“": '"', "”": '"', "…": "..."}
 
 
 def fetch(page: str) -> str:

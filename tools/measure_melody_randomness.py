@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from itertools import pairwise
 from pathlib import Path
 
 import numpy as np
@@ -47,8 +48,24 @@ CHORD_ROWS = 8
 METRE = 3
 PAD = 34
 SEED_ROWS = 16
-SEED_FIGURE = [12, HOLD, 16, HOLD, 19, HOLD, 16, HOLD,
-               23, HOLD, 19, HOLD, 16, HOLD, 12, HOLD]
+SEED_FIGURE = [
+    12,
+    HOLD,
+    16,
+    HOLD,
+    19,
+    HOLD,
+    16,
+    HOLD,
+    23,
+    HOLD,
+    19,
+    HOLD,
+    16,
+    HOLD,
+    12,
+    HOLD,
+]
 
 MAJOR = {0, 2, 4, 5, 7, 9, 11}
 MINOR = {0, 2, 3, 5, 7, 8, 10}
@@ -80,9 +97,16 @@ def draw(scores, random: XorShift16, shift: int, floor: int) -> int:
     return len(weights) - 1
 
 
-def generate(manifest: dict, seed: int, rows: int, shift: int, floor: int,
-             mode: int, progression=PROGRESSION,
-             chord_rows: int = CHORD_ROWS) -> tuple[list[int], float]:
+def generate(
+    manifest: dict,
+    seed: int,
+    rows: int,
+    shift: int,
+    floor: int,
+    mode: int,
+    progression=PROGRESSION,
+    chord_rows: int = CHORD_ROWS,
+) -> tuple[list[int], float]:
     embeddings = [np.asarray(t, dtype=np.int64) for t in manifest["embeddings"]]
     weights = np.asarray(manifest["weights"], dtype=np.int64)
     biases = np.asarray(manifest["biases"], dtype=np.int64)
@@ -116,7 +140,7 @@ def statistics(sequences: list[list[int]], scale: set[int]) -> dict:
         sounded = [t for t in tokens if t not in (HOLD, REST)]
         notes += len(sounded)
         chromatic += sum(1 for t in sounded if t % 12 not in scale)
-        intervals = [abs(b - a) for a, b in zip(sounded, sounded[1:])]
+        intervals = [abs(b - a) for a, b in pairwise(sounded)]
         steps += intervals
         leaps += sum(1 for i in intervals if i > 7)
     return {
@@ -144,7 +168,7 @@ def corpus_baseline() -> dict:
         sounded = [t for t in tokens if t not in (HOLD, REST)]
         notes += len(sounded)
         chromatic += sum(1 for t in sounded if t % 12 not in scale)
-        intervals = [abs(b - a) for a, b in zip(sounded, sounded[1:])]
+        intervals = [abs(b - a) for a, b in pairwise(sounded)]
         steps += intervals
         leaps += sum(1 for i in intervals if i > 7)
     return {
@@ -175,13 +199,17 @@ def main() -> None:
 
     baseline = corpus_baseline()
     print("Real fiddle tunes (holdout) - the target, not a floor to beat")
-    print(f"  notes {baseline['notes']}   out-of-scale "
-          f"{baseline['out_of_scale']:.1f}%   mean step "
-          f"{baseline['mean_step']:.2f}   leaps {baseline['leaps']:.1f}%")
+    print(
+        f"  notes {baseline['notes']}   out-of-scale "
+        f"{baseline['out_of_scale']:.1f}%   mean step "
+        f"{baseline['mean_step']:.2f}   leaps {baseline['leaps']:.1f}%"
+    )
     print()
     print(f"Generated, {arguments.tunes} tunes of {arguments.rows} rows each")
-    print(f"  {'shift':>5} {'floor':>5} {'out-of-scale':>13} {'mean step':>10} "
-          f"{'leaps':>7} {'floor mass':>11}")
+    print(
+        f"  {'shift':>5} {'floor':>5} {'out-of-scale':>13} {'mean step':>10} "
+        f"{'leaps':>7} {'floor mass':>11}"
+    )
 
     for setting in arguments.settings.split(","):
         shift, floor = (int(part) for part in setting.split(":"))
@@ -189,7 +217,11 @@ def main() -> None:
         for index in range(arguments.tunes):
             mode = index % 2
             tokens, mass = generate(
-                manifest, 0x1A2B + index * 977, arguments.rows, shift, floor,
+                manifest,
+                0x1A2B + index * 977,
+                arguments.rows,
+                shift,
+                floor,
                 mode,
                 tuple(int(c) for c in arguments.progression.split(",")),
                 arguments.chord_rows,
@@ -200,14 +232,18 @@ def main() -> None:
         major = statistics(sequences[0::2], MAJOR)
         minor = statistics(sequences[1::2], MINOR)
         notes = major["notes"] + minor["notes"]
-        out = (major["out_of_scale"] * major["notes"]
-               + minor["out_of_scale"] * minor["notes"]) / notes
+        out = (
+            major["out_of_scale"] * major["notes"]
+            + minor["out_of_scale"] * minor["notes"]
+        ) / notes
         step = (major["mean_step"] + minor["mean_step"]) / 2
         leaps = (major["leaps"] + minor["leaps"]) / 2
         shipped = (SAMPLE_SHIFT, min(EXP_LUT))
         marker = "  <- shipped" if (shift, floor) == shipped else ""
-        print(f"  {shift:>5} {floor:>5} {out:>12.1f}% {step:>10.2f} "
-              f"{leaps:>6.1f}% {100 * float(np.mean(masses)):>10.1f}%{marker}")
+        print(
+            f"  {shift:>5} {floor:>5} {out:>12.1f}% {step:>10.2f} "
+            f"{leaps:>6.1f}% {100 * float(np.mean(masses)):>10.1f}%{marker}"
+        )
 
 
 if __name__ == "__main__":

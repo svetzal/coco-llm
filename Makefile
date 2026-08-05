@@ -18,7 +18,8 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp010-core exp010-test exp010-demo exp010-demo-test \
 	xroar-melody exp011-sweep exp011-replicate exp011-model \
 	attention-bin attention-test attention-ui-test xroar-test-attention \
-	xroar-attention exp012-corpus exp012-vocabulary present tools
+	xroar-attention exp012-corpus exp012-vocabulary exp012-tokenizations \
+	present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -139,6 +140,9 @@ exp012-corpus:
 
 exp012-vocabulary:
 	$(UV) run python tools/measure_tos_vocabulary.py
+
+exp012-tokenizations:
+	$(UV) run python tools/measure_tos_tokenizations.py
 
 build/exp010/melody_model.inc: tools/export_melody_model.py \
 		src/reference/melody_fixed.py src/reference/melody_lm.py \
