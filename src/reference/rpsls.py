@@ -183,3 +183,89 @@ class Backoff(Predictor):
     def observe(self, player: int, opponent: int) -> None:
         for table in self.tables:
             table.observe(player, opponent)
+
+
+UNKNOWN, KNOWN_LOSS, KNOWN_TIE, KNOWN_WIN = 0, 1, 2, 3
+
+
+class RuleLearner:
+    """Plays without being told which move beats which.
+
+    Every predictor above is handed `counter()` - it guesses the player's move
+    and plays the known answer. That is a machine that has read the rules. A
+    person sitting down to Rock Paper Scissors Lizard Spock for the first time
+    has not, and finds out the same way this does: throw something, see what
+    happened, remember it.
+
+    So two things are learned at once, and they behave completely differently:
+
+      the rules      25 cells, deterministic, stationary. One cell is revealed
+                     per round and never changes afterwards. This is learnable
+                     to certainty, and the only question is how fast.
+      the opponent   non-stationary and adversarial, exactly as before.
+
+    Until a cell is known there is nothing to exploit, so early play is
+    exploration whether or not it is chosen: a move whose outcome against the
+    predicted throw has never been seen is worth more than a move known to tie.
+
+    `symmetric` is a prior, not an observation. Seeing that ROCK beats SCISSORS
+    tells a person that SCISSORS loses to ROCK; a table of independent cells has
+    to be told that twice. It halves what must be seen, and it is an assumption
+    about the game rather than a fact read off it, so it is measured separately.
+    """
+
+    def __init__(self, opponent, random: XorShift16, symmetric: bool = False):
+        self.rules = [[UNKNOWN] * MOVE_COUNT for _ in range(MOVE_COUNT)]
+        self.opponent = opponent
+        self.random = random
+        self.symmetric = symmetric
+
+    @property
+    def table_bytes(self) -> int:
+        return MOVE_COUNT * MOVE_COUNT + self.opponent.table_bytes
+
+    def known_cells(self) -> int:
+        return sum(cell != UNKNOWN for row in self.rules for cell in row)
+
+    def choose(self) -> int:
+        """Best against the predicted throw; an unseen cell beats a known tie."""
+        predicted = self.opponent.predict()
+        column = [self.rules[move][predicted] for move in range(MOVE_COUNT)]
+
+        wins = [m for m in range(MOVE_COUNT) if column[m] == KNOWN_WIN]
+        if wins:
+            return wins[self.random.below(len(wins))]
+        unseen = [m for m in range(MOVE_COUNT) if column[m] == UNKNOWN]
+        if unseen:
+            return unseen[self.random.below(len(unseen))]
+        ties = [m for m in range(MOVE_COUNT) if column[m] == KNOWN_TIE]
+        if ties:
+            return ties[self.random.below(len(ties))]
+        return self.random.below(MOVE_COUNT)
+
+    def observe(self, own: int, other: int) -> None:
+        result = outcome(own, other)
+        self.rules[own][other] = KNOWN_LOSS + result
+        if self.symmetric:
+            mirror = {KNOWN_WIN: KNOWN_LOSS, KNOWN_LOSS: KNOWN_WIN}
+            self.rules[other][own] = mirror.get(
+                KNOWN_LOSS + result, KNOWN_LOSS + result
+            )
+        self.opponent.observe(other, own)
+
+
+class RulesKnown:
+    """The EXP-013 opponent: predict, then play the counter it was given."""
+
+    def __init__(self, opponent):
+        self.opponent = opponent
+        self.table_bytes = opponent.table_bytes
+
+    def known_cells(self) -> int:
+        return MOVE_COUNT * MOVE_COUNT
+
+    def choose(self) -> int:
+        return counter(self.opponent.predict())
+
+    def observe(self, own: int, other: int) -> None:
+        self.opponent.observe(other, own)

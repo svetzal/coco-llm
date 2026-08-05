@@ -95,9 +95,73 @@ own generator. It did, once — the first run scored a uniform *predictor* at
 people actually do when told to be unpredictable. A human who genuinely
 randomizes cannot be beaten; the demo's honesty depends on saying so.
 
+## Learning the rules too (2026-08-04)
+
+Everything above hands the machine `counter()` — it guesses your move and
+plays the known answer. That is an opponent that has read the rulebook. Stacey
+asked for one that has not: it makes a move, sees what happened, and works out
+the game the same way a person does.
+
+That makes two things learnable at once, and they behave nothing alike:
+
+| | rules | opponent |
+| --- | --- | --- |
+| size | 25 cells | 15 contexts × 5 |
+| stationary? | yes, permanently | no, adversarial |
+| evidence rate | one cell per round | one count per round |
+| learnable to certainty? | yes | no |
+
+The agent keeps a 25-byte outcome table (`unknown / loss / tie / win`) beside
+the 75-byte opponent table — **100 bytes in total** — and picks the best move
+against its predicted throw, preferring a *known win*, then an *unseen cell*,
+then a known tie. Exploration is not a separate mode: an unseen cell simply
+outranks a tie.
+
+Score per 25 rounds, 150 rounds total:
+
+| player | agent | 1-25 | 26-50 | 51-75 | 76-100 | cells known |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| cycle | knows rules | 82% | 100% | 100% | 100% | 25/25 |
+| cycle | **learns rules** | 64% | **100%** | 100% | 100% | **13/25** |
+| win-stay | knows rules | 80% | 100% | 100% | 100% | 25/25 |
+| win-stay | **learns rules** | 56% | **100%** | 100% | 100% | **13/25** |
+| reactive | knows rules | 86% | 86% | 98% | 100% | 25/25 |
+| reactive | **learns rules** | 76% | **100%** | 100% | 100% | **8/25** |
+| favourite | knows rules | 78% | 84% | 86% | 76% | 25/25 |
+| favourite | **learns rules** | 74% | 82% | 82% | 72% | **7/25** |
+| random | either | ~50% | ~50% | ~50% | ~50% | 16-25/25 |
+
+### Three things this says
+
+**Not knowing the rules costs one block.** By rounds 26-50 the learner has
+caught the rulebook-reading opponent on every structured player, and on
+`reactive` it is ahead — 100% against 86%. The whole price of ignorance is paid
+in the first twenty-five rounds, where it drops 10-24 points.
+
+**It never learns the whole game, and does not need to.** Against `favourite`
+it reaches 86% knowing **7 of 25 cells**; against `reactive`, 8. You only need
+a winning answer to the moves your opponent actually throws, so how much of the
+rulebook the machine ends up knowing is a readout of how varied *you* are. A
+uniform player teaches it 16-25 cells; a habit player teaches it seven. That is
+a better thing to put on screen than an accuracy percentage.
+
+**Symmetry does not help.** Filling `(b,a)` from `(a,b)` — the inference a
+person makes instantly — fills the table faster and changes the score not at
+all. The binding constraint was never rule knowledge; it was reading the
+opponent. Worth knowing before spending bytes on a prior.
+
+So the honest framing for the demo is not "it learns the rules". It is that
+**learning the rules is the easy half**, over in a couple of dozen rounds, and
+the half that never finishes is learning you.
+
 ## Decision
 
-Drive the opponent with the **order-1 + outcome table, 75 bytes**: 15 contexts
+Drive the opponent with the **order-1 + outcome table, 75 bytes**, and let it
+learn the rules rather than shipping them — 25 more bytes, no lasting cost, and
+it turns the first thirty seconds of play into the demonstration instead of a
+warm-up. Full agent: **100 bytes**.
+
+The predictor itself: **order-1 + outcome, 75 bytes**: 15 contexts
 (5 last moves × 3 outcomes) × 5 counts. Byte counts that halve on overflow,
 which is both how the CoCo would hold them and how the table forgets a player
 who changes tactics mid-session.

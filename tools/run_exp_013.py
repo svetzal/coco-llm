@@ -34,8 +34,11 @@ from rpsls import (
     MOVE_COUNT,
     MOVES,
     TIE,
+    WIN,
     Backoff,
     FrequencyTable,
+    RuleLearner,
+    RulesKnown,
     Uniform,
     XorShift16,
     counter,
@@ -161,10 +164,57 @@ def play(player_class, predictor, rounds: int, seed: int) -> tuple[float, float]
     return 100.0 * hits / rounds, 100.0 * score / rounds
 
 
+def play_agent(player_class, agent, rounds: int, seed: int, block: int):
+    """Score per block of rounds, for an agent that chooses its own move.
+
+    Blocks rather than a running mean, because the question is how fast it
+    becomes competent, and a running mean hides the early rounds forever.
+    """
+    player = player_class("player", XorShift16(seed ^ PLAYER_SEED_OFFSET))
+    blocks, score = [], 0.0
+    for index in range(rounds):
+        own = agent.choose()
+        thrown = player.move()
+        result = outcome(own, thrown)
+        score += 1.0 if result == WIN else 0.5 if result == TIE else 0.0
+        player.observe(thrown, own)
+        agent.observe(own, thrown)
+        if (index + 1) % block == 0:
+            blocks.append(100.0 * score / block)
+            score = 0.0
+    return blocks, agent.known_cells()
+
+
+def learning_curve(arguments) -> None:
+    block = arguments.block
+    count = arguments.rounds // block
+    variants = (
+        ("knows rules", lambda r: RulesKnown(FrequencyTable(1, True))),
+        ("learns rules", lambda r: RuleLearner(FrequencyTable(1, True), r)),
+        ("learns, symmetric", lambda r: RuleLearner(FrequencyTable(1, True), r, True)),
+    )
+    print()
+    print(f"Learning the rules as well: score per {block} rounds")
+    header = "".join(
+        f"{f'{i * block + 1}-{(i + 1) * block}':>10}" for i in range(count)
+    )
+    for label, player_class in PLAYERS:
+        print(f"  {label}")
+        print(f"    {'':<20}{header}{'cells':>8}")
+        for name, make in variants:
+            agent = make(XorShift16(arguments.seed))
+            blocks, cells = play_agent(
+                player_class, agent, arguments.rounds, arguments.seed, block
+            )
+            row = "".join(f"{value:>9.1f}%" for value in blocks)
+            print(f"    {name:<20}{row}{cells:>7}/25")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--rounds", type=int, default=300)
     parser.add_argument("--seed", type=lambda t: int(t, 0), default=0x1A2B)
+    parser.add_argument("--block", type=int, default=25)
     arguments = parser.parse_args()
 
     names = [p.name for p in predictors(XorShift16(1))]
@@ -195,6 +245,7 @@ def main() -> None:
     print()
     print("cells read accuracy/score. Score is what a person feels; 50% is a")
     print("draw. A predictor that cannot beat 50% on 'random' is behaving.")
+    learning_curve(arguments)
 
 
 if __name__ == "__main__":
