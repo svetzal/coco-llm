@@ -1,0 +1,138 @@
+# EXP-012 entity lexicon. Hand-tagged; this file is a design decision, not a
+# measurement. See EXP-012-episode-titles.md.
+#
+# The phrases are what tools/measure_tos_tokenizations.py lifts out of the 79
+# titles when the frame words are removed. The tag is what the phrase can
+# grammatically follow, which is the whole reason generated titles read as
+# English rather than as word salad:
+#
+#   NS   count noun, singular    THE CAGE / A CAGE / OF THE CAGE
+#   NM   mass or abstract noun   THE TRUTH / OF TRUTH        (never "A TRUTH")
+#   NPL  plural noun             THE TRIBBLES / OF TRIBBLES  (never "A ...")
+#   PN   proper or possessive    GOTHOS / OF GOTHOS          (never "THE ...")
+#
+# Twelve phrases are dropped rather than tagged, because they are verb or
+# adjective fragments left over by slotting a frame that is not nominal
+# ("...GODS DESTROY", "...SHALL LEAD", "...IS HOLLOW"), or carry punctuation
+# that only makes sense in the one title it came from ("MIRROR, MIRROR",
+# "OPERATION - ANNIHILATE!", "ASSIGNMENT: EARTH"). They are listed at the
+# bottom so the count reconciles: 101 kept + 12 dropped = 113 extracted.
+
+NS      ACTION
+NS      ALTERNATIVE FACTOR
+NS      APPLE
+NS      ARENA
+NS      BALANCE
+NS      BATTLEFIELD
+NS      CAGE
+NS      CATSPAW
+NS      CHANGELING
+NS      CITY
+NS      CONSCIENCE
+NS      CORBOMITE MANEUVER
+NS      COURT MARTIAL
+NS      DAGGER
+NS      DARK
+NS      DAY
+NS      DEVIL
+NS      DOOMSDAY MACHINE
+NS      DOVE
+NS      EDGE
+NS      EMPATH
+NS      ENEMY WITHIN
+NS      ENTERPRISE INCIDENT
+NS      ERRAND
+NS      EYE
+NS      FOLD
+NS      GALILEO SEVEN
+NS      GUN
+NS      IMMUNITY SYNDROME
+NS      JOURNEY
+NS      KING
+NS      MAN
+NS      MAN TRAP
+NS      MARK
+NS      MENAGERIE
+NS      METAMORPHOSIS
+NS      MIND
+NS      NAKED TIME
+NS      NAME
+NS      OBSESSION
+NS      OMEGA GLORY
+NS      PARADISE SYNDROME
+NS      PIECE
+NS      PRIVATE LITTLE WAR
+NS      REQUIEM
+NS      RETURN
+NS      SAVAGE CURTAIN
+NS      SIDE
+NS      SKY
+NS      SPACE SEED
+NS      SPECTRE
+NS      SQUIRE
+NS      TASTE
+NS      THOLIAN WEB
+NS      TROUBLE
+NS      TURNABOUT INTRUDER
+NS      ULTIMATE COMPUTER
+NS      WAY
+NS      WINK
+NS      WOLF
+NS      WORLD
+
+NM      BEAUTY
+NM      BREAD
+NM      FORCE
+NM      MERCY
+NM      SHORE LEAVE
+NM      TERROR
+NM      TRUTH
+
+NPL     ARCHONS
+NPL     CHILDREN
+NPL     CIRCUSES
+NPL     CLOUD MINDERS
+NPL     DEADLY YEARS
+NPL     GAMESTERS
+NPL     LIGHTS
+NPL     PATTERNS
+NPL     TRIBBLES
+NPL     YESTERDAYS
+
+PN      ADONAIS
+PN      AMOK TIME
+PN      ARMAGEDDON
+PN      BABEL
+PN      CHARLIE X
+PN      EDEN
+PN      ELAAN
+PN      FOREVER
+PN      FRIDAY'S CHILD
+PN      GIDEON
+PN      GOTHOS
+PN      METHUSELAH
+PN      MIRI
+PN      MUDD
+PN      MUDD'S WOMEN
+PN      PARADISE
+PN      PLATO'S STEPCHILDREN
+PN      SPOCK'S BRAIN
+PN      TOMORROW
+PN      TRISKELION
+PN      TROYIUS
+PN      YESTERDAY
+PN      ZETAR
+
+# Dropped, with the title each came from.
+# -   ASSIGNMENT: EARTH       Assignment: Earth
+# -   GODS DESTROY            Whom Gods Destroy
+# -   GONE BEFORE             Where No Man Has Gone Before
+# -   HOLLOW                  For the World Is Hollow...
+# -   LEAD                    And the Children Shall Lead
+# -   LET                     Let That Be Your Last Battlefield
+# -   LITTLE GIRLS MADE       What Are Little Girls Made Of?
+# -   MIRROR, MIRROR          Mirror, Mirror
+# -   MOURNS                  Who Mourns for Adonais?
+# -   OPERATION - ANNIHILATE! Operation - Annihilate!
+# -   SURVIVES                That Which Survives
+# -   TOUCHED                 For the World... I Have Touched the Sky
