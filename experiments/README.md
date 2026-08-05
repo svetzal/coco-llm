@@ -63,6 +63,12 @@ Current experiments:
   inference and guided facts/answer/context UI pass direct and real-ROM
   emulator gates. A slow attention replay is available as optional depth;
   physical hardware remains unverified.
+- [`EXP-012-episode-titles.md`](EXP-012-episode-titles.md) — corpus study for a
+  proposed multi-model game. All 79 Star Trek TOS episode titles pulled and
+  measured: 259 words needing a 180-token vocabulary, 91% of it used once, and
+  only two adjacent word pairs repeating anywhere in the corpus. Fits the
+  machine easily at under 3 KiB; supports memorization rather than
+  generalization. No model trained and no game designed yet.
 
 ## Presentation commands
 
