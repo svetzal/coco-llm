@@ -19,6 +19,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	xroar-melody exp011-sweep exp011-replicate exp011-model \
 	attention-bin attention-test attention-ui-test xroar-test-attention \
 	xroar-attention exp012-corpus exp012-vocabulary exp012-tokenizations \
+	exp012-titles exp012-model titles-bin titles-test xroar-titles \
 	present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
@@ -144,6 +145,39 @@ exp012-vocabulary:
 exp012-tokenizations:
 	$(UV) run python tools/measure_tos_tokenizations.py
 
+exp012-titles:
+	$(UV) run python tools/run_exp_012.py
+
+build/exp012/title_model.inc: tools/export_exp_012.py tools/run_exp_012.py \
+		src/reference/title_generator.py \
+		experiments/data/EXP-012-tos-titles.txt \
+		experiments/data/EXP-012-tos-lexicon.txt
+	$(UV) run python tools/export_exp_012.py
+
+exp012-model: build/exp012/title_model.inc
+
+build/coco-titles.bin: src/6809/coco_titles.asm src/6809/title_generator.asm \
+		src/6809/model_forward.asm src/6809/model_storage.asm \
+		build/exp012/title_model.inc
+	lwasm --6809 --format=decb --symbol-dump=build/coco-titles.sym \
+		--output=$@ $<
+
+titles-bin: build/coco-titles.bin
+
+build/titles-parity-test.asm: build/coco-titles.bin \
+		tools/make_titles_parity_test.py
+	$(UV) run python tools/make_titles_parity_test.py --output $@
+
+titles-test: build/titles-parity-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run $<
+
+xroar-titles: build/coco-titles.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-titles.bin
+
 build/exp010/melody_model.inc: tools/export_melody_model.py \
 		src/reference/melody_fixed.py src/reference/melody_lm.py \
 		experiments/data/EXP-010-dance.jsonl
@@ -210,7 +244,7 @@ xroar-music: build/coco-music.bin build/roms/.coco1-roms
 
 test: reference-test asm-test model-test model-test-exp5 model-test-exp6 \
 	workbench-test-exp6 model-test-exp7 workbench-test-exp7 \
-	attention-test attention-ui-test
+	attention-test attention-ui-test titles-test
 
 reference-test:
 	$(UV) sync

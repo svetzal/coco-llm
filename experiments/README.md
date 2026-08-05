@@ -68,7 +68,10 @@ Current experiments:
   measured: 259 words needing a 180-token vocabulary, 91% of it used once, and
   only two adjacent word pairs repeating anywhere in the corpus. Fits the
   machine easily at under 3 KiB; supports memorization rather than
-  generalization. No model trained and no game designed yet.
+  generalization. A working fake-title generator follows from that: a
+  400-byte frame model plus a tagged noun table, 3,874 bytes in total,
+  agreeing with the Mac on all 512 screen cells. Its training is capped at
+  eleven epochs by 16-bit logit accumulation, which visibly costs style.
 
 ## Presentation commands
 
@@ -108,6 +111,7 @@ scores at presentation speed.
 | EXP-006 | Can a pretrained model save typing? | 8 KiB completion workbench |
 | EXP-007 | What changes with more memory and punctuation? | 32 KiB all-RAM |
 | EXP-011 | Can it use a fact supplied right now? | Context-attention bench |
+| EXP-012 | Can it make up something that reads? | Screen of fake episode titles |
 
 EXP-001 through EXP-003 remain recorded as architectural evidence, but are no
 longer in the runnable presentation menu. Presenter output deliberately shows

@@ -215,6 +215,92 @@ because punctuation is attached to the word (`OF` and `OF?`, `MIRROR` and
 `MIRROR,`, `I` and `I,`). Stripping it to a separate token takes the word
 vocabulary from 179 to 176.
 
+## The generator, on the CoCo (2026-08-04)
+
+The Mac trains, the CoCo generates, and the two agree cell for cell on all 512
+screen positions.
+
+```sh
+make exp012-titles     # the Mac's screen
+make exp012-model      # train and export
+make titles-test       # the CoCo's screen, in the direct simulator
+make xroar-titles      # watch it
+```
+
+### Size
+
+| | bytes |
+| --- | ---: |
+| Model parameters (Q4.12 masters) | 400 |
+| Frame words, with pointers | 105 |
+| Transition bitmasks | 60 |
+| Slot tag rules | 40 |
+| Noun table: pointers, tags, text | 1,228 |
+| Real-episode fingerprints | 158 |
+| **Data total** | **1,991** |
+| Whole DECB image, code included | 3,874 |
+
+Under 4 KiB. The **model is 400 bytes of it**; the rest is the dictionary and
+the rules, which is the same shape EXP-012's word-level analysis predicted —
+on a corpus this sparse, most of the artifact is vocabulary.
+
+### How it stays readable
+
+Three constraints, each a table lookup rather than arithmetic:
+
+- **Observed-transition decoding.** The model's byte probabilities are masked
+  to successors the corpus actually states, and the draw is against the
+  surviving total. Without it the decoder emits `TRISKELION THE MAN TRAP`.
+- **Slot tags, read from both sides.** A noun carries its class, and the words
+  either side of the slot say which classes fit. This refuses `A TRIBBLES`,
+  `THE GOTHOS`, and — from the copula — `REQUIEM IS NAKED TIME`.
+- **A 16-bit fingerprint per real episode**, plus one per row already on
+  screen. 158 bytes against 2.4 KiB for the titles themselves; a false match
+  only discards a title nobody sees.
+
+### The arithmetic caps the training
+
+The first CoCo build disagreed with the Mac completely, and the cause is worth
+recording. The context vector matched exactly; the logits did not.
+`model_forward.asm` accumulates a logit in D and stores it, so it **wraps at
+16 bits**, where `fixed_token_lm` clamps. Every experiment before this one kept
+activations small enough that the difference never appeared.
+
+Measured across all 400 reachable two-token contexts:
+
+| epochs | peak abs logit | | loss |
+| ---: | ---: | --- | ---: |
+| 10 | 18,542 | fits | 1.0564 |
+| **11** | **25,735** | **fits** | **1.1294** |
+| 12 | 34,651 | wraps | 1.1541 |
+| 60 | 94,443 | wraps | 1.1282 |
+
+So training stops at eleven epochs — not because the model has learned enough,
+but because that is as much as the machine's arithmetic survives.
+`export_exp_012.py` measures the peak and refuses to emit a model that would
+put the two machines out of step.
+
+**This costs output quality, visibly.** A 60-epoch model produces the
+`THE <X> OF <X>` shape that dominates real Star Trek titles; the eleven-epoch
+model has a flatter frame distribution and leans on bare proper nouns
+(`ELAAN OF YESTERDAY`, `GOTHOS TO TROYIUS`). Both are grammatical and neither
+emits a real episode. The gap is a genuine finding for the talk rather than a
+defect to hide: on this machine, how well the thing writes is limited by how
+long it can be trained without overflowing a 16-bit accumulator.
+
+Widening the accumulator would lift the cap. It was not done here because
+`model_forward.asm` is shared with four other experiments and the products
+would need 32-bit accumulation throughout — a real change, not a quick one.
+
+### A refactor along the way
+
+`model_core.asm` was one file containing both the shared arithmetic and
+EXP-004's on-CoCo training driver, so including it dragged in a policy
+interface and data symbols a Mac-trained experiment has no use for. The
+arithmetic moved to `model_forward.asm`, included from exactly where it used to
+sit. **All five existing experiment binaries assemble byte for byte
+identically**, which is the check that the split changed nothing.
+
 ## Open questions
 
 1. **What is the game?** This is Stacey's to answer and everything else waits on

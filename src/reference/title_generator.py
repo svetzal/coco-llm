@@ -234,17 +234,15 @@ class SlotFiller:
     """Draws entities for a frame's slots, without repeating within a title."""
 
     def __init__(self, lexicon: Sequence[Entity], opening: set[str] | None = None):
-        self.by_tag: dict[str, list[Entity]] = {tag: [] for tag in TAGS}
-        for entity in lexicon:
-            self.by_tag[entity.tag].append(entity)
+        # Kept in lexicon order, not grouped by tag. The CoCo scans the noun
+        # table straight through, so a draw index only means the same phrase on
+        # both machines if the candidate list is built in the same order.
+        self.lexicon = list(lexicon)
         self.opening = opening
 
     def candidates(self, preceding: str | None, following: str | None) -> list[Entity]:
-        pool = [
-            entity
-            for tag in allowed_tags(preceding, following)
-            for entity in self.by_tag.get(tag, ())
-        ]
+        admissible = allowed_tags(preceding, following)
+        pool = [entity for entity in self.lexicon if entity.tag in admissible]
         if preceding is None and self.opening is not None:
             # A title-initial slot takes any determiner-less noun, plus only
             # those singulars the corpus has actually opened a title with.

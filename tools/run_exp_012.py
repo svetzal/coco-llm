@@ -75,7 +75,12 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--corpus", type=Path, default=DEFAULT_CORPUS)
     parser.add_argument("--lexicon", type=Path, default=DEFAULT_LEXICON)
-    parser.add_argument("--epochs", type=int, default=60)
+    # Eleven, not because it is enough training but because it is as much as
+    # the arithmetic survives. model_forward.asm accumulates a logit in D, so
+    # it wraps at 16 bits where the reference clamps; at twelve epochs the
+    # Q4.12 masters have grown enough to reach that, and the CoCo and the Mac
+    # stop agreeing. tools/export_exp_012.py measures the peak and refuses.
+    parser.add_argument("--epochs", type=int, default=11)
     # Three matches EMBED_DIMS in src/6809/model_core.asm, so the CoCo runs
     # the existing forward pass unaltered.
     parser.add_argument("--embedding", type=int, default=3)
@@ -118,6 +123,7 @@ def build(arguments):
     losses = model.train(contexts, targets, epochs=arguments.epochs)
 
     facts = {
+        "slotting": (as_slotted, entities),
         "titles": titles,
         "frames": frames,
         "dropped": dropped,
