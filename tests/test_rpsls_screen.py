@@ -29,7 +29,7 @@ from rpsls_screen import (
 
 
 def board(**overrides) -> list[str]:
-    reason, verdict = result_lines(0, 2, outcome(0, 2))
+    reason, verdict, continuation = result_lines(0, 2, outcome(0, 2))
     settings = {
         "level": "THE CATSPAW OF ZETAR",
         "expects": "ROCK",
@@ -37,6 +37,7 @@ def board(**overrides) -> list[str]:
         "agent_moves": [2, 3, 0, 4, 1] * 6,
         "reason": reason,
         "verdict": verdict,
+        "continuation": continuation,
         "player_wins": 12,
         "rounds": 30,
         "rules_known": 9,
@@ -194,8 +195,23 @@ def test_every_result_line_fits_the_row() -> None:
     too_long = []
     for player in range(MOVE_COUNT):
         for agent in range(MOVE_COUNT):
-            facing, verdict = result_lines(player, agent, outcome(player, agent))
-            for line in (facing, verdict):
+            for line in result_lines(player, agent, outcome(player, agent)):
                 if len(line) + 1 > COLUMNS:
                     too_long.append((len(line) + 1, line))
     assert not too_long, f"over 32 columns: {sorted(too_long, reverse=True)[:3]}"
+
+
+def test_a_long_rule_wraps_instead_of_losing_a_word() -> None:
+    """The three overflowing pairs must still name both moves. Dropping the
+    loser fitted, but the sentence is the thing being taught."""
+    lizard, scissors = 3, 4
+    lines = result_lines(lizard, scissors, outcome(lizard, scissors))
+    assert lines[2], "the longest rule should have wrapped"
+    assert "LIZARD" in lines[1] + lines[2]
+    assert "DECAPITATES" in lines[1] + lines[2]
+
+
+def test_short_rules_do_not_wrap() -> None:
+    """A continuation row on every round would be noise."""
+    rock, scissors = 0, 4
+    assert result_lines(rock, scissors, outcome(rock, scissors))[2] == ""

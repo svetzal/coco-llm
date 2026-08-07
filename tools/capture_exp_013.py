@@ -130,7 +130,7 @@ def main() -> None:
     thrown_by_agent: list[int] = []
     predictions: list[int] = []
     resets: list[int] = []
-    reason, verdict = "", ""
+    reason, verdict, continuation = "", "", ""
     score = 0.0
     wins = 0
     index = 0
@@ -153,6 +153,7 @@ def main() -> None:
                     agent_moves=thrown_by_agent,
                     reason=reason,
                     verdict=verdict,
+                    continuation=continuation,
                     player_wins=wins,
                     rounds=len(moves),
                     rules_known=agent.known_cells(),
@@ -173,7 +174,7 @@ def main() -> None:
         result = outcome(human, own)
         score += 1.0 if result == WIN else 0.5 if result == TIE else 0.0
         wins += result == WIN
-        reason, verdict = result_lines(human, own, result)
+        reason, verdict, continuation = result_lines(human, own, result)
         moves.append(human)
         thrown_by_agent.append(own)
         predictions.append(agent.last_prediction if not arguments.blind else -1)
