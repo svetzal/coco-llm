@@ -155,6 +155,10 @@ build/coco-rpsls.bin: src/6809/coco_rpsls.asm src/6809/rpsls_game.asm
 
 rpsls-bin: build/coco-rpsls.bin
 
+build/rpsls-fresh-test.asm: build/coco-rpsls.bin \
+		tools/make_rpsls_parity_test.py src/reference/rpsls_screen.py
+	$(UV) run python tools/make_rpsls_parity_test.py --case fresh --output $@
+
 build/rpsls-parity-test.asm: build/coco-rpsls.bin \
 		tools/make_rpsls_parity_test.py src/reference/rpsls_screen.py
 	$(UV) run python tools/make_rpsls_parity_test.py --case played --output $@
@@ -163,7 +167,9 @@ build/rpsls-wrap-test.asm: build/coco-rpsls.bin \
 		tools/make_rpsls_parity_test.py src/reference/rpsls_screen.py
 	$(UV) run python tools/make_rpsls_parity_test.py --case wrapped --output $@
 
-rpsls-test: build/rpsls-parity-test.asm build/rpsls-wrap-test.asm $(SIM6809)
+rpsls-test: build/rpsls-fresh-test.asm build/rpsls-parity-test.asm \
+		build/rpsls-wrap-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run build/rpsls-fresh-test.asm
 	$(SIM6809) --ram-top 65535 --run build/rpsls-parity-test.asm
 	$(SIM6809) --ram-top 65535 --run build/rpsls-wrap-test.asm
 

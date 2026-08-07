@@ -14,6 +14,11 @@ failure that could be either.
 
 Two cases are drawn, because they exercise disjoint code:
 
+  fresh   the board before anything is played. This one pokes nothing and
+          runs new_game, so it is the only case that checks the state the
+          machine starts in. Without it the first build reported 255 rounds
+          played and a history eight throws long, read out of RAM that
+          nothing had cleared.
   played  a full history, a two-digit score, a rule that fits on one row.
   wrapped the LIZARD/SCISSORS pairing, whose rule is 38 columns and has to
           hang its last word on the row below.
@@ -41,6 +46,7 @@ LEVEL = "THE MARK OF GIDEON"
 
 # (player throws, agent throws, wins, rules cells proved, memory)
 CASES = {
+    "fresh": ([], [], 0, 0, 0),
     "played": ([0, 0, 2, 0, 0, 1, 0], [2, 2, 1, 2, 2, 1, 2], 2, 3, 7),
     "wrapped": ([3], [4], 0, 1, 1),
 }
@@ -69,13 +75,16 @@ def decb_segments(payload: bytes) -> list[tuple[int, bytes]]:
 
 def expected(case: str) -> list[int]:
     you, cpu, wins, rules_known, memory = CASES[case]
-    reason, verdict, continuation = result_lines(
-        you[-1], cpu[-1], outcome(you[-1], cpu[-1])
-    )
+    if you:
+        reason, verdict, continuation = result_lines(
+            you[-1], cpu[-1], outcome(you[-1], cpu[-1])
+        )
+    else:
+        reason = verdict = continuation = ""
     return cells(
         render(
             level=LEVEL,
-            expects=MOVES[you[-1]],
+            expects=MOVES[you[-1]] if you else None,
             player_moves=you,
             agent_moves=cpu,
             reason=reason,
@@ -92,7 +101,10 @@ def expected(case: str) -> list[int]:
 def poke(address: dict, case: str) -> list[str]:
     """Set the game state the reference was rendered from."""
     you, cpu, wins, rules_known, memory = CASES[case]
-    lines = []
+    lines = [f"        jsr     ${address['new_game']:04X}"]
+    if not you:
+        lines.append(f"        jsr     ${address['draw_board']:04X}")
+        return lines
 
     def store(name: str, value: int, offset: int = 0) -> None:
         lines.append(f"        lda     #{value}")
@@ -145,6 +157,7 @@ def main() -> None:
             "agent_move",
             "agent_result",
             "name_the_round",
+            "new_game",
             "draw_board",
         )
     }

@@ -32,7 +32,11 @@ HISTORY         equ     7
 SCREEN          equ     $0400
 POLCAT          equ     $A000
 COLS            equ     32
-BLANK           equ     $60
+; A space in the green-on-black set, so the background is black and the text
+; is green. $60 is the same space from the inverse set and renders as a solid
+; green cell, which is how the first build came out: a green screen with a
+; black box around every letter.
+BLANK           equ     $20
 
 UNKNOWN         equ     0
 K_LOSS          equ     1
@@ -49,7 +53,7 @@ start
         lds     #$7f00
         ldd     #$1a2b
         std     rng_state
-        lbsr    forget_everything
+        lbsr    new_game
 rpsls_round
         lbsr    agent_choose
         sta     agent_move
@@ -68,6 +72,31 @@ rpsls_play
         else
         bra     rpsls_round
         endc
+
+; A new session: the tables and everything the screen reads. `rmb` reserves
+; RAM without clearing it, so the first board reported 255 rounds played, a
+; history eight throws long, and a rule with no verb in it - all of it read
+; out of whatever the machine happened to be holding.
+new_game
+        lbsr    forget_everything
+        clr     rounds
+        clr     wins
+        clr     history_len
+        clr     last_move
+        clr     last_outcome
+        clr     expected
+        clr     expects_known
+        clr     wrap_needed
+        clr     agent_move
+        clr     player_move
+        clr     agent_result
+        ldx     #history_you
+        clra
+new_game_history
+        sta     ,x+
+        cmpx    #history_cpu+HISTORY
+        blo     new_game_history
+        rts
 
 ; Empty both tables. The game's own tallies survive, so the screen shows a
 ; machine that has forgotten inside a session that has not.

@@ -85,7 +85,11 @@ INVERSE = frozenset({TITLE_ROW})
 # the board is first drawn on the emulator.
 SG4_SOLID = 0x0F
 GREEN, YELLOW, BLUE, RED = 0, 1, 2, 3
-BLANK_CELL = 0x60
+# The space in the green-on-black set. $60 is the same space from the inverse
+# set and draws a solid green cell; using it gave a green screen with a black
+# box around every letter. Only the emulator could settle this, which is why
+# it was wrong until the board was looked at.
+BLANK_CELL = 0x20
 
 
 def sg4(colour: int) -> int:
@@ -226,10 +230,10 @@ def cells(rows: list[str]) -> list[int]:
         for character in row:
             if graphic and character in MARKS:
                 out.append(MARKS[character])
-            elif character == " ":
-                out.append(BLANK_CELL)
             elif index in INVERSE:
                 out.append(ord(character) | 0x40)
+            elif character == " ":
+                out.append(BLANK_CELL)
             else:
                 out.append(ord(character) & 0x3F)
     return out
