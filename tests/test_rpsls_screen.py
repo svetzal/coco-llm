@@ -10,14 +10,21 @@ sys.path.insert(0, str(ROOT / "src" / "reference"))
 
 from rpsls import MOVE_COUNT, MOVES, outcome
 from rpsls_screen import (
+    BLUE,
     COLUMNS,
+    GREEN,
     HISTORY,
     INVERSE,
+    MARKS,
+    RED,
+    RESULT_ROW,
     ROWS,
     SHORT,
     TITLE_ROW,
+    cells,
     render,
     result_lines,
+    sg4,
 )
 
 
@@ -139,3 +146,42 @@ def test_memory_is_not_the_round_count() -> None:
 
 def test_no_expectation_is_stated_as_such() -> None:
     assert "NO IDEA" in board(expects=None)[13]
+
+
+def test_the_screen_is_512_cells() -> None:
+    assert len(cells(board())) == COLUMNS * ROWS
+
+
+def test_result_marks_are_graphics_cells_not_characters() -> None:
+    """Bit 7 set is what makes the VDG draw a coloured block rather than a
+    letter. Without it the row would read as W, L and T again."""
+    rows = board(player_moves=[0, 0, 2], agent_moves=[2, 2, 0])
+    row = cells(rows)[RESULT_ROW * COLUMNS : (RESULT_ROW + 1) * COLUMNS]
+    marks = [cell for cell in row if cell & 0x80]
+    assert len(marks) == 3
+    assert all(cell & 0x0F == 0x0F for cell in marks)  # all four quadrants lit
+
+
+def test_win_loss_and_tie_are_three_different_colours() -> None:
+    assert len({MARKS["W"], MARKS["L"], MARKS["T"]}) == 3
+    assert MARKS["W"] == sg4(GREEN)
+    assert MARKS["L"] == sg4(RED)
+    assert MARKS["T"] == sg4(BLUE)
+
+
+def test_only_the_result_row_holds_graphics() -> None:
+    """A stray graphics byte anywhere else would draw as coloured blocks in
+    the middle of a sentence."""
+    grid = cells(board())
+    for index in range(ROWS):
+        row = grid[index * COLUMNS : (index + 1) * COLUMNS]
+        graphic = [cell for cell in row if cell & 0x80]
+        assert bool(graphic) == (index == RESULT_ROW and bool(graphic))
+        if index != RESULT_ROW:
+            assert not graphic
+
+
+def test_the_title_row_is_the_inverse_set() -> None:
+    grid = cells(board())
+    title = grid[TITLE_ROW * COLUMNS : (TITLE_ROW + 1) * COLUMNS]
+    assert all(0x40 <= cell <= 0x7F for cell in title)

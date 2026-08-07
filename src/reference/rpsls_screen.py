@@ -32,8 +32,12 @@ announces it has. A first version showed both players' throws as the digits
 rather than a pattern you see.
 
 It now shows both players' last seven throws as three-letter names, with the
-result letter above them. Three letters distinguish all five moves, which one
-cannot - SPOCK and SCISSORS share an initial.
+result above them as a block of colour rather than a letter: green won, red
+lost, blue tied. A row of letters has to be read left to right; a row of
+colour is one glance, and a losing streak is a red bar you cannot miss.
+
+Three letters distinguish all five moves, which one cannot - SPOCK and
+SCISSORS share an initial.
 
 Rows are returned as 32-character strings, uppercased. That is not a style
 choice: VDG codes $00-$3F are green on black and cover uppercase only, so
@@ -59,6 +63,8 @@ YOU_ROW = 6
 CPU_ROW = 7
 REASON_ROW = 9
 VERDICT_ROW = 10
+# The only row whose contents are graphics cells rather than characters.
+GRAPHIC_ROWS = frozenset({RESULT_ROW})
 EXPECT_ROW = 13
 RULES_ROW = 14
 MEMORY_ROW = 15
@@ -66,6 +72,28 @@ MEMORY_ROW = 15
 # Drawn black on green ($40-$7F) rather than green on black. The only row
 # that is, which is what makes it read as a bar.
 INVERSE = frozenset({TITLE_ROW})
+
+# Semigraphics-4: a cell byte is 1 C C C L L L L. Bit 7 marks the cell as
+# graphic rather than a character, bits 6-4 choose one of eight colours, and
+# bits 3-0 light the four quadrants - so $0F is a solid block.
+#
+# The VDG's colour order is green, yellow, blue, red, buff, cyan, magenta,
+# orange. That ordering is taken from the EXP-009 display work and has NOT yet
+# been confirmed on this screen; the marks are the first thing to check when
+# the board is first drawn on the emulator.
+SG4_SOLID = 0x0F
+GREEN, YELLOW, BLUE, RED = 0, 1, 2, 3
+BLANK_CELL = 0x60
+
+
+def sg4(colour: int) -> int:
+    return 0x80 | (colour << 4) | SG4_SOLID
+
+
+# Green won, red lost, blue tied. Kept as letters inside the rendered rows so
+# the layout stays readable in tests and previews; `cells` turns them into the
+# bytes the screen actually holds.
+MARKS = {"W": sg4(GREEN), "L": sg4(RED), "T": sg4(BLUE)}
 
 
 def centre(text: str) -> str:
@@ -141,11 +169,40 @@ def result_lines(player: int, agent: int, result: int) -> tuple[str, str]:
     return describe(agent, player), f"YOU LOSE - IT THREW {MOVES[agent]}"
 
 
+def cells(rows: list[str]) -> list[int]:
+    """The 512 bytes the CoCo screen actually holds.
+
+    Text is the low six bits of uppercase ASCII; the result row's letters
+    become solid colour blocks. This is the form the 6809 writes and the form
+    a parity test compares, so it is derived here rather than in the port.
+    """
+    out: list[int] = []
+    for index, row in enumerate(rows):
+        graphic = index in GRAPHIC_ROWS
+        for character in row:
+            if graphic and character in MARKS:
+                out.append(MARKS[character])
+            elif character == " ":
+                out.append(BLANK_CELL)
+            elif index in INVERSE:
+                out.append(ord(character) | 0x40)
+            else:
+                out.append(ord(character) & 0x3F)
+    return out
+
+
+PREVIEW = {"W": "\033[42m \033[0m", "L": "\033[41m \033[0m", "T": "\033[44m \033[0m"}
+
+
 def frame(rows: list[str]) -> str:
     """A bordered preview, with the reverse-field rows actually reversed."""
     edge = "+" + "-" * COLUMNS + "+"
-    drawn = [
-        f"|\033[7m{row}\033[0m|" if index in INVERSE else f"|{row}|"
-        for index, row in enumerate(rows)
-    ]
+    drawn = []
+    for index, row in enumerate(rows):
+        if index in INVERSE:
+            drawn.append(f"|\033[7m{row}\033[0m|")
+        elif index in GRAPHIC_ROWS:
+            drawn.append("|" + "".join(PREVIEW.get(c, c) for c in row) + "|")
+        else:
+            drawn.append(f"|{row}|")
     return "\n".join([edge, *drawn, edge])
