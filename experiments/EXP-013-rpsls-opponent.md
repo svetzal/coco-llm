@@ -186,11 +186,17 @@ who changes tactics mid-session.
    whole gain rests on win-stay/lose-shift. A player who is losing may abandon
    the habit that is losing for them, which is the non-stationary target
    EXP-008 flagged as its most interesting property.
-2. **How is losing displayed honestly?** An opponent at 80% is not fun, and one
-   that hides how it wins is not a demonstration. EXP-008 required a visible
-   prediction and a weight-reset key so an audience could tell learning from a
-   difficulty ramp. The equivalent here is showing the predicted move before
-   the throw, and a reset key that empties the table.
+2. ~~How is losing displayed honestly?~~ **Settled: it shows its guess.** The
+   capture tool prints what it expects you to throw *before* you throw it,
+   along with how many of the 25 rules it has worked out. That hands you the
+   way to beat it, which is the point — an opponent you can outwit once you
+   understand it is a demonstration; one that only ever wins is a claim. `r`
+   empties both tables mid-session, EXP-008's falsifiability key.
+
+   One thing this forced: an empty table's `predict()` returns move 0, and
+   displaying that as "it expects ROCK" would show an audience confidence the
+   table does not have. It says "it has no idea yet" until the current context
+   has actually been seen.
 3. **Should the opponent play to win, or to a target score?** Counting a tie as
    a half, a table that always counters is beatable only by randomizing. A
    deliberately imperfect opponent is more playable and less honest.

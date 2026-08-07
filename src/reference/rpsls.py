@@ -139,6 +139,16 @@ class FrequencyTable(Predictor):
             index = index * OUTCOMES + self.last_outcome
         return index
 
+    def has_evidence(self) -> bool:
+        """Whether the current context has been seen at all.
+
+        predict() falls back to move 0 when it has nothing, which is a default
+        and not a guess. Displaying it as "it expects ROCK" would show an
+        audience confidence the table does not have.
+        """
+        index = self.context()
+        return index is not None and any(self.counts[index])
+
     def predict(self) -> int:
         index = self.context()
         if index is None:
@@ -219,6 +229,23 @@ class RuleLearner:
         self.opponent = opponent
         self.random = random
         self.symmetric = symmetric
+        # What it expected the player to throw, so the guess can be shown
+        # before the throw rather than justified after it.
+        self.last_prediction: int | None = None
+
+    def reset(self) -> None:
+        """Forget everything: the rules and the player.
+
+        EXP-008 required this and called it the falsifiability demonstration
+        rather than a convenience. Without it an audience cannot tell a model
+        that learned from a difficulty curve that ramped - press it, and the
+        prediction goes wrong in front of them and has to climb back.
+        """
+        self.rules = [[UNKNOWN] * MOVE_COUNT for _ in range(MOVE_COUNT)]
+        self.opponent = type(self.opponent)(
+            self.opponent.order, self.opponent.use_outcome
+        )
+        self.last_prediction = None
 
     @property
     def table_bytes(self) -> int:
@@ -227,9 +254,13 @@ class RuleLearner:
     def known_cells(self) -> int:
         return sum(cell != UNKNOWN for row in self.rules for cell in row)
 
+    def has_expectation(self) -> bool:
+        return self.opponent.has_evidence()
+
     def choose(self) -> int:
         """Best against the predicted throw; an unseen cell beats a known tie."""
         predicted = self.opponent.predict()
+        self.last_prediction = predicted
         column = [self.rules[move][predicted] for move in range(MOVE_COUNT)]
 
         wins = [m for m in range(MOVE_COUNT) if column[m] == KNOWN_WIN]
@@ -260,12 +291,14 @@ class RulesKnown:
     def __init__(self, opponent):
         self.opponent = opponent
         self.table_bytes = opponent.table_bytes
+        self.last_prediction: int | None = None
 
     def known_cells(self) -> int:
         return MOVE_COUNT * MOVE_COUNT
 
     def choose(self) -> int:
-        return counter(self.opponent.predict())
+        self.last_prediction = self.opponent.predict()
+        return counter(self.last_prediction)
 
     def observe(self, own: int, other: int) -> None:
         self.opponent.observe(other, own)

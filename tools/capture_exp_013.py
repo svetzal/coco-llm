@@ -21,6 +21,13 @@ game:
 The agent is not told the rules in either mode. It sees its own move, your
 move, and what happened, exactly as you do.
 
+It shows what it expects you to throw, *before* you throw it. That hands you
+the way to beat it, which is the point: an opponent you can outwit once you
+understand it is a demonstration, and one that only ever wins is a claim. `r`
+empties both tables mid-session - EXP-008 required that key and called it the
+falsifiability demonstration, because without it an audience cannot tell a
+machine that learned from a difficulty curve that ramped.
+
 Replaying a live session against a different predictor is counterfactual for
 score: against a different opponent you would have thrown differently. It is
 still honest for prediction accuracy given the same history, and that
@@ -60,8 +67,13 @@ class BlindOpponent:
     def __init__(self, random: XorShift16):
         self.random = random
 
+    last_prediction = None
+
     def known_cells(self) -> int:
         return 0
+
+    def reset(self) -> None:
+        return
 
     def choose(self) -> int:
         return self.random.below(MOVE_COUNT)
@@ -70,18 +82,24 @@ class BlindOpponent:
         return
 
 
-def prompt(round_number: int, rounds: int) -> int | None:
+RESET = "reset"
+
+
+def prompt(round_number: int, rounds: int) -> int | str | None:
     menu = "  ".join(f"{key}={name}" for key, name in zip(KEYS, MOVES, strict=True))
     while True:
         try:
-            entry = input(f"[{round_number}/{rounds}] {menu}  (q quits) > ").strip()
+            entry = input(f"[{round_number}/{rounds}] {menu}  (r resets, q quits) > ")
         except EOFError:
             return None
-        if entry[:1].lower() == "q":
+        entry = entry.strip()[:1].lower()
+        if entry == "q":
             return None
-        if entry[:1] in KEYS:
-            return KEYS.index(entry[0])
-        print("  pick 1-5, or q")
+        if entry == "r":
+            return RESET
+        if entry in KEYS:
+            return KEYS.index(entry)
+        print("  pick 1-5, r to wipe its memory, or q")
 
 
 def main() -> None:
@@ -104,19 +122,37 @@ def main() -> None:
 
     moves: list[int] = []
     thrown_by_agent: list[int] = []
+    predictions: list[int] = []
+    resets: list[int] = []
     score = 0.0
-    for index in range(arguments.rounds):
+    index = 0
+    while index < arguments.rounds:
         own = agent.choose()  # chosen before seeing the human's move
+        if not arguments.blind:
+            guess = agent.last_prediction
+            expects = (
+                f"it expects {MOVES[guess]}"
+                if guess is not None and agent.has_expectation()
+                else "it has no idea yet"
+            )
+            print(f"  {expects}   [{agent.known_cells()}/25 rules known]")
         human = prompt(index + 1, arguments.rounds)
         if human is None:
             break
+        if human == RESET:
+            agent.reset()
+            resets.append(len(moves))
+            print("  -- memory wiped. It knows nothing again. --\n")
+            continue
         result = outcome(human, own)
         score += 1.0 if result == WIN else 0.5 if result == TIE else 0.0
         verdict = {WIN: "you win", TIE: "tie", 0: "you lose"}[result]
         print(f"      it threw {MOVES[own]:<9} {verdict}")
         moves.append(human)
         thrown_by_agent.append(own)
+        predictions.append(agent.last_prediction if not arguments.blind else -1)
         agent.observe(own, human)
+        index += 1
 
     if not moves:
         print("nothing recorded")
@@ -131,6 +167,8 @@ def main() -> None:
         "seed": arguments.seed,
         "moves": moves,
         "opponent": thrown_by_agent,
+        "predicted": predictions,
+        "resets_after_round": resets,
         "rules_known": agent.known_cells(),
     }
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
@@ -143,7 +181,14 @@ def main() -> None:
         f"(50% is a draw, so under 50 means it read you)."
     )
     if not arguments.blind:
+        hits = sum(g == m for g, m in zip(predictions, moves, strict=True))
+        print(
+            f"It called your move {hits} times in {played} "
+            f"({100.0 * hits / played:.0f}%, chance is 20%)."
+        )
         print(f"It worked out {agent.known_cells()} of 25 rules from watching.")
+        if resets:
+            print(f"Memory wiped after rounds: {resets}")
     print(f"appended to {arguments.output}")
 
 
