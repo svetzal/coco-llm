@@ -20,7 +20,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	attention-bin attention-test attention-ui-test xroar-test-attention \
 	xroar-attention exp012-corpus exp012-vocabulary exp012-tokenizations \
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
-	exp013-sweep \
+	exp013-sweep exp013-play \
 	present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
@@ -151,6 +151,12 @@ exp012-titles:
 
 exp013-sweep:
 	$(UV) run python tools/run_exp_013.py
+
+exp013-play:
+ifndef LABEL
+	$(error set LABEL, for example: make exp013-play LABEL=stacey-01)
+endif
+	$(UV) run python tools/capture_exp_013.py --label $(LABEL) $(ARGS)
 
 build/exp012/title_model.inc: tools/export_exp_012.py tools/run_exp_012.py \
 		src/reference/title_generator.py \
