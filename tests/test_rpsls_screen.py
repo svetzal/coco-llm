@@ -185,3 +185,17 @@ def test_the_title_row_is_the_inverse_set() -> None:
     grid = cells(board())
     title = grid[TITLE_ROW * COLUMNS : (TITLE_ROW + 1) * COLUMNS]
     assert all(0x40 <= cell <= 0x7F for cell in title)
+
+
+def test_every_result_line_fits_the_row() -> None:
+    """The rows are built from a verdict and one of ten verb sentences, and
+    the longest combination has to fit before any of it reaches a screen that
+    cannot scroll. A leading space is added when the row is laid out."""
+    too_long = []
+    for player in range(MOVE_COUNT):
+        for agent in range(MOVE_COUNT):
+            facing, verdict = result_lines(player, agent, outcome(player, agent))
+            for line in (facing, verdict):
+                if len(line) + 1 > COLUMNS:
+                    too_long.append((len(line) + 1, line))
+    assert not too_long, f"over 32 columns: {sorted(too_long, reverse=True)[:3]}"

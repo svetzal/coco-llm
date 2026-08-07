@@ -161,12 +161,41 @@ def render(
 
 
 def result_lines(player: int, agent: int, result: int) -> tuple[str, str]:
-    """The two lines under the keys: why, then who."""
+    """The two result rows: who threw what, then who won and why.
+
+    The throws go on one line with the machine's right-aligned, so the two
+    players face each other across the row. The verdict comes before the rule
+    on the line below, because the outcome is what you look for and the rule
+    is the explanation you read second.
+    """
+    throws = f"YOU: {MOVES[player]}"
+    against = f"CPU: {MOVES[agent]}"
+    facing = throws + " " * (COLUMNS - 1 - len(throws) - len(against)) + against
+
     if player == agent:
-        return f"BOTH THREW {MOVES[agent]}", "A TIE"
-    if result == 2:
-        return describe(player, agent), f"YOU WIN - IT THREW {MOVES[agent]}"
-    return describe(agent, player), f"YOU LOSE - IT THREW {MOVES[agent]}"
+        return facing, f"A TIE, BOTH THREW {MOVES[agent]}"
+    verdict = "YOU WIN" if result == 2 else "YOU LOSE"
+    winner, loser = (player, agent) if result == 2 else (agent, player)
+    return facing, f"{verdict}, {clipped(winner, loser)}"
+
+
+def clipped(winner: int, loser: int) -> str:
+    """The rule, shortened only when the full sentence will not fit.
+
+    "YOU LOSE, SCISSORS DECAPITATES LIZARD" is 38 columns against 32, and two
+    other pairs also overflow. No verdict word is short enough to rescue it:
+    even "LOST," leaves the longest sentence one column over.
+
+    So the loser's name is dropped when it has to be, leaving "YOU LOSE,
+    SCISSORS DECAPITATES". Nothing is lost by that - the row above names both
+    throws, so the sentence is repeating what is already on screen. Truncation
+    would have been the silent alternative and is the reason this is a rule
+    rather than a slice.
+    """
+    full = describe(winner, loser)
+    if 1 + len("YOU LOSE, ") + len(full) <= COLUMNS:
+        return full
+    return full.rsplit(" ", 1)[0]
 
 
 def cells(rows: list[str]) -> list[int]:
