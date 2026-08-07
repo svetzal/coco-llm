@@ -16,8 +16,10 @@ organising idea than ranking the parts by importance:
 The title is reverse-field, which separates it from the keys below without
 spending a blank row on a 16-row screen.
 
-The keys are three letters, the same three the history uses, so the legend
-teaches the abbreviation rather than needing one of its own.
+The keys spell the moves out over two rows. A one-row legend of ROC/SPO/PAP
+fits and saves a line, but it makes a first-time player decode the thing they
+are supposed to be reading fastest. The abbreviations in the history are the
+first three letters of these names, so the full spelling above teaches them.
 
 Only the player's share is shown. A YOU/CPU pair adds to 100 and so states one
 number twice; and it is given as "5 OF 12 (42%)" rather than a bare percentage
@@ -29,11 +31,9 @@ announces it has. A first version showed both players' throws as the digits
 1-5, which is compact and unreadable - "1131 / 5333" is a wall you decode
 rather than a pattern you see.
 
-It now shows your last six throws as three-letter names with the result of
-each underneath. The opponent's own throws are gone: what you want from that
-row is whether you won, and the result letter says so in one character
-instead of five. Three letters distinguish all five moves, which one cannot -
-SPOCK and SCISSORS share an initial.
+It now shows both players' last seven throws as three-letter names, with the
+result letter above them. Three letters distinguish all five moves, which one
+cannot - SPOCK and SCISSORS share an initial.
 
 Rows are returned as 32-character strings, uppercased. That is not a style
 choice: VDG codes $00-$3F are green on black and cover uppercase only, so
@@ -47,16 +47,18 @@ from rpsls import MOVES, beats, describe
 
 COLUMNS, ROWS = 32, 16
 HISTORY = 7
-SHORT = ("ROC", "SPO", "PAP", "LIZ", "SCI")
+# Derived, not written out, so the legend above the board and the history
+# inside it cannot drift apart.
+SHORT = tuple(move[:3] for move in MOVES)
 
 TITLE_ROW = 0
-KEYS_ROW = 1
-SCORE_ROW = 2
-RESULT_ROW = 4
-YOU_ROW = 5
-CPU_ROW = 6
-REASON_ROW = 8
-VERDICT_ROW = 9
+KEYS_ROWS = (1, 2)
+SCORE_ROW = 3
+RESULT_ROW = 5
+YOU_ROW = 6
+CPU_ROW = 7
+REASON_ROW = 9
+VERDICT_ROW = 10
 EXPECT_ROW = 13
 RULES_ROW = 14
 MEMORY_ROW = 15
@@ -97,9 +99,8 @@ def render(
 
     # Yours: what level this is, what to press, how you are doing.
     rows[TITLE_ROW] = fit(centre(level))
-    rows[KEYS_ROW] = fit(
-        " " + " ".join(f"{key} {short}" for key, short in enumerate(SHORT, start=1))
-    )
+    rows[KEYS_ROWS[0]] = fit(" 1 ROCK    2 SPOCK   3 PAPER")
+    rows[KEYS_ROWS[1]] = fit(" 4 LIZARD  5 SCISSORS")
     if rounds:
         won = f"YOU HAVE WON {player_wins} OF {rounds} ({percent(player_wins, rounds)})"
     else:

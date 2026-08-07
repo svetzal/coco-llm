@@ -79,13 +79,13 @@ def test_the_score_states_its_own_denominator() -> None:
             rules_known=0,
             memory=rounds,
         )
-        assert f"{score} OF {rounds}" in rows[2]
+        assert f"{score} OF {rounds}" in rows[3]
 
 
 def test_an_empty_session_says_so_rather_than_showing_zero() -> None:
     rows = board(rounds=0, player_wins=0, player_moves=[], agent_moves=[])
-    assert "NO ROUNDS PLAYED" in rows[2]
-    assert "%" not in rows[2]
+    assert "NO ROUNDS PLAYED" in rows[3]
+    assert "%" not in rows[3]
 
 
 def test_the_title_is_the_only_reverse_field_row() -> None:
@@ -93,24 +93,30 @@ def test_the_title_is_the_only_reverse_field_row() -> None:
     assert INVERSE == {TITLE_ROW}
 
 
-def test_the_key_legend_teaches_the_history_abbreviations() -> None:
-    """The legend and the history must not disagree about what SPO means."""
-    legend = board()[1]
-    for key, short in enumerate(SHORT, start=1):
-        assert f"{key} {short}" in legend
+def test_the_keys_spell_the_moves_out() -> None:
+    legend = board()[1] + board()[2]
+    for key, name in enumerate(MOVES, start=1):
+        assert f"{key} {name}" in legend
+
+
+def test_every_abbreviation_is_a_prefix_of_its_name() -> None:
+    """The legend spells the moves; the history abbreviates them. If those two
+    disagree the player has to learn a mapping nothing on screen states."""
+    for short, name in zip(SHORT, MOVES, strict=True):
+        assert name.startswith(short)
 
 
 def test_the_result_row_sits_above_both_throw_rows() -> None:
     rows = board(player_moves=[0, 0, 2], agent_moves=[2, 2, 0])
-    assert rows[4].split() == ["L", "L", "W"]
-    assert rows[5].split()[1:] == ["ROC", "ROC", "PAP"]
-    assert rows[6].split()[1:] == ["PAP", "PAP", "ROC"]
+    assert rows[5].split() == ["L", "L", "W"]
+    assert rows[6].split()[1:] == ["ROC", "ROC", "PAP"]
+    assert rows[7].split()[1:] == ["PAP", "PAP", "ROC"]
 
 
 def test_history_is_capped_and_shows_the_most_recent() -> None:
     moves = [index % MOVE_COUNT for index in range(40)]
     rows = board(player_moves=moves, agent_moves=moves[::-1])
-    names = rows[5].split()[1:]
+    names = rows[6].split()[1:]
     assert len(names) == HISTORY
     assert names[-1] == SHORT[moves[-1]]
 
