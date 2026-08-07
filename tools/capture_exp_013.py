@@ -53,9 +53,9 @@ from rpsls import (
     FrequencyTable,
     RuleLearner,
     XorShift16,
-    describe,
     outcome,
 )
+from rpsls_screen import frame, render, result_lines
 
 DEFAULT_OUTPUT = ROOT / "experiments" / "data" / "EXP-013-captures.jsonl"
 KEYS = "12345"
@@ -110,6 +110,11 @@ def main() -> None:
     parser.add_argument("--blind", action="store_true")
     parser.add_argument("--seed", type=lambda t: int(t, 0), default=0x1A2B)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--level",
+        default="THE CATSPAW OF ZETAR",
+        help="the level name in the title bar; EXP-012 generates these",
+    )
     arguments = parser.parse_args()
 
     random = XorShift16(arguments.seed)
@@ -125,18 +130,34 @@ def main() -> None:
     thrown_by_agent: list[int] = []
     predictions: list[int] = []
     resets: list[int] = []
+    reason, verdict = "", ""
     score = 0.0
     index = 0
     while index < arguments.rounds:
         own = agent.choose()  # chosen before seeing the human's move
-        if not arguments.blind:
-            guess = agent.last_prediction
-            expects = (
-                f"it expects {MOVES[guess]}"
-                if guess is not None and agent.has_expectation()
-                else "it has no idea yet"
+        guess = agent.last_prediction
+        expects = (
+            MOVES[guess]
+            if not arguments.blind and guess is not None and agent.has_expectation()
+            else None
+        )
+        # The board is drawn exactly as the CoCo will draw it, so playing it
+        # here is the design review rather than a preview of one.
+        print(
+            frame(
+                render(
+                    level=arguments.level,
+                    expects=expects,
+                    player_moves=moves,
+                    agent_moves=thrown_by_agent,
+                    reason=reason,
+                    verdict=verdict,
+                    player_score=score,
+                    rounds=len(moves),
+                    rules_known=agent.known_cells(),
+                )
             )
-            print(f"  {expects}   [{agent.known_cells()}/25 rules known]")
+        )
         human = prompt(index + 1, arguments.rounds)
         if human is None:
             break
@@ -147,13 +168,7 @@ def main() -> None:
             continue
         result = outcome(human, own)
         score += 1.0 if result == WIN else 0.5 if result == TIE else 0.0
-        if result == TIE:
-            reason, verdict = f"both threw {MOVES[own]}", "tie"
-        elif result == WIN:
-            reason, verdict = describe(human, own), "you win"
-        else:
-            reason, verdict = describe(own, human), "you lose"
-        print(f"      it threw {MOVES[own]:<9} {reason:<26} {verdict}")
+        reason, verdict = result_lines(human, own, result)
         moves.append(human)
         thrown_by_agent.append(own)
         predictions.append(agent.last_prediction if not arguments.blind else -1)
