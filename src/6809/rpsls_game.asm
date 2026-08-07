@@ -1,21 +1,12 @@
 ; EXP-013: Rock Paper Scissors Lizard Spock against an opponent that starts
 ; knowing neither the rules nor you.
 ;
-; INCOMPLETE. It assembles, runs, and draws a recognisable board, but the
-; screen does not yet match src/reference/rpsls_screen.py and must not be
-; presented as though it does. Known wrong, from the first simulator dump:
-;
-;   - the title never draws: draw_board loads the row into A, then clobbers A
-;     before calling blit_inverse, so the bar is written over row 1.
-;   - row_centred's length arithmetic is wrong (a stray sbca).
-;   - lay_string does not advance the column, so the score row's pieces
-;     overlap: "YOU HAVE WON qq h" instead of "WON 1 OF 1 (100%)".
-;   - the history lays short_names as a terminated string, but the table has
-;     no terminators, so one entry spills the whole block.
-;   - the result and machine rows come out blank.
-;
-; The next step is a parity test against the reference's cells(), which is
-; what should have been written before this file rather than after it.
+; The screen is verified against src/reference/rpsls_screen.py: both cases in
+; tools/make_rpsls_parity_test.py match all 512 cells. The five defects the
+; first draft shipped with - a clobbered row number, broken centring, a column
+; that never advanced, a string laid off the end of a table, and blank rows -
+; were all found by that test in one pass, which is the argument for having
+; written it first.
 ;
 ; Two tables, 100 bytes between them, and nothing else:
 ;
@@ -402,13 +393,16 @@ name_store
         stu     reason_verb
         rts
 
-; U becomes the name of move A.
+; U becomes the name of move A. B is the caller's column and survives: the
+; multiply needs B, and taking it silently laid every move name at the offset
+; it had just computed instead of where the row was up to.
 move_name
+        pshs    b
         ldb     #8
         mul
         ldu     #move_names
         leau    d,u
-        rts
+        puls    b,pc
 
 ; Shift a history row left one, newest lands on the right.
 push_history
@@ -451,10 +445,10 @@ poll_reset
 ; row. The reference is the design; this is meant to agree with it exactly.
 
 draw_board
-        lda     #0
+        lbsr    clear_screen
         ldu     #level_name
-        lbsr    row_centred
-        lda     #1
+        lbsr    centre_line
+        lda     #0
         lbsr    blit_inverse
 
         lda     #1
@@ -470,7 +464,24 @@ draw_board
         lbsr    row_machine
         rts
 
-; --- row helpers ---------------------------------------------------------
+; Every cell, not only the rows with something in them. The gaps between the
+; three zones are part of the layout, and a row nobody writes has to be blank
+; rather than whatever the machine left there.
+clear_screen
+        ldx     #SCREEN
+        lda     #BLANK
+clear_screen_next
+        sta     ,x+
+        cmpx    #SCREEN+COLS*16
+        blo     clear_screen_next
+        rts
+
+; --- laying text into one row ---------------------------------------------
+;
+; Every row is built as 32 ASCII bytes in `line` and then blitted. B is the
+; column throughout and every lay advances it, so a row reads as the sentence
+; it draws. The first version left B where it started and each row wrote its
+; pieces on top of the last.
 
 clear_line
         ldx     #line
@@ -481,9 +492,9 @@ clear_line_next
         blo     clear_line_next
         rts
 
-; U is a zero-terminated string, laid into `line` from column B.
+; U is a zero-terminated string, B the column. B ends past the last character.
 lay_string
-        pshs    b
+        pshs    x
         ldx     #line
         abx
 lay_next
@@ -492,33 +503,132 @@ lay_next
         cmpx    #line+COLS
         bhs     lay_done
         sta     ,x+
+        incb
         bra     lay_next
 lay_done
-        puls    b,pc
+        puls    x,pc
 
-; A is the row, U the string: cleared, laid at column 1, blitted as text.
-row_text
+; U is a source, A a count, B the column: exactly A characters, no terminator
+; wanted. The three-letter history names are packed end to end, so laying one
+; as a string spills the whole table.
+lay_fixed
+        pshs    x,a
+        ldx     #line
+        abx
+lay_fixed_next
+        lda     ,u+
+        cmpx    #line+COLS
+        bhs     lay_fixed_skip
+        sta     ,x+
+        incb
+lay_fixed_skip
+        dec     ,s
+        bne     lay_fixed_next
+        puls    a,x,pc
+
+; One space, by stepping over a cell `line` already holds blank.
+lay_gap
+        incb
+        rts
+
+; A is the character, laid at number_column, which advances.
+lay_char
+        pshs    a,b,x
+        ldb     number_column
+        cmpb    #COLS
+        bhs     lay_char_done
+        ldx     #line
+        abx
+        lda     ,s
+        sta     ,x
+        inc     number_column
+lay_char_done
+        puls    a,b,x,pc
+
+; A is the value, B the column: laid unpadded, B ends past it.
+lay_number
+        stb     number_column
+lay_number_here
+        sta     number_value
+        clr     number_lead
+        lda     number_value
+        ldb     #100
+        lbsr    lay_digit
+        ldb     #10
+        lbsr    lay_digit
+        adda    #'0
+        lbsr    lay_char
+        ldb     number_column
+        rts
+
+; A is the value, B the column, number_width the field: right-aligned. No
+; padding is written, because `line` already holds spaces.
+lay_number_right
+        sta     number_value
+        stb     number_column
+        lbsr    count_digits
         pshs    a
-        lbsr    clear_line
-        ldb     #1
-        lbsr    lay_string
+        lda     number_width
+        suba    ,s+
+        adda    number_column
+        sta     number_column
+        lda     number_value
+        lbra    lay_number_here
+
+count_digits
+        lda     number_value
+        cmpa    #100
+        bhs     count_three
+        cmpa    #10
+        bhs     count_two
+        lda     #1
+        rts
+count_two
+        lda     #2
+        rts
+count_three
+        lda     #3
+        rts
+
+lay_digit
+        clr     digit_count
+lay_digit_sub
+        pshs    b
+        cmpa    ,s
+        blo     lay_digit_done
+        suba    ,s
+        inc     digit_count
+        puls    b
+        bra     lay_digit_sub
+lay_digit_done
+        puls    b
+        tst     digit_count
+        bne     lay_digit_emit
+        tst     number_lead
+        beq     lay_digit_ret
+lay_digit_emit
+        pshs    a
+        lda     digit_count
+        adda    #'0
+        lbsr    lay_char
+        inc     number_lead
         puls    a
-        lbra    blit_text
+lay_digit_ret
+        rts
 
-; A is the row, U the string: cleared and centred, left in `line`.
-row_centred
-        pshs    a
+; U is the string: cleared and centred, left in `line`.
+centre_line
+        pshs    u
         lbsr    clear_line
+        puls    u
         lbsr    string_length
         lda     #COLS
-        sbca    #0
         suba    length
         lsra
         tfr     a,b
-        lbsr    lay_string
-        puls    a
-        rts
+        lbra    lay_string
 
+; length becomes the string's width. U is preserved.
 string_length
         pshs    u
         clr     length
@@ -530,14 +640,34 @@ length_next
 length_done
         puls    u,pc
 
-; A is the row. Text cells are the low six bits of uppercase ASCII.
+; A is the row, U the string: cleared, laid at column 1, blitted as text.
+row_text
+        pshs    a
+        pshs    u
+        lbsr    clear_line
+        puls    u
+        ldb     #1
+        lbsr    lay_string
+        puls    a
+        lbra    blit_text
+
+; A is the row. A glyph is the low six bits of uppercase ASCII; a blank is
+; $60, which is what EXP-012's verified screen clears to and what the inverse
+; set makes of a space anyway ($20 | $40). Writing $20 instead put a blank
+; from the wrong character set in every gap on the board.
 blit_text
         lbsr    row_address
         ldu     #line
         ldb     #COLS
 blit_text_next
         lda     ,u+
+        cmpa    #$20
+        bne     blit_text_glyph
+        lda     #BLANK
+        bra     blit_text_put
+blit_text_glyph
         anda    #$3f
+blit_text_put
         sta     ,x+
         decb
         bne     blit_text_next
@@ -576,10 +706,9 @@ row_score
         lda     #3
         lbra    blit_text
 row_score_played
-        ldu     #text_won
         ldb     #1
+        ldu     #text_won
         lbsr    lay_string
-        ldb     #14
         lda     wins
         lbsr    lay_number
         ldu     #text_of
@@ -588,26 +717,32 @@ row_score_played
         lbsr    lay_number
         ldu     #text_open
         lbsr    lay_string
+        pshs    b
         lbsr    win_percent
+        puls    b
         lbsr    lay_number
         ldu     #text_close
         lbsr    lay_string
         lda     #3
         lbra    blit_text
 
-; A becomes the percentage of rounds won, by repeated subtraction: the 6809
-; has no divide and the quotient is at most 100.
+; A becomes the share of rounds won: wins * 100 / rounds by repeated
+; subtraction. There is no divide, and the quotient is at most 100.
 win_percent
         lda     wins
         ldb     #100
         mul
         std     percent_top
+        clra                            ; half a round, so the share rounds
+        ldb     rounds                  ; up rather than truncating: 2 of 7
+        lsrb                            ; is 29%, not 28%
+        addd    percent_top
+        std     percent_top
         clr     percent_out
-percent_next
-        ldd     percent_top
         clra
         ldb     rounds
         std     percent_div
+percent_next
         ldd     percent_top
         subd    percent_div
         bcs     percent_done
@@ -618,65 +753,9 @@ percent_done
         lda     percent_out
         rts
 
-; A is the value, B the column: written without padding, B left past the end.
-lay_number
-        sta     number_value
-        stb     number_column
-        clr     number_lead
-        lda     number_value
-        ldb     #100
-        lbsr    lay_digit
-        ldb     #10
-        lbsr    lay_digit
-        adda    #'0
-        lbsr    lay_char
-        ldb     number_column
-        rts
-
-lay_digit
-        clr     digit_count
-lay_digit_sub
-        pshs    b
-        cmpa    ,s
-        blo     lay_digit_done
-        suba    ,s
-        inc     digit_count
-        puls    b
-        bra     lay_digit_sub
-lay_digit_done
-        puls    b
-        tst     digit_count
-        bne     lay_digit_emit
-        tst     number_lead
-        beq     lay_digit_ret
-lay_digit_emit
-        pshs    a
-        lda     digit_count
-        adda    #'0
-        lbsr    lay_char
-        inc     number_lead
-        puls    a
-lay_digit_ret
-        rts
-
-lay_char
-        pshs    a,b,x
-        ldb     number_column
-        ldx     #line
-        abx
-        cmpx    #line+COLS
-        bhs     lay_char_done
-        puls    a
-        pshs    a
-        sta     ,x
-        inc     number_column
-lay_char_done
-        puls    a,b,x,pc
-
-; The result strip: one solid block per round, green won, red lost, blue tied.
-; Written straight to the screen because these are graphics cells, not text,
-; and passing them through the ASCII path would strip the high bit that makes
-; them blocks at all.
+; The result strip: one solid block per round, green won, red lost, blue
+; tied. Written straight to the screen because these are graphics cells, and
+; the text path would strip the high bit that makes them blocks at all.
 row_marks
         lda     #5
         lbsr    row_address
@@ -695,18 +774,14 @@ row_marks_next
         lda     scan
         cmpa    history_len
         bhs     row_marks_done
-        ldb     #HISTORY
-        subb    history_len
-        addb    scan
+        lbsr    history_index
         pshs    x
         ldx     #history_you
         abx
         lda     ,x
         puls    x
         pshs    a
-        ldb     #HISTORY
-        subb    history_len
-        addb    scan
+        lbsr    history_index
         pshs    x
         ldx     #history_cpu
         abx
@@ -729,6 +804,14 @@ row_marks_put
 row_marks_done
         rts
 
+; B becomes the array index of displayed entry `scan`. The rows hold the
+; newest throw at the end, so a short history is drawn from the right.
+history_index
+        ldb     #HISTORY
+        subb    history_len
+        addb    scan
+        rts
+
 row_throws
         ldu     #text_you
         lda     #6
@@ -742,7 +825,9 @@ row_throws
 ; U is the label, A the row, Y the history array.
 row_trail
         pshs    a
+        pshs    u
         lbsr    clear_line
+        puls    u
         ldb     #1
         lbsr    lay_string
         clr     scan
@@ -750,9 +835,7 @@ row_trail_next
         lda     scan
         cmpa    history_len
         bhs     row_trail_done
-        ldb     #HISTORY
-        subb    history_len
-        addb    scan
+        lbsr    history_index
         leax    b,y
         lda     ,x
         ldb     #3
@@ -763,59 +846,121 @@ row_trail_next
         ldb     #4
         mul
         addb    #5
-        lbsr    lay_string
+        lda     #3
+        lbsr    lay_fixed
         inc     scan
         bra     row_trail_next
 row_trail_done
         puls    a
         lbra    blit_text
 
-; "PAPER COVERS ROCK" is built from three pointers rather than stored as ten
-; sentences. The verbs are the game's knowledge, never the agent's: it is told
-; only win, tie or loss, and the narration exists for the person.
+; Row 9 names both throws facing each other, row 10 the verdict and the rule
+; that decided it. The three longest rules will not fit beside a verdict, so
+; the last word hangs on row 11 under the rule rather than under the verdict.
 row_result
         lbsr    clear_line
         tst     rounds
-        beq     row_result_blank
+        beq     row_result_faced
         ldb     #1
-        ldu     reason_a
+        ldu     #text_you_colon
         lbsr    lay_string
-        lbsr    lay_space
-        ldu     reason_verb
+        lda     player_move
+        lbsr    move_name
         lbsr    lay_string
-        lbsr    lay_space
-        ldu     reason_b
+        lda     agent_move
+        lbsr    move_name
+        lbsr    string_length
+        lda     #COLS-5
+        suba    length
+        tfr     a,b
+        pshs    u
+        ldu     #text_cpu_colon
         lbsr    lay_string
-row_result_blank
+        puls    u
+        lbsr    lay_string
+row_result_faced
         lda     #9
         lbsr    blit_text
+
         lbsr    clear_line
         tst     rounds
         beq     row_result_none
+        lbsr    lay_verdict
+row_result_none
+        lda     #10
+        lbsr    blit_text
+
+        lbsr    clear_line
+        tst     rounds
+        beq     row_result_no_wrap
+        tst     wrap_needed
+        beq     row_result_no_wrap
+        ldb     rule_column
+        ldu     reason_b
+        lbsr    lay_string
+row_result_no_wrap
+        lda     #11
+        lbra    blit_text
+
+; The verdict, a comma, then the rule. wrap_needed is set when the loser's
+; name will not fit and belongs on the row below.
+lay_verdict
+        clr     wrap_needed
         ldb     #1
         ldu     verdict_text
         lbsr    lay_string
-row_result_none
-        lda     #10
-        lbra    blit_text
+        ldu     #text_comma
+        lbsr    lay_string
+        stb     rule_column
 
-; Advance past the string just laid, leaving one space. lay_string leaves B
-; where it started, so the caller tracks the column itself.
-lay_space
-        pshs    a,x,u
-        pshs    b
-        ldx     #line
-        abx
-lay_space_next
-        lda     ,u+
-        beq     lay_space_done
-        leax    1,x
-        incb
-        bra     lay_space_next
-lay_space_done
-        incb
-        leas    1,s
-        puls    a,x,u,pc
+        lbsr    measure_rule
+        lda     rule_column
+        adda    rule_len
+        cmpa    #COLS
+        bls     lay_verdict_one
+        inc     wrap_needed
+lay_verdict_one
+        ldb     rule_column
+        ldu     reason_a
+        lbsr    lay_string
+        lbsr    lay_gap
+        ldu     reason_verb
+        lbsr    lay_string
+        tst     wrap_needed
+        bne     lay_verdict_done
+        ldu     reason_b
+        lbsr    string_length
+        tst     length
+        beq     lay_verdict_done
+        lbsr    lay_gap
+        ldu     reason_b
+        lbsr    lay_string
+lay_verdict_done
+        rts
+
+; rule_len becomes the width of "<A> <VERB> <B>", with no trailing space when
+; B is empty, which is how a tie is stated.
+measure_rule
+        ldu     reason_a
+        lbsr    string_length
+        lda     length
+        sta     rule_len
+        ldu     reason_verb
+        lbsr    string_length
+        lda     length
+        inca
+        adda    rule_len
+        sta     rule_len
+        ldu     reason_b
+        lbsr    string_length
+        tst     length
+        beq     measure_done
+        lda     length
+        inca
+        adda    rule_len
+        sta     rule_len
+measure_done
+        rts
 
 row_machine
         lbsr    clear_line
@@ -829,11 +974,7 @@ row_machine_expects
         ldu     #text_expects
         lbsr    lay_string
         lda     expected
-        ldb     #8
-        mul
-        ldu     #move_names
-        leau    d,u
-        ldb     #12
+        lbsr    move_name
         lbsr    lay_string
 row_machine_blit
         lda     #13
@@ -843,9 +984,11 @@ row_machine_blit
         ldu     #text_rules
         ldb     #1
         lbsr    lay_string
+        lda     #2
+        sta     number_width
         lbsr    count_rules
         ldb     #8
-        lbsr    lay_number
+        lbsr    lay_number_right
         ldu     #text_of_25
         lbsr    lay_string
         lda     #14
@@ -855,9 +998,11 @@ row_machine_blit
         ldu     #text_memory
         ldb     #1
         lbsr    lay_string
+        lda     #3
+        sta     number_width
         lda     memory
-        ldb     #9
-        lbsr    lay_number
+        ldb     #8
+        lbsr    lay_number_right
         ldu     #text_slash
         lbsr    lay_string
         lda     rounds
@@ -865,8 +1010,9 @@ row_machine_blit
         lda     #15
         lbra    blit_text
 
-; How many of the 25 cells it has proved. Counted rather than tracked, because
-; a counter and a table can disagree and the table is the truth.
+; A becomes how many of the 25 cells it has proved. Counted rather than
+; tracked, because a counter and a table can disagree and the table is the
+; truth.
 count_rules
         clrb
         ldx     #rules
@@ -888,11 +1034,17 @@ text_keys2      fcc     "4 LIZARD  5 SCISSORS"
                 fcb     0
 text_no_rounds  fcc     "NO ROUNDS PLAYED YET"
                 fcb     0
-text_won        fcc     "YOU HAVE WON"
+text_won        fcc     "YOU HAVE WON "
                 fcb     0
 text_of         fcc     " OF "
                 fcb     0
 text_open       fcc     " ("
+                fcb     0
+text_you_colon  fcc     "YOU: "
+                fcb     0
+text_cpu_colon  fcc     "CPU: "
+                fcb     0
+text_comma      fcc     ", "
                 fcb     0
 text_close      fcc     "%)"
                 fcb     0
@@ -902,7 +1054,7 @@ text_cpu        fcc     "CPU"
                 fcb     0
 text_no_idea    fcc     "IT HAS NO IDEA YET"
                 fcb     0
-text_expects    fcc     "IT EXPECTS"
+text_expects    fcc     "IT EXPECTS "
                 fcb     0
 text_rules      fcc     "RULES"
                 fcb     0
@@ -937,6 +1089,7 @@ move_names      fcc     "ROCK"
                 fcc     "LIZARD"
                 fcb     0,0
                 fcc     "SCISSORS"
+                fcb     0
 
 short_names     fcc     "ROCSPOPAPLIZSCI"
 
@@ -1001,6 +1154,10 @@ length          rmb     1
 number_value    rmb     1
 number_column   rmb     1
 number_lead     rmb     1
+number_width    rmb     1
+rule_column     rmb     1
+rule_len        rmb     1
+wrap_needed     rmb     1
 digit_count     rmb     1
 percent_top     rmb     2
 percent_div     rmb     2

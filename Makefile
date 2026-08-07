@@ -20,7 +20,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	attention-bin attention-test attention-ui-test xroar-test-attention \
 	xroar-attention exp012-corpus exp012-vocabulary exp012-tokenizations \
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
-	exp013-sweep exp013-play \
+	exp013-sweep exp013-play rpsls-bin rpsls-test xroar-rpsls \
 	present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
@@ -149,6 +149,31 @@ exp012-tokenizations:
 exp012-titles:
 	$(UV) run python tools/run_exp_012.py
 
+build/coco-rpsls.bin: src/6809/coco_rpsls.asm src/6809/rpsls_game.asm
+	lwasm --6809 -I src/6809 --format=decb \
+		--symbol-dump=build/coco-rpsls.sym --output=$@ $<
+
+rpsls-bin: build/coco-rpsls.bin
+
+build/rpsls-parity-test.asm: build/coco-rpsls.bin \
+		tools/make_rpsls_parity_test.py src/reference/rpsls_screen.py
+	$(UV) run python tools/make_rpsls_parity_test.py --case played --output $@
+
+build/rpsls-wrap-test.asm: build/coco-rpsls.bin \
+		tools/make_rpsls_parity_test.py src/reference/rpsls_screen.py
+	$(UV) run python tools/make_rpsls_parity_test.py --case wrapped --output $@
+
+rpsls-test: build/rpsls-parity-test.asm build/rpsls-wrap-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run build/rpsls-parity-test.asm
+	$(SIM6809) --ram-top 65535 --run build/rpsls-wrap-test.asm
+
+xroar-rpsls: build/coco-rpsls.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-rpsls.bin
+
 exp013-sweep:
 	$(UV) run python tools/run_exp_013.py
 
@@ -254,7 +279,7 @@ xroar-music: build/coco-music.bin build/roms/.coco1-roms
 
 test: reference-test asm-test model-test model-test-exp5 model-test-exp6 \
 	workbench-test-exp6 model-test-exp7 workbench-test-exp7 \
-	attention-test attention-ui-test titles-test
+	attention-test attention-ui-test titles-test rpsls-test
 
 reference-test:
 	$(UV) sync

@@ -109,7 +109,16 @@ def fit(text: str) -> str:
 
 
 def percent(part: int, total: int) -> str:
-    return "-" if total == 0 else f"{round(100.0 * part / total)}%"
+    """Round half up, in integers.
+
+    round() rounds half to even, which the 6809 cannot do without code that
+    exists for no other reason, and which nobody expects of a score. Adding
+    half the divisor before dividing is one instruction there and the same
+    answer here.
+    """
+    if total == 0:
+        return "-"
+    return f"{(100 * part + total // 2) // total}%"
 
 
 def render(
