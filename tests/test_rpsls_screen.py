@@ -9,7 +9,16 @@ ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
 from rpsls import MOVE_COUNT, MOVES, outcome
-from rpsls_screen import COLUMNS, HISTORY, ROWS, SHORT, render, result_lines
+from rpsls_screen import (
+    COLUMNS,
+    HISTORY,
+    INVERSE,
+    ROWS,
+    SHORT,
+    TITLE_ROW,
+    render,
+    result_lines,
+)
 
 
 def board(**overrides) -> list[str]:
@@ -21,7 +30,7 @@ def board(**overrides) -> list[str]:
         "agent_moves": [2, 3, 0, 4, 1] * 6,
         "reason": reason,
         "verdict": verdict,
-        "player_score": 12.5,
+        "player_wins": 12,
         "rounds": 30,
         "rules_known": 9,
         "memory": 30,
@@ -53,9 +62,11 @@ def test_a_long_level_name_cannot_overflow_its_row() -> None:
     assert len(rows[0]) == COLUMNS
 
 
-def test_the_split_always_sums_to_a_hundred() -> None:
-    """A tie counts a half to each, so the two shares are complements."""
-    for score, rounds in ((0.0, 10), (10.0, 10), (5.0, 10), (12.5, 30)):
+def test_the_score_states_its_own_denominator() -> None:
+    """A bare percentage invites a denominator that is not there: ties are
+    neither won nor lost, so wins over rounds does not sum to 100 with the
+    machine's share."""
+    for score, rounds in ((0, 10), (10, 10), (5, 10), (12, 30)):
         rows = render(
             level="X",
             expects=None,
@@ -63,26 +74,43 @@ def test_the_split_always_sums_to_a_hundred() -> None:
             agent_moves=[],
             reason="",
             verdict="",
-            player_score=score,
+            player_wins=score,
             rounds=rounds,
             rules_known=0,
             memory=rounds,
         )
-        you = int(rows[13].strip().split()[1].rstrip("%"))
-        cpu = int(rows[14].strip().split()[1].rstrip("%"))
-        assert you + cpu == 100
+        assert f"{score} OF {rounds}" in rows[2]
 
 
-def test_an_empty_session_shows_no_percentage() -> None:
-    rows = board(rounds=0, player_score=0.0, player_moves=[], agent_moves=[])
-    assert "-" in rows[13]
-    assert "%" not in rows[13]
+def test_an_empty_session_says_so_rather_than_showing_zero() -> None:
+    rows = board(rounds=0, player_wins=0, player_moves=[], agent_moves=[])
+    assert "NO ROUNDS PLAYED" in rows[2]
+    assert "%" not in rows[2]
+
+
+def test_the_title_is_the_only_reverse_field_row() -> None:
+    """The bar is what separates it from the keys, instead of a blank row."""
+    assert INVERSE == {TITLE_ROW}
+
+
+def test_the_key_legend_teaches_the_history_abbreviations() -> None:
+    """The legend and the history must not disagree about what SPO means."""
+    legend = board()[1]
+    for key, short in enumerate(SHORT, start=1):
+        assert f"{key} {short}" in legend
+
+
+def test_the_result_row_sits_above_both_throw_rows() -> None:
+    rows = board(player_moves=[0, 0, 2], agent_moves=[2, 2, 0])
+    assert rows[4].split() == ["L", "L", "W"]
+    assert rows[5].split()[1:] == ["ROC", "ROC", "PAP"]
+    assert rows[6].split()[1:] == ["PAP", "PAP", "ROC"]
 
 
 def test_history_is_capped_and_shows_the_most_recent() -> None:
     moves = [index % MOVE_COUNT for index in range(40)]
     rows = board(player_moves=moves, agent_moves=moves[::-1])
-    names = rows[10].split()[1:]
+    names = rows[5].split()[1:]
     assert len(names) == HISTORY
     assert names[-1] == SHORT[moves[-1]]
 
@@ -93,12 +121,6 @@ def test_every_move_abbreviates_distinctly() -> None:
     assert {len(short) for short in SHORT} == {3}
 
 
-def test_a_result_letter_sits_under_every_throw() -> None:
-    rows = board(player_moves=[0, 0, 2], agent_moves=[2, 2, 0])
-    assert rows[10].split()[1:] == ["ROC", "ROC", "PAP"]
-    assert rows[11].split() == ["L", "L", "W"]
-
-
 def test_memory_is_not_the_round_count() -> None:
     """Reset empties the tables mid-session; the stat must follow the tables.
 
@@ -106,7 +128,8 @@ def test_memory_is_not_the_round_count() -> None:
     """
     rows = board(rounds=40, memory=3)
     assert "MEMORY   3/40" in rows[15]
+    assert "RULES" in rows[14]
 
 
 def test_no_expectation_is_stated_as_such() -> None:
-    assert "NO IDEA" in board(expects=None)[2]
+    assert "NO IDEA" in board(expects=None)[13]

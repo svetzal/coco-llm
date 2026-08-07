@@ -132,6 +132,7 @@ def main() -> None:
     resets: list[int] = []
     reason, verdict = "", ""
     score = 0.0
+    wins = 0
     index = 0
     while index < arguments.rounds:
         own = agent.choose()  # chosen before seeing the human's move
@@ -152,7 +153,7 @@ def main() -> None:
                     agent_moves=thrown_by_agent,
                     reason=reason,
                     verdict=verdict,
-                    player_score=score,
+                    player_wins=wins,
                     rounds=len(moves),
                     rules_known=agent.known_cells(),
                     # Not len(moves): reset empties the tables mid-session,
@@ -171,6 +172,7 @@ def main() -> None:
             continue
         result = outcome(human, own)
         score += 1.0 if result == WIN else 0.5 if result == TIE else 0.0
+        wins += result == WIN
         reason, verdict = result_lines(human, own, result)
         moves.append(human)
         thrown_by_agent.append(own)
