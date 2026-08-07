@@ -17,10 +17,16 @@ player's eye goes to them:
   the tallies      glanced at. Bottom, and the win split is the only thing
                    given its own centred block.
 
-The history is digits rather than letters because 1-5 are the keys you press,
-so it needs no legend, and because SPOCK and SCISSORS both start with S. It
-also does the demo's real work: a column of your own throws is where you see
-your habit before the machine tells you it has found one.
+The history's job is letting you catch your own habit before the machine
+announces it has. A first version showed both players' throws as the digits
+1-5, which is compact and unreadable - "1131 / 5333" is a wall you decode
+rather than a pattern you see.
+
+It now shows your last six throws as three-letter names with the result of
+each underneath. The opponent's own throws are gone: what you want from that
+row is whether you won, and the result letter says so in one character
+instead of five. Three letters distinguish all five moves, which one cannot -
+SPOCK and SCISSORS share an initial.
 
 Rows are returned as 32-character strings, uppercased. That is not a style
 choice: VDG codes $00-$3F are green on black and cover uppercase only, so
@@ -30,10 +36,11 @@ would render it as graphics blocks.
 
 from __future__ import annotations
 
-from rpsls import MOVES, describe
+from rpsls import MOVES, beats, describe
 
 COLUMNS, ROWS = 32, 16
-HISTORY = 16
+HISTORY = 6
+SHORT = ("ROC", "SPO", "PAP", "LIZ", "SCI")
 
 TITLE_ROW = 0
 EXPECT_ROW = 2
@@ -70,6 +77,7 @@ def render(
     player_score: float,
     rounds: int,
     rules_known: int,
+    memory: int,
 ) -> list[str]:
     rows = [" " * COLUMNS for _ in range(ROWS)]
 
@@ -86,18 +94,29 @@ def render(
 
     # Most recent on the right, so the newest throw lands where the eye
     # already is after reading the line.
-    def trail(moves: list[int]) -> str:
-        return "".join(str(move + 1) for move in moves[-HISTORY:]).rjust(HISTORY)
-
-    rows[HISTORY_ROWS[0]] = fit(f" YOU {trail(player_moves)}")
-    rows[HISTORY_ROWS[1]] = fit(f" CPU {trail(agent_moves)}")
+    recent = player_moves[-HISTORY:]
+    against = agent_moves[-HISTORY:]
+    throws = " ".join(SHORT[move] for move in recent)
+    marks = " ".join(
+        f" {'T' if mine == theirs else 'W' if beats(mine, theirs) else 'L'} "
+        for mine, theirs in zip(recent, against, strict=True)
+    )
+    rows[HISTORY_ROWS[0]] = fit(f" YOU {throws}")
+    rows[HISTORY_ROWS[1]] = fit(f"     {marks}")
 
     # The one block that is centred, because it is the score and the score is
     # the argument. A tie counts a half to each, so the two always sum to 100.
     rows[SPLIT_ROWS[0]] = fit(centre(f"YOU {percent(player_score, rounds)}"))
     rows[SPLIT_ROWS[1]] = fit(centre(f"CPU {percent(rounds - player_score, rounds)}"))
 
-    rows[STATS_ROW] = fit(f" RULES {rules_known:>2}/25     SEEN {rounds:>3}")
+    # Both stats read "how much of what there is to know does it know", which
+    # is the same question twice and so gets the same shape.
+    #
+    # `memory` is deliberately not `rounds`. Reset empties the tables while the
+    # game keeps going, so a session can be forty rounds old with a machine
+    # that remembers three - and the two numbers separating in front of you is
+    # the clearest thing on the screen when the key is pressed.
+    rows[STATS_ROW] = fit(f" RULES {rules_known:>2}/25   MEMORY {memory:>3}/{rounds}")
     return rows
 
 

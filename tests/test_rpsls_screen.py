@@ -9,7 +9,7 @@ ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
 from rpsls import MOVE_COUNT, MOVES, outcome
-from rpsls_screen import COLUMNS, HISTORY, ROWS, render, result_lines
+from rpsls_screen import COLUMNS, HISTORY, ROWS, SHORT, render, result_lines
 
 
 def board(**overrides) -> list[str]:
@@ -24,6 +24,7 @@ def board(**overrides) -> list[str]:
         "player_score": 12.5,
         "rounds": 30,
         "rules_known": 9,
+        "memory": 30,
     }
     settings.update(overrides)
     return render(**settings)
@@ -65,6 +66,7 @@ def test_the_split_always_sums_to_a_hundred() -> None:
             player_score=score,
             rounds=rounds,
             rules_known=0,
+            memory=rounds,
         )
         you = int(rows[13].strip().split()[1].rstrip("%"))
         cpu = int(rows[14].strip().split()[1].rstrip("%"))
@@ -79,10 +81,31 @@ def test_an_empty_session_shows_no_percentage() -> None:
 
 def test_history_is_capped_and_shows_the_most_recent() -> None:
     moves = [index % MOVE_COUNT for index in range(40)]
-    rows = board(player_moves=moves)
-    trail = rows[10].split()[1]
-    assert len(trail) == HISTORY
-    assert trail.endswith(str(moves[-1] + 1))
+    rows = board(player_moves=moves, agent_moves=moves[::-1])
+    names = rows[10].split()[1:]
+    assert len(names) == HISTORY
+    assert names[-1] == SHORT[moves[-1]]
+
+
+def test_every_move_abbreviates_distinctly() -> None:
+    """One letter cannot: SPOCK and SCISSORS share an initial."""
+    assert len(set(SHORT)) == MOVE_COUNT
+    assert {len(short) for short in SHORT} == {3}
+
+
+def test_a_result_letter_sits_under_every_throw() -> None:
+    rows = board(player_moves=[0, 0, 2], agent_moves=[2, 2, 0])
+    assert rows[10].split()[1:] == ["ROC", "ROC", "PAP"]
+    assert rows[11].split() == ["L", "L", "W"]
+
+
+def test_memory_is_not_the_round_count() -> None:
+    """Reset empties the tables mid-session; the stat must follow the tables.
+
+    Showing rounds here would claim a training set that was just discarded.
+    """
+    rows = board(rounds=40, memory=3)
+    assert "MEMORY   3/40" in rows[15]
 
 
 def test_no_expectation_is_stated_as_such() -> None:

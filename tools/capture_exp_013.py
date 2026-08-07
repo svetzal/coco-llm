@@ -155,6 +155,9 @@ def main() -> None:
                     player_score=score,
                     rounds=len(moves),
                     rules_known=agent.known_cells(),
+                    # Not len(moves): reset empties the tables mid-session,
+                    # and this stat has to follow the tables, not the game.
+                    memory=len(moves) - (resets[-1] if resets else 0),
                 )
             )
         )
