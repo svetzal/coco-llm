@@ -53,6 +53,7 @@ from rpsls import (
     FrequencyTable,
     RuleLearner,
     XorShift16,
+    describe,
     outcome,
 )
 
@@ -146,8 +147,13 @@ def main() -> None:
             continue
         result = outcome(human, own)
         score += 1.0 if result == WIN else 0.5 if result == TIE else 0.0
-        verdict = {WIN: "you win", TIE: "tie", 0: "you lose"}[result]
-        print(f"      it threw {MOVES[own]:<9} {verdict}")
+        if result == TIE:
+            reason, verdict = f"both threw {MOVES[own]}", "tie"
+        elif result == WIN:
+            reason, verdict = describe(human, own), "you win"
+        else:
+            reason, verdict = describe(own, human), "you lose"
+        print(f"      it threw {MOVES[own]:<9} {reason:<26} {verdict}")
         moves.append(human)
         thrown_by_agent.append(own)
         predictions.append(agent.last_prediction if not arguments.blind else -1)

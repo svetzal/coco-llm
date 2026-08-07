@@ -46,6 +46,31 @@ def beats(first: int, second: int) -> bool:
     return (first - second) % MOVE_COUNT in (1, 2)
 
 
+# What the game says happened, for each of the ten decisive pairs. This is the
+# *game's* knowledge, not the agent's: the agent is told only win, tie or loss
+# and never sees these. Keeping that straight matters, because the whole point
+# of the demo is that the machine works the rules out while the game narrates
+# them to the person.
+VERBS = {
+    (0, 4): "crushes",  # ROCK / SCISSORS
+    (0, 3): "crushes",  # ROCK / LIZARD
+    (2, 0): "covers",  # PAPER / ROCK
+    (2, 1): "disproves",  # PAPER / SPOCK
+    (4, 2): "cuts",  # SCISSORS / PAPER
+    (4, 3): "decapitates",  # SCISSORS / LIZARD
+    (3, 2): "eats",  # LIZARD / PAPER
+    (3, 1): "poisons",  # LIZARD / SPOCK
+    (1, 4): "smashes",  # SPOCK / SCISSORS
+    (1, 0): "vaporizes",  # SPOCK / ROCK
+}
+
+
+def describe(winner: int, loser: int) -> str:
+    """ "PAPER covers ROCK". Empty for a tie, which needs no explaining."""
+    verb = VERBS.get((winner, loser))
+    return "" if verb is None else f"{MOVES[winner]} {verb} {MOVES[loser]}"
+
+
 def outcome(player: int, opponent: int) -> int:
     if player == opponent:
         return TIE
