@@ -10,5 +10,8 @@
         include "title_generator.asm"
         include "model_forward.asm"
         include "model_storage.asm"
+; Last, so its ifndef guards see the constants the older files declare for
+; themselves. New code should take them from text_screen.asm.
+        include "text_screen.asm"
 
         end     start

@@ -1,12 +1,14 @@
 ; EXP-013: Rock Paper Scissors Lizard Spock against an opponent that starts
 ; knowing neither the rules nor you.
 ;
-; The screen is verified against src/reference/rpsls_screen.py: both cases in
-; tools/make_rpsls_parity_test.py match all 512 cells. The five defects the
-; first draft shipped with - a clobbered row number, broken centring, a column
-; that never advanced, a string laid off the end of a table, and blank rows -
-; were all found by that test in one pass, which is the argument for having
-; written it first.
+; The screen is verified against src/reference/rpsls_screen.py: all three
+; cases in tools/make_rpsls_parity_test.py match every one of the 512 cells.
+;
+; The drawing itself is text_screen.asm's - the two VDG character sets, the
+; blank each one carries, and screen_title_bar. This file had its own copies
+; and chose the wrong set, drawing the body reversed and the title bar plain,
+; so the whole board came out inverted. A parity test cannot catch that: it
+; compares the CoCo against a reference that was equally free to guess.
 ;
 ; Two tables, 100 bytes between them, and nothing else:
 ;
@@ -29,14 +31,13 @@ MOVE_COUNT      equ     5
 OUTCOMES        equ     3
 CONTEXTS        equ     MOVE_COUNT*OUTCOMES
 HISTORY         equ     7
-SCREEN          equ     $0400
 POLCAT          equ     $A000
-COLS            equ     32
-; A space in the green-on-black set, so the background is black and the text
-; is green. $60 is the same space from the inverse set and renders as a solid
-; green cell, which is how the first build came out: a green screen with a
-; black box around every letter.
-BLANK           equ     $20
+; The screen, its two character sets, and the title bar live in
+; text_screen.asm. COLS and BLANK are that module's, so the body cannot be
+; drawn in one character set and the title in the other by accident - which is
+; exactly how this screen came out inverted.
+COLS            equ     SCREEN_COLS
+BLANK           equ     BODY_BLANK
 
 UNKNOWN         equ     0
 K_LOSS          equ     1
@@ -474,11 +475,9 @@ poll_reset
 ; row. The reference is the design; this is meant to agree with it exactly.
 
 draw_board
-        lbsr    clear_screen
+        lbsr    screen_clear
         ldu     #level_name
-        lbsr    centre_line
-        lda     #0
-        lbsr    blit_inverse
+        lbsr    screen_title_bar
 
         lda     #1
         ldu     #text_keys1
@@ -491,18 +490,6 @@ draw_board
         lbsr    row_throws
         lbsr    row_result
         lbsr    row_machine
-        rts
-
-; Every cell, not only the rows with something in them. The gaps between the
-; three zones are part of the layout, and a row nobody writes has to be blank
-; rather than whatever the machine left there.
-clear_screen
-        ldx     #SCREEN
-        lda     #BLANK
-clear_screen_next
-        sta     ,x+
-        cmpx    #SCREEN+COLS*16
-        blo     clear_screen_next
         rts
 
 ; --- laying text into one row ---------------------------------------------
@@ -645,30 +632,6 @@ lay_digit_emit
 lay_digit_ret
         rts
 
-; U is the string: cleared and centred, left in `line`.
-centre_line
-        pshs    u
-        lbsr    clear_line
-        puls    u
-        lbsr    string_length
-        lda     #COLS
-        suba    length
-        lsra
-        tfr     a,b
-        lbra    lay_string
-
-; length becomes the string's width. U is preserved.
-string_length
-        pshs    u
-        clr     length
-length_next
-        lda     ,u+
-        beq     length_done
-        inc     length
-        bra     length_next
-length_done
-        puls    u,pc
-
 ; A is the row, U the string: cleared, laid at column 1, blitted as text.
 row_text
         pshs    a
@@ -678,50 +641,13 @@ row_text
         ldb     #1
         lbsr    lay_string
         puls    a
-        lbra    blit_text
+        lbra    blit_line
 
-; A is the row. A glyph is the low six bits of uppercase ASCII; a blank is
-; $60, which is what EXP-012's verified screen clears to and what the inverse
-; set makes of a space anyway ($20 | $40). Writing $20 instead put a blank
-; from the wrong character set in every gap on the board.
-blit_text
-        lbsr    row_address
+; The board builds each row in `line`; the shared blitter takes its buffer in
+; U, so this is where the two meet.
+blit_line
         ldu     #line
-        ldb     #COLS
-blit_text_next
-        lda     ,u+
-        cmpa    #$20
-        bne     blit_text_glyph
-        lda     #BLANK
-        bra     blit_text_put
-blit_text_glyph
-        anda    #$3f
-blit_text_put
-        sta     ,x+
-        decb
-        bne     blit_text_next
-        rts
-
-; A is the row. Inverse cells are $40-$7F: black on green, the title bar.
-blit_inverse
-        lbsr    row_address
-        ldu     #line
-        ldb     #COLS
-blit_inverse_next
-        lda     ,u+
-        ora     #$40
-        sta     ,x+
-        decb
-        bne     blit_inverse_next
-        rts
-
-; X becomes the screen address of row A.
-row_address
-        ldb     #COLS
-        mul
-        ldx     #SCREEN
-        leax    d,x
-        rts
+        lbra    screen_blit_body
 
 ; --- the rows themselves -------------------------------------------------
 
@@ -733,7 +659,7 @@ row_score
         ldb     #1
         lbsr    lay_string
         lda     #3
-        lbra    blit_text
+        lbra    blit_line
 row_score_played
         ldb     #1
         ldu     #text_won
@@ -753,7 +679,7 @@ row_score_played
         ldu     #text_close
         lbsr    lay_string
         lda     #3
-        lbra    blit_text
+        lbra    blit_line
 
 ; A becomes the share of rounds won: wins * 100 / rounds by repeated
 ; subtraction. There is no divide, and the quotient is at most 100.
@@ -787,7 +713,7 @@ percent_done
 ; the text path would strip the high bit that makes them blocks at all.
 row_marks
         lda     #5
-        lbsr    row_address
+        lbsr    screen_row_address
         ldb     #COLS
         lda     #BLANK
 row_marks_clear
@@ -796,7 +722,7 @@ row_marks_clear
         bne     row_marks_clear
 
         lda     #5
-        lbsr    row_address
+        lbsr    screen_row_address
         leax    6,x
         clr     scan
 row_marks_next
@@ -881,7 +807,7 @@ row_trail_next
         bra     row_trail_next
 row_trail_done
         puls    a
-        lbra    blit_text
+        lbra    blit_line
 
 ; Row 9 names both throws facing each other, row 10 the verdict and the rule
 ; that decided it. The three longest rules will not fit beside a verdict, so
@@ -898,9 +824,9 @@ row_result
         lbsr    lay_string
         lda     agent_move
         lbsr    move_name
-        lbsr    string_length
+        lbsr    screen_text_length
         lda     #COLS-5
-        suba    length
+        suba    screen_length
         tfr     a,b
         pshs    u
         ldu     #text_cpu_colon
@@ -909,7 +835,7 @@ row_result
         lbsr    lay_string
 row_result_faced
         lda     #9
-        lbsr    blit_text
+        lbsr    blit_line
 
         lbsr    clear_line
         tst     rounds
@@ -917,7 +843,7 @@ row_result_faced
         lbsr    lay_verdict
 row_result_none
         lda     #10
-        lbsr    blit_text
+        lbsr    blit_line
 
         lbsr    clear_line
         tst     rounds
@@ -929,7 +855,7 @@ row_result_none
         lbsr    lay_string
 row_result_no_wrap
         lda     #11
-        lbra    blit_text
+        lbra    blit_line
 
 ; The verdict, a comma, then the rule. wrap_needed is set when the loser's
 ; name will not fit and belongs on the row below.
@@ -958,8 +884,8 @@ lay_verdict_one
         tst     wrap_needed
         bne     lay_verdict_done
         ldu     reason_b
-        lbsr    string_length
-        tst     length
+        lbsr    screen_text_length
+        tst     screen_length
         beq     lay_verdict_done
         lbsr    lay_gap
         ldu     reason_b
@@ -971,20 +897,20 @@ lay_verdict_done
 ; B is empty, which is how a tie is stated.
 measure_rule
         ldu     reason_a
-        lbsr    string_length
-        lda     length
+        lbsr    screen_text_length
+        lda     screen_length
         sta     rule_len
         ldu     reason_verb
-        lbsr    string_length
-        lda     length
+        lbsr    screen_text_length
+        lda     screen_length
         inca
         adda    rule_len
         sta     rule_len
         ldu     reason_b
-        lbsr    string_length
-        tst     length
+        lbsr    screen_text_length
+        tst     screen_length
         beq     measure_done
-        lda     length
+        lda     screen_length
         inca
         adda    rule_len
         sta     rule_len
@@ -1007,7 +933,7 @@ row_machine_expects
         lbsr    lay_string
 row_machine_blit
         lda     #13
-        lbsr    blit_text
+        lbsr    blit_line
 
         lbsr    clear_line
         ldu     #text_rules
@@ -1021,7 +947,7 @@ row_machine_blit
         ldu     #text_of_25
         lbsr    lay_string
         lda     #14
-        lbsr    blit_text
+        lbsr    blit_line
 
         lbsr    clear_line
         ldu     #text_memory
@@ -1037,7 +963,7 @@ row_machine_blit
         lda     rounds
         lbsr    lay_number
         lda     #15
-        lbra    blit_text
+        lbra    blit_line
 
 ; A becomes how many of the 25 cells it has proved. Counted rather than
 ; tracked, because a counter and a table can disagree and the table is the
@@ -1179,7 +1105,6 @@ draw_limit      rmb     1
 draw_mask       rmb     1
 draw_tries      rmb     1
 line            rmb     COLS
-length          rmb     1
 number_value    rmb     1
 number_column   rmb     1
 number_lead     rmb     1

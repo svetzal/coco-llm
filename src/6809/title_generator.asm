@@ -61,26 +61,20 @@ copy_parameter
 ; used this session are refused along with the real episodes, so a player does
 ; not meet the same level twice.
 level_name
-        ldx     #SCREEN
-        lda     #$60
-clear_top
-        sta     ,x+
-        cmpx    #SCREEN+SCREEN_COLS
-        blo     clear_top
-
         lbsr    make_title
+        ldu     #no_level_name
+        tst     title_length
+        beq     level_name_draw
+        ldu     #title_buffer
+level_name_draw
+        lbsr    screen_title_bar
         tst     title_length
         beq     level_name_done
-        lda     #SCREEN_COLS
-        suba    title_length
-        lsra
-        ldx     #SCREEN
-        leax    a,x
-        stx     row_pointer
-        lbsr    print_title
         lbsr    remember_title
 level_name_done
         rts
+
+no_level_name   fcb     0
 
 reset_level_names
         clr     seen_count

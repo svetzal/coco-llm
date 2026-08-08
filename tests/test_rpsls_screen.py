@@ -14,10 +14,10 @@ from rpsls_screen import (
     COLUMNS,
     GREEN,
     HISTORY,
-    INVERSE,
     MARKS,
     RED,
     RESULT_ROW,
+    REVERSED,
     ROWS,
     SHORT,
     TITLE_ROW,
@@ -98,7 +98,7 @@ def test_an_empty_session_says_so_rather_than_showing_zero() -> None:
 
 def test_the_title_is_the_only_reverse_field_row() -> None:
     """The bar is what separates it from the keys, instead of a blank row."""
-    assert INVERSE == {TITLE_ROW}
+    assert REVERSED == {TITLE_ROW}
 
 
 def test_the_keys_spell_the_moves_out() -> None:
@@ -182,10 +182,15 @@ def test_only_the_result_row_holds_graphics() -> None:
             assert not graphic
 
 
-def test_the_title_row_is_the_inverse_set() -> None:
+def test_the_title_bar_is_reversed_and_the_body_is_not() -> None:
+    """Getting these the wrong way round inverts the whole screen, which is
+    what shipped: a green board with a black box around every letter."""
     grid = cells(board())
     title = grid[TITLE_ROW * COLUMNS : (TITLE_ROW + 1) * COLUMNS]
-    assert all(0x40 <= cell <= 0x7F for cell in title)
+    assert all(cell <= 0x3F for cell in title), "title bar is green on black"
+    for row in (1, 2, 3, 9, 10, 14, 15):
+        body = grid[row * COLUMNS : (row + 1) * COLUMNS]
+        assert all(0x40 <= cell <= 0x7F for cell in body), f"row {row}"
 
 
 def test_every_result_line_fits_the_row() -> None:

@@ -5,6 +5,7 @@
 
         org     $2000
 
+        include "text_screen.asm"
         include "rpsls_game.asm"
 
         end     start

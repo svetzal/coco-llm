@@ -14,7 +14,10 @@ organising idea than ranking the parts by importance:
   bottom  the machine's. What it expects, and how much it has worked out.
 
 The title is reverse-field, which separates it from the keys below without
-spending a blank row on a 16-row screen.
+spending a blank row on a 16-row screen. The body is black on green, the
+CoCo's own look; the bar is green on black. src/6809/text_screen.asm holds
+that convention for both experiments, after this one was built with the two
+sets the wrong way round and came out inverted.
 
 The keys spell the moves out over two rows. A one-row legend of ROC/SPO/PAP
 fits and saves a line, but it makes a first-time player decode the thing they
@@ -40,9 +43,9 @@ Three letters distinguish all five moves, which one cannot - SPOCK and
 SCISSORS share an initial.
 
 Rows are returned as 32-character strings, uppercased. That is not a style
-choice: VDG codes $00-$3F are green on black and cover uppercase only, so
-`fit` folds the case rather than letting a lowercase verb reach a screen that
-would render it as graphics blocks.
+choice: both VDG character sets cover uppercase only, so `fit` folds the case
+rather than letting a lowercase verb reach a screen that would draw it as
+graphics blocks.
 """
 
 from __future__ import annotations
@@ -71,9 +74,10 @@ EXPECT_ROW = 13
 RULES_ROW = 14
 MEMORY_ROW = 15
 
-# Drawn black on green ($40-$7F) rather than green on black. The only row
-# that is, which is what makes it read as a bar.
-INVERSE = frozenset({TITLE_ROW})
+# The one row drawn from the reversed set. The body is black on green - the
+# CoCo's own look and the convention across this series - and the title bar is
+# green on black, which is what makes it read as a bar.
+REVERSED = frozenset({TITLE_ROW})
 
 # Semigraphics-4: a cell byte is 1 C C C L L L L. Bit 7 marks the cell as
 # graphic rather than a character, bits 6-4 choose one of eight colours, and
@@ -85,11 +89,9 @@ INVERSE = frozenset({TITLE_ROW})
 # the board is first drawn on the emulator.
 SG4_SOLID = 0x0F
 GREEN, YELLOW, BLUE, RED = 0, 1, 2, 3
-# The space in the green-on-black set. $60 is the same space from the inverse
-# set and draws a solid green cell; using it gave a green screen with a black
-# box around every letter. Only the emulator could settle this, which is why
-# it was wrong until the board was looked at.
-BLANK_CELL = 0x20
+# Each set carries its own blank and it falls out of the same arithmetic as
+# the letters: a space is $60 black-on-green and $20 green-on-black. Nothing
+# needs to special-case it, which is why `cells` below does not.
 
 
 def sg4(colour: int) -> int:
@@ -230,12 +232,10 @@ def cells(rows: list[str]) -> list[int]:
         for character in row:
             if graphic and character in MARKS:
                 out.append(MARKS[character])
-            elif index in INVERSE:
-                out.append(ord(character) | 0x40)
-            elif character == " ":
-                out.append(BLANK_CELL)
-            else:
+            elif index in REVERSED:
                 out.append(ord(character) & 0x3F)
+            else:
+                out.append(ord(character) | 0x40)
     return out
 
 
@@ -247,7 +247,7 @@ def frame(rows: list[str]) -> str:
     edge = "+" + "-" * COLUMNS + "+"
     drawn = []
     for index, row in enumerate(rows):
-        if index in INVERSE:
+        if index in REVERSED:
             drawn.append(f"|\033[7m{row}\033[0m|")
         elif index in GRAPHIC_ROWS:
             drawn.append("|" + "".join(PREVIEW.get(c, c) for c in row) + "|")

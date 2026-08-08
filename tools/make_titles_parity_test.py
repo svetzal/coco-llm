@@ -143,9 +143,11 @@ def main() -> None:
 
     # The game shows one name on the top row, centred. Same generator, same
     # stream, so the first level name is the first title of the screen above.
+    # A title bar is drawn from the reversed set, whose blank is $20 - not
+    # the $60 the body uses. screen_title_bar owns that now.
     first = titles[0]
     indent = (COLUMNS - len(first)) // 2
-    centred = [BLANK] * COLUMNS
+    centred = [0x20] * COLUMNS
     for offset, character in enumerate(first):
         centred[indent + offset] = ord(character) & 0x3F
     lines += [
