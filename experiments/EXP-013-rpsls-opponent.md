@@ -25,6 +25,7 @@ because it had the move streams on disk to replay.
 ```sh
 make exp013-sweep    # the measurements below
 make xroar-rpsls     # play it
+make exp013-record LABEL=you-01   # play it and keep the session
 make rpsls-test      # four parity cases against the reference
 ```
 
@@ -201,6 +202,7 @@ verified against the reference rather than inspected.
 
 ```sh
 make xroar-rpsls     # play it
+make exp013-record LABEL=you-01   # play it and keep the session
 make rpsls-test      # four parity cases
 ```
 

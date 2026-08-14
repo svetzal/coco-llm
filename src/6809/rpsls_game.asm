@@ -33,6 +33,15 @@
 ; compare and an increment; there is no multiplier in the loop and nothing to
 ; quantize, which is the finding EXP-008 recorded and this experiment inherited.
 
+; A whole session fits in RAM easily, so it is kept: every throw, the move the
+; machine answered with, and what it expected before either. `Q` ends the
+; session and parks the program on a label XRoar can trap, which is how the
+; game gets its own moves out to be scored. Playing the real thing and
+; measuring a stand-in for it are not the same evidence.
+LOG_MAX         equ     200
+LOG_RESETS      equ     16
+NO_EXPECTATION  equ     $ff
+
 MOVE_COUNT      equ     5
 OUTCOMES        equ     3
 CONTEXTS        equ     MOVE_COUNT*OUTCOMES
@@ -66,8 +75,11 @@ rpsls_round
         sta     agent_move
         lbsr    draw_board
         lbsr    wait_for_move
+        cmpa    #$fe
+        beq     session_done
         cmpa    #$ff
         bne     rpsls_play
+        lbsr    log_reset
         lbsr    forget_everything
         bra     rpsls_round
 rpsls_play
@@ -75,6 +87,36 @@ rpsls_play
         lbsr    settle_round
         lbsr    draw_board
         bra     rpsls_round
+
+; `Q`: park on a label a snapshot can be taken at. The loop is deliberate -
+; the session has to still be in RAM when the trap fires.
+session_done
+        ldu     #text_saved
+        lbsr    centre_notice
+session_halt
+        bra     session_halt
+
+; U is a message, written across the continuation row, which is blank unless a
+; long rule wrapped into it.
+centre_notice
+        pshs    u
+        lbsr    screen_text_length
+        lda     #11
+        lbsr    screen_row_address
+        lda     #SCREEN_COLS
+        suba    screen_length
+        lsra
+        tfr     a,b
+        abx
+        puls    u
+centre_notice_next
+        lda     ,u+
+        beq     centre_notice_done
+        ora     #$40
+        sta     ,x+
+        bra     centre_notice_next
+centre_notice_done
+        rts
 
 ; A new session: the tables and everything the screen reads. `rmb` reserves
 ; RAM without clearing it, so the first board reported 255 rounds played, a
@@ -96,6 +138,8 @@ new_game
         clr     agent_move
         clr     player_move
         clr     agent_result
+        clr     log_count
+        clr     log_reset_count
         ldx     #history_you
         clra
 new_game_history
@@ -319,10 +363,19 @@ best_none
 ; Record the round: the rules cell it just proved, the count for what you
 ; threw, the tallies, and the history the screen draws from.
 settle_round
+        ; Logged first, and unconditionally. Nothing it records changes during
+        ; the rest of this routine, and placed further down it sat inside the
+        ; branch taken only when the player won - so the log held one entry per
+        ; win rather than one per round.
+        lbsr    log_round
         lda     agent_move
         ldb     player_move
         lbsr    outcome_of
         sta     agent_result
+        ; Both of these belong to every round. Sitting below, they were inside
+        ; the branch taken only when the player won, so a losing round kept the
+        ; previous winning round's verdict on screen and never reached the log.
+        lbsr    name_the_round
 
         lda     agent_move
         ldb     #MOVE_COUNT
@@ -373,7 +426,6 @@ settle_capped
         cmpa    #0
         bne     settle_history
         inc     wins                    ; it lost, so you won
-        lbsr    name_the_round
 settle_history
         ldx     #history_you
         lbsr    push_history
@@ -461,6 +513,51 @@ halve_next
         bne     halve_next
         rts
 
+; Append the round to the session log. Kept separate from the tables because
+; it is evidence rather than state: nothing reads it back, and forgetting must
+; not erase it.
+log_round
+        lda     log_count
+        cmpa    #LOG_MAX
+        bhs     log_round_done
+        ldb     log_count
+        ldx     #log_player
+        abx
+        lda     player_move
+        sta     ,x
+        ldb     log_count
+        ldx     #log_agent
+        abx
+        lda     agent_move
+        sta     ,x
+        ldb     log_count
+        ldx     #log_expected
+        abx
+        lda     #NO_EXPECTATION
+        tst     expects_known
+        beq     log_round_store
+        lda     expected
+log_round_store
+        sta     ,x
+        inc     log_count
+log_round_done
+        rts
+
+; Note where the tables were emptied, so a replay knows the machine's memory
+; restarted while the session did not.
+log_reset
+        lda     log_reset_count
+        cmpa    #LOG_RESETS
+        bhs     log_reset_done
+        ldb     log_reset_count
+        ldx     #log_resets
+        abx
+        lda     log_count
+        sta     ,x
+        inc     log_reset_count
+log_reset_done
+        rts
+
 ; Shift a history row left one, newest lands on the right.
 push_history
         ldb     #HISTORY-1
@@ -504,6 +601,10 @@ poll_again
         beq     poll_reset
         cmpa    #'r
         beq     poll_reset
+        cmpa    #'Q
+        beq     poll_quit
+        cmpa    #'q
+        beq     poll_quit
         suba    #'1
         bcs     poll_again
         cmpa    #MOVE_COUNT
@@ -511,6 +612,9 @@ poll_again
         rts
 poll_reset
         lda     #$ff
+        rts
+poll_quit
+        lda     #$fe
         rts
         endc
 
@@ -1073,6 +1177,8 @@ text_tie        fcc     "A TIE"
                 fcb     0
 text_both       fcc     "BOTH THREW"
                 fcb     0
+text_saved      fcc     "SESSION SAVED"
+                fcb     0
 text_empty      fcb     0
 
 ; The title bar. EXP-012 generates these; wiring its generator in place of a
@@ -1168,6 +1274,17 @@ reason_b        rmb     2
 verdict_text    rmb     2
 name_winner     rmb     1
 name_loser      rmb     1
+
+; The session log. The magic string sits immediately in front of it so a
+; snapshot can be searched for the log without this file, or the tool reading
+; it, having to know XRoar's format.
+log_magic       fcc     "RPSLSLOG"
+log_count       rmb     1
+log_reset_count rmb     1
+log_resets      rmb     LOG_RESETS
+log_player      rmb     LOG_MAX
+log_agent       rmb     LOG_MAX
+log_expected    rmb     LOG_MAX
         ifdef   DIRECT_TEST
 SCRIPT_MAX      equ     64
 script          rmb     SCRIPT_MAX

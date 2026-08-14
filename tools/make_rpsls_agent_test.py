@@ -95,7 +95,18 @@ def main() -> None:
     symbols = SYMBOLS.read_text()
     address = {
         name: symbol(symbols, name)
-        for name in ("start", "script", "trace_agent", "rules", "wins", "rounds")
+        for name in (
+            "start",
+            "script",
+            "trace_agent",
+            "rules",
+            "wins",
+            "rounds",
+            "log_count",
+            "log_player",
+            "log_agent",
+            "log_expected",
+        )
     }
     chosen, rules_known, wins = reference_play()
 
@@ -127,6 +138,14 @@ def main() -> None:
     # The tables it ends holding, not only the moves it made on the way.
     lines.append(f";! ${address['rounds']:04X} = #${len(SCRIPT):02X}")
     lines.append(f";! ${address['wins']:04X} = #${wins:02X}")
+
+    # The session log is the evidence a recorded game is read out of, so it is
+    # checked here rather than trusted: every throw, every answer, and what was
+    # expected before either.
+    lines.append(f";! ${address['log_count']:04X} = #${len(SCRIPT):02X}")
+    for index, (throw, own) in enumerate(zip(SCRIPT, chosen, strict=True)):
+        lines.append(f";! ${address['log_player'] + index:04X} = #${throw:02X}")
+        lines.append(f";! ${address['log_agent'] + index:04X} = #${own:02X}")
     lines.append("")
 
     arguments.output.parent.mkdir(parents=True, exist_ok=True)

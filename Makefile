@@ -20,7 +20,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	attention-bin attention-test attention-ui-test xroar-test-attention \
 	xroar-attention exp012-corpus exp012-vocabulary exp012-tokenizations \
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
-	exp013-sweep exp013-play rpsls-bin rpsls-test xroar-rpsls \
+	exp013-sweep exp013-play exp013-record rpsls-bin rpsls-test xroar-rpsls \
 	present tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
@@ -196,6 +196,14 @@ xroar-rpsls: build/coco-rpsls.bin build/roms/.coco1-roms
 
 exp013-sweep:
 	$(UV) run python tools/run_exp_013.py
+
+exp013-record:
+ifndef LABEL
+	$(error set LABEL, for example: make exp013-record LABEL=stacey-coco-01)
+endif
+exp013-record: build/coco-rpsls.bin build/roms/.coco1-roms
+	$(UV) run python tools/capture_rpsls_coco.py --label $(LABEL) \
+		--xroar $(XROAR)
 
 exp013-play:
 ifndef LABEL

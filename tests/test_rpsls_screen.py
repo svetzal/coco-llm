@@ -229,3 +229,34 @@ def test_the_body_starts_where_the_title_bar_does() -> None:
     rows = board()
     for row in (1, 2, 3, 9, 10, 14, 15):
         assert rows[row][0] != " ", f"row {row} is indented"
+
+
+def test_a_snapshot_log_reads_back_as_it_was_written() -> None:
+    """The recorder finds the log by a magic string rather than by knowing
+    XRoar's snapshot format, so what it must survive is arbitrary bytes either
+    side of it."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    from capture_rpsls_coco import LOG_MAX, MAGIC, NO_EXPECTATION, read_log
+
+    moves = [0, 2, 4, 1]
+    agent = [2, 3, 0, 4]
+    expected = [NO_EXPECTATION, 0, 2, 2]
+    body = bytearray(b"\xa5" * 64) + MAGIC
+    body += bytes([len(moves), 2]) + bytes([1, 3]) + bytes(14)
+    for column in (moves, agent, expected):
+        body += bytes(column) + bytes(LOG_MAX - len(column))
+    body += b"\x5a" * 64
+
+    written = Path(ROOT / "build" / "test-session.sna")
+    written.parent.mkdir(exist_ok=True)
+    written.write_bytes(bytes(body))
+    session = read_log(written)
+    written.unlink()
+
+    assert session["moves"] == moves
+    assert session["opponent"] == agent
+    # A round with no expectation is -1, not move zero, which is what the
+    # machine stores $FF for.
+    assert session["predicted"] == [-1, 0, 2, 2]
+    assert session["resets_after_round"] == [1, 3]
+    assert not session["truncated"]
