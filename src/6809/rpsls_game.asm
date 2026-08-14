@@ -638,7 +638,7 @@ row_text
         pshs    u
         lbsr    clear_line
         puls    u
-        ldb     #1
+        ldb     #0
         lbsr    lay_string
         puls    a
         lbra    blit_line
@@ -656,12 +656,12 @@ row_score
         tst     rounds
         bne     row_score_played
         ldu     #text_no_rounds
-        ldb     #1
+        ldb     #0
         lbsr    lay_string
         lda     #3
         lbra    blit_line
 row_score_played
-        ldb     #1
+        ldb     #0
         ldu     #text_won
         lbsr    lay_string
         lda     wins
@@ -723,7 +723,7 @@ row_marks_clear
 
         lda     #5
         lbsr    screen_row_address
-        leax    6,x
+        leax    5,x
         clr     scan
 row_marks_next
         lda     scan
@@ -783,7 +783,7 @@ row_trail
         pshs    u
         lbsr    clear_line
         puls    u
-        ldb     #1
+        ldb     #0
         lbsr    lay_string
         clr     scan
 row_trail_next
@@ -800,7 +800,7 @@ row_trail_next
         lda     scan
         ldb     #4
         mul
-        addb    #5
+        addb    #4
         lda     #3
         lbsr    lay_fixed
         inc     scan
@@ -816,7 +816,7 @@ row_result
         lbsr    clear_line
         tst     rounds
         beq     row_result_faced
-        ldb     #1
+        ldb     #0
         ldu     #text_you_colon
         lbsr    lay_string
         lda     player_move
@@ -861,7 +861,7 @@ row_result_no_wrap
 ; name will not fit and belongs on the row below.
 lay_verdict
         clr     wrap_needed
-        ldb     #1
+        ldb     #0
         ldu     verdict_text
         lbsr    lay_string
         ldu     #text_comma
@@ -919,7 +919,7 @@ measure_done
 
 row_machine
         lbsr    clear_line
-        ldb     #1
+        ldb     #0
         tst     expects_known
         bne     row_machine_expects
         ldu     #text_no_idea
@@ -937,12 +937,12 @@ row_machine_blit
 
         lbsr    clear_line
         ldu     #text_rules
-        ldb     #1
+        ldb     #0
         lbsr    lay_string
         lda     #2
         sta     number_width
         lbsr    count_rules
-        ldb     #8
+        ldb     #7
         lbsr    lay_number_right
         ldu     #text_of_25
         lbsr    lay_string
@@ -951,12 +951,12 @@ row_machine_blit
 
         lbsr    clear_line
         ldu     #text_memory
-        ldb     #1
+        ldb     #0
         lbsr    lay_string
         lda     #3
         sta     number_width
         lda     memory
-        ldb     #8
+        ldb     #7
         lbsr    lay_number_right
         ldu     #text_slash
         lbsr    lay_string

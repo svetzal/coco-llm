@@ -196,13 +196,14 @@ def test_the_title_bar_is_reversed_and_the_body_is_not() -> None:
 def test_every_result_line_fits_the_row() -> None:
     """The rows are built from a verdict and one of ten verb sentences, and
     the longest combination has to fit before any of it reaches a screen that
-    cannot scroll. A leading space is added when the row is laid out."""
+    cannot scroll. Rows start at column 0: the title bar spans the full width
+    and an indented body under it reads as a misalignment."""
     too_long = []
     for player in range(MOVE_COUNT):
         for agent in range(MOVE_COUNT):
             for line in result_lines(player, agent, outcome(player, agent)):
-                if len(line) + 1 > COLUMNS:
-                    too_long.append((len(line) + 1, line))
+                if len(line) > COLUMNS:
+                    too_long.append((len(line), line))
     assert not too_long, f"over 32 columns: {sorted(too_long, reverse=True)[:3]}"
 
 
@@ -220,3 +221,11 @@ def test_short_rules_do_not_wrap() -> None:
     """A continuation row on every round would be noise."""
     rock, scissors = 0, 4
     assert result_lines(rock, scissors, outcome(rock, scissors))[2] == ""
+
+
+def test_the_body_starts_where_the_title_bar_does() -> None:
+    """A one-column indent under a full-width bar looks like a mistake, and
+    on the emulator it looked like one."""
+    rows = board()
+    for row in (1, 2, 3, 9, 10, 14, 15):
+        assert rows[row][0] != " ", f"row {row} is indented"

@@ -14,7 +14,9 @@ organising idea than ranking the parts by importance:
   bottom  the machine's. What it expects, and how much it has worked out.
 
 The title is reverse-field, which separates it from the keys below without
-spending a blank row on a 16-row screen. The body is black on green, the
+spending a blank row on a 16-row screen. It spans the full width, so the body
+does too: an indented body under a full-width bar reads as a misalignment
+rather than as a margin, which is what a one-column indent looked like. The body is black on green, the
 CoCo's own look; the bar is green on black. src/6809/text_screen.asm holds
 that convention for both experiments, after this one was built with the two
 sets the wrong way round and came out inverted.
@@ -145,23 +147,23 @@ def render(
 
     # Yours: what level this is, what to press, how you are doing.
     rows[TITLE_ROW] = fit(centre(level))
-    rows[KEYS_ROWS[0]] = fit(" 1 ROCK    2 SPOCK   3 PAPER")
-    rows[KEYS_ROWS[1]] = fit(" 4 LIZARD  5 SCISSORS")
+    rows[KEYS_ROWS[0]] = fit("1 ROCK    2 SPOCK   3 PAPER")
+    rows[KEYS_ROWS[1]] = fit("4 LIZARD  5 SCISSORS")
     if rounds:
         won = f"YOU HAVE WON {player_wins} OF {rounds} ({percent(player_wins, rounds)})"
     else:
         won = "NO ROUNDS PLAYED YET"
-    rows[SCORE_ROW] = fit(f" {won}")
+    rows[SCORE_ROW] = fit(won)
 
-    rows[REASON_ROW] = fit(f" {reason}")
-    rows[VERDICT_ROW] = fit(f" {verdict}")
-    rows[CONTINUE_ROW] = fit(f" {continuation}")
+    rows[REASON_ROW] = fit(reason)
+    rows[VERDICT_ROW] = fit(verdict)
+    rows[CONTINUE_ROW] = fit(continuation)
 
     # The machine's end of the screen.
     plan = "IT HAS NO IDEA YET" if expects is None else f"IT EXPECTS {expects}"
-    rows[EXPECT_ROW] = fit(f" {plan}")
-    rows[RULES_ROW] = fit(f" RULES  {rules_known:>2}/25")
-    rows[MEMORY_ROW] = fit(f" MEMORY {memory:>3}/{rounds}")
+    rows[EXPECT_ROW] = fit(plan)
+    rows[RULES_ROW] = fit(f"RULES  {rules_known:>2}/25")
+    rows[MEMORY_ROW] = fit(f"MEMORY {memory:>3}/{rounds}")
 
     # The play field. Newest on the right, so the current throw is the column
     # the eye finishes on, and the sentence below explains that column.
@@ -173,9 +175,9 @@ def render(
         f" {'T' if mine == theirs else 'W' if beats(mine, theirs) else 'L'} "
         for mine, theirs in zip(recent, against, strict=True)
     )
-    rows[RESULT_ROW] = fit(f"     {marks}")
-    rows[YOU_ROW] = fit(f" YOU {' '.join(SHORT[move] for move in recent)}")
-    rows[CPU_ROW] = fit(f" CPU {' '.join(SHORT[move] for move in against)}")
+    rows[RESULT_ROW] = fit(f"    {marks}")
+    rows[YOU_ROW] = fit(f"YOU {' '.join(SHORT[move] for move in recent)}")
+    rows[CPU_ROW] = fit(f"CPU {' '.join(SHORT[move] for move in against)}")
     return rows
 
 
@@ -189,7 +191,7 @@ def result_lines(player: int, agent: int, result: int) -> tuple[str, str]:
     """
     throws = f"YOU: {MOVES[player]}"
     against = f"CPU: {MOVES[agent]}"
-    facing = throws + " " * (COLUMNS - 1 - len(throws) - len(against)) + against
+    facing = throws + " " * (COLUMNS - len(throws) - len(against)) + against
 
     if player == agent:
         return (facing, *wrapped("A TIE", f"BOTH THREW {MOVES[agent]}"))
@@ -211,10 +213,10 @@ def wrapped(verdict: str, rule: str) -> tuple[str, str]:
     """
     lead = f"{verdict}, "
     words = rule.upper().split()
-    if 1 + len(lead) + len(" ".join(words)) <= COLUMNS:
+    if len(lead) + len(" ".join(words)) <= COLUMNS:
         return lead + " ".join(words), ""
     kept = len(words)
-    while kept > 1 and 1 + len(lead) + len(" ".join(words[:kept])) > COLUMNS:
+    while kept > 1 and len(lead) + len(" ".join(words[:kept])) > COLUMNS:
         kept -= 1
     return lead + " ".join(words[:kept]), " " * len(lead) + " ".join(words[kept:])
 
