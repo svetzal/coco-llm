@@ -79,8 +79,9 @@ Current experiments:
   starts from EXP-008's null result rather than from a model: a 75-byte table
   conditioned on the last move and the last outcome scores 80.0% against six
   declared synthetic players, beating tables six times its size, and replicates
-  EXP-008's secondary hypothesis that situation beats history. No human has
-  played it, which is the outstanding evidence rather than a formality.
+  EXP-008's secondary hypothesis that situation beats history. A human has
+  played the CoCo build and found it good; no session has been recorded, so
+  there is nothing to score the declared null result against.
 
 ## Presentation commands
 

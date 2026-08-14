@@ -10,10 +10,17 @@ With a 25-byte rules table beside it the opponent also learns the game, and the
 whole thing runs in 2,217 bytes with both its board and its behaviour verified
 against the reference.
 
-**No human has played it.** That is the outstanding evidence and it is not a
-formality: EXP-008's synthetic phase passed on players its human phase then
-failed on, and every number here is measured against six players invented by
-the person who wants the agent to win.
+**Stacey has played it, on the emulator, several times, and reports it plays
+well.** That is real evidence and it settles the thing a synthetic player
+cannot: that a person meets an opponent which visibly learns and is worth
+playing.
+
+What is still missing is narrower. **No session has been recorded**, so there
+is nothing to score. Every number here is measured against six players invented
+by the person who wants the agent to win, and the declared null result below
+cannot be tested against a game nobody wrote down. EXP-008's synthetic phase
+passed on players its human phase then failed on, and it settled that only
+because it had the move streams on disk to replay.
 
 ```sh
 make exp013-sweep    # the measurements below

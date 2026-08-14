@@ -100,8 +100,10 @@ Two things follow, and both are now in the code:
   hardware validation already recorded in their experiment notes.
 - EXP-008's rejection and EXP-009's timing fix should not acquire additional UI
   merely to make every experiment look alike.
-- EXP-013 has been played only by its author, on an emulator. Its numbers are
-  measured against six synthetic players invented by the person who wants the
-  agent to win, which is the exact failure EXP-008 recorded first-hand: its
-  synthetic phase passed on players its human phase then failed on. A recorded
-  human session is the outstanding evidence, not a formality.
+- EXP-013 has been played by a human on the emulator and holds up as a game.
+  What it lacks is a *recorded* session: its numbers are measured against six
+  synthetic players invented by the person who wants the agent to win, and
+  nothing has been written down that could score them. That is the exact
+  failure EXP-008 recorded first-hand - its synthetic phase passed on players
+  its human phase then failed on - and EXP-008 could only settle it because it
+  had the move streams on disk.
