@@ -19,7 +19,7 @@ what action caused the change, and what evidence followed.
 | EXP-010 | The person supplies an opening figure and the model supplies the continuation. | Improve. The title now reads `YOU SEED - MODEL CONTINUES`; labels and colour reinforce, rather than replace, those roles. |
 | EXP-011 | Editing context can change an answer while model weights remain locked. | Keep as the reference pattern. The UI shows the learner's edit, before/after context, unchanged model identity, repeated question, and changed answer. |
 | EXP-012 | The model learns the shape of a title; a table supplies the words. | Keep. The split is the lesson and it is visible in the artifact: 400 bytes of model against 1,600 of dictionary and rules, on a corpus where only two word pairs ever repeat. |
-| EXP-013 | Learning the rules is the easy half; learning the person never finishes. | Keep. Two counters on screen separate them, and pressing `R` collapses both in front of the audience. |
+| EXP-013 | Learning the rules is the easy half; learning the person never finishes. | Keep, and quote the human number. Two counters on screen separate the two, and pressing `R` collapses both in front of the audience. |
 
 ## EXP-013's causal chain
 
@@ -53,6 +53,12 @@ couple of dozen rounds and never finishes completely; the half that never
 finishes at all is learning the player. That also answers the obvious challenge:
 a person who genuinely randomises cannot be beaten, and the demo should say so
 rather than hope nobody tries it.
+
+**And the recorded session says to go further than that.** A player who is
+merely *trying* - not randomising, just avoiding repeats - holds it to 52.8%.
+The number to say on stage is that one, with the 80% offered as what it does to
+a player with a habit. Claiming 80% for a person would be claiming the average
+of a player set that turned out to encode an assumption about people.
 
 ## Pattern carried forward
 
@@ -100,10 +106,11 @@ Two things follow, and both are now in the code:
   hardware validation already recorded in their experiment notes.
 - EXP-008's rejection and EXP-009's timing fix should not acquire additional UI
   merely to make every experiment look alike.
-- EXP-013 has been played by a human on the emulator and holds up as a game.
-  What it lacks is a *recorded* session: its numbers are measured against six
-  synthetic players invented by the person who wants the agent to win, and
-  nothing has been written down that could score them. That is the exact
-  failure EXP-008 recorded first-hand - its synthetic phase passed on players
-  its human phase then failed on - and EXP-008 could only settle it because it
-  had the move streams on disk.
+- EXP-013's human session has been recorded and scored, and it went the way
+  EXP-008's did: 52.8% against a person where the synthetic players said 80%.
+  The demo must quote the human number. The claim that survives is smaller and
+  truer - it reads a person better than chance at 3.3 sigma, learns the rules
+  from nothing in about 25 rounds, and does it in 100 bytes - and it is worth
+  saying out loud that a player who is trying holds it to a coin flip. One
+  session, one player who could see the prediction; a second recording from
+  someone who has not been told what to avoid is the obvious next one.

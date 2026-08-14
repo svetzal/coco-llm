@@ -2,8 +2,18 @@
 
 ## Status
 
-**Playable on a stock CoCo 1; blocking question still answered on synthetic
-players only.** A 75-byte frequency table conditioned on the player's last move
+**Played by a human, and the synthetic result did not survive it.** Against a
+person the opponent scores **52.8%** over 200 rounds, where 50% is a draw, and
+shows no trend across the session. Against the six declared synthetic players
+it scores 80.0%. The number the demo would have rested on was an artifact of
+the player set, not a property of the opponent.
+
+The measurement, and what it does and does not overturn, is under
+[Against a human](#against-a-human-2026-08-07). Everything below it predates
+that session and is left as written.
+
+**Previously: playable on a stock CoCo 1; blocking question answered on
+synthetic players only.** A 75-byte frequency table conditioned on the player's last move
 *and* the last round's outcome scores 80.0% against six declared synthetic
 players, beating every other table tried, including ones six times its size.
 With a 25-byte rules table beside it the opponent also learns the game, and the
@@ -238,6 +248,70 @@ convention now lives once, in `src/6809/text_screen.asm`, with
 `screen_title_bar` as the one call an app makes to put a name at the top of a
 screen - which is what should have been shared from the start rather than
 reimplemented in each experiment.
+
+## Against a human (2026-08-07)
+
+One session, 200 rounds, recorded off the CoCo build with
+`make exp013-record`. No wipes. The log holds 200 rounds and filled, so this
+is the first 200 of a longer session.
+
+| | synthetic (mean of six) | this human |
+| --- | ---: | ---: |
+| opponent's score | 80.0% | **52.8%** |
+| named the next throw | 69-98% | **29.6%** |
+| rounds | 300 each | 200 |
+
+Per block of 25 rounds: 60, 48, 56, 44, 58, 42, 50, 64. **No trend.** Whatever
+it had after 25 rounds is what it had after 200.
+
+### It is reading something, and it is not enough
+
+29.6% against a 20% chance rate is 3.3 standard deviations - the human move
+stream is genuinely not random, and the table genuinely finds structure in it.
+That edge converts to almost nothing: 52.8%, a coin flip you would not notice
+across a demo.
+
+The structure it found is visible in the session. **This player avoids
+repeating**: 14% against a 20% chance rate, and only 8% after winning a round.
+That is the opposite of the win-stay habit the outcome-conditioned context was
+designed around, and it is close to `never-repeat`, the synthetic player this
+experiment already recorded as the hardest at 56%. The observed 52.8% sits just
+below that.
+
+### The synthetic phase was not wrong; the average was
+
+This is worth being precise about, because it is the transferable lesson.
+Five of the six declared players had an exploitable habit - a favourite throw,
+a cycle, win-stay, a reaction to the opponent's last move. One did not. The
+opponent beat the five decisively and drew with the sixth, and **the mean over
+all six was reported as the headline**. A person turns out to play like the
+sixth.
+
+The player set was declared in advance and stated in the tool precisely so
+that tuning against it would be visible, and it was. What was not visible was
+that its *composition* encoded an assumption: that a human at a keyboard has
+habits of the kind those five players model. The number to have quoted was the
+one against `never-repeat`, not the average.
+
+### What this does and does not settle
+
+**Does not trigger the declared null result.** That null is about a neural
+model failing to beat a table by five points, and no model was built. It is
+still declared and still untested.
+
+**Does refute the 80% claim as a statement about people.** The honest number
+for a demo is 52.8% against a player who is trying, and something far higher
+against a player with a habit - which is most people who have not been told the
+machine is watching for one.
+
+**Does not say the opponent is useless.** It reads a human better than chance
+at 3.3 sigma, learns the rules from nothing in about 25 rounds, and does all of
+it in 100 bytes. Those remain true and remain the demonstration.
+
+**One session, one person, who knew how the machine works and could see its
+prediction on screen.** That is the least favourable case available and it is a
+single sample. A player who had not been told what to avoid would very likely
+score worse, and that is the obvious next recording.
 
 ## Open questions
 

@@ -79,9 +79,11 @@ Current experiments:
   starts from EXP-008's null result rather than from a model: a 75-byte table
   conditioned on the last move and the last outcome scores 80.0% against six
   declared synthetic players, beating tables six times its size, and replicates
-  EXP-008's secondary hypothesis that situation beats history. A human has
-  played the CoCo build and found it good; no session has been recorded, so
-  there is nothing to score the declared null result against.
+  EXP-008's secondary hypothesis that situation beats history. A recorded
+  200-round human session then scored it at **52.8%**, a coin flip: it reads a
+  person better than chance at 3.3 sigma but not nearly well enough to win.
+  The synthetic average was an artifact of a player set in which five of six
+  had exploitable habits.
 
 ## Presentation commands
 
@@ -120,7 +122,9 @@ n/25` for the game, which it learns quickly and never completes, and `MEMORY
 n/rounds` for the person, which never finishes at all. `R` empties both in
 front of the audience - EXP-008's falsifiability key - and the machine has to
 climb back. Say out loud that where `RULES` stops is a measure of how varied
-the player is, and that someone who genuinely randomises cannot be beaten.
+the player is, and quote the human number: 52.8% against a player who is
+trying, against 80% for the synthetic players with habits. It reads a person
+better than chance, and not nearly well enough to win.
 
 | Experiment | Useful when the conversation asks… | Surface |
 | --- | --- | --- |
