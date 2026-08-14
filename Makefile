@@ -155,6 +155,19 @@ build/coco-rpsls.bin: src/6809/coco_rpsls.asm src/6809/rpsls_game.asm
 
 rpsls-bin: build/coco-rpsls.bin
 
+build/rpsls-agent.asm: src/6809/coco_rpsls.asm src/6809/rpsls_game.asm \
+		src/6809/text_screen.asm
+	printf 'DIRECT_TEST equ 1\n' > $@
+	cat $< >> $@
+
+build/rpsls-agent.bin: build/rpsls-agent.asm
+	lwasm --6809 -I src/6809 --format=decb \
+		--symbol-dump=build/rpsls-agent.sym --output=$@ $<
+
+build/rpsls-agent-test.asm: build/rpsls-agent.bin \
+		tools/make_rpsls_agent_test.py src/reference/rpsls.py
+	$(UV) run python tools/make_rpsls_agent_test.py --output $@
+
 build/rpsls-fresh-test.asm: build/coco-rpsls.bin \
 		tools/make_rpsls_parity_test.py src/reference/rpsls_screen.py
 	$(UV) run python tools/make_rpsls_parity_test.py --case fresh --output $@
@@ -168,10 +181,11 @@ build/rpsls-wrap-test.asm: build/coco-rpsls.bin \
 	$(UV) run python tools/make_rpsls_parity_test.py --case wrapped --output $@
 
 rpsls-test: build/rpsls-fresh-test.asm build/rpsls-parity-test.asm \
-		build/rpsls-wrap-test.asm $(SIM6809)
+		build/rpsls-wrap-test.asm build/rpsls-agent-test.asm $(SIM6809)
 	$(SIM6809) --ram-top 65535 --run build/rpsls-fresh-test.asm
 	$(SIM6809) --ram-top 65535 --run build/rpsls-parity-test.asm
 	$(SIM6809) --ram-top 65535 --run build/rpsls-wrap-test.asm
+	$(SIM6809) --ram-top 65535 --run build/rpsls-agent-test.asm
 
 xroar-rpsls: build/coco-rpsls.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \

@@ -4,6 +4,12 @@
 ; The screen is verified against src/reference/rpsls_screen.py: all three
 ; cases in tools/make_rpsls_parity_test.py match every one of the 512 cells.
 ;
+; The opponent is verified too: tools/make_rpsls_agent_test.py runs 38
+; scripted throws through this loop and compares the move it chose every
+; round against src/reference/rpsls.py, along with the rules it ended up
+; holding. That is what carries EXP-013's numbers onto the machine - the
+; board test only proves the screen.
+;
 ; The drawing itself is text_screen.asm's - the two VDG character sets, the
 ; blank each one carries, and screen_title_bar. This file had its own copies
 ; and chose the wrong set, drawing the body reversed and the title bar plain,
@@ -68,17 +74,16 @@ rpsls_play
         sta     player_move
         lbsr    settle_round
         lbsr    draw_board
-        ifdef   DIRECT_TEST
-        swi
-        else
         bra     rpsls_round
-        endc
 
 ; A new session: the tables and everything the screen reads. `rmb` reserves
 ; RAM without clearing it, so the first board reported 255 rounds played, a
 ; history eight throws long, and a rule with no verb in it - all of it read
 ; out of whatever the machine happened to be holding.
 new_game
+        ifdef   DIRECT_TEST
+        clr     script_index
+        endc
         lbsr    forget_everything
         clr     rounds
         clr     wins
@@ -164,10 +169,14 @@ xorshift_r9
         eora    shift_work
         eorb    shift_work+1
         std     rng_state
-        tfr     a,b
-        clra
-        eorb    rng_state+1
-        eora    rng_state
+        ; value ^= value << 8. Shifting a 16-bit value left eight puts its low
+        ; byte in the high half and zero in the low, so only the high byte
+        ; changes. The first version built the shifted word with the halves
+        ; the wrong way round and diverged from the reference on its very
+        ; first draw.
+        ldd     rng_state
+        pshs    b
+        eora    ,s+
         std     rng_state
         rts
 
@@ -328,13 +337,16 @@ settle_round
         tst     have_context
         beq     settle_no_context
         lbsr    context_row
+        pshs    x
         ldb     player_move
         abx
         lda     ,x
-        cmpa    #255
-        beq     settle_counted
         inca
         sta     ,x
+        puls    x
+        cmpa    #255
+        blo     settle_counted
+        lbsr    halve_context
 settle_counted
 settle_no_context
         lda     player_move
@@ -434,6 +446,21 @@ move_name
         leau    d,u
         puls    b,pc
 
+; Halve every count in the row X addresses. A byte counter cannot hold more,
+; and halving is what makes the table forget: a player who changes tactics
+; sees their old habit fade rather than stay on the books forever. The first
+; version capped at 255 instead, which never forgets and disagrees with the
+; reference the moment any count saturates.
+halve_context
+        ldb     #MOVE_COUNT
+halve_next
+        lda     ,x
+        lsra
+        sta     ,x+
+        decb
+        bne     halve_next
+        rts
+
 ; Shift a history row left one, newest lands on the right.
 push_history
         ldb     #HISTORY-1
@@ -446,10 +473,29 @@ push_next
         rts
 
 ; Poll until 1-5, or R to forget. A is the move, or $ff for a reset.
+;
+; Under DIRECT_TEST the throws come from a table instead of the keyboard, and
+; the move the agent chose is recorded before each one. That is what a parity
+; test compares: the screen was proved separately, and what remains is whether
+; the 100 bytes of table behave like the reference they were measured on.
 wait_for_move
         ifdef   DIRECT_TEST
-        lda     scripted_move
+        ldb     script_index
+        ldx     #script
+        abx
+        lda     ,x
+        cmpa    #$fe
+        beq     script_exhausted
+        ldx     #trace_agent
+        abx
+        pshs    a
+        lda     agent_move
+        sta     ,x
+        puls    a
+        inc     script_index
         rts
+script_exhausted
+        swi
         else
 poll_again
         jsr     [POLCAT]
@@ -1123,5 +1169,8 @@ verdict_text    rmb     2
 name_winner     rmb     1
 name_loser      rmb     1
         ifdef   DIRECT_TEST
-scripted_move   rmb     1
+SCRIPT_MAX      equ     64
+script          rmb     SCRIPT_MAX
+trace_agent     rmb     SCRIPT_MAX
+script_index    rmb     1
         endc

@@ -180,6 +180,49 @@ who changes tactics mid-session.
   yet triggered. Until a human is recorded there is nothing for a model to fail
   against.
 
+## On the CoCo (2026-08-07)
+
+The game runs on a stock CoCo 1 in **2,201 bytes**, and both halves of it are
+verified against the reference rather than inspected.
+
+```sh
+make xroar-rpsls     # play it
+make rpsls-test      # four parity cases
+```
+
+| what | how |
+| --- | --- |
+| the board | 512 cells against `rpsls_screen.py`, in three states: before a round is played, mid-game, and the pairing whose rule wraps |
+| the opponent | 38 scripted throws through the real game loop, comparing the move it chose every round against `rpsls.py`, plus the tallies it ends holding |
+
+The second is the one that carries this experiment's numbers onto the machine.
+80% against the synthetic players and seven cells learned are statements about
+the Python; they only transfer if the 6809 does the same thing, and until the
+agent test existed nothing said it did.
+
+### What the parity tests caught, and what they could not
+
+Behaviour: **XorShift16's last step was wrong.** `value ^= value << 8` changes
+only the high byte, and the first version assembled the shifted word with its
+halves swapped, so the machine diverged from the reference on its very first
+draw and every one after. Also, the count table capped at 255 where the
+reference halves the row - the mechanism that lets it forget a player who
+changes tactics - so the two would have parted company the moment any count
+saturated.
+
+Drawing: a clobbered column register, a blank written from the wrong character
+set, uninitialised tallies reporting 255 rounds played on a fresh board, and
+stat fields left at a column the labels had moved away from.
+
+And the one they could not catch: **the whole screen was inverted.** The body
+was drawn reversed and the title bar plain, which a parity test is blind to
+because it compares the CoCo against a reference that was equally free to
+guess, and both guessed the same way. It took looking at the emulator. The
+convention now lives once, in `src/6809/text_screen.asm`, with
+`screen_title_bar` as the one call an app makes to put a name at the top of a
+screen - which is what should have been shared from the start rather than
+reimplemented in each experiment.
+
 ## Open questions
 
 1. **Does a human's outcome-conditioned behaviour survive being read?** The

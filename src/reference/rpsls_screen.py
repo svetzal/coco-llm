@@ -86,9 +86,8 @@ REVERSED = frozenset({TITLE_ROW})
 # bits 3-0 light the four quadrants - so $0F is a solid block.
 #
 # The VDG's colour order is green, yellow, blue, red, buff, cyan, magenta,
-# orange. That ordering is taken from the EXP-009 display work and has NOT yet
-# been confirmed on this screen; the marks are the first thing to check when
-# the board is first drawn on the emulator.
+# orange. Confirmed on the emulator: the marks come out green for a win, red
+# for a loss and blue for a tie, as intended.
 SG4_SOLID = 0x0F
 GREEN, YELLOW, BLUE, RED = 0, 1, 2, 3
 # Each set carries its own blank and it falls out of the same arithmetic as
