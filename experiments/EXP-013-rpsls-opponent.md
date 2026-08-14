@@ -2,17 +2,24 @@
 
 ## Status
 
-**Set up; blocking question answered on synthetic players only.** A 75-byte
-frequency table conditioned on the player's last move *and* the last round's
-outcome scores 80.0% against six declared synthetic players, beating every
-other table tried, including ones six times its size. No human has played it
-yet, and nothing has been written for the 6809.
+**Playable on a stock CoCo 1; blocking question still answered on synthetic
+players only.** A 75-byte frequency table conditioned on the player's last move
+*and* the last round's outcome scores 80.0% against six declared synthetic
+players, beating every other table tried, including ones six times its size.
+With a 25-byte rules table beside it the opponent also learns the game, and the
+whole thing runs in 2,217 bytes with both its board and its behaviour verified
+against the reference.
+
+**No human has played it.** That is the outstanding evidence and it is not a
+formality: EXP-008's synthetic phase passed on players its human phase then
+failed on, and every number here is measured against six players invented by
+the person who wants the agent to win.
 
 ```sh
-make exp013-sweep
+make exp013-sweep    # the measurements below
+make xroar-rpsls     # play it
+make rpsls-test      # four parity cases against the reference
 ```
-
-Reproduces the table below.
 
 ## Why this does not start with a model
 

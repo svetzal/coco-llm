@@ -72,12 +72,15 @@ Current experiments:
   400-byte frame model plus a tagged noun table, 3,874 bytes in total,
   agreeing with the Mac on all 512 screen cells. Its training is capped at
   eleven epochs by 16-bit logit accumulation, which visibly costs style.
-- [`EXP-013-rpsls-opponent.md`](EXP-013-rpsls-opponent.md) — an RPSLS opponent
-  that learns its player. Starts from EXP-008's null result rather than from a
-  model: a 75-byte table conditioned on the last move and the last outcome
-  scores 80.0% against six declared synthetic players, beating tables six times
-  its size. Replicates EXP-008's secondary hypothesis — situation beats
-  history. No human has played it and nothing is written for the 6809.
+- [`EXP-013-rpsls-opponent.md`](EXP-013-rpsls-opponent.md) — a playable RPSLS
+  opponent that learns the rules and its player at once, in 2,217 bytes on a
+  stock CoCo 1. Board and behaviour are both verified against the reference:
+  512 cells in three states, and 38 scripted rounds of identical choices. It
+  starts from EXP-008's null result rather than from a model: a 75-byte table
+  conditioned on the last move and the last outcome scores 80.0% against six
+  declared synthetic players, beating tables six times its size, and replicates
+  EXP-008's secondary hypothesis that situation beats history. No human has
+  played it, which is the outstanding evidence rather than a formality.
 
 ## Presentation commands
 
@@ -110,6 +113,14 @@ from `CODE 2` to `CODE 6` in context RAM while the model weights are visibly
 locked, then asks the same question again. `V` optionally replays the stored
 scores at presentation speed.
 
+EXP-013 is the one to play rather than watch. The opponent starts knowing
+neither the rules nor the player, and two counters carry the lesson: `RULES
+n/25` for the game, which it learns quickly and never completes, and `MEMORY
+n/rounds` for the person, which never finishes at all. `R` empties both in
+front of the audience - EXP-008's falsifiability key - and the machine has to
+climb back. Say out loud that where `RULES` stops is a measure of how varied
+the player is, and that someone who genuinely randomises cannot be beaten.
+
 | Experiment | Useful when the conversation asks… | Surface |
 | --- | --- | --- |
 | EXP-004 | Can the old machine really train it? | Interactive CoCo emulation |
@@ -118,6 +129,7 @@ scores at presentation speed.
 | EXP-007 | What changes with more memory and punctuation? | 32 KiB all-RAM |
 | EXP-011 | Can it use a fact supplied right now? | Context-attention bench |
 | EXP-012 | Can it make up something that reads? | Screen of fake episode titles |
+| EXP-013 | Can it learn a game, and learn me? | Playable RPSLS opponent |
 
 EXP-001 through EXP-003 remain recorded as architectural evidence, but are no
 longer in the runnable presentation menu. Presenter output deliberately shows
