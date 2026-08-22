@@ -54,7 +54,6 @@ def figure_vocabulary(trace: dict) -> str:
 
     context = len(trace["walk"][0]["context_text"])
     return f"""
-  <p class="lbl">{len(vocabulary)} tokens. A person chose every one.</p>
   <div class="fig">
     <div class="vocab">{cells}</div>
     <p class="fragment lbl" data-fragment-index="1">
