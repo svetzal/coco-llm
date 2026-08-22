@@ -336,3 +336,10 @@
   border-top: 1px solid var(--coco-c02); padding-top: 8px;
   color: var(--deck-loud);
 }
+
+/* A caption above its figure rather than below it, for when the caption is
+ * the reason the figure looks the way it does. */
+.reveal .fig .cap.top { margin: 0 auto 0.7em; }
+/* The context-window label is two words and sits under a single digit, so it
+ * gets room rather than forcing the column wide. */
+.reveal .term .tl { max-width: 7em; margin: 0 auto; line-height: 1.15; }

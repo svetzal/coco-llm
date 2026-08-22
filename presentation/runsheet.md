@@ -125,7 +125,13 @@ Name the mechanism out loud. Cutting text into countable pieces is
 word and never had it explained. Here a token is a whole word because we chose
 that.
 
-Show the encoding, then the three sliding two-token examples one name produces.
+Show the encoding, then the three sliding two-token examples one name produces,
+and name the second term on those rows: the two boxes it looks at are the
+**context window**, and here it holds two tokens. It slides, and everything
+behind it is gone. Say once, without labouring it, that a model advertising a
+200,000-token context window means this, wider.
+
+The window's width is also why the tables in block 3 come in pairs.
 
 Ask the room for a word that is not in the vocabulary. There is no graceful
 answer and that is the point. The table has the full tokenizer exercise for

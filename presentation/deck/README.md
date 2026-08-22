@@ -84,6 +84,13 @@ which a scripted animation usually will not. Order is controlled with
 `data-fragment-index` so a figure's stages advance in the order the argument
 needs rather than in document order.
 
+**One vocabulary, and it is the audience's.** The deck names the terms people
+arrive already having heard, and uses them consistently: **token** and
+**tokenizing**, **context window**, **parameter**. Internal words are a tell
+that a figure was written from the code rather than for a reader, so "slot"
+became "window position" everywhere once the context window had a name. If a
+figure needs a word the audience has not been given, give it the word first.
+
 **Nothing in a figure may shrink.** Every box carries `flex: 0 0 auto`.
 Flex items shrink below their own content by default, and a bordered box
 holding a number is exactly where that shows: the border cuts through the

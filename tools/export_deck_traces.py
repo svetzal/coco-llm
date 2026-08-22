@@ -274,21 +274,21 @@ def main() -> None:
     positions, outputs, biases = model.parameters
     parts = [
         {
-            "what": "a row for every slot and every word",
+            "what": "a row for every window position and token",
             "terms": [config.context, len(vocabulary), config.embedding],
-            "labels": ["slots", "words", "numbers"],
+            "labels": ["context window", "tokens", "numbers"],
             "count": int(positions.size),
         },
         {
-            "what": "a row for every word it can predict",
+            "what": "a row for every token it can predict",
             "terms": [len(vocabulary), config.embedding],
-            "labels": ["words", "numbers"],
+            "labels": ["tokens", "numbers"],
             "count": int(outputs.size),
         },
         {
-            "what": "one starting nudge per word",
+            "what": "one starting nudge per token",
             "terms": [len(vocabulary)],
-            "labels": ["words"],
+            "labels": ["tokens"],
             "count": int(biases.size),
         },
     ]

@@ -978,38 +978,38 @@
  "parameters": {
   "parts": [
    {
-    "what": "a row for every slot and every word",
+    "what": "a row for every window position and token",
     "terms": [
      2,
      29,
      3
     ],
     "labels": [
-     "slots",
-     "words",
+     "context window",
+     "tokens",
      "numbers"
     ],
     "count": 174
    },
    {
-    "what": "a row for every word it can predict",
+    "what": "a row for every token it can predict",
     "terms": [
      29,
      3
     ],
     "labels": [
-     "words",
+     "tokens",
      "numbers"
     ],
     "count": 87
    },
    {
-    "what": "one starting nudge per word",
+    "what": "one starting nudge per token",
     "terms": [
      29
     ],
     "labels": [
-     "words"
+     "tokens"
     ],
     "count": 29
    }

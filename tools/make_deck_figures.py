@@ -52,6 +52,7 @@ def figure_vocabulary(trace: dict) -> str:
             f'<span class="cell tgt">{esc(w["target_text"])}</span></div>'
         )
 
+    context = len(trace["walk"][0]["context_text"])
     return f"""
   <p class="lbl">{len(vocabulary)} tokens. A person chose every one.</p>
   <div class="fig">
@@ -61,7 +62,12 @@ def figure_vocabulary(trace: dict) -> str:
       {" and ".join(str(t["id"]) for t in trace["focus_tokens"])}
     </p>
     <div class="slide-window">{"".join(rows)}</div>
-    <p class="lbl">{trace["names"]} names become {trace["examples"]} examples</p>
+    <p class="cap fragment" data-fragment-index="2">
+      Those {context} boxes are the <strong>context window</strong>. Here it
+      holds {context} tokens. It slides, and everything before it is gone.
+    </p>
+    <p class="cap">{trace["names"]} names become
+      {trace["examples"]} training examples</p>
   </div>"""
 
 
@@ -78,12 +84,12 @@ def figure_tables(trace: dict) -> str:
         )
         columns.append(
             f'<div class="tcol">'
-            f'<p class="lbl">slot {table["slot"]}</p>'
+            f'<p class="lbl">window position {table["slot"]}</p>'
             f'<div class="tbl">{rows}</div></div>'
         )
 
     pull = "".join(
-        f'<div class="look"><span class="slot">slot {l["slot"]}</span>'
+        f'<div class="look"><span class="slot">position {l["slot"]}</span>'
         f'<span class="who">{esc(l["text"])}</span><span class="vec">'
         + "".join(f'<span class="num">{v:+.4f}</span>' for v in l["row"])
         + "</span></div>"
@@ -96,6 +102,9 @@ def figure_tables(trace: dict) -> str:
 
     return f"""
   <div class="fig tables">
+    <p class="cap top">A context window of {len(trace["tables"])} tokens means
+      <strong>{len(trace["tables"])} tables</strong>, one for each position in
+      it.</p>
     <div class="tcols">{"".join(columns)}</div>
     <div class="pull fragment" data-fragment-index="1">
       {pull}
@@ -104,8 +113,9 @@ def figure_tables(trace: dict) -> str:
         <span class="vec">{total}</span>
       </div>
     </div>
-    <p class="cap">two slots, 29 words, three numbers each.
-      <strong>174 of the model's 290 numbers are this table.</strong></p>
+    <p class="cap">Two window positions, 29 tokens, three numbers each.
+      <strong>174 of the model's 290 parameters are these two tables.</strong>
+      </p>
   </div>"""
 
 
@@ -149,7 +159,7 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
 
     lookups = "".join(
         f'<div class="look fragment" data-fragment-index="{n + 1}">'
-        f'<span class="slot">slot {l["slot"]}</span>'
+        f'<span class="slot">position {l["slot"]}</span>'
         f'<span class="who">{esc(l["text"])}</span>'
         f'<span class="vec">{row(l["row"])}</span></div>'
         for n, l in enumerate(trace["lookups"])
@@ -160,7 +170,7 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
     <p class="half">predict</p>
     <div class="step-row">
       <div class="stage">
-        <p class="lbl">every slot and word owns a stored row</p>
+        <p class="lbl">one stored row per window position and token</p>
         <div class="lookup">
           {lookups}
           <div class="look sum fragment" data-fragment-index="3">
