@@ -137,3 +137,49 @@
   margin: 1.1em 0 0.5em;
 }
 .reveal .step > .half:first-child { margin-top: 0; }
+
+/* --- where the three numbers come from -----------------------------------
+ *
+ * The context vector is not calculated, it is looked up and added. Every
+ * (slot, word) pair owns a stored row of three numbers, and the vector is
+ * those rows summed. Showing the addition is the point, so the columns have
+ * to line up: a sum that does not visibly add up teaches nothing.
+ */
+.reveal .lookup { display: inline-block; }
+.reveal .look {
+  display: grid;
+  grid-template-columns: 4.2em 8em auto;
+  align-items: center;
+  gap: 0 0.5em;
+  margin: 3px 0;
+  text-align: right;
+}
+.reveal .look .slot {
+  font-family: var(--deck-prose);
+  text-transform: uppercase;
+  font-size: 0.6em;
+  letter-spacing: 0.1em;
+  color: var(--coco-c01);
+}
+.reveal .look .who { color: var(--deck-ink); text-align: right; }
+.reveal .look .vec { margin-top: 0; }
+
+/* The sum, ruled off from its addends the way it would be on paper. The rule
+ * belongs over the columns being added, not over the slot label, so it goes
+ * on those two cells rather than on the whole row. */
+.reveal .look.sum { margin-top: 5px; }
+.reveal .look.sum .who,
+.reveal .look.sum .vec {
+  border-top: 1px solid var(--coco-c02);
+  padding-top: 6px;
+}
+.reveal .look.sum .who { color: var(--deck-mark); }
+
+/* The same word in the other slot. Set apart, because it is a comparison
+ * rather than part of the sum. */
+.reveal .look.aside {
+  margin-top: 1em;
+  opacity: 0.85;
+}
+.reveal .look.aside .who { color: var(--deck-quiet); }
+.reveal .look.aside .num { border-style: dashed; }

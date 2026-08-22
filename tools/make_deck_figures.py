@@ -79,7 +79,7 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
         overlay = ""
         if i == target:
             overlay = (
-                f'<span class="after fragment" data-fragment-index="5" '
+                f'<span class="after fragment" data-fragment-index="8" '
                 f'style="height:{100 * after[i] / top:.1f}%"></span>'
                 f'<span class="barlab">{esc(vocabulary[i])}</span>'
             )
@@ -98,41 +98,63 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
             f'<span class="num{cls}{frag}">{v:+.4f}</span>' for v in values
         )
 
+    def row(cells, cls=""):
+        return "".join(
+            f'<span class="num{cls}">{v:+.4f}</span>' for v in cells
+        )
+
+    lookups = "".join(
+        f'<div class="look fragment" data-fragment-index="{n + 1}">'
+        f'<span class="slot">slot {l["slot"]}</span>'
+        f'<span class="who">{esc(l["text"])}</span>'
+        f'<span class="vec">{row(l["row"])}</span></div>'
+        for n, l in enumerate(trace["lookups"])
+    )
+    other = trace["other_slot"]
+
     return f"""
   <div class="fig step">
     <p class="half">predict</p>
     <div class="step-row">
       <div class="stage">
-        <p class="lbl">context</p>
-        <div class="vec">
-          {"".join(f'<span class="num">{esc(t)}</span>'
-                   for t in trace["context_text"])}
+        <p class="lbl">every slot and word owns a stored row</p>
+        <div class="lookup">
+          {lookups}
+          <div class="look sum fragment" data-fragment-index="3">
+            <span class="slot"></span>
+            <span class="who">add them</span>
+            <span class="vec">{row(trace["vector_display"], " moved")}</span>
+          </div>
         </div>
+        <div class="look aside fragment" data-fragment-index="4">
+          <span class="slot">slot {other["slot"]}</span>
+          <span class="who">{esc(other["text"])}</span>
+          <span class="vec">{row(other["row"])}</span>
+        </div>
+        <p class="lbl fragment" data-fragment-index="4">
+          same word, other slot, different row
+        </p>
       </div>
-      <div class="stage fragment" data-fragment-index="1">
-        <p class="lbl">three numbers</p>
-        <div class="vec">{numbers(trace["vector_before"])}</div>
-      </div>
-      <div class="stage fragment" data-fragment-index="2">
+      <div class="stage fragment" data-fragment-index="5">
         <p class="lbl">a score for every token</p>
         <div class="bars">{"".join(bars)}</div>
       </div>
     </div>
 
-    <p class="half fragment" data-fragment-index="3">correct</p>
+    <p class="half fragment" data-fragment-index="6">correct</p>
     <div class="step-row">
-      <div class="stage fragment" data-fragment-index="3">
+      <div class="stage fragment" data-fragment-index="6">
         <p class="lbl">right answer</p>
         <div class="vec">
           <span class="num moved">{esc(trace["target_text"])}</span>
         </div>
         <p class="lbl">it gave it {trace["target_p_before"] * 100:.1f}%</p>
       </div>
-      <div class="stage fragment" data-fragment-index="4">
+      <div class="stage fragment" data-fragment-index="7">
         <p class="lbl">its weights</p>
         <div class="vec">{numbers(trace["target_weights_before"])}</div>
       </div>
-      <div class="stage fragment" data-fragment-index="5">
+      <div class="stage fragment" data-fragment-index="8">
         <p class="lbl">nudged</p>
         <div class="vec">
           {"".join(f'<span class="num moved">{v:+.4f}</span>'

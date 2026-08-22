@@ -99,6 +99,40 @@
   "target_text": "AMIGA",
   "target": 7,
   "learning_rate": 0.35,
+  "lookups": [
+   {
+    "slot": 1,
+    "text": "<END>",
+    "row": [
+     -0.0286,
+     -0.0187,
+     0.0583
+    ]
+   },
+   {
+    "slot": 2,
+    "text": "COMMODORE",
+    "row": [
+     -0.0009,
+     -0.0266,
+     -0.0168
+    ]
+   }
+  ],
+  "vector_display": [
+   -0.0295,
+   -0.0453,
+   0.0415
+  ],
+  "other_slot": {
+   "text": "COMMODORE",
+   "slot": 1,
+   "row": [
+    0.0781,
+    0.025,
+    0.0173
+   ]
+  },
   "vector_before": [
    -0.0295,
    -0.0454,

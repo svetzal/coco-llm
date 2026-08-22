@@ -83,35 +83,44 @@
     <p class="half">predict</p>
     <div class="step-row">
       <div class="stage">
-        <p class="lbl">context</p>
-        <div class="vec">
-          <span class="num">&lt;END&gt;</span><span class="num">COMMODORE</span>
+        <p class="lbl">every slot and word owns a stored row</p>
+        <div class="lookup">
+          <div class="look fragment" data-fragment-index="1"><span class="slot">slot 1</span><span class="who">&lt;END&gt;</span><span class="vec"><span class="num">-0.0286</span><span class="num">-0.0187</span><span class="num">+0.0583</span></span></div><div class="look fragment" data-fragment-index="2"><span class="slot">slot 2</span><span class="who">COMMODORE</span><span class="vec"><span class="num">-0.0009</span><span class="num">-0.0266</span><span class="num">-0.0168</span></span></div>
+          <div class="look sum fragment" data-fragment-index="3">
+            <span class="slot"></span>
+            <span class="who">add them</span>
+            <span class="vec"><span class="num moved">-0.0295</span><span class="num moved">-0.0453</span><span class="num moved">+0.0415</span></span>
+          </div>
         </div>
+        <div class="look aside fragment" data-fragment-index="4">
+          <span class="slot">slot 1</span>
+          <span class="who">COMMODORE</span>
+          <span class="vec"><span class="num">+0.0781</span><span class="num">+0.0250</span><span class="num">+0.0173</span></span>
+        </div>
+        <p class="lbl fragment" data-fragment-index="4">
+          same word, other slot, different row
+        </p>
       </div>
-      <div class="stage fragment" data-fragment-index="1">
-        <p class="lbl">three numbers</p>
-        <div class="vec"><span class="num">-0.0295</span><span class="num">-0.0454</span><span class="num">+0.0415</span></div>
-      </div>
-      <div class="stage fragment" data-fragment-index="2">
+      <div class="stage fragment" data-fragment-index="5">
         <p class="lbl">a score for every token</p>
-        <div class="bars"><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.6%"></div><div class="bar" style="height:69.4%"></div><div class="bar target" style="height:69.9%"><span class="after fragment" data-fragment-index="5" style="height:100.0%"></span><span class="barlab">AMIGA</span></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:69.0%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.8%"></div></div>
+        <div class="bars"><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.6%"></div><div class="bar" style="height:69.4%"></div><div class="bar target" style="height:69.9%"><span class="after fragment" data-fragment-index="8" style="height:100.0%"></span><span class="barlab">AMIGA</span></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:69.0%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.8%"></div></div>
       </div>
     </div>
 
-    <p class="half fragment" data-fragment-index="3">correct</p>
+    <p class="half fragment" data-fragment-index="6">correct</p>
     <div class="step-row">
-      <div class="stage fragment" data-fragment-index="3">
+      <div class="stage fragment" data-fragment-index="6">
         <p class="lbl">right answer</p>
         <div class="vec">
           <span class="num moved">AMIGA</span>
         </div>
         <p class="lbl">it gave it 3.5%</p>
       </div>
-      <div class="stage fragment" data-fragment-index="4">
+      <div class="stage fragment" data-fragment-index="7">
         <p class="lbl">its weights</p>
         <div class="vec"><span class="num">+0.1214</span><span class="num">-0.0705</span><span class="num">+0.0325</span></div>
       </div>
-      <div class="stage fragment" data-fragment-index="5">
+      <div class="stage fragment" data-fragment-index="8">
         <p class="lbl">nudged</p>
         <div class="vec">
           <span class="num moved">+0.1115</span><span class="num moved">-0.0858</span><span class="num moved">+0.0465</span>
@@ -124,9 +133,19 @@
   <aside class="notes">
     Real numbers, exported from the reference model. Say that out loud once.
 
-    Step through: the context is two tokens. They become three numbers. Those
-    three numbers give a score to all 29 tokens. The right answer is AMIGA and
-    it gave AMIGA 3.5%, which is barely better than guessing at 1 in 29.
+    Step through. The context is two tokens, and the three numbers are not
+    calculated from them: every slot-and-word pair OWNS a stored row, and the
+    machine looks up two rows and adds them. Say "adds" out loud. That is the
+    arithmetic.
+
+    Fragment 4 is the one worth pausing on: COMMODORE in slot 1 has a
+    different row from COMMODORE in slot 2. That is the whole of what
+    "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE are
+    not the same context. If someone asks how it knows about word order, this
+    is the answer and it is on the screen.
+
+    Those three numbers then give a score to all 29 tokens. The right answer
+    is AMIGA and it gave AMIGA 3.5%, barely better than guessing at 1 in 29.
 
     So nudge the weights that produced that score. Three numbers move. AMIGA
     goes to 4.9%.
