@@ -1,0 +1,146 @@
+#!/usr/bin/env python3
+"""Generate the CoCo colour palettes for the browser deck.
+
+Two palettes, from the Color Computer 3's palette registers.
+
+The RGB palette is derivable and is computed here rather than typed. Its index
+bits are R1 G1 B1 R0 G0 B0, and each channel is (high * 2 + low) * 85, giving
+four levels per channel and 64 colours.
+
+The composite palette is not derivable. It is what the NTSC encoder actually
+produces, so it has to be measured, and the values below were transcribed from
+Stacey's palette reference. Transcription by eye is the weak step, so every
+entry carries both the hex string and the decimal triple from that table and
+the two have to agree. A slipped digit fails here rather than in the deck.
+
+Composite is the one the deck uses. It is what a CoCo on a television looks
+like, which is the point.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).parents[1]
+OUT_CSS = ROOT / "presentation" / "coco-palette.css"
+OUT_JSON = ROOT / "presentation" / "coco-palette.json"
+
+# (hex, red, green, blue) straight off the reference table. Both forms are
+# kept so they can check each other.
+COMPOSITE = [
+    ("000000", 0, 0, 0), ("136D1B", 19, 109, 27), ("106019", 16, 96, 25),
+    ("1D4A13", 29, 74, 19), ("472E0D", 71, 46, 13), ("78050D", 120, 5, 13),
+    ("970110", 151, 1, 16), ("A5011A", 165, 1, 26), ("9E106A", 158, 16, 106),
+    ("8021BC", 128, 33, 188), ("552BF9", 85, 43, 249), ("1D30FF", 29, 48, 255),
+    ("0133CF", 1, 51, 207), ("064787", 6, 71, 135), ("105D28", 16, 93, 40),
+    ("126B1B", 18, 107, 27),
+    ("454545", 69, 69, 69), ("28D035", 40, 208, 53), ("44C532", 68, 197, 50),
+    ("78AC2C", 120, 172, 44), ("A69027", 166, 144, 39), ("DD6B22", 221, 107, 34),
+    ("FA4C21", 250, 76, 33), ("FF366D", 255, 54, 109), ("FF30C8", 255, 48, 200),
+    ("E63CFF", 230, 60, 255), ("BA4AFF", 186, 74, 255), ("8358FF", 131, 88, 255),
+    ("208BFF", 32, 139, 255), ("16A6F3", 22, 166, 243), ("20BF8A", 32, 191, 138),
+    ("22CF40", 34, 207, 64),
+    ("A2A2A2", 162, 162, 162), ("67FF51", 103, 255, 81), ("8EFF48", 142, 255, 72),
+    ("C6FF43", 198, 255, 67), ("FAE53D", 250, 229, 61), ("FFBF39", 255, 191, 57),
+    ("FF9F5F", 255, 159, 95), ("FF87B8", 255, 135, 184), ("FF60DE", 255, 96, 222),
+    ("FD61FF", 253, 97, 255), ("D969FF", 217, 105, 255), ("AA77FF", 170, 119, 255),
+    ("59ABFF", 89, 171, 255), ("43C4FF", 67, 196, 255), ("39DAB3", 57, 218, 179),
+    ("3EE86C", 62, 232, 108),
+    ("FFFFFF", 255, 255, 255), ("96FD72", 150, 253, 114), ("B1F35B", 177, 243, 91),
+    ("CFE354", 207, 227, 84), ("ECD35A", 236, 211, 90), ("FFBF73", 255, 191, 115),
+    ("FFAD9C", 255, 173, 156), ("FFA2CE", 255, 162, 206), ("FB8FED", 251, 143, 237),
+    ("ED90FB", 237, 144, 251), ("D696FB", 214, 150, 251), ("B7A2FB", 183, 162, 251),
+    ("86C4FC", 134, 196, 252), ("79D4F0", 121, 212, 240), ("74E1B7", 116, 225, 183),
+    ("FFFFFF", 255, 255, 255),
+]
+
+
+def check_composite() -> list[str]:
+    if len(COMPOSITE) != 64:
+        raise SystemExit(f"composite palette has {len(COMPOSITE)} entries, not 64")
+    out = []
+    for index, (text, red, green, blue) in enumerate(COMPOSITE):
+        if f"{red:02X}{green:02X}{blue:02X}" != text.upper():
+            raise SystemExit(
+                f"composite {index}: hex {text} and decimal "
+                f"({red}, {green}, {blue}) disagree"
+            )
+        out.append(f"#{text.upper()}")
+    return out
+
+
+def rgb_palette() -> list[str]:
+    """Index bits are R1 G1 B1 R0 G0 B0; each channel is (2*high + low) * 85."""
+    out = []
+    for index in range(64):
+        channels = []
+        for high, low in ((4, 32), (2, 16), (1, 8)):
+            # low nibble carries R0/G0/B0 in bits 2/1/0, high in bits 5/4/3.
+            channels.append(
+                (2 * bool(index & low) + bool(index & high)) * 85
+            )
+        out.append("#{:02X}{:02X}{:02X}".format(*channels))
+    return out
+
+
+# Semantic names for the deck. These are choices, not measurements: the
+# MC6847 in a CoCo 1 makes about nine colours, and these are the entries in
+# the CoCo 3 composite table that sit closest to them. Change them freely.
+ROLES = {
+    "bg": 18,        # the text screen's green, and the deck's page colour
+    "ink": 0,        # black, and what the CoCo draws letters in
+    "bar": 34,       # bright green for the reversed title bar's text
+    "white": 63,     # the cursor block, and buff in graphics modes
+    "grey": 32,      # for rules and de-emphasised text
+    "win": 17,       # the win mark in the game opponent
+    "tie": 28,       # the tie mark
+    "loss": 22,      # the loss mark
+    "amber": 36,     # highlight, and the closest thing to VDG yellow
+    "orange": 21,
+    "cyan": 46,
+    "magenta": 25,
+}
+
+
+def main() -> None:
+    composite = check_composite()
+    rgb = rgb_palette()
+
+    lines = [
+        "/* CoCo colour palettes. Generated by tools/make_coco_palette.py.",
+        "   Do not edit; change the generator. */",
+        ":root {",
+        "  /* Composite: what a Color Computer looks like on a television.",
+        "     This is the deck's palette. */",
+    ]
+    lines += [f"  --coco-c{i:02d}: {c};" for i, c in enumerate(composite)]
+    lines.append("")
+    lines.append("  /* RGB: the sharper monitor palette, four levels per channel. */")
+    lines += [f"  --coco-r{i:02d}: {c};" for i, c in enumerate(rgb)]
+    lines.append("")
+    lines.append("  /* Roles. Composite entries chosen for the deck. */")
+    lines += [
+        f"  --coco-{name}: var(--coco-c{index:02d}); /* {composite[index]} */"
+        for name, index in ROLES.items()
+    ]
+    lines.append("}")
+    OUT_CSS.write_text("\n".join(lines) + "\n", encoding="ascii")
+
+    OUT_JSON.write_text(
+        json.dumps(
+            {
+                "composite": composite,
+                "rgb": rgb,
+                "roles": {n: {"index": i, "hex": composite[i]} for n, i in ROLES.items()},
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="ascii",
+    )
+    print(f"64 composite, 64 rgb, {len(ROLES)} roles -> {OUT_CSS.name}, {OUT_JSON.name}")
+
+
+if __name__ == "__main__":
+    main()
