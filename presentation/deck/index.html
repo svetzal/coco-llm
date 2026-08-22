@@ -742,8 +742,31 @@
 <!-- ============ 4. Change one thing: the prompt · 3 min · EXP-005 ============ -->
 <section class="cue" data-timing="180">
   <p class="changed">We changed exactly one thing:<br><span class="one">the prompt</span></p>
-  <p class="what">EXP-005 &middot; the prompted marketing completions</p>
+  <!-- FIGURE:promptchange -->
+  <div class="fig changed">
+    <p class="held"><span class="hlead">held fixed</span><span>the model, all 380 of its numbers</span><span class="hsep">&middot;</span><span>checksum 6f9a6c88742221bb, before and after</span><span class="hsep">&middot;</span><span>seed 6809, greedy decoding</span></p>
+    <div class="deltas"><div class="ba fragment" data-fragment-index="1"><span class="balab">asked nothing</span><span class="bfrom"></span><span class="barrow">&rarr;</span><span class="bto">WHY BUY JUST A VIDEO GAME</span></div><div class="ba fragment" data-fragment-index="2"><span class="balab">asked</span><span class="bfrom">I ADORE</span><span class="barrow">&rarr;</span><span class="bto">MY 64</span></div><div class="ba fragment" data-fragment-index="3"><span class="balab">asked</span><span class="bfrom">ARE YOU</span><span class="barrow">&rarr;</span><span class="bto">KEEPING UP IN LITTLE COMPUTERS</span></div><div class="ba fragment" data-fragment-index="4"><span class="balab">asked</span><span class="bfrom">THE COMPUTER</span><span class="barrow">&rarr;</span><span class="bto">FOR THE REST OF US</span></div></div>
+    <p class="cap fragment" data-fragment-index="5">
+      Not one number in the model moved between those four answers. <strong>A prompt is not training. It is the first few tokens of the answer, handed over before the machine starts.</strong></p>
+  </div>
+  <!-- /FIGURE:promptchange -->
   <aside class="notes">
+    THE SLIDE DOES THE TEACHING NOW, so use it before you touch the machine.
+
+    Read the held-fixed line out. All 380 numbers, same checksum before and
+    after, same seed, same greedy decoding. Nothing about the model differs
+    between these four answers.
+
+    Then step the four. Asked nothing, it says WHY BUY JUST A VIDEO GAME.
+    Asked I ADORE, MY 64. Asked ARE YOU, KEEPING UP IN LITTLE COMPUTERS.
+
+    LAND THE DEFINITION: a prompt is not training. It is the first few tokens
+    of the answer, handed over before the machine starts. People conflate
+    these constantly and this slide is the cheapest place to separate them.
+
+    THEN go to the machine and let someone pick a prompt live, so it is not
+    just a table on a slide.
+
     Title on the machine reads SAME MODEL - CHANGE THE PROMPT. Ask what stayed
     fixed.
 
@@ -758,9 +781,29 @@
 <!-- ============ 5. Change one thing: the context · 5 min · EXP-011 ============ -->
 <section class="cue" data-timing="300">
   <p class="changed">We changed exactly one thing:<br><span class="one">the context</span></p>
-  <p class="what">EXP-011 &middot; the context-editing attention head</p>
+  <!-- FIGURE:contextchange -->
+  <div class="fig changed">
+    <p class="held"><span class="hlead">held fixed</span><span>model 751B, weights locked</span><span class="hsep">&middot;</span><span>the question, asked again word for word</span><span class="hsep">&middot;</span><span>all eight context records but one</span></p>
+    <div class="deltas"><div class="ba fragment" data-fragment-index="1"><span class="balab">context says</span><span class="bfrom">LISA = CODE 2</span><span class="barrow">&rarr;</span><span class="bto">LISA = CODE 6</span></div><div class="ba fragment" data-fragment-index="2"><span class="balab">we asked</span><span class="bfrom">LISA?</span><span class="barrow">&rarr;</span><span class="bto">LISA?</span></div><div class="ba fragment" data-fragment-index="3"><span class="balab">it answered</span><span class="bfrom">CODE 2</span><span class="barrow">&rarr;</span><span class="bto">CODE 6</span></div></div>
+    <p class="cap fragment" data-fragment-index="4">
+      A person typed one digit into context RAM and the answer changed. <strong>MODEL 751B DID NOT CHANGE.</strong> Training changes weights; prompting changes context; attention uses context to produce this answer.</p>
+  </div>
+  <!-- /FIGURE:contextchange -->
   <aside class="notes">
     Most direct bearing on what people already use. Protect its time.
+
+    THE SLIDE FIRST. Held fixed: model 751B with its weights locked, the same
+    question asked again word for word, and seven of the eight context records
+    untouched. One record changed: LISA = CODE 2 became LISA = CODE 6. The
+    answer changed with it.
+
+    Note what that means against the previous slide. There, we changed the
+    prompt and the model stayed put. Here, we changed a stored fact and the
+    model stayed put. Two different things a person can change, neither of
+    them the weights.
+
+    THEN the machine, so they watch a person do it rather than read that
+    someone did.
 
     Retrieve LISA = CODE 2. Open the editor, type 6, show BEFORE, AFTER, and
     MODEL 751B DID NOT CHANGE. Ask the same question, get the new answer.

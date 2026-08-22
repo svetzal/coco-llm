@@ -263,32 +263,53 @@ substitute.
 
 ### 4. Change one thing: the prompt
 
-**On screen:** EXP-005, the prompted marketing completions, title reading
-`SAME MODEL - CHANGE THE PROMPT`.
+**On screen:** the held-fixed line and four asks, then EXP-005 in XRoar.
 
-Ask what stayed fixed. Take `ARE YOU` and ask the room to call the completion
-before showing `KEEPING UP IN LITTLE COMPUTERS`. It blended two campaigns into
-something plausible without understanding either one.
+The slide teaches; the machine proves it. Read the controls out loud first:
+all 380 numbers, the same checksum before and after, the same seed, the same
+greedy decoding. Nothing about the model differs between the four answers.
+
+| asked | it said |
+| --- | --- |
+| nothing | WHY BUY JUST A VIDEO GAME |
+| I ADORE | MY 64 |
+| ARE YOU | KEEPING UP IN LITTLE COMPUTERS |
+| THE COMPUTER | FOR THE REST OF US |
+
+The definition to land: **a prompt is not training. It is the first few tokens
+of the answer, handed over before the machine starts.** People conflate the two
+constantly, and this is the cheapest place in the talk to separate them.
+
+Then go to the machine and let someone choose a prompt live, so it is not
+just a table on a slide. The strongest live reveal is `ARE YOU` becoming
+`KEEPING UP IN LITTLE COMPUTERS`: it blended two campaigns into something
+plausible without understanding either.
 
 ### 5. Change one thing: the context
 
-**On screen:** EXP-011, the context-editing attention head, weights labelled
-locked and context labelled temporary.
+**On screen:** the same held-and-changed shape, then EXP-011 in XRoar.
 
-This is the block with the most direct bearing on what people already use, so
-protect its time. Retrieve `LISA = CODE 2`. Open the editor, type `6`, show
-`BEFORE`, `AFTER`, and `MODEL 751B DID NOT CHANGE`. Ask the same question and
-get the new answer.
+Held: model 751B with its weights locked, the same question asked again word
+for word, seven of the eight context records untouched. Changed: one record,
+`LISA = CODE 2` to `LISA = CODE 6`. The answer moves with it.
+
+Say what that means against the previous block. There we changed the prompt
+and the model stayed put; here we changed a stored fact and the model stayed
+put. **Two different things a person can change, and neither of them is the
+weights.**
+
+Then the machine, so the room watches a person type the digit rather than
+reading that someone did. `BEFORE`, `AFTER`, and `MODEL 751B DID NOT CHANGE`
+are on the CoCo's own screen.
 
 The line to land:
 
 > Training changes the weights. Prompting changes the context. Attention uses
 > the context to produce this answer.
 
-Then name the omission out loud. This is key-value attention, not a
-transformer. We isolated one mechanism so it could be watched.
-
-The score replay (`V`) is optional depth and is not in the budget.
+Then name the omission: this is key-value attention, not a transformer. We
+isolated one mechanism so it could be watched. The score replay (`V`) is
+optional depth and is not in the budget.
 
 ### 6. A screen of things that never existed
 

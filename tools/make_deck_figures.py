@@ -595,6 +595,34 @@ def figure_bias(trace: dict) -> str:
   </div>"""
 
 
+def figure_changed(spec: dict) -> str:
+    """Held, then changed. The same shape every time the talk changes one thing.
+
+    The three "change one thing" slides used to name the change without showing
+    it. What stayed fixed matters as much as what moved: a before-and-after
+    with no controls beside it is an anecdote, so the controls are on the slide
+    rather than in the narration.
+    """
+    held = '<span class="hsep">&middot;</span>'.join(
+        f"<span>{esc(item)}</span>" for item in spec["held"]
+    )
+    rows = "".join(
+        f'<div class="ba fragment" data-fragment-index="{n + 1}">'
+        f'<span class="balab">{esc(label)}</span>'
+        f'<span class="bfrom">{esc(before)}</span>'
+        f'<span class="barrow">&rarr;</span>'
+        f'<span class="bto">{esc(after)}</span></div>'
+        for n, (label, before, after) in enumerate(spec["pairs"])
+    )
+    return f"""
+  <div class="fig changed">
+    <p class="held"><span class="hlead">held fixed</span>{held}</p>
+    <div class="deltas">{rows}</div>
+    <p class="cap fragment" data-fragment-index="{len(spec["pairs"]) + 1}">
+      {spec["note"]}</p>
+  </div>"""
+
+
 def splice(source: str, name: str, body: str) -> str:
     pattern = re.compile(
         rf"(<!-- FIGURE:{re.escape(name)} -->).*?(<!-- /FIGURE:{re.escape(name)} -->)",
@@ -609,6 +637,46 @@ def main() -> None:
     traces = json.loads(TRACES.read_text())
     code = json.loads((TRACES.parent / "code.json").read_text())
     bias = json.loads((TRACES.parent / "bias.json").read_text())
+    prompts = json.loads((TRACES.parent / "prompts.json").read_text())
+
+    # Block 4. Every value here is from one trained model in one run, so
+    # "the same model" is true by construction.
+    by_prompt = {c["prompt"]: c["completion"] for c in prompts["completions"]}
+    prompt_change = {
+        "held": [
+            f"the model, all {prompts['parameters']} of its numbers",
+            f"checksum {prompts['checksum']}, before and after",
+            "seed 6809, greedy decoding",
+        ],
+        "pairs": [
+            ("asked nothing", "", prompts["unprompted"]),
+            ("asked", "I ADORE", by_prompt["I ADORE"]),
+            ("asked", "ARE YOU", by_prompt["ARE YOU"]),
+            ("asked", "THE COMPUTER", by_prompt["THE COMPUTER"]),
+        ],
+        "note": "Not one number in the model moved between those four "
+        "answers. <strong>A prompt is not training. It is the first few "
+        "tokens of the answer, handed over before the machine starts.</strong>",
+    }
+
+    # Block 5. Values are the ones the EXP-011 build puts on screen; the
+    # locked-model line is verbatim from attention_ui.asm.
+    context_change = {
+        "held": [
+            "model 751B, weights locked",
+            "the question, asked again word for word",
+            "all eight context records but one",
+        ],
+        "pairs": [
+            ("context says", "LISA = CODE 2", "LISA = CODE 6"),
+            ("we asked", "LISA?", "LISA?"),
+            ("it answered", "CODE 2", "CODE 6"),
+        ],
+        "note": "A person typed one digit into context RAM and the answer "
+        "changed. <strong>MODEL 751B DID NOT CHANGE.</strong> Training "
+        "changes weights; prompting changes context; attention uses context "
+        "to produce this answer.",
+    }
     vocabulary = traces["vocabulary"]["vocabulary"]
 
     deck = DECK.read_text()
@@ -621,6 +689,8 @@ def main() -> None:
     deck = splice(deck, "loop", figure_loop(traces["loop"], traces["budget"], traces["split"]))
     deck = splice(deck, "cost", figure_cost(traces["budget"], traces["split"]))
     deck = splice(deck, "bias", figure_bias(bias))
+    deck = splice(deck, "promptchange", figure_changed(prompt_change))
+    deck = splice(deck, "contextchange", figure_changed(context_change))
     deck = splice(deck, "twomuls", figure_code(
         code["two_muls"],
         "The 6809 multiplies two unsigned bytes. This makes a signed multiply "
@@ -637,7 +707,7 @@ def main() -> None:
         "learning rate: not a setting, an instruction count.",
     ))
     DECK.write_text(deck, encoding="utf-8")
-    print("spliced 12 figures into presentation/deck/index.html")
+    print("spliced 14 figures into presentation/deck/index.html")
 
 
 if __name__ == "__main__":

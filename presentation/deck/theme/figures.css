@@ -563,3 +563,36 @@
   font-family: var(--deck-prose); text-transform: uppercase;
   font-size: 0.55em; letter-spacing: 0.1em; color: var(--deck-mark);
 }
+
+/* --- changed exactly one thing --------------------------------------------
+ *
+ * The controls run as one line above the change, because a before-and-after
+ * with no controls beside it is an anecdote. Keeping them to a line means
+ * they can stay on screen without crowding out the thing that moved.
+ */
+.reveal .fig.changed { font-size: 0.66em; }
+.reveal .held {
+  font-family: var(--deck-prose); text-transform: none;
+  font-size: 0.62em; color: var(--deck-quiet);
+  margin: 0 auto 1em; max-width: 46em; line-height: 1.5;
+}
+.reveal .held .hlead {
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--coco-c01); margin-right: 0.8em;
+}
+.reveal .held .hsep { color: var(--coco-c01); margin: 0 0.5em; }
+.reveal .deltas { width: fit-content; margin: 0 auto; }
+.reveal .ba {
+  display: grid; grid-template-columns: 9em 11em 1.5em 22em;
+  gap: 0 0.7em; align-items: baseline; margin: 0.35em 0;
+}
+.reveal .ba .balab {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.6em; letter-spacing: 0.08em; color: var(--coco-c01);
+  text-align: right;
+}
+.reveal .ba .bfrom { color: var(--deck-loud); text-align: right;
+                     white-space: nowrap; }
+.reveal .ba .barrow { color: var(--coco-c01); text-align: center; }
+.reveal .ba .bto { color: var(--deck-mark); text-align: left;
+                   white-space: nowrap; }
