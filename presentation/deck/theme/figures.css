@@ -268,3 +268,71 @@
 }
 .reveal .wrow.chosen { background: rgba(250, 229, 61, 0.14); }
 .reveal .wrow.chosen .c { color: var(--deck-mark); }
+
+/* --- an identifier is a name ----------------------------------------------
+ *
+ * Adjacent identifiers sometimes look meaningful and never are: the ordering
+ * is alphabetical accident. Setting the pairs side by side with a verdict is
+ * the fastest way to show that arithmetic on an identifier proves nothing.
+ */
+.reveal .fig.ids { font-size: 0.66em; }
+.reveal .idrow {
+  display: flex; align-items: center; gap: 1.2em;
+  justify-content: center; margin: 0.5em 0;
+}
+.reveal .idset { display: flex; gap: 0.5em; justify-content: flex-end;
+                 width: 17em; }
+.reveal .idchip {
+  border: 1px solid var(--coco-c02); padding: 2px 8px;
+  color: var(--deck-ink); white-space: nowrap; flex: 0 0 auto;
+}
+.reveal .idchip.big { border-color: var(--deck-mark); color: var(--deck-mark); }
+.reveal .idchip .idn {
+  display: block; font-size: 0.62em; color: var(--coco-c01);
+}
+.reveal .idchip.big .idn { color: var(--deck-mark); }
+.reveal .idnote {
+  font-family: var(--deck-prose); text-transform: none;
+  font-size: 0.62em; color: var(--deck-quiet); text-align: left; width: 17em;
+}
+.reveal .idnote.yes { color: var(--coco-win); }
+.reveal .idnote.no { color: var(--coco-loss); }
+
+/* --- what a parameter is --------------------------------------------------
+ *
+ * "Parameters" is the word everybody has heard and almost nobody has had
+ * explained. Counting all 290 of them out, with the multiplication visible,
+ * turns a mystery number into arithmetic anyone can follow.
+ */
+.reveal .fig.params { font-size: 0.66em; }
+/* fit-content plus auto margins centres the sums as a block. The last column
+ * is a fixed width rather than auto, so the total's rule stops at the end of
+ * the text instead of running to the slide edge. */
+.reveal .ptable { width: fit-content; margin: 0 auto; }
+.reveal .prow {
+  display: grid;
+  grid-template-columns: 13em 1.5em 3.5em 15em;
+  align-items: center;
+  gap: 0 0.6em;
+  margin: 0.55em 0;
+}
+.reveal .prow .terms { display: flex; gap: 0.5em; justify-content: flex-end;
+                       align-items: center; }
+.reveal .term { text-align: center; }
+.reveal .term .tn { display: block; color: var(--deck-ink); }
+.reveal .term .tl {
+  display: block; font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.5em; letter-spacing: 0.08em; color: var(--coco-c01);
+}
+.reveal .prow .op { color: var(--coco-c01); text-align: center; }
+.reveal .prow .pcount { color: var(--deck-mark); text-align: right; }
+.reveal .prow .pwhat {
+  font-family: var(--deck-prose); text-transform: none;
+  font-size: 0.62em; color: var(--deck-quiet); text-align: left;
+}
+.reveal .prow.total { margin-top: 0.9em; }
+.reveal .prow.total .pcount,
+.reveal .prow.total .pwhat {
+  border-top: 1px solid var(--coco-c02); padding-top: 8px;
+  color: var(--deck-loud);
+}

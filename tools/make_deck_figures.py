@@ -201,6 +201,51 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
   </div>"""
 
 
+# Which words are actually related is a human judgement, so the pairs below are
+# chosen by hand rather than derived. Their identifiers are looked up from the
+# real vocabulary, so if the corpus changes and a word moves, this breaks
+# loudly instead of quietly showing a wrong number.
+ID_PAIRS = [
+    (["ZX80", "ZX81"], "next to each other, and related", True),
+    (["APPLE", "ARCHIMEDES"], "next to each other, and not", False),
+    (["APPLE", "LISA", "MACINTOSH"], "one company, scattered", False),
+]
+
+
+def figure_identifiers(vocabulary: list[str]) -> str:
+    """An identifier is a name, not a description. You cannot do sums on it."""
+    groups = []
+    for n, (words, note, related) in enumerate(ID_PAIRS):
+        chips = "".join(
+            f'<span class="idchip"><span class="idn">'
+            f'{vocabulary.index(w)}</span>{esc(w)}</span>'
+            for w in words
+        )
+        mark = "yes" if related else "no"
+        groups.append(
+            f'<div class="idrow fragment" data-fragment-index="{n + 1}">'
+            f'<span class="idset">{chips}</span>'
+            f'<span class="idnote {mark}">{note}</span></div>'
+        )
+
+    return f"""
+  <div class="fig ids">
+    <div class="idrow">
+      <span class="idset">
+        <span class="idchip big"><span class="idn">
+          {vocabulary.index("COMMODORE")}</span>COMMODORE</span>
+      </span>
+      <span class="idnote">thirteenth word in the alphabet. That is all
+        thirteen means.</span>
+    </div>
+    {"".join(groups)}
+    <p class="cap fragment" data-fragment-index="4">
+      The identifier is a name, not a description.
+      <strong>Nothing can be learned from doing arithmetic on it.</strong>
+    </p>
+  </div>"""
+
+
 def figure_why_three(trace: dict) -> str:
     """Why the embedding is three numbers wide. It was a choice, not a limit."""
     rows = "".join(
@@ -232,6 +277,43 @@ def figure_why_three(trace: dict) -> str:
     <p class="cap fragment" data-fragment-index="2">
       So six would have fit here too.
       <strong>Three is what we tried first, and it worked.</strong>
+    </p>
+  </div>"""
+
+
+def figure_parameters(trace: dict) -> str:
+    """What a parameter is, counted out. The word everyone has heard."""
+    rows = []
+    for n, part in enumerate(trace["parts"]):
+        terms = '<span class="op">&times;</span>'.join(
+            f'<span class="term"><span class="tn">{value}</span>'
+            f'<span class="tl">{label}</span></span>'
+            for value, label in zip(part["terms"], part["labels"])
+        )
+        rows.append(
+            f'<div class="prow fragment" data-fragment-index="{n + 1}">'
+            f'<span class="terms">{terms}</span>'
+            f'<span class="op eq">=</span>'
+            f'<span class="pcount">{part["count"]}</span>'
+            f'<span class="pwhat">{esc(part["what"])}</span></div>'
+        )
+
+    return f"""
+  <div class="fig params">
+    <div class="ptable">
+    {"".join(rows)}
+    <div class="prow total fragment" data-fragment-index="4">
+      <span class="terms"></span>
+      <span class="op eq"></span>
+      <span class="pcount">{trace["total"]}</span>
+      <span class="pwhat">parameters</span>
+    </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="5">
+      A parameter is one number that training is allowed to change.
+      This model has {trace["total"]}.
+      <strong>GPT-3 had {trace["gpt3"]:,}.</strong>
+      Same word, same meaning.
     </p>
   </div>"""
 
@@ -274,10 +356,12 @@ def main() -> None:
     deck = splice(deck, "vocabulary", figure_vocabulary(traces["vocabulary"]))
     deck = splice(deck, "tables", figure_tables(traces["step"]))
     deck = splice(deck, "step", figure_step(traces["step"], vocabulary))
+    deck = splice(deck, "ids", figure_identifiers(vocabulary))
     deck = splice(deck, "why", figure_why_three(traces["why_three"]))
+    deck = splice(deck, "params", figure_parameters(traces["parameters"]))
     deck = splice(deck, "loop", figure_loop(traces["loop"]))
     DECK.write_text(deck, encoding="utf-8")
-    print("spliced 5 figures into presentation/deck/index.html")
+    print("spliced 7 figures into presentation/deck/index.html")
 
 
 if __name__ == "__main__":

@@ -265,6 +265,47 @@ def main() -> None:
         "budget_seconds": 180,
     }
 
+    # --- what a parameter is -------------------------------------------------
+    # "Parameters" is the word everybody has heard about these systems and
+    # almost nobody has had explained. This model has 290 and every one can be
+    # accounted for, so the arithmetic is exported rather than asserted. The
+    # counts are read off the model's own arrays: if the architecture changes,
+    # the slide changes with it or the assertion below fails.
+    positions, outputs, biases = model.parameters
+    parts = [
+        {
+            "what": "a row for every slot and every word",
+            "terms": [config.context, len(vocabulary), config.embedding],
+            "labels": ["slots", "words", "numbers"],
+            "count": int(positions.size),
+        },
+        {
+            "what": "a row for every word it can predict",
+            "terms": [len(vocabulary), config.embedding],
+            "labels": ["words", "numbers"],
+            "count": int(outputs.size),
+        },
+        {
+            "what": "one starting nudge per word",
+            "terms": [len(vocabulary)],
+            "labels": ["words"],
+            "count": int(biases.size),
+        },
+    ]
+    assert sum(p["count"] for p in parts) == model.parameter_count
+    for part in parts:
+        product = 1
+        for term in part["terms"]:
+            product *= term
+        assert product == part["count"], part
+
+    parameters = {
+        "parts": parts,
+        "total": model.parameter_count,
+        # For scale, and because it is the number people have actually heard.
+        "gpt3": 175_000_000_000,
+    }
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps(
@@ -280,6 +321,7 @@ def main() -> None:
                 "step": step_trace,
                 "loop": loop_trace,
                 "why_three": why_three,
+                "parameters": parameters,
             },
             indent=1,
         )

@@ -50,8 +50,11 @@
 </section>
 
 <!-- ============ 2. What the machine thinks a word is · 4 min · slide ============ -->
-<section data-timing="240">
+<section data-timing="195">
   <h2>What is a word?</h2>
+  <p class="lead">Cutting text into pieces a machine can count is called
+  <strong>tokenizing</strong>. The pieces are <strong>tokens</strong>. Here
+  a token is a whole word, because we chose that.</p>
   <!-- FIGURE:vocabulary -->
   <p class="lbl">29 tokens. A person chose every one.</p>
   <div class="fig">
@@ -76,44 +79,45 @@
 <!-- ============ 3. Random numbers, then not · 11 min · EXP-004 ============ -->
 <!-- Two figures set up the loop, then the machine runs it. Timing splits the
      block's eleven minutes: two minutes of setup, nine on the machine. -->
-<section data-timing="45">
-  <h2>Where the numbers live</h2>
-  <!-- FIGURE:tables -->
-  <div class="fig tables">
-    <div class="tcols"><div class="tcol"><p class="lbl">slot 1</p><div class="tbl"><div class="trow used"><span class="w">&lt;END&gt;</span><span class="v">-0.0286</span><span class="v">-0.0187</span><span class="v">+0.0583</span></div><div class="trow"><span class="w">100</span><span class="v">-0.0635</span><span class="v">+0.0202</span><span class="v">-0.0332</span></div><div class="trow"><span class="w">128</span><span class="v">+0.1014</span><span class="v">+0.0341</span><span class="v">+0.0630</span></div><div class="trow"><span class="w">400</span><span class="v">-0.0699</span><span class="v">+0.1244</span><span class="v">-0.0669</span></div><div class="trow"><span class="w">64</span><span class="v">+0.0523</span><span class="v">-0.1913</span><span class="v">+0.1560</span></div><div class="trow"><span class="w">800</span><span class="v">-0.0144</span><span class="v">-0.0204</span><span class="v">-0.1229</span></div><div class="trow"><span class="w">ACORN</span><span class="v">+0.0600</span><span class="v">+0.0990</span><span class="v">+0.0720</span></div><div class="trow"><span class="w">AMIGA</span><span class="v">+0.0647</span><span class="v">+0.1912</span><span class="v">+0.0508</span></div><div class="trow"><span class="w">APPLE</span><span class="v">+0.0032</span><span class="v">+0.1665</span><span class="v">-0.0075</span></div><div class="trow"><span class="w">ARCHIMEDES</span><span class="v">+0.0414</span><span class="v">-0.0391</span><span class="v">+0.0519</span></div><div class="trow"><span class="w">ATARI</span><span class="v">+0.1305</span><span class="v">-0.0189</span><span class="v">+0.0234</span></div><div class="trow"><span class="w">BBC</span><span class="v">+0.0115</span><span class="v">-0.0871</span><span class="v">-0.0465</span></div><div class="trow"><span class="w">COLOR</span><span class="v">-0.0995</span><span class="v">+0.0393</span><span class="v">+0.0304</span></div><div class="trow"><span class="w">COMMODORE</span><span class="v">+0.0781</span><span class="v">+0.0250</span><span class="v">+0.0173</span></div><div class="trow"><span class="w">COMPUTER</span><span class="v">+0.0656</span><span class="v">-0.1551</span><span class="v">+0.0774</span></div><div class="trow"><span class="w">II</span><span class="v">-0.1000</span><span class="v">-0.0770</span><span class="v">-0.0791</span></div><div class="trow"><span class="w">LISA</span><span class="v">-0.1404</span><span class="v">+0.1324</span><span class="v">+0.0745</span></div><div class="trow"><span class="w">MACINTOSH</span><span class="v">+0.0789</span><span class="v">+0.0818</span><span class="v">-0.1186</span></div><div class="trow"><span class="w">MICRO</span><span class="v">-0.1804</span><span class="v">-0.0990</span><span class="v">+0.0480</span></div><div class="trow"><span class="w">MODEL</span><span class="v">+0.0365</span><span class="v">-0.0613</span><span class="v">-0.0773</span></div><div class="trow"><span class="w">PET</span><span class="v">-0.0548</span><span class="v">+0.0391</span><span class="v">+0.0656</span></div><div class="trow"><span class="w">SINCLAIR</span><span class="v">+0.0021</span><span class="v">-0.0136</span><span class="v">+0.1279</span></div><div class="trow"><span class="w">SPECTRUM</span><span class="v">+0.1956</span><span class="v">-0.0867</span><span class="v">-0.0615</span></div><div class="trow"><span class="w">ST</span><span class="v">-0.0480</span><span class="v">-0.0263</span><span class="v">+0.0187</span></div><div class="trow"><span class="w">TANDY</span><span class="v">+0.0372</span><span class="v">+0.1312</span><span class="v">+0.0075</span></div><div class="trow"><span class="w">TRS-80</span><span class="v">+0.0720</span><span class="v">-0.0128</span><span class="v">+0.0317</span></div><div class="trow"><span class="w">ZX</span><span class="v">-0.0231</span><span class="v">-0.0645</span><span class="v">-0.1273</span></div><div class="trow"><span class="w">ZX80</span><span class="v">+0.0346</span><span class="v">+0.1066</span><span class="v">+0.2259</span></div><div class="trow"><span class="w">ZX81</span><span class="v">-0.0074</span><span class="v">-0.0266</span><span class="v">-0.1091</span></div></div></div><div class="tcol"><p class="lbl">slot 2</p><div class="tbl"><div class="trow"><span class="w">&lt;END&gt;</span><span class="v">+0.0842</span><span class="v">-0.2132</span><span class="v">+0.0314</span></div><div class="trow"><span class="w">100</span><span class="v">-0.0067</span><span class="v">-0.0758</span><span class="v">+0.0644</span></div><div class="trow"><span class="w">128</span><span class="v">+0.0101</span><span class="v">+0.1105</span><span class="v">-0.1618</span></div><div class="trow"><span class="w">400</span><span class="v">-0.0756</span><span class="v">-0.1501</span><span class="v">-0.0217</span></div><div class="trow"><span class="w">64</span><span class="v">+0.1471</span><span class="v">+0.0131</span><span class="v">-0.0539</span></div><div class="trow"><span class="w">800</span><span class="v">+0.1472</span><span class="v">-0.0117</span><span class="v">+0.0565</span></div><div class="trow"><span class="w">ACORN</span><span class="v">+0.0089</span><span class="v">-0.0320</span><span class="v">-0.0020</span></div><div class="trow"><span class="w">AMIGA</span><span class="v">-0.0401</span><span class="v">-0.0560</span><span class="v">+0.0994</span></div><div class="trow"><span class="w">APPLE</span><span class="v">-0.0183</span><span class="v">+0.0322</span><span class="v">-0.0159</span></div><div class="trow"><span class="w">ARCHIMEDES</span><span class="v">-0.1315</span><span class="v">-0.1453</span><span class="v">-0.0765</span></div><div class="trow"><span class="w">ATARI</span><span class="v">-0.0339</span><span class="v">+0.0056</span><span class="v">-0.0270</span></div><div class="trow"><span class="w">BBC</span><span class="v">-0.2206</span><span class="v">-0.0685</span><span class="v">+0.0527</span></div><div class="trow"><span class="w">COLOR</span><span class="v">+0.0307</span><span class="v">-0.0537</span><span class="v">+0.0513</span></div><div class="trow used"><span class="w">COMMODORE</span><span class="v">-0.0009</span><span class="v">-0.0266</span><span class="v">-0.0168</span></div><div class="trow"><span class="w">COMPUTER</span><span class="v">-0.0170</span><span class="v">+0.1181</span><span class="v">-0.0796</span></div><div class="trow"><span class="w">II</span><span class="v">-0.1115</span><span class="v">+0.0152</span><span class="v">+0.1205</span></div><div class="trow"><span class="w">LISA</span><span class="v">-0.0112</span><span class="v">-0.0673</span><span class="v">+0.0520</span></div><div class="trow"><span class="w">MACINTOSH</span><span class="v">-0.0131</span><span class="v">-0.0097</span><span class="v">-0.0516</span></div><div class="trow"><span class="w">MICRO</span><span class="v">+0.0613</span><span class="v">-0.0930</span><span class="v">+0.0523</span></div><div class="trow"><span class="w">MODEL</span><span class="v">-0.0634</span><span class="v">+0.1124</span><span class="v">+0.0850</span></div><div class="trow"><span class="w">PET</span><span class="v">+0.1085</span><span class="v">+0.0127</span><span class="v">-0.0790</span></div><div class="trow"><span class="w">SINCLAIR</span><span class="v">+0.0732</span><span class="v">+0.0944</span><span class="v">-0.0297</span></div><div class="trow"><span class="w">SPECTRUM</span><span class="v">+0.0624</span><span class="v">-0.0389</span><span class="v">-0.0550</span></div><div class="trow"><span class="w">ST</span><span class="v">-0.0162</span><span class="v">-0.0042</span><span class="v">-0.1061</span></div><div class="trow"><span class="w">TANDY</span><span class="v">-0.0509</span><span class="v">+0.0189</span><span class="v">+0.2089</span></div><div class="trow"><span class="w">TRS-80</span><span class="v">-0.0378</span><span class="v">+0.1478</span><span class="v">-0.0500</span></div><div class="trow"><span class="w">ZX</span><span class="v">-0.0292</span><span class="v">+0.0854</span><span class="v">-0.0055</span></div><div class="trow"><span class="w">ZX80</span><span class="v">+0.0495</span><span class="v">-0.0221</span><span class="v">-0.0561</span></div><div class="trow"><span class="w">ZX81</span><span class="v">-0.0811</span><span class="v">-0.0204</span><span class="v">+0.0529</span></div></div></div></div>
-    <div class="pull fragment" data-fragment-index="1">
-      <div class="look"><span class="slot">slot 1</span><span class="who">&lt;END&gt;</span><span class="vec"><span class="num">-0.0286</span><span class="num">-0.0187</span><span class="num">+0.0583</span></span></div><div class="look"><span class="slot">slot 2</span><span class="who">COMMODORE</span><span class="vec"><span class="num">-0.0009</span><span class="num">-0.0266</span><span class="num">-0.0168</span></span></div>
-      <div class="look sum">
-        <span class="slot"></span><span class="who">add them</span>
-        <span class="vec"><span class="num moved">-0.0295</span><span class="num moved">-0.0453</span><span class="num moved">+0.0415</span></span>
-      </div>
+<section data-timing="30">
+  <h2>Thirteen doesn't mean anything</h2>
+  <!-- FIGURE:ids -->
+  <div class="fig ids">
+    <div class="idrow">
+      <span class="idset">
+        <span class="idchip big"><span class="idn">
+          13</span>COMMODORE</span>
+      </span>
+      <span class="idnote">thirteenth word in the alphabet. That is all
+        thirteen means.</span>
     </div>
-    <p class="cap">two slots, 29 words, three numbers each.
-      <strong>174 of the model's 290 numbers are this table.</strong></p>
+    <div class="idrow fragment" data-fragment-index="1"><span class="idset"><span class="idchip"><span class="idn">27</span>ZX80</span><span class="idchip"><span class="idn">28</span>ZX81</span></span><span class="idnote yes">next to each other, and related</span></div><div class="idrow fragment" data-fragment-index="2"><span class="idset"><span class="idchip"><span class="idn">8</span>APPLE</span><span class="idchip"><span class="idn">9</span>ARCHIMEDES</span></span><span class="idnote no">next to each other, and not</span></div><div class="idrow fragment" data-fragment-index="3"><span class="idset"><span class="idchip"><span class="idn">8</span>APPLE</span><span class="idchip"><span class="idn">16</span>LISA</span><span class="idchip"><span class="idn">17</span>MACINTOSH</span></span><span class="idnote no">one company, scattered</span></div>
+    <p class="cap fragment" data-fragment-index="4">
+      The identifier is a name, not a description.
+      <strong>Nothing can be learned from doing arithmetic on it.</strong>
+    </p>
   </div>
-  <!-- /FIGURE:tables -->
+  <!-- /FIGURE:ids -->
   <aside class="notes">
-    ANSWERS "where did that row come from". It came from here.
+    THE BRIDGE. Block 2 left them holding COMMODORE = 13. This says why that
+    is not enough, and it has to land before any table of numbers.
 
-    Two tables. One for the first slot, one for the second. 29 words in each,
-    three numbers per word. That is 174 numbers, and the model only has 290,
-    so most of this model is a lookup table.
+    13 is thirteenth in the alphabet. That is the whole reason.
 
-    Point at COMMODORE in both columns. Same word, two different rows. THAT is
-    what "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE
-    are not the same thing to the machine. If anyone asks how it knows about
-    word order, this slide is the answer.
+    Step the three comparisons. ZX80 is 27 and ZX81 is 28, next to each other
+    and genuinely related, which is a coincidence. APPLE is 8 and ARCHIMEDES
+    is 9, just as close, and one is Apple and the other is Acorn. Then APPLE
+    8, LISA 16, MACINTOSH 17: one company, scattered across the range.
 
-    The context is <END> then COMMODORE, so it fetches the top row of the left
-    table and the COMMODORE row of the right one, and adds them. No
-    arithmetic beyond the addition.
+    So the identifier is a name. Ask: what would it mean to add two of them?
+    Nothing. There is nothing to learn from arithmetic on a name.
 
-    These numbers are random right now. Training is what makes them mean
-    something.
+    That is the problem the next slide solves. Give every word some numbers
+    that CAN be compared.
   </aside>
 </section>
 
-<section data-timing="45">
+<section data-timing="60">
   <h2>Why three?</h2>
   <p class="lead">One number puts a word on a line. Three put it in a space,
   so words can be near each other in more than one way.</p>
@@ -166,6 +170,86 @@
 
     SAY "FLOOR" OUT LOUD. These are multiply instructions only. Nothing here
     is a measured runtime.
+  </aside>
+</section>
+
+<section data-timing="45">
+  <h2>Where the numbers live</h2>
+  <!-- FIGURE:tables -->
+  <div class="fig tables">
+    <div class="tcols"><div class="tcol"><p class="lbl">slot 1</p><div class="tbl"><div class="trow used"><span class="w">&lt;END&gt;</span><span class="v">-0.0286</span><span class="v">-0.0187</span><span class="v">+0.0583</span></div><div class="trow"><span class="w">100</span><span class="v">-0.0635</span><span class="v">+0.0202</span><span class="v">-0.0332</span></div><div class="trow"><span class="w">128</span><span class="v">+0.1014</span><span class="v">+0.0341</span><span class="v">+0.0630</span></div><div class="trow"><span class="w">400</span><span class="v">-0.0699</span><span class="v">+0.1244</span><span class="v">-0.0669</span></div><div class="trow"><span class="w">64</span><span class="v">+0.0523</span><span class="v">-0.1913</span><span class="v">+0.1560</span></div><div class="trow"><span class="w">800</span><span class="v">-0.0144</span><span class="v">-0.0204</span><span class="v">-0.1229</span></div><div class="trow"><span class="w">ACORN</span><span class="v">+0.0600</span><span class="v">+0.0990</span><span class="v">+0.0720</span></div><div class="trow"><span class="w">AMIGA</span><span class="v">+0.0647</span><span class="v">+0.1912</span><span class="v">+0.0508</span></div><div class="trow"><span class="w">APPLE</span><span class="v">+0.0032</span><span class="v">+0.1665</span><span class="v">-0.0075</span></div><div class="trow"><span class="w">ARCHIMEDES</span><span class="v">+0.0414</span><span class="v">-0.0391</span><span class="v">+0.0519</span></div><div class="trow"><span class="w">ATARI</span><span class="v">+0.1305</span><span class="v">-0.0189</span><span class="v">+0.0234</span></div><div class="trow"><span class="w">BBC</span><span class="v">+0.0115</span><span class="v">-0.0871</span><span class="v">-0.0465</span></div><div class="trow"><span class="w">COLOR</span><span class="v">-0.0995</span><span class="v">+0.0393</span><span class="v">+0.0304</span></div><div class="trow"><span class="w">COMMODORE</span><span class="v">+0.0781</span><span class="v">+0.0250</span><span class="v">+0.0173</span></div><div class="trow"><span class="w">COMPUTER</span><span class="v">+0.0656</span><span class="v">-0.1551</span><span class="v">+0.0774</span></div><div class="trow"><span class="w">II</span><span class="v">-0.1000</span><span class="v">-0.0770</span><span class="v">-0.0791</span></div><div class="trow"><span class="w">LISA</span><span class="v">-0.1404</span><span class="v">+0.1324</span><span class="v">+0.0745</span></div><div class="trow"><span class="w">MACINTOSH</span><span class="v">+0.0789</span><span class="v">+0.0818</span><span class="v">-0.1186</span></div><div class="trow"><span class="w">MICRO</span><span class="v">-0.1804</span><span class="v">-0.0990</span><span class="v">+0.0480</span></div><div class="trow"><span class="w">MODEL</span><span class="v">+0.0365</span><span class="v">-0.0613</span><span class="v">-0.0773</span></div><div class="trow"><span class="w">PET</span><span class="v">-0.0548</span><span class="v">+0.0391</span><span class="v">+0.0656</span></div><div class="trow"><span class="w">SINCLAIR</span><span class="v">+0.0021</span><span class="v">-0.0136</span><span class="v">+0.1279</span></div><div class="trow"><span class="w">SPECTRUM</span><span class="v">+0.1956</span><span class="v">-0.0867</span><span class="v">-0.0615</span></div><div class="trow"><span class="w">ST</span><span class="v">-0.0480</span><span class="v">-0.0263</span><span class="v">+0.0187</span></div><div class="trow"><span class="w">TANDY</span><span class="v">+0.0372</span><span class="v">+0.1312</span><span class="v">+0.0075</span></div><div class="trow"><span class="w">TRS-80</span><span class="v">+0.0720</span><span class="v">-0.0128</span><span class="v">+0.0317</span></div><div class="trow"><span class="w">ZX</span><span class="v">-0.0231</span><span class="v">-0.0645</span><span class="v">-0.1273</span></div><div class="trow"><span class="w">ZX80</span><span class="v">+0.0346</span><span class="v">+0.1066</span><span class="v">+0.2259</span></div><div class="trow"><span class="w">ZX81</span><span class="v">-0.0074</span><span class="v">-0.0266</span><span class="v">-0.1091</span></div></div></div><div class="tcol"><p class="lbl">slot 2</p><div class="tbl"><div class="trow"><span class="w">&lt;END&gt;</span><span class="v">+0.0842</span><span class="v">-0.2132</span><span class="v">+0.0314</span></div><div class="trow"><span class="w">100</span><span class="v">-0.0067</span><span class="v">-0.0758</span><span class="v">+0.0644</span></div><div class="trow"><span class="w">128</span><span class="v">+0.0101</span><span class="v">+0.1105</span><span class="v">-0.1618</span></div><div class="trow"><span class="w">400</span><span class="v">-0.0756</span><span class="v">-0.1501</span><span class="v">-0.0217</span></div><div class="trow"><span class="w">64</span><span class="v">+0.1471</span><span class="v">+0.0131</span><span class="v">-0.0539</span></div><div class="trow"><span class="w">800</span><span class="v">+0.1472</span><span class="v">-0.0117</span><span class="v">+0.0565</span></div><div class="trow"><span class="w">ACORN</span><span class="v">+0.0089</span><span class="v">-0.0320</span><span class="v">-0.0020</span></div><div class="trow"><span class="w">AMIGA</span><span class="v">-0.0401</span><span class="v">-0.0560</span><span class="v">+0.0994</span></div><div class="trow"><span class="w">APPLE</span><span class="v">-0.0183</span><span class="v">+0.0322</span><span class="v">-0.0159</span></div><div class="trow"><span class="w">ARCHIMEDES</span><span class="v">-0.1315</span><span class="v">-0.1453</span><span class="v">-0.0765</span></div><div class="trow"><span class="w">ATARI</span><span class="v">-0.0339</span><span class="v">+0.0056</span><span class="v">-0.0270</span></div><div class="trow"><span class="w">BBC</span><span class="v">-0.2206</span><span class="v">-0.0685</span><span class="v">+0.0527</span></div><div class="trow"><span class="w">COLOR</span><span class="v">+0.0307</span><span class="v">-0.0537</span><span class="v">+0.0513</span></div><div class="trow used"><span class="w">COMMODORE</span><span class="v">-0.0009</span><span class="v">-0.0266</span><span class="v">-0.0168</span></div><div class="trow"><span class="w">COMPUTER</span><span class="v">-0.0170</span><span class="v">+0.1181</span><span class="v">-0.0796</span></div><div class="trow"><span class="w">II</span><span class="v">-0.1115</span><span class="v">+0.0152</span><span class="v">+0.1205</span></div><div class="trow"><span class="w">LISA</span><span class="v">-0.0112</span><span class="v">-0.0673</span><span class="v">+0.0520</span></div><div class="trow"><span class="w">MACINTOSH</span><span class="v">-0.0131</span><span class="v">-0.0097</span><span class="v">-0.0516</span></div><div class="trow"><span class="w">MICRO</span><span class="v">+0.0613</span><span class="v">-0.0930</span><span class="v">+0.0523</span></div><div class="trow"><span class="w">MODEL</span><span class="v">-0.0634</span><span class="v">+0.1124</span><span class="v">+0.0850</span></div><div class="trow"><span class="w">PET</span><span class="v">+0.1085</span><span class="v">+0.0127</span><span class="v">-0.0790</span></div><div class="trow"><span class="w">SINCLAIR</span><span class="v">+0.0732</span><span class="v">+0.0944</span><span class="v">-0.0297</span></div><div class="trow"><span class="w">SPECTRUM</span><span class="v">+0.0624</span><span class="v">-0.0389</span><span class="v">-0.0550</span></div><div class="trow"><span class="w">ST</span><span class="v">-0.0162</span><span class="v">-0.0042</span><span class="v">-0.1061</span></div><div class="trow"><span class="w">TANDY</span><span class="v">-0.0509</span><span class="v">+0.0189</span><span class="v">+0.2089</span></div><div class="trow"><span class="w">TRS-80</span><span class="v">-0.0378</span><span class="v">+0.1478</span><span class="v">-0.0500</span></div><div class="trow"><span class="w">ZX</span><span class="v">-0.0292</span><span class="v">+0.0854</span><span class="v">-0.0055</span></div><div class="trow"><span class="w">ZX80</span><span class="v">+0.0495</span><span class="v">-0.0221</span><span class="v">-0.0561</span></div><div class="trow"><span class="w">ZX81</span><span class="v">-0.0811</span><span class="v">-0.0204</span><span class="v">+0.0529</span></div></div></div></div>
+    <div class="pull fragment" data-fragment-index="1">
+      <div class="look"><span class="slot">slot 1</span><span class="who">&lt;END&gt;</span><span class="vec"><span class="num">-0.0286</span><span class="num">-0.0187</span><span class="num">+0.0583</span></span></div><div class="look"><span class="slot">slot 2</span><span class="who">COMMODORE</span><span class="vec"><span class="num">-0.0009</span><span class="num">-0.0266</span><span class="num">-0.0168</span></span></div>
+      <div class="look sum">
+        <span class="slot"></span><span class="who">add them</span>
+        <span class="vec"><span class="num moved">-0.0295</span><span class="num moved">-0.0453</span><span class="num moved">+0.0415</span></span>
+      </div>
+    </div>
+    <p class="cap">two slots, 29 words, three numbers each.
+      <strong>174 of the model's 290 numbers are this table.</strong></p>
+  </div>
+  <!-- /FIGURE:tables -->
+  <aside class="notes">
+    ANSWERS "where did that row come from". It came from here.
+
+    Two tables. One for the first slot, one for the second. 29 words in each,
+    three numbers per word. That is 174 numbers, and the model only has 290,
+    so most of this model is a lookup table.
+
+    Point at COMMODORE in both columns. Same word, two different rows. THAT is
+    what "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE
+    are not the same thing to the machine. If anyone asks how it knows about
+    word order, this slide is the answer.
+
+    The context is <END> then COMMODORE, so it fetches the top row of the left
+    table and the COMMODORE row of the right one, and adds them. No
+    arithmetic beyond the addition.
+
+    These numbers are random right now. Training is what makes them mean
+    something.
+  </aside>
+</section>
+
+<section data-timing="45">
+  <h2>What a parameter is</h2>
+  <!-- FIGURE:params -->
+  <div class="fig params">
+    <div class="ptable">
+    <div class="prow fragment" data-fragment-index="1"><span class="terms"><span class="term"><span class="tn">2</span><span class="tl">slots</span></span><span class="op">&times;</span><span class="term"><span class="tn">29</span><span class="tl">words</span></span><span class="op">&times;</span><span class="term"><span class="tn">3</span><span class="tl">numbers</span></span></span><span class="op eq">=</span><span class="pcount">174</span><span class="pwhat">a row for every slot and every word</span></div><div class="prow fragment" data-fragment-index="2"><span class="terms"><span class="term"><span class="tn">29</span><span class="tl">words</span></span><span class="op">&times;</span><span class="term"><span class="tn">3</span><span class="tl">numbers</span></span></span><span class="op eq">=</span><span class="pcount">87</span><span class="pwhat">a row for every word it can predict</span></div><div class="prow fragment" data-fragment-index="3"><span class="terms"><span class="term"><span class="tn">29</span><span class="tl">words</span></span></span><span class="op eq">=</span><span class="pcount">29</span><span class="pwhat">one starting nudge per word</span></div>
+    <div class="prow total fragment" data-fragment-index="4">
+      <span class="terms"></span>
+      <span class="op eq"></span>
+      <span class="pcount">290</span>
+      <span class="pwhat">parameters</span>
+    </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="5">
+      A parameter is one number that training is allowed to change.
+      This model has 290.
+      <strong>GPT-3 had 175,000,000,000.</strong>
+      Same word, same meaning.
+    </p>
+  </div>
+  <!-- /FIGURE:params -->
+  <aside class="notes">
+    THE OTHER WORD EVERYONE HAS HEARD. Nobody has had it explained.
+
+    We just chose 3 numbers per token. This is what that choice multiplies up
+    to. Step the three lines and let the arithmetic do the work.
+
+    174 is the table they just saw. 87 is a second table, one row per word it
+    can predict. 29 is a starting nudge per word. 290 in total, and every one
+    accounted for.
+
+    THE DEFINITION, say it plainly: a parameter is one number that training is
+    allowed to change. That is all it has ever meant.
+
+    Then the scale line. 290 against GPT-3's 175 billion. Do not editorialise;
+    let them sit with it. Same word, same meaning, six hundred million times
+    as many.
+
+    Note that vocabulary and numbers-per-token both appear in every line. That
+    is why the choice on the last slide mattered.
   </aside>
 </section>
 
@@ -240,7 +324,7 @@
   </aside>
 </section>
 
-<section data-timing="60">
+<section data-timing="45">
   <h2>Do it again. And again.</h2>
   <!-- FIGURE:loop -->
   <div class="fig">
@@ -261,7 +345,7 @@
   </aside>
 </section>
 
-<section class="cue" data-timing="540">
+<section class="cue" data-timing="435">
   <h2>Watch it learn</h2>
   <p class="what">EXP-004 &middot; the live training run</p>
   <aside class="notes">

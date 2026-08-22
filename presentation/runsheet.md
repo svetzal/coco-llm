@@ -45,8 +45,8 @@ decided in advance rather than in the moment.
 | # | Block | Min | Cum | Surface | Arc |
 | --- | --- | ---: | ---: | --- | --- |
 | 1 | It already works | 3 | 3 | Slide | Mystery |
-| 2 | What the machine thinks a word is | 4 | 7 | Slide + room | Mechanism |
-| 3 | Random numbers, then not | 11 | 18 | CoCo, EXP-004 live training | Mechanism |
+| 2 | Tokens, and what a parameter is | 3 | 6 | Slides | Mechanism |
+| 3 | Random numbers, then not | 12 | 18 | Slides then EXP-004 live training | Mechanism |
 | 4 | Change one thing: the prompt | 3 | 21 | CoCo, EXP-005 prompted completions | Mechanism |
 | 5 | Change one thing: the context | 5 | 26 | CoCo, EXP-011 attention head | Mechanism |
 | 6 | A screen of things that never existed | 3 | 29 | CoCo, EXP-012 fake titles | Delight |
@@ -115,22 +115,50 @@ is recognisably a CoCo 1 and not a screen grab.
 Copy discipline applies. The photograph is of a genuine run or it does not go
 on the slide.
 
-### 2. What the machine thinks a word is
+### 2. Tokens, and what a parameter is
 
 **On screen:** the 29 token values from EXP-004, the live training run, then
 `COMMODORE AMIGA` encoded.
 
-One idea: the machine does not have words, it has numbers, and someone chose
-which numbers. Show the encoding, then show the three sliding two-token
-examples that one name produces.
+Name the mechanism out loud. Cutting text into countable pieces is
+**tokenizing** and the pieces are **tokens**; most of the room has heard the
+word and never had it explained. Here a token is a whole word because we chose
+that.
+
+Show the encoding, then the three sliding two-token examples one name produces.
 
 Ask the room for a word that is not in the vocabulary. There is no graceful
 answer and that is the point. The table has the full tokenizer exercise for
 anyone who wants to argue about it afterwards.
 
+Blocks 2 and 3 now share fifteen minutes and the boundary between them moved
+once the figures were built. Treat them as one run at mechanism and watch the
+combined total rather than each one.
+
 ### 3. Random numbers, then not
 
-**On screen:** EXP-004, the live training run, on the CoCo.
+**On screen:** five figures, then EXP-004, the live training run, on the CoCo.
+
+The block opens with four minutes of slides that used to be narration over the
+training run:
+
+1. **Thirteen doesn't mean anything.** An identifier is a name. `ZX80` is 27
+   and `ZX81` is 28 by alphabetical accident, and `APPLE` 8 sits beside
+   `ARCHIMEDES` 9 for the same reason. Arithmetic on it proves nothing.
+2. **Why three?** One number puts a word on a line, three put it in a space.
+   Then the cost of each width, and the admission that six would have fit.
+   Three is a decision, not a limit.
+3. **Where the numbers live.** Both lookup tables, all 29 words, with the two
+   fetched rows lit. `COMMODORE` holds a different row in each slot, which is
+   the whole of what positional means.
+4. **What a parameter is.** 2x29x3 plus 29x3 plus 29 is 290, counted out. Then
+   the definition: one number training is allowed to change. Then GPT-3's 175
+   billion, without editorial.
+5. **One step**, and **do it again**.
+
+Because that explanation is now front-loaded, the live run needs less talking
+over it and holds seven and a quarter minutes rather than nine. That is the
+figure to revisit the moment training is actually timed.
 
 The centrepiece and the reason the talk exists. Reset to random weights, seed
 6809, generate visible nonsense. Start the training loop. While the epochs run,

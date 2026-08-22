@@ -974,5 +974,47 @@
    "floor_seconds": 158.1
   },
   "budget_seconds": 180
+ },
+ "parameters": {
+  "parts": [
+   {
+    "what": "a row for every slot and every word",
+    "terms": [
+     2,
+     29,
+     3
+    ],
+    "labels": [
+     "slots",
+     "words",
+     "numbers"
+    ],
+    "count": 174
+   },
+   {
+    "what": "a row for every word it can predict",
+    "terms": [
+     29,
+     3
+    ],
+    "labels": [
+     "words",
+     "numbers"
+    ],
+    "count": 87
+   },
+   {
+    "what": "one starting nudge per word",
+    "terms": [
+     29
+    ],
+    "labels": [
+     "words"
+    ],
+    "count": 29
+   }
+  ],
+  "total": 290,
+  "gpt3": 175000000000
  }
 }
