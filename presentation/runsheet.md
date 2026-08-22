@@ -168,8 +168,16 @@ training run:
    instructions on the 6809), how wrong it was, and how much that particular
    weight contributed. The middle term is the self-correcting one, so the
    nudges shrink as the model improves without anyone turning them down.
-6. **Do it again**, closing on the budget, which now separates learning from
-   using. 2,516 bytes run the finished model: 850 of inference, 1,086 shared
+6. **Do it again**, which is where copying and inventing get separated. The
+   novelty column is measured over 200 draws: 91% new at epoch 20, 28% at
+   epoch 60. Same 290 numbers, same arithmetic, same machine; the only change
+   is training length, and it slid from making machines up to handing back
+   `COMMODORE 64`, which is in the corpus. Then the trap: epoch 0 scores 100%
+   new and not one draw is a name. New is easy; new and shaped like the thing
+   is the narrow band in between. If anyone asks whether these systems copy or
+   create, the answer is that it is the same machinery either way and where a
+   model lands between them is a decision somebody made.
+7. **What it cost**, which separates learning from using. 2,516 bytes run the finished model: 850 of inference, 1,086 shared
    with training, 580 of weights. Another 730 buys the ability to have learned
    it, and every one of those is dead weight once training finishes. That is
    the same division of labour EXP-006 and EXP-007 exploit by training on the

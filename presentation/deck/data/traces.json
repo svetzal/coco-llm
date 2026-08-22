@@ -997,6 +997,28 @@
     }
    ]
   },
+  "novelty": {
+   "0": {
+    "drawn": 200,
+    "copied": 0
+   },
+   "1": {
+    "drawn": 200,
+    "copied": 0
+   },
+   "5": {
+    "drawn": 200,
+    "copied": 5
+   },
+   "20": {
+    "drawn": 200,
+    "copied": 18
+   },
+   "60": {
+    "drawn": 200,
+    "copied": 143
+   }
+  },
   "parameter_count": 290
  },
  "why_three": {

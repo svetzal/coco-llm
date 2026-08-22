@@ -125,7 +125,7 @@
 /* The two samples stack rather than sitting side by side: an untrained model
  * rambles for six tokens, and two of those on one line runs off the slide. */
 .reveal .epoch {
-  display: grid; grid-template-columns: 6em 34em 6em;
+  display: grid; grid-template-columns: 6em 32em 6.5em 6em;
   gap: 0 0.8em; align-items: baseline;
 }
 .reveal .epoch .n {
@@ -468,3 +468,16 @@
   color: var(--coco-loss);
 }
 
+
+/* How much of what it generates is actually new, measured over 200 draws
+ * rather than the two on screen. Green only where novelty is worth having:
+ * at epoch 0 every draw is new and none of them is a name, so that row is
+ * marked poor despite scoring 100%. */
+.reveal .epoch .novel {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.55em; letter-spacing: 0.08em; text-align: right;
+  white-space: nowrap;
+}
+.reveal .epoch .novel.good { color: var(--coco-win); }
+.reveal .epoch .novel.poor { color: var(--coco-c01); }
+.reveal .fig .cap.invent { color: var(--deck-ink); }

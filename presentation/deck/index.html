@@ -50,7 +50,7 @@
 </section>
 
 <!-- ============ 2. What the machine thinks a word is · 4 min · slide ============ -->
-<section data-timing="195">
+<section data-timing="150">
   <h2>What is a word?</h2>
   <p class="lead">Cutting text into pieces a machine can count is called
   <strong>tokenizing</strong>. The pieces are <strong>tokens</strong>. Here
@@ -399,48 +399,18 @@
   <h2>Do it again. And again.</h2>
   <!-- FIGURE:loop -->
   <div class="fig">
-    <div class="epochs"><div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out">II APPLE COMMODORE ACORN 64 II</div><div class="out">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR</div></div><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out">ARCHIMEDES ARCHIMEDES AMIGA</div></div><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out">ATARI ATARI</div></div><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="enote"></span></div></div>
-    <div class="budget fragment" data-fragment-index="5">
-      <div class="brow">
-        <span class="bkind">time</span>
-        <span class="bsum">20 epochs
-          <span class="op">&times;</span> 58 examples
-          <span class="op">&times;</span> 261 multiplies</span>
-        <span class="bval">302,760</span>
-        <span class="bnote">multiplies, and
-          15.8 million instructions for the
-          whole run</span>
-      </div>
-      <div class="brow">
-        <span class="bkind">to use</span>
-        <span class="bsum">850 inference
-          <span class="op">+</span> 1,086 shared
-          <span class="op">+</span> 580 weights</span>
-        <span class="bval">2,516</span>
-        <span class="bnote">bytes to run the finished model</span>
-      </div>
-      <div class="brow">
-        <span class="bkind">to learn</span>
-        <span class="bsum">training loop
-          <span class="op">+</span> corpus
-          <span class="op">+</span> progress display</span>
-        <span class="bval">+730</span>
-        <span class="bnote">bytes more, and none of it is needed once the
-          model is trained</span>
-      </div>
-    </div>
-    <p class="cap fragment" data-fragment-index="6">
-      Neither number is magic. Both were chosen so this would finish in a
-      reasonable time and leave room for the rest of the program.
-      <strong>Whether it makes 3 minutes on the
-      real machine is still unmeasured.</strong>
+    <div class="epochs"><div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out">II APPLE COMMODORE ACORN 64 II</div><div class="out">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR</div></div><span class="novel poor">100% new</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out">ARCHIMEDES ARCHIMEDES AMIGA</div></div><span class="novel poor">100% new</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out">ATARI ATARI</div></div><span class="novel good">98% new</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="novel good">91% new</span><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="novel poor">28% new</span><span class="enote"></span></div></div>
+    <p class="cap invent fragment" data-fragment-index="5">
+      Same machine, same arithmetic, same 580 bytes of weights.
+      At 20 epochs it makes machines that never existed. At
+      60 it hands back what it was given.
+      <strong>The only thing we changed was how long we trained it.</strong>
     </p>
-    <p class="cap fragment" data-fragment-index="7">
-      The cheapest Color Computer of 1980 had
-      4,096 bytes.
-      <strong>This would have fitted it</strong>, with
-      616 to spare, before
-      BASIC and the screen take theirs.
+    <p class="cap fragment" data-fragment-index="6">
+      And new is not the same as good: at epoch 0 every draw is new and not
+      one of them is a name.
+      <strong>What we want is the narrow bit between reciting and
+      babbling.</strong>
     </p>
   </div>
   <!-- /FIGURE:loop -->
@@ -461,6 +431,74 @@
     because we measured the thing we cared about instead of the number the
     optimizer handed us.
 
+    THE NEW COLUMN IS THE ARGUMENT. It is measured over 200 draws, not the two
+    on screen. 91% new at epoch 20. 28% at epoch 60. The same 290 numbers,
+    the same arithmetic, the same machine: the only thing that changed is how
+    long we trained it, and it slid from making things up to handing back what
+    it was given.
+
+    THEN THE TRAP, and do not skip it, because someone will otherwise leave
+    thinking novelty is the goal. Epoch 0 scores 100% new. Every draw is new
+    and not one of them is a name. New is easy. New AND shaped like the thing
+    is the hard part, and it lives in a narrow band between reciting and
+    babbling.
+
+    If someone asks whether these systems copy or create: they do both, it is
+    the same machinery either way, and where a model lands between them is a
+    training decision somebody made.
+
+  </aside>
+</section>
+
+<section data-timing="45">
+  <h2>What it cost</h2>
+  <!-- FIGURE:cost -->
+  <div class="fig">
+    <div class="budget">
+      <div class="brow fragment" data-fragment-index="1">
+        <span class="bkind">time</span>
+        <span class="bsum">20 epochs
+          <span class="op">&times;</span> 58 examples
+          <span class="op">&times;</span> 261 multiplies</span>
+        <span class="bval">302,760</span>
+        <span class="bnote">multiplies, and
+          15.8 million instructions for the
+          whole run</span>
+      </div>
+      <div class="brow fragment" data-fragment-index="2">
+        <span class="bkind">to use</span>
+        <span class="bsum">850 inference
+          <span class="op">+</span> 1,086 shared
+          <span class="op">+</span> 580 weights</span>
+        <span class="bval">2,516</span>
+        <span class="bnote">bytes to run the finished model</span>
+      </div>
+      <div class="brow fragment" data-fragment-index="3">
+        <span class="bkind">to learn</span>
+        <span class="bsum">training loop
+          <span class="op">+</span> corpus
+          <span class="op">+</span> progress display</span>
+        <span class="bval">+730</span>
+        <span class="bnote">bytes more, and none of it is needed once the
+          model is trained</span>
+      </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="4">
+      Neither number is magic. Both were chosen so this would finish in a
+      reasonable time and leave room for the rest of the program.
+      <strong>Whether it makes 3 minutes on the
+      real machine is still unmeasured.</strong>
+    </p>
+    <p class="cap fragment" data-fragment-index="5">
+      The cheapest Color Computer of 1980 had
+      4,096 bytes.
+      <strong>This would have fitted it</strong>, with
+      616 to spare, before
+      BASIC and the screen take theirs.
+    </p>
+  </div>
+  <!-- /FIGURE:cost -->
+  <aside class="notes">
     THEN THE BUDGET, and this is the point of the slide. Two numbers were
     chosen along the way, 20 epochs and 290 parameters, and each one is a bill
     that had to be paid.

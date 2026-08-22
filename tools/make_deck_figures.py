@@ -397,18 +397,46 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
             + "</div>"
             for i in SHOW
         )
+        counted = trace["novelty"][str(epoch)]
+        new_pct = round(
+            100 * (counted["drawn"] - counted["copied"]) / counted["drawn"]
+        )
+        # Green only where novelty is worth having. At epoch 0 everything is
+        # new and none of it is a name, so the number is deliberately not
+        # dressed up as a good result.
+        quality = "good" if epoch >= 5 and new_pct >= 80 else "poor"
         rows.append(
             f'<div class="{classes} fragment" data-fragment-index="{n}">'
             f'<span class="n">epoch {epoch}</span>'
             f'<div class="outs">{shown}</div>'
+            f'<span class="novel {quality}">{new_pct}% new</span>'
             f'<span class="enote">{note}</span></div>'
         )
 
     return f"""
   <div class="fig">
     <div class="epochs">{"".join(rows)}</div>
-    <div class="budget fragment" data-fragment-index="5">
-      <div class="brow">
+    <p class="cap invent fragment" data-fragment-index="5">
+      Same machine, same arithmetic, same {split["weights"]} bytes of weights.
+      At {trace["chosen"]} epochs it makes machines that never existed. At
+      {trace["epochs"]} it hands back what it was given.
+      <strong>The only thing we changed was how long we trained it.</strong>
+    </p>
+    <p class="cap fragment" data-fragment-index="6">
+      And new is not the same as good: at epoch 0 every draw is new and not
+      one of them is a name.
+      <strong>What we want is the narrow bit between reciting and
+      babbling.</strong>
+    </p>
+  </div>"""
+
+
+def figure_cost(budget: dict, split: dict) -> str:
+    """What the two choices cost in time and in memory."""
+    return f"""
+  <div class="fig">
+    <div class="budget">
+      <div class="brow fragment" data-fragment-index="1">
         <span class="bkind">time</span>
         <span class="bsum">{budget["epochs"]} epochs
           <span class="op">&times;</span> {budget["examples"]} examples
@@ -418,7 +446,7 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
           {budget["instructions"] / 1e6:.1f} million instructions for the
           whole run</span>
       </div>
-      <div class="brow">
+      <div class="brow fragment" data-fragment-index="2">
         <span class="bkind">to use</span>
         <span class="bsum">{split["use_only"]} inference
           <span class="op">+</span> {split["shared"]:,} shared
@@ -426,7 +454,7 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
         <span class="bval">{split["to_use"]:,}</span>
         <span class="bnote">bytes to run the finished model</span>
       </div>
-      <div class="brow">
+      <div class="brow fragment" data-fragment-index="3">
         <span class="bkind">to learn</span>
         <span class="bsum">training loop
           <span class="op">+</span> corpus
@@ -436,13 +464,13 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
           model is trained</span>
       </div>
     </div>
-    <p class="cap fragment" data-fragment-index="6">
+    <p class="cap fragment" data-fragment-index="4">
       Neither number is magic. Both were chosen so this would finish in a
       reasonable time and leave room for the rest of the program.
       <strong>Whether it makes {budget["target_seconds"] // 60} minutes on the
       real machine is still unmeasured.</strong>
     </p>
-    <p class="cap fragment" data-fragment-index="7">
+    <p class="cap fragment" data-fragment-index="5">
       The cheapest Color Computer of {budget["launch_year"]} had
       {budget["baseline_bytes"]:,} bytes.
       <strong>This would have fitted it</strong>, with
@@ -474,8 +502,9 @@ def main() -> None:
     deck = splice(deck, "why", figure_why_three(traces["why_three"]))
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))
     deck = splice(deck, "loop", figure_loop(traces["loop"], traces["budget"], traces["split"]))
+    deck = splice(deck, "cost", figure_cost(traces["budget"], traces["split"]))
     DECK.write_text(deck, encoding="utf-8")
-    print("spliced 7 figures into presentation/deck/index.html")
+    print("spliced 8 figures into presentation/deck/index.html")
 
 
 if __name__ == "__main__":

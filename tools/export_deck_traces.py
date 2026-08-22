@@ -56,6 +56,7 @@ CHECKPOINTS = (0, 1, 5, 20, EPOCHS)
 # above goes past it on purpose: 60 epochs is evidence that 20 was enough, not
 # a competing choice. Every cost figure uses 20.
 CHOSEN_EPOCHS = 20
+NOVELTY_SAMPLES = 200
 SYMBOLS = ROOT / "build" / "coco-llm.sym"
 
 
@@ -248,13 +249,24 @@ def main() -> None:
 
     # --- block 3: the loop, and what it makes along the way ------------------
     model = TokenLanguageModel(config, vocabulary)
-    losses, samples = [], {}
+    losses, samples, novelty = [], {}, {}
     for epoch in range(EPOCHS + 1):
         if epoch in CHECKPOINTS:
             # Whether a sample is novel or copied straight out of the corpus
             # is the thing that turns later in the run, so it is recorded
             # rather than judged by eye on stage.
             corpus = {name.strip() for name in names}
+            # Two samples get shown; the novelty rate is measured over many
+            # more, because "it started reciting" is a claim about behaviour
+            # and two draws cannot support it.
+            drawn = [
+                model.generate(temperature=0.7, random_seed=config.seed + n)
+                for n in range(NOVELTY_SAMPLES)
+            ]
+            novelty[str(epoch)] = {
+                "drawn": len(drawn),
+                "copied": sum(1 for text in drawn if text in corpus),
+            }
             samples[str(epoch)] = [
                 {
                     "text": (
@@ -281,6 +293,7 @@ def main() -> None:
         "losses": round_all(losses, 4),
         "checkpoints": list(CHECKPOINTS),
         "samples": samples,
+        "novelty": novelty,
         "parameter_count": model.parameter_count,
     }
 
