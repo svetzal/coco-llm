@@ -101,7 +101,7 @@
     "up": false
    },
    {
-    "incoming": -0.0454,
+    "incoming": -0.0453,
     "before": -0.0705,
     "change": -0.0153,
     "after": -0.0858,
@@ -1056,6 +1056,8 @@
   "working_bytes": 234,
   "total_bytes": 4169,
   "machine_bytes": 32768,
+  "baseline_bytes": 4096,
+  "launch_year": 1980,
   "target_seconds": 180
  }
 }

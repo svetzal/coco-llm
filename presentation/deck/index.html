@@ -308,30 +308,27 @@
     <p class="half fragment" data-fragment-index="3">correct</p>
     <div class="step-row">
       <div class="stage fragment" data-fragment-index="3">
-        <p class="lbl">right answer</p>
-        <div class="vec">
-          <span class="num moved">AMIGA</span>
-        </div>
-        <p class="lbl">it gave it 3.5%</p>
-      </div>
-      <div class="stage fragment" data-fragment-index="4">
+        <p class="lbl">the right answer was
+          <span class="hot">AMIGA</span>,
+          and it gave AMIGA
+          3.5%</p>
         <div class="nudge">
-          <div class="nrow head">
-            <span class="nlab"></span>
-            <span class="nv">incoming</span>
-            <span class="nv">its weight</span>
-            <span class="nv">change</span>
-            <span class="nv">becomes</span>
+          <div class="nrow"><span class="nlab">the three numbers</span><span class="nv in">-0.0295</span><span class="nv in">-0.0453</span><span class="nv in">+0.0415</span></div>
+          <div class="owner fragment" data-fragment-index="4">
+            <p class="ownerlab">AMIGA's three weights</p>
+            <div class="nrow"><span class="nlab">before</span><span class="nv was">+0.1214</span><span class="nv was">-0.0705</span><span class="nv was">+0.0325</span></div>
+            <div class="nrow fragment" data-fragment-index="5"><span class="nlab">change</span><span class="nv chg dn"><span class="arrow">&darr;</span>-0.0099</span><span class="nv chg dn"><span class="arrow">&darr;</span>-0.0153</span><span class="nv chg up"><span class="arrow">&uarr;</span>+0.0140</span></div>
+            <div class="nrow fragment" data-fragment-index="6"><span class="nlab">after</span><span class="nv now">+0.1115</span><span class="nv now">-0.0858</span><span class="nv now">+0.0465</span></div>
           </div>
-          <div class="nrow"><span class="nlab">number 1</span><span class="nv in">-0.0295</span><span class="nv was">+0.1214</span><span class="nv chg fragment dn" data-fragment-index="5"><span class="arrow">&darr;</span>-0.0099</span><span class="nv now fragment" data-fragment-index="6">+0.1115</span></div><div class="nrow"><span class="nlab">number 2</span><span class="nv in">-0.0454</span><span class="nv was">-0.0705</span><span class="nv chg fragment dn" data-fragment-index="5"><span class="arrow">&darr;</span>-0.0153</span><span class="nv now fragment" data-fragment-index="6">-0.0858</span></div><div class="nrow"><span class="nlab">number 3</span><span class="nv in">+0.0415</span><span class="nv was">+0.0325</span><span class="nv chg fragment up" data-fragment-index="5"><span class="arrow">&uarr;</span>+0.0140</span><span class="nv now fragment" data-fragment-index="6">+0.0465</span></div>
         </div>
         <p class="lbl">
           change = 0.35 learning rate
           &times; 0.9655 wrong
-          &times; the incoming number
+          &times; the number above it
         </p>
         <p class="lbl fragment" data-fragment-index="6">
-          now 4.9%
+          AMIGA is now
+          4.9%
         </p>
       </div>
     </div>
@@ -400,6 +397,13 @@
       <strong>Whether it makes 3 minutes on the
       real machine is still unmeasured.</strong>
     </p>
+    <p class="cap fragment" data-fragment-index="7">
+      The Color Computer shipped in 1980 with
+      4,096 bytes in its cheapest model.
+      <strong>This misses that machine by
+      73 bytes</strong> &mdash;
+      and only 580 of it is the model.
+    </p>
   </div>
   <!-- /FIGURE:loop -->
   <aside class="notes">
@@ -437,6 +441,21 @@
 
     If asked how long it takes: it has not been timed on hardware. That is
     the honest answer and it is the next thing to fix.
+
+    LAST FRAGMENT, and it is the one to end on. The Color Computer was
+    announced on 31 July 1980 and went on sale that September. The cheapest
+    model, catalogue 26-3001, US$399, had 4,096 bytes of RAM.
+
+    We need 4,169. We miss the base machine by 73 bytes.
+
+    And be precise about what misses, because it matters: the MODEL is 580
+    bytes and would have fitted seven times over. It is the training program
+    around it that does not. Learning is expensive; the thing you learn is
+    small.
+
+    Do not claim it would have run in 1977. The Color Computer did not exist
+    then, and a 4K machine also has to find room for BASIC's workspace and the
+    screen, so the real gap is wider than 73. If someone asks, say that.
   </aside>
 </section>
 

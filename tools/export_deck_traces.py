@@ -201,7 +201,8 @@ def main() -> None:
         now = round(float(weights_after[i]), 4)
         nudges.append(
             {
-                "incoming": round(float(vector_before[i]), 4),
+                # The value shown on the lookup slide, so both agree.
+                "incoming": vector_display[i],
                 "before": was,
                 "change": round(now - was, 4),
                 "after": now,
@@ -387,6 +388,11 @@ def main() -> None:
         "total_bytes": parameter_bytes + working_bytes
         + (symbol("position_embeddings") - code_start),
         "machine_bytes": 32 * 1024,
+        # The machine the talk is about shipped in a 4K base model. Announced
+        # 31 July 1980, on sale that September, catalogue 26-3001, US$399.
+        # The footprint above misses it, and by how little is the point.
+        "baseline_bytes": 4 * 1024,
+        "launch_year": 1980,
         "target_seconds": 180,
     }
     assert budget["bytes"] == model.parameter_count * budget["bytes_each"]

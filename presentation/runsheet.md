@@ -175,6 +175,17 @@ training run:
    **No runtime on this slide.** The three-minute target has a cycle-model
    projection behind it and no hardware measurement, and the slide says so.
 
+   The last fragment is the one to end on. The Color Computer was announced on
+   31 July 1980 and sold that September; its cheapest model, catalogue
+   26-3001 at US$399, had 4,096 bytes. This needs 4,169 and misses the base
+   machine by 73. Be precise about what misses: the model is 580 bytes and
+   would have fitted seven times over. The training program around it is what
+   does not. Learning is expensive; the thing you learn is small.
+
+   Do not let this become "it would have run in 1977". The machine did not
+   exist then, and a 4K CoCo still owes room to BASIC's workspace and the
+   screen, so the real gap is wider than 73 bytes.
+
 Because that explanation is now front-loaded, the live run needs less talking
 over it and holds seven and a quarter minutes rather than nine. That is the
 figure to revisit the moment training is actually timed.

@@ -165,20 +165,28 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
         for n, l in enumerate(trace["lookups"])
     )
 
-    nudge_rows = "".join(
-        f'<div class="nrow">'
-        f'<span class="nlab">number {i + 1}</span>'
-        f'<span class="nv in">{n["incoming"]:+.4f}</span>'
-        f'<span class="nv was">{n["before"]:+.4f}</span>'
-        f'<span class="nv chg fragment {"up" if n["up"] else "dn"}" '
-        f'data-fragment-index="5">'
-        f'<span class="arrow">{"&uarr;" if n["up"] else "&darr;"}</span>'
-        f'{n["change"]:+.4f}</span>'
-        f'<span class="nv now fragment" data-fragment-index="6">'
-        f'{n["after"]:+.4f}</span>'
-        f'</div>'
-        for i, n in enumerate(trace["nudges"])
-    )
+    def band(cls, label, values, arrows=False, index=None):
+        frag = f' fragment" data-fragment-index="{index}' if index is not None else ""
+        cells = []
+        for i, v in enumerate(values):
+            arrow = ""
+            if arrows:
+                up = trace["nudges"][i]["up"]
+                cls_i = f"{cls} {'up' if up else 'dn'}"
+                arrow = f'<span class="arrow">{"&uarr;" if up else "&darr;"}</span>'
+            else:
+                cls_i = cls
+            cells.append(f'<span class="nv {cls_i}">{arrow}{v:+.4f}</span>')
+        return (
+            f'<div class="nrow{frag}"><span class="nlab">{label}</span>'
+            + "".join(cells)
+            + "</div>"
+        )
+
+    incoming = [n["incoming"] for n in trace["nudges"]]
+    before = [n["before"] for n in trace["nudges"]]
+    change = [n["change"] for n in trace["nudges"]]
+    after = [n["after"] for n in trace["nudges"]]
 
     return f"""
   <div class="fig step">
@@ -204,30 +212,27 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
     <p class="half fragment" data-fragment-index="3">correct</p>
     <div class="step-row">
       <div class="stage fragment" data-fragment-index="3">
-        <p class="lbl">right answer</p>
-        <div class="vec">
-          <span class="num moved">{esc(trace["target_text"])}</span>
-        </div>
-        <p class="lbl">it gave it {trace["target_p_before"] * 100:.1f}%</p>
-      </div>
-      <div class="stage fragment" data-fragment-index="4">
+        <p class="lbl">the right answer was
+          <span class="hot">{esc(trace["target_text"])}</span>,
+          and it gave {esc(trace["target_text"])}
+          {trace["target_p_before"] * 100:.1f}%</p>
         <div class="nudge">
-          <div class="nrow head">
-            <span class="nlab"></span>
-            <span class="nv">incoming</span>
-            <span class="nv">its weight</span>
-            <span class="nv">change</span>
-            <span class="nv">becomes</span>
+          {band("in", "the three numbers", incoming)}
+          <div class="owner fragment" data-fragment-index="4">
+            <p class="ownerlab">{esc(trace["target_text"])}'s three weights</p>
+            {band("was", "before", before)}
+            {band("chg", "change", change, arrows=True, index=5)}
+            {band("now", "after", after, index=6)}
           </div>
-          {nudge_rows}
         </div>
         <p class="lbl">
           change = {trace["learning_rate"]} learning rate
           &times; {trace["wrongness"]} wrong
-          &times; the incoming number
+          &times; the number above it
         </p>
         <p class="lbl fragment" data-fragment-index="6">
-          now {trace["target_p_after"] * 100:.1f}%
+          {esc(trace["target_text"])} is now
+          {trace["target_p_after"] * 100:.1f}%
         </p>
       </div>
     </div>
@@ -406,6 +411,13 @@ def figure_loop(trace: dict, budget: dict) -> str:
       reasonable time and leave room for the rest of the program.
       <strong>Whether it makes {budget["target_seconds"] // 60} minutes on the
       real machine is still unmeasured.</strong>
+    </p>
+    <p class="cap fragment" data-fragment-index="7">
+      The Color Computer shipped in {budget["launch_year"]} with
+      {budget["baseline_bytes"]:,} bytes in its cheapest model.
+      <strong>This misses that machine by
+      {budget["total_bytes"] - budget["baseline_bytes"]} bytes</strong> &mdash;
+      and only {budget["bytes"]} of it is the model.
     </p>
   </div>"""
 
