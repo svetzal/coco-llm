@@ -909,91 +909,111 @@
    "0": [
     {
      "text": "II APPLE COMMODORE ACORN 64 II",
-     "novel": true
+     "novel": true,
+     "repeats": true
     },
     {
      "text": "LISA ATARI ATARI COLOR MACINTOSH TANDY",
-     "novel": true
+     "novel": true,
+     "repeats": true
     },
     {
      "text": "ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR",
-     "novel": true
+     "novel": true,
+     "repeats": true
     },
     {
      "text": "SINCLAIR APPLE TANDY MACINTOSH MICRO APPLE",
-     "novel": true
+     "novel": true,
+     "repeats": true
     }
    ],
    "1": [
     {
      "text": "II APPLE BBC 64 100 COMMODORE",
-     "novel": true
+     "novel": true,
+     "repeats": false
     },
     {
      "text": "LISA ATARI APPLE BBC LISA TANDY",
-     "novel": true
+     "novel": true,
+     "repeats": true
     },
     {
      "text": "ARCHIMEDES ARCHIMEDES AMIGA",
-     "novel": true
+     "novel": true,
+     "repeats": true
     },
     {
      "text": "SINCLAIR APPLE TANDY II LISA AMIGA",
-     "novel": true
+     "novel": true,
+     "repeats": false
     }
    ],
    "5": [
     {
      "text": "COMPUTER ARCHIMEDES",
-     "novel": true
+     "novel": true,
+     "repeats": false
     },
     {
      "text": "LISA ATARI",
-     "novel": true
+     "novel": true,
+     "repeats": false
     },
     {
      "text": "ATARI ATARI",
-     "novel": true
+     "novel": true,
+     "repeats": true
     },
     {
      "text": "SINCLAIR ARCHIMEDES COMMODORE",
-     "novel": true
+     "novel": true,
+     "repeats": false
     }
    ],
    "20": [
     {
      "text": "SINCLAIR AMIGA",
-     "novel": true
+     "novel": true,
+     "repeats": false
     },
     {
      "text": "SINCLAIR ATARI",
-     "novel": true
+     "novel": true,
+     "repeats": false
     },
     {
      "text": "COMMODORE ATARI",
-     "novel": true
+     "novel": true,
+     "repeats": false
     },
     {
      "text": "TANDY ARCHIMEDES",
-     "novel": true
+     "novel": true,
+     "repeats": false
     }
    ],
    "60": [
     {
      "text": "SINCLAIR BBC",
-     "novel": true
+     "novel": true,
+     "repeats": false
     },
     {
      "text": "SINCLAIR II",
-     "novel": true
+     "novel": true,
+     "repeats": false
     },
     {
      "text": "COMMODORE 64",
-     "novel": false
+     "novel": false,
+     "repeats": false
     },
     {
      "text": "TANDY MODEL COMPUTER",
-     "novel": true
+     "novel": true,
+     "repeats": false
     }
    ]
   },
@@ -1002,30 +1022,35 @@
     "drawn": 200,
     "copied": 0,
     "name_like": 1,
+    "repeats": 83,
     "both": 1
    },
    "1": {
     "drawn": 200,
     "copied": 0,
     "name_like": 12,
+    "repeats": 70,
     "both": 12
    },
    "5": {
     "drawn": 200,
     "copied": 5,
     "name_like": 109,
+    "repeats": 19,
     "both": 104
    },
    "20": {
     "drawn": 200,
     "copied": 18,
     "name_like": 197,
+    "repeats": 3,
     "both": 179
    },
    "60": {
     "drawn": 200,
     "copied": 143,
     "name_like": 199,
+    "repeats": 0,
     "both": 56
    }
   },

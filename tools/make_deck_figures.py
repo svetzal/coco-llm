@@ -403,13 +403,21 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
             note = "we stop here"
         elif epoch > trace["chosen"]:
             classes += " late"
-        shown = "".join(
-            f'<div class="out{"" if samples[i]["novel"] else " copied"}">'
-            f'{esc(samples[i]["text"])}'
-            + ("" if samples[i]["novel"] else '<span class="tag">in the corpus</span>')
-            + "</div>"
-            for i in SHOW
-        )
+        marks = []
+        for i in SHOW:
+            sample = samples[i]
+            state = ""
+            tag = ""
+            if not sample["novel"]:
+                state, tag = " copied", "in the corpus"
+            elif sample["repeats"]:
+                state, tag = " repeats", "repeats"
+            marks.append(
+                f'<div class="out{state}">{esc(sample["text"])}'
+                + (f'<span class="tag">{tag}</span>' if tag else "")
+                + "</div>"
+            )
+        shown = "".join(marks)
         counted = trace["novelty"][str(epoch)]
         drawn = counted["drawn"]
         new_pct = round(100 * (drawn - counted["copied"]) / drawn)
@@ -448,9 +456,11 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
     </p>
     <p class="cap invent fragment" data-fragment-index="5">
       Same machine, same arithmetic, same {split["weights"]} bytes of weights.
-      At {trace["chosen"]} epochs it makes machines that never existed. At
-      {trace["epochs"]} it hands back what it was given.
-      <strong>The only thing we changed was how long we trained it.</strong>
+      Early on it says the same token twice. By {trace["chosen"]} it picks
+      different tokens that sit together plausibly. By {trace["epochs"]} it
+      hands back what it was given.
+      <strong>SINCLAIR never made an AMIGA. It knows which tokens follow
+      which, and nothing else.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="6">
       New is not the same as good. Epoch 0 is {first_new}% new and

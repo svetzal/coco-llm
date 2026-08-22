@@ -169,6 +169,29 @@ Three findings:
   smaller, and it is the clearest evidence in the project that the optimizer's
   number is not the goal.
 
+### Repetition goes first
+
+Repeating a token is a separate failure from being untrue or malformed, and it
+is the one the model fixes earliest. Over the same 200 draws:
+
+| Epochs | Repeats a token |
+| ---: | ---: |
+| 0 | 41% |
+| 1 | 35% |
+| 5 | 9% |
+| 20 | 1% |
+| 60 | 0% |
+
+This is worth stating separately because of what it leaves behind. Once
+repetition is gone, what the model produces is *different* tokens that sit
+together plausibly: `SINCLAIR AMIGA`, `COMMODORE ATARI`. Neither exists.
+Both read as though they could.
+
+Nothing in the model knows what any of those tokens mean. It holds which
+tokens tend to follow which, and that alone is sufficient to produce output a
+person reads as plausible. That is the project's central claim, and this is
+the measurement that supports it.
+
 ### What the rubric cannot see
 
 The name-like test is two checks: the sample has two to four tokens, and its

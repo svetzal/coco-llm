@@ -273,16 +273,21 @@ def main() -> None:
                 "drawn": len(drawn),
                 "copied": sum(1 for text in drawn if text in corpus),
                 "name_like": sum(1 for a in assessed if a.name_like),
+                "repeats": sum(
+                    1 for text in drawn
+                    if len(set(text.split())) < len(text.split())
+                ),
                 "both": sum(1 for a in assessed if a.novel and a.name_like),
             }
             samples[str(epoch)] = [
                 {
-                    "text": (
-                        text := model.generate(
-                            temperature=0.7, random_seed=config.seed + n
-                        )
-                    ),
+                    "text": (text := drawn[n]),
                     "novel": text not in corpus,
+                    # Saying the same token twice is a different failure from
+                    # saying something untrue, and it disappears earlier. It
+                    # is the step from "starts like a name" to "hangs
+                    # together".
+                    "repeats": len(set(text.split())) < len(text.split()),
                 }
                 for n in range(4)
             ]

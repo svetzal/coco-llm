@@ -495,3 +495,10 @@
 .reveal .fig .cap.rubric {
   color: var(--coco-c01); font-size: 13px; margin-top: 0.5em;
 }
+
+/* Saying the same token twice is a different failure from saying something
+ * that was in the training data, so it gets its own colour. It also
+ * disappears earlier, which is the step from "starts like a name" to "hangs
+ * together". */
+.reveal .epoch .out.repeats { color: var(--coco-orange); }
+.reveal .epoch .out.repeats .tag { color: var(--coco-orange); }

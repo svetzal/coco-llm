@@ -407,7 +407,7 @@
         <span class="novel">both</span>
         <span class="enote"></span>
       </div>
-      <div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out">II APPLE COMMODORE ACORN 64 II</div><div class="out">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR</div></div><span class="novel">100%</span><span class="novel">0%</span><span class="novel poor">0%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out">ARCHIMEDES ARCHIMEDES AMIGA</div></div><span class="novel">100%</span><span class="novel">6%</span><span class="novel poor">6%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out">ATARI ATARI</div></div><span class="novel">98%</span><span class="novel">54%</span><span class="novel poor">52%</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="novel">91%</span><span class="novel">98%</span><span class="novel good">90%</span><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="novel">28%</span><span class="novel">100%</span><span class="novel poor">28%</span><span class="enote"></span></div>
+      <div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out repeats">II APPLE COMMODORE ACORN 64 II<span class="tag">repeats</span></div><div class="out repeats">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR<span class="tag">repeats</span></div></div><span class="novel">100%</span><span class="novel">0%</span><span class="novel poor">0%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out repeats">ARCHIMEDES ARCHIMEDES AMIGA<span class="tag">repeats</span></div></div><span class="novel">100%</span><span class="novel">6%</span><span class="novel poor">6%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out repeats">ATARI ATARI<span class="tag">repeats</span></div></div><span class="novel">98%</span><span class="novel">54%</span><span class="novel poor">52%</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="novel">91%</span><span class="novel">98%</span><span class="novel good">90%</span><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="novel">28%</span><span class="novel">100%</span><span class="novel poor">28%</span><span class="enote"></span></div>
     </div>
     <p class="cap rubric">
       Right shape means two to four tokens starting with one of the six makers
@@ -416,9 +416,11 @@
     </p>
     <p class="cap invent fragment" data-fragment-index="5">
       Same machine, same arithmetic, same 580 bytes of weights.
-      At 20 epochs it makes machines that never existed. At
-      60 it hands back what it was given.
-      <strong>The only thing we changed was how long we trained it.</strong>
+      Early on it says the same token twice. By 20 it picks
+      different tokens that sit together plausibly. By 60 it
+      hands back what it was given.
+      <strong>SINCLAIR never made an AMIGA. It knows which tokens follow
+      which, and nothing else.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="6">
       New is not the same as good. Epoch 0 is 100% new and
@@ -459,6 +461,25 @@
     EXP-002 before a single sample was generated, so it could not be bent to
     fit the result. And at epoch 20 only 3 of the 197 passes repeat a token,
     so it is not inflated much where it matters.
+
+    WATCH THE COLOURS DOWN THE SAMPLES, because they are three different
+    failures and they go away in order.
+
+    Orange is repeating a token. At epoch 0, 41% of draws say the same word
+    twice; by epoch 5, 9%; by 20, 1%. That is the model learning that a name
+    does not repeat itself, and it learns it before anything else.
+
+    What is left at epoch 20 is the interesting thing, and it is what the
+    whole talk is about: DIFFERENT tokens that sit together plausibly.
+    SINCLAIR AMIGA. COMMODORE ATARI. Nobody made those. They read as though
+    somebody could have.
+
+    Say the hard part out loud: the machine has no idea what any of those
+    words mean. It knows which tokens tend to follow which, and that alone is
+    enough to produce something a person will read as plausible. That is not
+    a trick this model plays and the big ones do not. It is the same trick.
+
+    Red is the third failure, and it only shows up later.
 
     THE NEW COLUMN IS THE ARGUMENT. It is measured over 200 draws, not the two
     on screen. 91% new at epoch 20. 28% at epoch 60. The same 290 numbers,
