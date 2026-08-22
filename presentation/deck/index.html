@@ -80,34 +80,44 @@
   <h2>One step</h2>
   <!-- FIGURE:step -->
   <div class="fig step">
-    <div class="stage">
-      <p class="lbl">context</p>
-      <div class="vec">
-        <span class="num">&lt;END&gt;</span><span class="num">COMMODORE</span>
+    <p class="half">predict</p>
+    <div class="step-row">
+      <div class="stage">
+        <p class="lbl">context</p>
+        <div class="vec">
+          <span class="num">&lt;END&gt;</span><span class="num">COMMODORE</span>
+        </div>
+      </div>
+      <div class="stage fragment" data-fragment-index="1">
+        <p class="lbl">three numbers</p>
+        <div class="vec"><span class="num">-0.0295</span><span class="num">-0.0454</span><span class="num">+0.0415</span></div>
+      </div>
+      <div class="stage fragment" data-fragment-index="2">
+        <p class="lbl">a score for every token</p>
+        <div class="bars"><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.6%"></div><div class="bar" style="height:69.4%"></div><div class="bar target" style="height:69.9%"><span class="after fragment" data-fragment-index="5" style="height:100.0%"></span><span class="barlab">AMIGA</span></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:69.0%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.8%"></div></div>
       </div>
     </div>
-    <div class="stage fragment" data-fragment-index="1">
-      <p class="lbl">three numbers</p>
-      <div class="vec"><span class="num">-0.0295</span><span class="num">-0.0454</span><span class="num">+0.0415</span></div>
-    </div>
-    <div class="stage fragment" data-fragment-index="2">
-      <p class="lbl">a score for every token</p>
-      <div class="bars"><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.6%"></div><div class="bar" style="height:69.4%"></div><div class="bar target" style="height:69.9%"><span class="after fragment" data-fragment-index="5" style="height:100.0%"></span><span class="barlab">AMIGA</span></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:69.0%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.8%"></div></div>
-    </div>
-    <div class="stage fragment" data-fragment-index="3">
-      <p class="lbl">right answer</p>
-      <div class="vec"><span class="num moved">AMIGA</span></div>
-      <p class="lbl">it gave it 3.5%</p>
-    </div>
-    <div class="stage fragment" data-fragment-index="4">
-      <p class="lbl">nudge those weights</p>
-      <div class="vec"><span class="num">+0.1214</span><span class="num">-0.0705</span><span class="num">+0.0325</span></div>
-      <div class="vec fragment" data-fragment-index="5">
-        <span class="num moved">+0.1115</span><span class="num moved">-0.0858</span><span class="num moved">+0.0465</span>
+
+    <p class="half fragment" data-fragment-index="3">correct</p>
+    <div class="step-row">
+      <div class="stage fragment" data-fragment-index="3">
+        <p class="lbl">right answer</p>
+        <div class="vec">
+          <span class="num moved">AMIGA</span>
+        </div>
+        <p class="lbl">it gave it 3.5%</p>
       </div>
-      <p class="fragment lbl" data-fragment-index="5">
-        now 4.9%
-      </p>
+      <div class="stage fragment" data-fragment-index="4">
+        <p class="lbl">its weights</p>
+        <div class="vec"><span class="num">+0.1214</span><span class="num">-0.0705</span><span class="num">+0.0325</span></div>
+      </div>
+      <div class="stage fragment" data-fragment-index="5">
+        <p class="lbl">nudged</p>
+        <div class="vec">
+          <span class="num moved">+0.1115</span><span class="num moved">-0.0858</span><span class="num moved">+0.0465</span>
+        </div>
+        <p class="lbl">now 4.9%</p>
+      </div>
     </div>
   </div>
   <!-- /FIGURE:step -->

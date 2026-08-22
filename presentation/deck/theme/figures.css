@@ -62,28 +62,46 @@
   min-width: 5.5em;
   text-align: center;
   color: var(--deck-ink);
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 .reveal .cell.ctx { color: var(--deck-quiet); }
 .reveal .cell.tgt { border-color: var(--deck-mark); color: var(--deck-mark); }
 .reveal .arrow { color: var(--coco-c01); }
 
-/* --- one training step --------------------------------------------------- */
-.reveal .step { display: flex; gap: 1.4em; align-items: flex-start;
-                justify-content: center; margin-top: 0.6em; }
-.reveal .stage { text-align: center; min-width: 6em; }
+/* --- one training step ---------------------------------------------------
+ *
+ * Two rows, not one. Five stages across a 1280 slide does not fit at a size
+ * anyone can read from the back, and the split is the better lesson anyway:
+ * the top row predicts and the bottom row corrects, which is the whole
+ * algorithm in two sentences.
+ *
+ * Every box is flex: 0 0 auto. Flex items shrink below their own content by
+ * default, and a bordered box holding a number is exactly where that shows:
+ * the border cuts through the digits and the figure quietly lies about a
+ * value. Nothing here may shrink. If a row does not fit, the row is wrong.
+ */
+.reveal .step { margin-top: 0.5em; }
+.reveal .step-row {
+  display: flex; gap: 1.3em; align-items: flex-start; justify-content: center;
+  margin-bottom: 0.6em;
+}
+.reveal .stage { text-align: center; flex: 0 0 auto; }
 .reveal .vec {
   display: flex; gap: 4px; justify-content: center; margin-top: 4px;
 }
 .reveal .num {
-  border: 1px solid var(--coco-c02); padding: 2px 5px; min-width: 3.6em;
+  border: 1px solid var(--coco-c02); padding: 2px 6px;
+  flex: 0 0 auto; white-space: nowrap;
 }
 .reveal .num.moved { border-color: var(--deck-mark); color: var(--deck-mark); }
 
 /* Probabilities. 29 bars, height straight off the model. */
 .reveal .bars {
-  display: flex; align-items: flex-end; gap: 2px; height: 170px;
-  margin-top: 6px; position: relative;
+  display: flex; align-items: flex-end; gap: 2px; height: 150px;
+  margin-top: 6px; margin-bottom: 1.6em; position: relative;
 }
+.reveal .bars > .bar { flex: 0 0 auto; }
 .reveal .bar { width: 12px; background: var(--coco-c01); position: relative; }
 .reveal .bar.target { background: var(--deck-ink); }
 /* The same bar after the update, drawn over the top as a fragment. */
@@ -92,8 +110,8 @@
   background: var(--deck-mark);
 }
 .reveal .barlab {
-  font-size: 0.5em; color: var(--deck-quiet);
-  position: absolute; bottom: -1.5em; white-space: nowrap;
+  font-size: 0.62em; color: var(--deck-mark);
+  position: absolute; bottom: -1.9em; left: 50%; white-space: nowrap;
   transform: translateX(-50%);
 }
 
@@ -106,3 +124,16 @@
 .reveal .epoch .n { color: var(--coco-c01); min-width: 4.5em; }
 .reveal .epoch .out { color: var(--deck-ink); }
 .reveal .epoch.late .out { color: var(--deck-mark); }
+
+/* Names the two halves so the split reads as structure, not as a line break. */
+.reveal .half {
+  font-family: var(--deck-prose);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.55em;
+  color: var(--coco-c01);
+  /* Generous space above, because the row's own stage labels sit right
+   * underneath this one and nowrap labels are wider than they look. */
+  margin: 1.1em 0 0.5em;
+}
+.reveal .step > .half:first-child { margin-top: 0; }

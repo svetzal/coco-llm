@@ -84,6 +84,17 @@ which a scripted animation usually will not. Order is controlled with
 `data-fragment-index` so a figure's stages advance in the order the argument
 needs rather than in document order.
 
+**Nothing in a figure may shrink.** Every box carries `flex: 0 0 auto`.
+Flex items shrink below their own content by default, and a bordered box
+holding a number is exactly where that shows: the border cuts through the
+digits, and the figure quietly displays a value that is not the value. If a row
+does not fit, the row is wrong. Split it rather than letting it squeeze.
+
+Two related rules that came out of the same bug: a stage label must not be
+wider than the boxes it names, because `.lbl` is `nowrap` and will happily
+overrun its neighbours; and a figure with more than three stages in a row will
+not fit a 1280 slide at a size the back row can read.
+
 To inspect a figure with every stage showing at once, open it with fragments
 off:
 

@@ -100,36 +100,46 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
 
     return f"""
   <div class="fig step">
-    <div class="stage">
-      <p class="lbl">context</p>
-      <div class="vec">
-        {"".join(f'<span class="num">{esc(t)}</span>'
-                 for t in trace["context_text"])}
+    <p class="half">predict</p>
+    <div class="step-row">
+      <div class="stage">
+        <p class="lbl">context</p>
+        <div class="vec">
+          {"".join(f'<span class="num">{esc(t)}</span>'
+                   for t in trace["context_text"])}
+        </div>
+      </div>
+      <div class="stage fragment" data-fragment-index="1">
+        <p class="lbl">three numbers</p>
+        <div class="vec">{numbers(trace["vector_before"])}</div>
+      </div>
+      <div class="stage fragment" data-fragment-index="2">
+        <p class="lbl">a score for every token</p>
+        <div class="bars">{"".join(bars)}</div>
       </div>
     </div>
-    <div class="stage fragment" data-fragment-index="1">
-      <p class="lbl">three numbers</p>
-      <div class="vec">{numbers(trace["vector_before"])}</div>
-    </div>
-    <div class="stage fragment" data-fragment-index="2">
-      <p class="lbl">a score for every token</p>
-      <div class="bars">{"".join(bars)}</div>
-    </div>
-    <div class="stage fragment" data-fragment-index="3">
-      <p class="lbl">right answer</p>
-      <div class="vec"><span class="num moved">{esc(trace["target_text"])}</span></div>
-      <p class="lbl">it gave it {trace["target_p_before"] * 100:.1f}%</p>
-    </div>
-    <div class="stage fragment" data-fragment-index="4">
-      <p class="lbl">nudge those weights</p>
-      <div class="vec">{numbers(trace["target_weights_before"])}</div>
-      <div class="vec fragment" data-fragment-index="5">
-        {"".join(f'<span class="num moved">{v:+.4f}</span>'
-                 for v in trace["target_weights_after"])}
+
+    <p class="half fragment" data-fragment-index="3">correct</p>
+    <div class="step-row">
+      <div class="stage fragment" data-fragment-index="3">
+        <p class="lbl">right answer</p>
+        <div class="vec">
+          <span class="num moved">{esc(trace["target_text"])}</span>
+        </div>
+        <p class="lbl">it gave it {trace["target_p_before"] * 100:.1f}%</p>
       </div>
-      <p class="fragment lbl" data-fragment-index="5">
-        now {trace["target_p_after"] * 100:.1f}%
-      </p>
+      <div class="stage fragment" data-fragment-index="4">
+        <p class="lbl">its weights</p>
+        <div class="vec">{numbers(trace["target_weights_before"])}</div>
+      </div>
+      <div class="stage fragment" data-fragment-index="5">
+        <p class="lbl">nudged</p>
+        <div class="vec">
+          {"".join(f'<span class="num moved">{v:+.4f}</span>'
+                   for v in trace["target_weights_after"])}
+        </div>
+        <p class="lbl">now {trace["target_p_after"] * 100:.1f}%</p>
+      </div>
     </div>
   </div>"""
 
