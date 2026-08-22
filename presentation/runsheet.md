@@ -7,6 +7,35 @@ what order, for how long, and what gets dropped when the room runs long. Where
 the two disagree about emphasis, this file wins on stage and the journey wins
 in the written record.
 
+## Staging
+
+**The projector shows an emulator. The real machine is at the table.**
+
+Everything on stage runs in XRoar on the laptop, so the projector cable is
+never touched and the talk never waits for a 1981 machine to load from an SDC.
+The CoCo 1 itself lives at the exhibit table, powered on, all day.
+
+This is a fair trade only if it is said out loud, once, early, and never again:
+
+> What you are seeing is an emulator, running at the actual machine's clock
+> speed. Nothing here is sped up. The real one is at table N and I would love
+> you to come and press its keys.
+
+Two reasons that stays honest. Every stage target already passes `-ratelimit`,
+so XRoar runs the 6809 at roughly 0.89 MHz and a training run takes exactly as
+long on the projector as it does on the desk. And the physical machine is forty
+feet away in the same room, which is a much stronger claim than a photograph.
+
+The gain is not only convenience. Vintage hardware into a conference projector
+is a well-known way to lose the first ten minutes of a talk, and this removes
+that failure entirely. The cost is that the object stops being on stage, so the
+table has to carry it. Blocks 1 and 9 both point at the table by name.
+
+What this does not license: running unthrottled, using a CoCo 3 in fast mode
+without saying so, or describing an emulator run as hardware-measured. The
+copy discipline in `exhibit-copy.md` still holds. No runtime claim goes on a
+slide until it is measured, and an emulator measurement is labelled as one.
+
 ## The budget
 
 45 minutes total. 40 minutes of content, 5 minutes of questions. There is no
@@ -35,8 +64,8 @@ confusing them is most of what makes these systems feel like magic.
 
 Announced here so it is a decision, not a panic.
 
-1. **Block 6** goes first. It is the delight beat and it costs a machine
-   changeover for three minutes. The table has it running all day.
+1. **Block 6** goes first. It is the delight beat, and the table runs it in a
+   loop all day on the real machine.
 2. **Block 4** goes second. Block 5 already carries "the model did not change,"
    and the abstract's marketing-language promise survives on the table.
 3. **Block 3 shortens, it does not go.** If training is running long, stop the
@@ -46,16 +75,25 @@ Announced here so it is a decision, not a panic.
 
 ### Changeover cost
 
-Five of nine blocks put a different binary on the machine. Each changeover is
-20 to 30 seconds of dead air, so the budget above already spends roughly two
-minutes on loading. Rehearse the changeovers, not only the demos. Where two
-machines are available, stage the next binary on the second one and cut to it.
+Five of nine blocks load a different binary. On real hardware that is 20 to 30
+seconds of dead air each, and the original budget spent roughly two minutes on
+it. Under the emulator each one is a window switch, so that time comes back as
+buffer rather than being spent.
+
+Do not spend it. Block 3, the live training run, has never been timed, and its
+eleven minutes is a planning figure. The recovered two minutes is the margin
+that absorbs being wrong about it.
+
+Have all five XRoar instances launched and parked before the talk starts, one
+per block, so a changeover is a window switch and not a `make` invocation on
+the projector. Rehearse the switching, not only the demos.
 
 ## The blocks
 
 ### 1. It already works
 
-**On screen:** a photograph of a real trained run, full screen, no explanation.
+**On screen:** a photograph of the physical CoCo 1 showing a real trained run,
+full screen, no explanation.
 
 Say the names. Say that none of them were ever made. Say the machine is from
 1981, has 32 kilobytes, and started from random numbers about three minutes
@@ -63,6 +101,16 @@ before that photograph was taken.
 
 Then make the promise: by the end of this you will know exactly how it did
 that, and you will be unimpressed by it in precisely the right way.
+
+Then the disclosure, in one breath, and then never again:
+
+> That machine is at table N. What I am about to project is its emulator,
+> running at its clock speed. Nothing here is sped up, and I would much rather
+> spend these forty minutes on the model than on a video cable.
+
+The photograph now carries two jobs. It is the mystery, and it is the evidence
+that the physical object exists and is in the building. Frame it so the machine
+is recognisably a CoCo 1 and not a screen grab.
 
 Copy discipline applies. The photograph is of a genuine run or it does not go
 on the slide.
@@ -161,8 +209,13 @@ for them.
 
 ### 8. Now you play it
 
-**On screen:** EXP-013, the game opponent that learns, on the CoCo, and someone
-from the room at the keyboard.
+**On screen:** EXP-013, the game opponent that learns, and someone from the room
+calling throws.
+
+Volunteer at the laptop or calling numbers from their seat, either works. The
+laptop keyboard is the easier one to drive and the whole room can read the
+screen. Whoever plays gets the invitation on the spot: the real machine is at
+the table and it will happily lose to them again.
 
 It does not know the rules. `RULES 0/25` says so before a round is played. It
 does not know the player either, and `MEMORY n/rounds` says how little it has
@@ -202,12 +255,15 @@ Close on the table. Say what is running there and that you will be at it.
 
 ## What moves to the table
 
-The table is not the overflow bin. It gets everything that needs a keyboard,
-a patient visitor, and more than ninety seconds, which is exactly the material
-a stage handles badly.
+The table is not the overflow bin, and since the talk projects an emulator it
+now holds the only real hardware in the building. That is a promotion. It gets
+the physical CoCo 1, plus everything that needs a keyboard, a patient visitor,
+and more than ninety seconds, which is exactly the material a stage handles
+badly.
 
 | Item | Why it belongs there |
 | --- | --- |
+| The physical CoCo 1 | The claim the whole talk rests on. Powered on, all day, touchable. |
 | EXP-006, the 8 KiB completion workbench | One person types for two minutes. Unwatchable from row 12. |
 | EXP-007, the all-RAM sentence completer | Same, plus the `<END>` interface-failure story needs a conversation. |
 | EXP-013, the playable game opponent | Also on stage. On the table people play until it beats them. |
@@ -217,29 +273,35 @@ a stage handles badly.
 
 `table-exercises.md` currently assumes the table is the only surface. It needs
 a pass to say which demo is running on which machine and when the presenter is
-absent.
+absent. The hardware contract already provides two machines, a CoCo 1 and a
+CoCo 3, and with the projector out of the picture the CoCo 3's HDMI output no
+longer buys anything on stage. Both can be at the table, which means one can
+run the title generator in a loop while a visitor plays the other.
 
 ## Open decisions
 
 These block locking the runsheet. Each one is a question for Stacey, not a task
 to be worked around.
 
-1. **How long does EXP-004, the live training run, actually take on a physical
-   CoCo 1?** Block 3 is eleven minutes of a forty-minute talk and its true
-   length has never been measured on hardware. Everything downstream floats
-   until it is. This is the single largest risk in the plan.
+1. **How long does EXP-004, the live training run, actually take?** Block 3 is
+   eleven minutes of a forty-minute talk and has never been timed. Everything
+   downstream floats until it is. This is the single largest risk in the plan,
+   and projecting the emulator makes it cheap to settle: XRoar at `-ratelimit`
+   runs the same clock, and the run can be trapped and wall-clocked on the
+   laptop without touching hardware. Worth doing before any slide is made.
 2. **Does the abstract still describe the talk?** It promises invented computer
    names and 1980s marketing phrases. Blocks 5, 6 and 8 are none of those
    things, and block 8 is the strongest beat in the set. Either the abstract
    is restated or blocks 5 and 8 are shrunk to honour it.
-3. **One machine or two?** Five changeovers on one machine costs roughly two
-   minutes of silence. A second machine buys that back and provides the backup
-   the hardware contract already asks for.
+3. **Is XRoar legible from the back row?** A 32 by 16 character screen scaled
+   onto a conference projector has never been checked, and no stage target
+   passes any scaling or geometry flag. This replaces the old one-machine
+   question and is now the only display risk left.
 4. **Is the audience volunteer in block 8 planned or found?** A planted player
    is faster and reads as a plant. A real one is slower and carries the point.
 5. **Is there a handout?** One page, one QR code to the repository, and the
    three stores from blocks 4, 5 and 7 named on it. Cheap, and it is what
-   people take home.
+   people take home. It is also where the table number goes.
 
 ## What has to be built
 
@@ -250,9 +312,14 @@ In dependency order. Items 1 and 2 block rehearsal, which blocks everything.
    blocks have no launcher and no rehearsal path.
 2. **Rehearsal notes for blocks 6 and 8.** `demo-rehearsal-notes.md` stops at
    EXP-011, the attention head, as well.
-3. **Physical timing for EXP-004, the live training run.** See open decision 1.
-4. **Slide source for blocks 1, 2, 7 and 9.** The four blocks with no CoCo on
-   screen, and the only ones that need a deck at all.
-5. **The photograph in block 1.** From a genuine run.
-6. **The handout**, if decision 5 says yes.
-7. **A table plan** revising `table-exercises.md` for two surfaces.
+3. **Timing for EXP-004, the live training run**, trapped and wall-clocked
+   under XRoar at `-ratelimit`. See open decision 1. Now cheap, and it sets
+   the length of the largest block in the talk.
+4. **A projector legibility check** for XRoar, and whatever scaling flags the
+   stage targets turn out to need. See open decision 3.
+5. **Slide source for blocks 1, 2, 7 and 9.** The four blocks with no emulator
+   on screen, and the only ones that need a deck at all.
+6. **The photograph in block 1**, of the physical machine, from a genuine run.
+7. **The handout**, if decision 5 says yes.
+8. **A table plan** revising `table-exercises.md` for two surfaces and two
+   physical machines.
