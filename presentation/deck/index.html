@@ -798,16 +798,51 @@
 <!-- ============ 7. Change one thing: the upbringing · 4 min · slide ============ -->
 <section data-timing="240">
   <p class="changed">We changed exactly one thing:<br><span class="one">the upbringing</span></p>
-  <p class="what">EXP-003 &middot; the fan-corpus bias runs</p>
+  <!-- FIGURE:bias -->
+  <div class="fig bias">
+    <p class="lbl">one collection each</p>
+    <div class="brun fragment" data-fragment-index="1"><span class="blab">apple fan</span><span class="bbar"><span class="seg mk-a" style="width:80.0%">APPLE 16</span><span class="seg mk-c" style="width:0.0%"></span><span class="seg mk-t" style="width:0.0%"></span><span class="seg mk-o" style="width:20.0%"></span></span><span class="bsample">APPLE MACINTOSH</span><span class="bnote2"></span></div><div class="brun fragment" data-fragment-index="2"><span class="blab">commodore fan</span><span class="bbar"><span class="seg mk-a" style="width:0.0%"></span><span class="seg mk-c" style="width:75.0%">COMMODORE 15</span><span class="seg mk-t" style="width:0.0%"></span><span class="seg mk-o" style="width:25.0%"></span></span><span class="bsample">COMMODORE AMIGA</span><span class="bnote2"></span></div><div class="brun fragment" data-fragment-index="3"><span class="blab">tandy fan</span><span class="bbar"><span class="seg mk-a" style="width:0.0%"></span><span class="seg mk-c" style="width:5.0%"></span><span class="seg mk-t" style="width:70.0%">TANDY 14</span><span class="seg mk-o" style="width:25.0%"></span></span><span class="bsample">TANDY COCO</span><span class="bnote2"></span></div>
+    <p class="lbl fragment" data-fragment-index="4">
+      the same 54 names, balanced, in two orders
+    </p>
+    <div class="brun fragment" data-fragment-index="4"><span class="blab">all fans concatenated</span><span class="bbar"><span class="seg mk-a" style="width:0.0%"></span><span class="seg mk-c" style="width:5.0%"></span><span class="seg mk-t" style="width:70.0%">TANDY 14</span><span class="seg mk-o" style="width:25.0%"></span></span><span class="bsample">TANDY COCO</span><span class="bnote2">end to end</span></div>
+    <div class="brun fragment" data-fragment-index="5"><span class="blab">all fans interleaved</span><span class="bbar"><span class="seg mk-a" style="width:50.0%">APPLE 10</span><span class="seg mk-c" style="width:30.0%">COMMODORE 6</span><span class="seg mk-t" style="width:15.0%">TANDY 3</span><span class="seg mk-o" style="width:5.0%"></span></span><span class="bsample">TANDY COCO</span><span class="bnote2">shuffled together</span></div>
+    <p class="cap fragment" data-fragment-index="6">
+      Held fixed throughout: the architecture, the starting numbers, the
+      training budget, the vocabulary, the sampling seeds.
+      <strong>Nobody chose to make the fourth one a Tandy fan. Laying the
+      collections end to end did it.</strong>
+    </p>
+  </div>
+  <!-- /FIGURE:bias -->
   <aside class="notes">
-    Same architecture, same initial weights, same budget, same vocabulary, same
-    sampling seed. Different data. Different machine.
+    The bars are where the first generated token came from, over 20 draws.
+    They label themselves, so there is no legend to explain.
 
-    Then the harder half: the same balanced examples concatenated and
-    interleaved produce different behaviour. Order is a choice too, and nobody
-    set out to make it one.
+    FIRST THREE: same architecture, same starting numbers, same budget, same
+    vocabulary, same sampling seeds. One collection each. Each model comes out
+    a fan of whoever raised it. 16 of 20, 15 of 20, 14 of 20.
 
-    Ask which human decision produced each behaviour. DO NOT ANSWER IT.
+    THEN THE HARDER HALF, and this is the slide's reason to exist. The last
+    two rows train on THE SAME 54 NAMES. Balanced. Eighteen from each maker.
+    The only difference is whether the three collections were laid end to end
+    or shuffled together.
+
+    Concatenated, it comes out a Tandy fan: 14 of 20, indistinguishable from
+    the model that only ever saw Tandy machines. Tandy went last, and last is
+    what stuck.
+
+    Interleaved, the same data spreads: 10, 6, 3.
+
+    LAND IT: nobody chose to make that fourth model a Tandy fan. Nobody wrote
+    a preference into it. Somebody decided how to lay the files out, and that
+    was the decision, and they almost certainly did not know they were making
+    it.
+
+    Also worth a beat: concatenated ends at loss 2.18 and interleaved at 0.88.
+    The bad ordering trained worse as well as more narrowly.
+
+    Ask which human decision produced each row. DO NOT ANSWER IT.
   </aside>
 </section>
 

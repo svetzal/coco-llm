@@ -143,8 +143,16 @@ Three steps, in order. The middle one depends on the assembled 6809 build, so
 ```sh
 uv run python tools/export_deck_traces.py      # run the model, write the numbers
 uv run python tools/measure_train_vs_infer.py  # classify the image by job
-uv run python tools/make_deck_figures.py       # draw them, splice them in
+uv run python tools/export_bias_trace.py       # the five controlled bias runs
+uv run python tools/extract_code_excerpts.py   # pull assembly from the source
+uv run python tools/make_deck_figures.py       # draw them all, splice them in
 ```
+
+`extract_code_excerpts.py` reads the assembly reveals out of `src/6809/` by
+label rather than letting them be retyped, matches highlights by instruction
+rather than line number, and refuses to emit an excerpt outside the five-to-
+twelve-line limit `learning-journey.md` sets. A slide of code that has gone
+stale is worse than no slide of code.
 
 `measure_train_vs_infer.py` splits the assembled image into what is needed to
 **learn** a model, what is needed to **use** one, what both phases share, and

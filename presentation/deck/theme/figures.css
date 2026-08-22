@@ -530,3 +530,36 @@
   display: block; margin-top: 0.5em; color: var(--coco-c01);
   font-size: 0.85em; letter-spacing: 0.06em; text-transform: none;
 }
+
+/* --- training-data bias ---------------------------------------------------
+ *
+ * Where the first generated token came from, over 20 draws, as a stacked bar.
+ * One colour per maker throughout, so the eye can compare rows without
+ * reading a legend. The fourth bar is the argument: it is the same balanced
+ * data as the fifth and it still comes out one colour.
+ */
+.reveal .fig.bias { font-size: 0.62em; }
+.reveal .brun {
+  display: grid; grid-template-columns: 12em 20em 13em 8em;
+  gap: 0 0.8em; align-items: center; margin: 0.4em 0;
+}
+.reveal .brun .blab {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.62em; letter-spacing: 0.08em; color: var(--deck-quiet);
+  text-align: right;
+}
+.reveal .bbar { display: flex; height: 1.5em; overflow: hidden; }
+.reveal .seg {
+  font-family: var(--deck-prose); font-size: 0.55em; line-height: 2.7;
+  text-align: center; color: var(--coco-c00); overflow: hidden;
+  white-space: nowrap; letter-spacing: 0.04em;
+}
+.reveal .seg.mk-a { background: var(--coco-c44); }  /* APPLE */
+.reveal .seg.mk-c { background: var(--coco-c25); }  /* COMMODORE */
+.reveal .seg.mk-t { background: var(--coco-c36); }  /* TANDY */
+.reveal .seg.mk-o { background: var(--coco-c16); }  /* everything else */
+.reveal .brun .bsample { color: var(--deck-ink); white-space: nowrap; }
+.reveal .brun .bnote2 {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.55em; letter-spacing: 0.1em; color: var(--deck-mark);
+}

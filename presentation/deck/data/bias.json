@@ -1,0 +1,90 @@
+{
+ "samples": 20,
+ "makers": [
+  "APPLE",
+  "COMMODORE",
+  "TANDY"
+ ],
+ "runs": [
+  {
+   "label": "APPLE FAN",
+   "names": 18,
+   "epochs": 30,
+   "final_loss": 1.09,
+   "counts": {
+    "APPLE": 16,
+    "COMMODORE": 0,
+    "TANDY": 0
+   },
+   "other": 4,
+   "total": 20,
+   "favourite": "APPLE",
+   "favourite_share": 16,
+   "sample": "APPLE MACINTOSH"
+  },
+  {
+   "label": "COMMODORE FAN",
+   "names": 18,
+   "epochs": 30,
+   "final_loss": 0.5,
+   "counts": {
+    "APPLE": 0,
+    "COMMODORE": 15,
+    "TANDY": 0
+   },
+   "other": 5,
+   "total": 20,
+   "favourite": "COMMODORE",
+   "favourite_share": 15,
+   "sample": "COMMODORE AMIGA"
+  },
+  {
+   "label": "TANDY FAN",
+   "names": 18,
+   "epochs": 30,
+   "final_loss": 0.5,
+   "counts": {
+    "APPLE": 0,
+    "COMMODORE": 1,
+    "TANDY": 14
+   },
+   "other": 5,
+   "total": 20,
+   "favourite": "TANDY",
+   "favourite_share": 14,
+   "sample": "TANDY COCO"
+  },
+  {
+   "label": "ALL FANS CONCATENATED",
+   "names": 54,
+   "epochs": 10,
+   "final_loss": 2.18,
+   "counts": {
+    "APPLE": 0,
+    "COMMODORE": 1,
+    "TANDY": 14
+   },
+   "other": 5,
+   "total": 20,
+   "favourite": "TANDY",
+   "favourite_share": 14,
+   "sample": "TANDY COCO"
+  },
+  {
+   "label": "ALL FANS INTERLEAVED",
+   "names": 54,
+   "epochs": 10,
+   "final_loss": 0.88,
+   "counts": {
+    "APPLE": 10,
+    "COMMODORE": 6,
+    "TANDY": 3
+   },
+   "other": 1,
+   "total": 20,
+   "favourite": "APPLE",
+   "favourite_share": 10,
+   "sample": "TANDY COCO"
+  }
+ ]
+}

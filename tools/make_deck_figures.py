@@ -540,6 +540,61 @@ def figure_code(excerpt: dict, note: str) -> str:
   </div>"""
 
 
+# One colour per maker, so the same maker is the same colour in every bar.
+MAKER_CLASS = {"APPLE": "mk-a", "COMMODORE": "mk-c", "TANDY": "mk-t"}
+
+
+def figure_bias(trace: dict) -> str:
+    """Same everything, different data. Then same data, different order."""
+
+    def row(run: dict, index: int, note: str = "") -> str:
+        # Segments label themselves, so the figure needs no legend and the
+        # reader never has to hold a colour mapping in their head.
+        def label(maker: str, count: int) -> str:
+            if count >= 3:
+                return f"{maker} {count}"
+            return str(count) if count >= 2 else ""
+
+        segments = "".join(
+            f'<span class="seg {MAKER_CLASS[maker]}" '
+            f'style="width:{100 * run["counts"][maker] / run["total"]:.1f}%">'
+            f'{label(maker, run["counts"][maker])}</span>'
+            for maker in trace["makers"]
+        )
+        if run["other"]:
+            segments += (
+                f'<span class="seg mk-o" '
+                f'style="width:{100 * run["other"] / run["total"]:.1f}%"></span>'
+            )
+        return (
+            f'<div class="brun fragment" data-fragment-index="{index}">'
+            f'<span class="blab">{esc(run["label"].lower())}</span>'
+            f'<span class="bbar">{segments}</span>'
+            f'<span class="bsample">{esc(run["sample"])}</span>'
+            f'<span class="bnote2">{note}</span></div>'
+        )
+
+    fans = "".join(row(run, n + 1) for n, run in enumerate(trace["runs"][:3]))
+    concatenated, interleaved = trace["runs"][3], trace["runs"][4]
+
+    return f"""
+  <div class="fig bias">
+    <p class="lbl">one collection each</p>
+    {fans}
+    <p class="lbl fragment" data-fragment-index="4">
+      the same {concatenated["names"]} names, balanced, in two orders
+    </p>
+    {row(concatenated, 4, "end to end")}
+    {row(interleaved, 5, "shuffled together")}
+    <p class="cap fragment" data-fragment-index="6">
+      Held fixed throughout: the architecture, the starting numbers, the
+      training budget, the vocabulary, the sampling seeds.
+      <strong>Nobody chose to make the fourth one a Tandy fan. Laying the
+      collections end to end did it.</strong>
+    </p>
+  </div>"""
+
+
 def splice(source: str, name: str, body: str) -> str:
     pattern = re.compile(
         rf"(<!-- FIGURE:{re.escape(name)} -->).*?(<!-- /FIGURE:{re.escape(name)} -->)",
@@ -553,6 +608,7 @@ def splice(source: str, name: str, body: str) -> str:
 def main() -> None:
     traces = json.loads(TRACES.read_text())
     code = json.loads((TRACES.parent / "code.json").read_text())
+    bias = json.loads((TRACES.parent / "bias.json").read_text())
     vocabulary = traces["vocabulary"]["vocabulary"]
 
     deck = DECK.read_text()
@@ -564,6 +620,7 @@ def main() -> None:
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))
     deck = splice(deck, "loop", figure_loop(traces["loop"], traces["budget"], traces["split"]))
     deck = splice(deck, "cost", figure_cost(traces["budget"], traces["split"]))
+    deck = splice(deck, "bias", figure_bias(bias))
     deck = splice(deck, "twomuls", figure_code(
         code["two_muls"],
         "The 6809 multiplies two unsigned bytes. This makes a signed multiply "
@@ -580,7 +637,7 @@ def main() -> None:
         "learning rate: not a setting, an instruction count.",
     ))
     DECK.write_text(deck, encoding="utf-8")
-    print("spliced 11 figures into presentation/deck/index.html")
+    print("spliced 12 figures into presentation/deck/index.html")
 
 
 if __name__ == "__main__":

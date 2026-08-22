@@ -308,17 +308,32 @@ vintage-computer example, so get in and out.
 
 ### 7. Change one thing: the upbringing
 
-**On screen:** slides. The three fan corpora and the two orderings.
+**On screen:** EXP-003, the fan-corpus bias runs, as five stacked bars.
 
-Same architecture, same initial weights, same budget, same vocabulary, same
-sampling seed. Different data. Different machine.
+Each bar is where the first generated token came from over 20 draws. The
+segments label themselves, so there is no legend and nobody has to hold a
+colour mapping in their head.
 
-Then the harder half: the same balanced examples concatenated and interleaved
-produce different behaviour. Order is a choice too, and nobody set out to make
-it one.
+The first three are one collection each, with the architecture, starting
+numbers, training budget, vocabulary and sampling seeds all held. Each model
+comes out a fan of whoever raised it: 16 of 20, 15 of 20, 14 of 20.
 
-Ask which human decision produced each behaviour on screen. Do not answer it
-for them.
+The last two are the reason the slide exists. **They train on the same 54
+names.** Balanced, eighteen from each maker. The only difference is whether
+the three collections were laid end to end or shuffled together.
+
+Concatenated, it comes out a Tandy fan at 14 of 20, indistinguishable from the
+model that only ever saw Tandy machines. Tandy went last, and last is what
+stuck. Interleaved, the same data spreads: 10, 6, 3.
+
+Land it plainly. Nobody chose to make that fourth model a Tandy fan. Nobody
+wrote a preference into it. Somebody decided how to lay the files out, that
+was the decision, and they almost certainly did not know they were making it.
+
+Worth one more beat if there is time: concatenated ends at loss 2.18 and
+interleaved at 0.88. The bad ordering trained worse as well as more narrowly.
+
+Ask which human decision produced each row. Do not answer it.
 
 ### 8. Now you play it
 
