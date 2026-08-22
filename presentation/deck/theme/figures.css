@@ -119,12 +119,23 @@
 
 /* --- the loop ------------------------------------------------------------ */
 .reveal .epochs {
-  display: flex; flex-direction: column; gap: 0.4em;
+  display: flex; flex-direction: column; gap: 0.55em;
   width: fit-content; margin: 0 auto;
 }
-.reveal .epoch { display: flex; gap: 0.8em; align-items: baseline; }
-.reveal .epoch .n { color: var(--coco-c01); min-width: 4.5em; }
-.reveal .epoch .out { color: var(--deck-ink); }
+/* The two samples stack rather than sitting side by side: an untrained model
+ * rambles for six tokens, and two of those on one line runs off the slide. */
+.reveal .epoch {
+  display: grid; grid-template-columns: 6em 34em 6em;
+  gap: 0 0.8em; align-items: baseline;
+}
+.reveal .epoch .n {
+  color: var(--coco-c01); text-align: right; white-space: nowrap;
+}
+/* Left-aligned so the samples read as a list rather than a ragged centre. */
+.reveal .epoch .outs {
+  display: flex; flex-direction: column; gap: 0.15em; align-items: flex-start;
+}
+.reveal .epoch .out { color: var(--deck-ink); white-space: nowrap; }
 .reveal .epoch.late .out { color: var(--deck-mark); }
 
 /* Names the two halves so the split reads as structure, not as a line break. */
@@ -353,7 +364,6 @@
 .reveal .epoch .enote {
   font-family: var(--deck-prose); text-transform: uppercase;
   font-size: 0.5em; letter-spacing: 0.1em; color: var(--coco-c01);
-  margin-left: 0.8em;
 }
 .reveal .epoch.chosen .out { color: var(--deck-mark); }
 .reveal .epoch.chosen .enote { color: var(--deck-mark); }
@@ -425,3 +435,36 @@
   margin: 0 0 0.3em;
 }
 .reveal .lbl .hot { color: var(--deck-mark); }
+
+/* --- what sets the size of a nudge ----------------------------------------
+ *
+ * Three terms, each with what fixes it written underneath. The middle one is
+ * the interesting one: it is 1 minus what the model gave the right answer, so
+ * as the model improves the nudges shrink themselves. Nobody turns that down.
+ */
+/* Below the weights it explains, not beside them: .nudge is inline-block, so
+ * an inline-block formula sits on the same line and pushes the row off the
+ * slide. */
+.reveal .formula { display: block; width: fit-content; margin: 0.6em auto 0.2em; }
+.reveal .frow {
+  display: grid;
+  grid-template-columns: 6em 1.2em 5em 1.2em 6em 1.2em 12em;
+  gap: 0 0.4em; align-items: baseline;
+}
+.reveal .frow .fterm { text-align: center; color: var(--deck-quiet); }
+.reveal .frow .fterm.hot { color: var(--deck-ink); }
+.reveal .frow .fop { color: var(--coco-c01); text-align: center; }
+.reveal .frow.why .fterm {
+  font-family: var(--deck-prose); text-transform: none;
+  font-size: 0.6em; color: var(--coco-c01); line-height: 1.2;
+  padding-top: 0.2em;
+}
+
+/* A generated sample that turned out to be lifted from the training data. */
+.reveal .epoch .out.copied { color: var(--coco-loss); }
+.reveal .epoch .out .tag {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.5em; letter-spacing: 0.1em; margin-left: 0.5em;
+  color: var(--coco-loss);
+}
+

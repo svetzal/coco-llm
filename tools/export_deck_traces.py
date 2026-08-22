@@ -45,7 +45,11 @@ OUT = ROOT / "presentation" / "deck" / "data" / "traces.json"
 
 # The name the whole talk keeps returning to.
 FOCUS = "COMMODORE AMIGA"
-LEARNING_RATE = 0.35
+# 1/16, because that is what the 6809 does: update_weight in training.asm
+# shifts the gradient right four times. EXP-002 records the same choice, made
+# so the rate is a shift rather than a multiply. The deck must use the
+# machine's number, not a nicer-looking one.
+LEARNING_RATE = 1 / 16
 EPOCHS = 60
 CHECKPOINTS = (0, 1, 5, 20, EPOCHS)
 # The number the project actually ships, from EXP-002 and EXP-004. The run
@@ -247,8 +251,19 @@ def main() -> None:
     losses, samples = [], {}
     for epoch in range(EPOCHS + 1):
         if epoch in CHECKPOINTS:
+            # Whether a sample is novel or copied straight out of the corpus
+            # is the thing that turns later in the run, so it is recorded
+            # rather than judged by eye on stage.
+            corpus = {name.strip() for name in names}
             samples[str(epoch)] = [
-                model.generate(temperature=0.7, random_seed=config.seed + n)
+                {
+                    "text": (
+                        text := model.generate(
+                            temperature=0.7, random_seed=config.seed + n
+                        )
+                    ),
+                    "novel": text not in corpus,
+                }
                 for n in range(4)
             ]
         if epoch == EPOCHS:

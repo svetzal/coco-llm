@@ -300,7 +300,7 @@
       </div>
       <div class="stage fragment" data-fragment-index="4">
         <p class="lbl">a score for every token</p>
-        <div class="bars"><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.6%"></div><div class="bar" style="height:69.4%"></div><div class="bar target" style="height:69.9%"><span class="after fragment" data-fragment-index="6" style="height:100.0%"></span><span class="barlab">AMIGA</span></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:69.0%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.8%"></div></div>
+        <div class="bars"><div class="bar" style="height:94.2%"></div><div class="bar" style="height:92.9%"></div><div class="bar" style="height:94.5%"></div><div class="bar" style="height:94.0%"></div><div class="bar" style="height:93.9%"></div><div class="bar" style="height:93.3%"></div><div class="bar" style="height:93.2%"></div><div class="bar target" style="height:93.8%"><span class="after fragment" data-fragment-index="6" style="height:100.0%"></span><span class="barlab">AMIGA</span></div><div class="bar" style="height:93.6%"></div><div class="bar" style="height:93.9%"></div><div class="bar" style="height:94.4%"></div><div class="bar" style="height:93.0%"></div><div class="bar" style="height:93.6%"></div><div class="bar" style="height:93.6%"></div><div class="bar" style="height:92.6%"></div><div class="bar" style="height:92.9%"></div><div class="bar" style="height:92.9%"></div><div class="bar" style="height:94.1%"></div><div class="bar" style="height:92.6%"></div><div class="bar" style="height:93.8%"></div><div class="bar" style="height:93.5%"></div><div class="bar" style="height:93.2%"></div><div class="bar" style="height:94.1%"></div><div class="bar" style="height:93.5%"></div><div class="bar" style="height:93.2%"></div><div class="bar" style="height:94.8%"></div><div class="bar" style="height:93.2%"></div><div class="bar" style="height:94.4%"></div><div class="bar" style="height:93.6%"></div></div>
       </div>
     </div>
 
@@ -316,18 +316,32 @@
           <div class="owner fragment" data-fragment-index="4">
             <p class="ownerlab">AMIGA's three weights</p>
             <div class="nrow"><span class="nlab">before</span><span class="nv was">+0.1214</span><span class="nv was">-0.0705</span><span class="nv was">+0.0325</span></div>
-            <div class="nrow fragment" data-fragment-index="5"><span class="nlab">change</span><span class="nv chg dn"><span class="arrow">&darr;</span>-0.0099</span><span class="nv chg dn"><span class="arrow">&darr;</span>-0.0153</span><span class="nv chg up"><span class="arrow">&uarr;</span>+0.0140</span></div>
-            <div class="nrow fragment" data-fragment-index="6"><span class="nlab">after</span><span class="nv now">+0.1115</span><span class="nv now">-0.0858</span><span class="nv now">+0.0465</span></div>
+            <div class="nrow fragment" data-fragment-index="5"><span class="nlab">change</span><span class="nv chg dn"><span class="arrow">&darr;</span>-0.0017</span><span class="nv chg dn"><span class="arrow">&darr;</span>-0.0027</span><span class="nv chg up"><span class="arrow">&uarr;</span>+0.0025</span></div>
+            <div class="nrow fragment" data-fragment-index="6"><span class="nlab">after</span><span class="nv now">+0.1197</span><span class="nv now">-0.0732</span><span class="nv now">+0.0350</span></div>
           </div>
         </div>
-        <p class="lbl">
-          change = 0.35 learning rate
-          &times; 0.9655 wrong
-          &times; the number above it
-        </p>
+        <div class="formula fragment" data-fragment-index="5">
+          <div class="frow">
+            <span class="fterm">change</span><span class="fop">=</span>
+            <span class="fterm hot">0.0625</span>
+            <span class="fop">&times;</span>
+            <span class="fterm hot">0.9655</span>
+            <span class="fop">&times;</span>
+            <span class="fterm hot">the number above</span>
+          </div>
+          <div class="frow why">
+            <span class="fterm"></span><span class="fop"></span>
+            <span class="fterm">a rate we chose</span>
+            <span class="fop"></span>
+            <span class="fterm">how wrong it was</span>
+            <span class="fop"></span>
+            <span class="fterm">what this weight
+              contributed</span>
+          </div>
+        </div>
         <p class="lbl fragment" data-fragment-index="6">
           AMIGA is now
-          4.9%
+          3.7%
         </p>
       </div>
     </div>
@@ -356,8 +370,25 @@
     Those three numbers then give a score to all 29 tokens. The right answer
     is AMIGA and it gave AMIGA 3.5%, barely better than guessing at 1 in 29.
 
-    So nudge the weights that produced that score. Three numbers move. AMIGA
-    goes to 4.9%.
+    So nudge the weights that produced that score. Three numbers move, and
+    AMIGA goes from 3.5% to 3.7%. Barely anything. That is the honest scale of
+    one step, and there are 1,160 of them in a run.
+
+    WHAT SETS THE SIZE, which is the question everyone has: three things
+    multiplied.
+
+    The learning rate, 1/16, is a number we chose. On the CoCo it is four
+    shift instructions, which is why it is a sixteenth and not something
+    tidier.
+
+    How wrong it was, 0.9655, is one minus what it gave the right answer.
+    That term is the self-correcting one: as the model improves it shrinks,
+    so the nudges shrink themselves. Nobody turns that down. It is why the
+    thing settles instead of oscillating.
+
+    The incoming number decides how much each weight is to blame. A weight
+    fed by a big number contributed more to the wrong score, so it moves
+    more.
 
     THAT IS THE WHOLE ALGORITHM. Everything after this is doing it 58 times an
     epoch, 60 epochs, on a machine from 1981.
@@ -368,7 +399,7 @@
   <h2>Do it again. And again.</h2>
   <!-- FIGURE:loop -->
   <div class="fig">
-    <div class="epochs"><div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><span class="out">II APPLE COMMODORE ACORN 64 II</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><span class="out">TANDY COMMODORE</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><span class="out">TANDY ATARI</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><span class="out">TANDY MODEL 100</span><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><span class="out">TANDY MODEL 100</span><span class="enote">no better</span></div></div>
+    <div class="epochs"><div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out">II APPLE COMMODORE ACORN 64 II</div><div class="out">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR</div></div><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out">ARCHIMEDES ARCHIMEDES AMIGA</div></div><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out">ATARI ATARI</div></div><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="enote"></span></div></div>
     <div class="budget fragment" data-fragment-index="5">
       <div class="brow">
         <span class="bkind">time</span>
@@ -417,11 +448,18 @@
     Step through the epochs. Nonsense, then a first-word habit, then shape,
     then TANDY MODEL 100 four times out of four.
 
-    DO NOT SKIP THE LAST ONE. By epoch 20 it has collapsed onto one answer and
-    more training does not help. The loss keeps falling and the output stops
-    improving. Same lesson as the epoch sweep in EXP-007: more training is not
-    more useful, and we only know that because we measured the behaviour we
-    cared about instead of the number the optimizer gave us.
+    DO NOT SKIP THE LAST ONE. At epoch 20 it makes SINCLAIR AMIGA and
+    COMMODORE ATARI: machines that never existed and could have. That is the
+    promise of the talk, on screen.
+
+    At epoch 60 it makes COMMODORE 64, and that is a real computer sitting in
+    the training data. The loss is still falling, 1.83 down to 1.27, and the
+    model has quietly stopped inventing and started reciting.
+
+    Say it plainly: more training made the number better and the behaviour
+    worse. Same lesson as the epoch sweep in EXP-007, and we only know it
+    because we measured the thing we cared about instead of the number the
+    optimizer handed us.
 
     THEN THE BUDGET, and this is the point of the slide. Two numbers were
     chosen along the way, 20 epochs and 290 parameters, and each one is a bill

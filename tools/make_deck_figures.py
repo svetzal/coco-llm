@@ -224,11 +224,25 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
             {band("now", "after", after, index=6)}
           </div>
         </div>
-        <p class="lbl">
-          change = {trace["learning_rate"]} learning rate
-          &times; {trace["wrongness"]} wrong
-          &times; the number above it
-        </p>
+        <div class="formula fragment" data-fragment-index="5">
+          <div class="frow">
+            <span class="fterm">change</span><span class="fop">=</span>
+            <span class="fterm hot">{trace["learning_rate"]}</span>
+            <span class="fop">&times;</span>
+            <span class="fterm hot">{trace["wrongness"]}</span>
+            <span class="fop">&times;</span>
+            <span class="fterm hot">the number above</span>
+          </div>
+          <div class="frow why">
+            <span class="fterm"></span><span class="fop"></span>
+            <span class="fterm">a rate we chose</span>
+            <span class="fop"></span>
+            <span class="fterm">how wrong it was</span>
+            <span class="fop"></span>
+            <span class="fterm">what this weight
+              contributed</span>
+          </div>
+        </div>
         <p class="lbl fragment" data-fragment-index="6">
           {esc(trace["target_text"])} is now
           {trace["target_p_after"] * 100:.1f}%
@@ -363,6 +377,9 @@ def figure_parameters(trace: dict) -> str:
 
 def figure_loop(trace: dict, budget: dict, split: dict) -> str:
     """What it makes as the loop runs, and what the loop was budgeted to cost."""
+    # Two samples per checkpoint, always the same two, so nothing is picked
+    # to suit the story. The second one is where the run turns.
+    SHOW = (0, 2)
     rows = []
     for n, epoch in enumerate(trace["checkpoints"]):
         samples = trace["samples"][str(epoch)]
@@ -373,11 +390,17 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
             note = "we stop here"
         elif epoch > trace["chosen"]:
             classes += " late"
-            note = "no better"
+        shown = "".join(
+            f'<div class="out{"" if samples[i]["novel"] else " copied"}">'
+            f'{esc(samples[i]["text"])}'
+            + ("" if samples[i]["novel"] else '<span class="tag">in the corpus</span>')
+            + "</div>"
+            for i in SHOW
+        )
         rows.append(
             f'<div class="{classes} fragment" data-fragment-index="{n}">'
             f'<span class="n">epoch {epoch}</span>'
-            f'<span class="out">{esc(samples[0])}</span>'
+            f'<div class="outs">{shown}</div>'
             f'<span class="enote">{note}</span></div>'
         )
 

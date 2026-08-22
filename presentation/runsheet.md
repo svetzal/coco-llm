@@ -163,7 +163,11 @@ training run:
 5. **One step**, which now shows the correction number by number: what came
    in, what the weight was, how far it moved, where it landed. The sign of
    every change is the sign of its incoming number, which is the whole of
-   backpropagation at this scale.
+   backpropagation at this scale. Three things set the size of a nudge and
+   the slide names each one: a learning rate of 1/16 that we chose (four shift
+   instructions on the 6809), how wrong it was, and how much that particular
+   weight contributed. The middle term is the self-correcting one, so the
+   nudges shrink as the model improves without anyone turning them down.
 6. **Do it again**, closing on the budget, which now separates learning from
    using. 2,516 bytes run the finished model: 850 of inference, 1,086 shared
    with training, 580 of weights. Another 730 buys the ability to have learned
