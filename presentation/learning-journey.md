@@ -732,37 +732,70 @@ the model, and it is true for us.
 
 ## Live-demo spine
 
-The talk should have one genuine run, not a sequence of canned simulations:
+The delivery plan lives in [`runsheet.md`](runsheet.md): nine blocks, sixteen
+slides, forty minutes, with the cut order decided in advance. This section
+records only the two structural decisions behind it, because both changed the
+shape of the talk.
 
-1. Reveal EXP-004's 29 token values and encode `COMMODORE AMIGA`.
-2. Turn that name into its three sliding two-token training examples.
-3. Reset deterministic random weights.
-4. Generate visible nonsense.
-5. Inspect one next-token prediction.
-6. Train that example one step at a time.
-7. Start the optimized loop.
-8. Reveal how two unsigned `MUL` operations replaced the slow signed routine.
-9. Walk one training step—scores, softmax, error, backpropagation, update—while
-   the epochs run.
-10. Reach the predeclared training boundary and pause at `PRESS ANY KEY`.
-11. Let the audience choose when to begin inference.
-12. Repeat seed 6809 and compare random weights with learned weights on screen.
-13. Compare the controlled Apple-, Commodore-, and Tandy-fan models.
-14. Reveal the ordering effect in concatenated versus interleaved balanced
-    data.
-15. Ask which human choices created each observed behaviour.
-16. Test the model outside its competence.
-17. Reveal the final model size, memory use, and elapsed time.
+**The projector shows an emulator; the real machine is at the table.**
+Everything on stage runs in XRoar on the laptop, so the projector cable is
+never touched and the talk never waits for a 1981 machine to load. Every stage
+target passes `-ratelimit`, so the 6809 runs at roughly 0.89 MHz and a training
+run takes exactly as long on the projector as it does on the desk. The CoCo 1
+itself is at the exhibit table, powered on, all day. This is said out loud once,
+early, and never again. It is a fair trade only because the physical machine is
+forty feet away in the same room.
 
-The main model must train genuinely during the talk. Depending on the measured
-hardware runtime, the five controlled bias runs may be retrained live or loaded
-from deterministic checkpoints. In either case, disclose which work is
-happening live and let the audience verify that architecture, initial weights,
-training budget, vocabulary, and sampling seeds are held constant.
+**The explanation moved off the narration and onto figures.** The original
+spine walked one training step verbally while the epochs ran. Eight slides now
+carry that explanation before the machine starts, which means the live run can
+be watched rather than talked over. The cost is that the run's own budget fell
+from nine minutes to seven and a quarter, and its true length has still never
+been measured on hardware. That is the largest open risk in the plan.
 
-Failure is part of the demonstration. If the model does not improve, inspect
-the evidence with the audience and use a previously recorded run only as a
-clearly labelled comparison.
+What has not changed: the main model trains genuinely during the talk, the
+audience chooses when inference begins, and failure is part of the
+demonstration. If the model does not improve, inspect the evidence with the
+room and use a recorded run only as a clearly labelled comparison.
+
+## What the figures measure
+
+The deck's figures are not drawn. Every number in them is exported from the
+reference model by `tools/export_deck_traces.py`, so a figure cannot drift away
+from the machine it describes. Building them surfaced four things worth keeping
+in the written record.
+
+**Repetition is a separate failure and it goes first.** Over 200 draws, the
+share of samples that say the same token twice falls 41%, 35%, 9%, 1%, 0% at
+epochs 0, 1, 5, 20 and 60. What that leaves behind is the point of the whole
+project: *different* tokens that sit together plausibly. `SINCLAIR AMIGA`.
+`COMMODORE ATARI`. Nothing in the model knows what those tokens mean. It holds
+which tokens tend to follow which, and that alone is sufficient to produce
+output a person reads as plausible.
+
+**Novelty and structure move in opposite directions, and only their
+intersection matters.** Novelty alone rewards the untrained model, which
+invents constantly and never produces a name. Structure alone peaks when the
+model recites the corpus, because real names are trivially name-like. Measured
+together, the useful band runs from roughly 13 to 25 epochs. Training past that
+does not make output more recognizable — it is already as recognizable as it
+gets — it makes the model hand back its training data. By epoch 60 it returns a
+corpus name 72% of the time while the loss is still falling. The full sweep is
+appended to EXP-002.
+
+**Learning and using cost different amounts.** Classified by symbol, the
+assembled image splits into 850 bytes that only inference needs, 730 that only
+training needs, 1,086 shared, and 689 for the self-check. 2,516 bytes run the
+finished model; the 730 that bought the ability to have learned it are dead
+weight afterwards. This is the division of labour EXP-006 and EXP-007 exploit
+by training on the Mac, and the same one behind every model an audience has
+used: somebody paid for the training, once, somewhere else.
+
+**It would have fitted the cheapest machine they sold.** 3,480 bytes to run,
+against the 4,096 of the 4K Color Computer of 1980, with 616 to spare before
+BASIC and the screen take theirs. The model itself is 580 of those bytes and
+the program that trains it is four times larger. Learning is expensive; the
+thing you learn is small.
 
 ## Conversation-driven branches
 
@@ -774,6 +807,10 @@ training loop. Run `make present` to see the choices, then follow the room:
 - “Can a pretrained model do useful work?” — `make present EXP=6`
 - “What if we use the RAM hidden beneath ROM?” — `make present EXP=7`
 - “Can it use a fact I give it right now?” — `make present EXP=11`
+- “Can it make up something that reads?” — EXP-012, the fake episode titles
+- “Can it learn a game, and learn me?” — EXP-013, the game opponent
+
+EXP-012 and EXP-013 have no launcher yet; `make present` stops at EXP-011.
 
 EXP-004 is the hardware centerpiece and controls its own pause before
 inference. Do not cue it from the cycle-model runtime projection; rehearse and
@@ -943,6 +980,50 @@ transformer: no residual stream, normalization, feed-forward layer, stack of
 causal blocks, or natural-language answer. We isolated one mechanism so the
 audience can watch it work. The exact stage sequence and recovery paths live in
 [`exp011-demo-script.md`](exp011-demo-script.md).
+
+### EXP-012, the fake episode titles
+
+“Can it make up something that reads?” One keystroke fills the screen with
+sixteen invented Star Trek episode titles.
+
+The lesson is a split, and it is visible in the sizes: 400 bytes of model
+holding the shape of a title against 1,600 bytes of dictionary and rules
+holding the words. The model never learned what a Gothos is. It learned that
+something goes there.
+
+The corpus number reframes the whole demonstration. Across all 79 real titles,
+only two adjacent word pairs ever repeat. There was almost nothing to
+generalize from, so it memorized a shape and fills it from a table. Say that
+out loud rather than letting the output imply more than it earns.
+
+This is the one place the talk leaves the vintage-computer example, so get in
+and out.
+
+### EXP-013, the game opponent that learns
+
+“Can it learn a game, and learn me?” The only demonstration an audience member
+performs rather than watches, and the strongest lesson in the set.
+
+It knows neither the rules nor the player. `RULES 0/25` says so before a round
+is played, and `MEMORY n/rounds` says how little it has to go on. Both counters
+stay on screen and neither needs narration. Somewhere around twenty-five rounds
+it has the rules; it never finishes learning the person. Pressing `R` empties
+both in front of the room and it has to climb back.
+
+Quote the human number, because it is the honest ending. Against six synthetic
+players with habits it scores 80%. Against a recorded 200-round session with a
+person who was trying, **52.8%** — a coin flip. It reads a person better than
+chance at three sigma and nowhere near well enough to win.
+
+That gap is the talk in one number. Five of the six synthetic players had an
+exploitable habit and one did not; a person plays like the one that did not.
+The test set encoded an assumption about how people behave, and reporting its
+average hid that. The number to quote is the one against the player who had no
+habit.
+
+And there is no neural network in it. A 75-byte table conditioned on the last
+move and the last outcome beat every model tried, which is why EXP-008's null
+result stands and why this experiment starts from a table.
 
 ## Presentation stance
 
