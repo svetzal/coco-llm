@@ -1,0 +1,108 @@
+/* Figures for the deck.
+ *
+ * Every number in here comes from data/traces.json, which is exported from the
+ * reference model by tools/export_deck_traces.py. Nothing is drawn to look
+ * tidy. If a bar is short it is because the model was that unsure.
+ *
+ * Animation is reveal's own fragments, and no JavaScript. An "after" state is
+ * drawn as a fragment sitting on top of its "before", so stepping forward
+ * replaces one with the other and stepping back undoes it. That survives a
+ * presenter going backwards, which a scripted animation usually does not.
+ */
+
+.reveal .fig { font-size: 0.62em; line-height: 1.25; }
+.reveal .fig .lbl {
+  font-family: var(--deck-prose);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.6em;
+  color: var(--deck-quiet);
+  white-space: nowrap;
+  margin: 0 0 0.2em;
+}
+
+/* --- the vocabulary, as cells ------------------------------------------- */
+.reveal .vocab {
+  display: grid;
+  /* minmax(0,1fr) so a long token like MACINTOSH cannot push the grid
+   * wider than the slide. Without it, min-content wins and it overflows. */
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px 5px;
+  margin: 0.4em auto;
+  width: 100%;
+}
+.reveal .tok {
+  border: 1px solid var(--coco-c02);
+  padding: 2px 2px;
+  text-align: center;
+  color: var(--deck-quiet);
+  font-size: 0.8em;
+  overflow-wrap: anywhere;
+}
+.reveal .tok .id { display: block; font-size: 0.62em; color: var(--coco-c01); }
+.reveal .tok.hot {
+  border-color: var(--deck-mark);
+  color: var(--deck-mark);
+  background: rgba(250, 229, 61, 0.12);
+}
+.reveal .tok.hot .id { color: var(--deck-mark); }
+
+/* --- the sliding window -------------------------------------------------- */
+.reveal .slide-window { margin: 0.5em auto; display: table; }
+.reveal .win-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 5px 0;
+  justify-content: flex-start;
+}
+.reveal .cell {
+  border: 1px solid var(--coco-c02);
+  padding: 2px 8px;
+  min-width: 5.5em;
+  text-align: center;
+  color: var(--deck-ink);
+}
+.reveal .cell.ctx { color: var(--deck-quiet); }
+.reveal .cell.tgt { border-color: var(--deck-mark); color: var(--deck-mark); }
+.reveal .arrow { color: var(--coco-c01); }
+
+/* --- one training step --------------------------------------------------- */
+.reveal .step { display: flex; gap: 1.4em; align-items: flex-start;
+                justify-content: center; margin-top: 0.6em; }
+.reveal .stage { text-align: center; min-width: 6em; }
+.reveal .vec {
+  display: flex; gap: 4px; justify-content: center; margin-top: 4px;
+}
+.reveal .num {
+  border: 1px solid var(--coco-c02); padding: 2px 5px; min-width: 3.6em;
+}
+.reveal .num.moved { border-color: var(--deck-mark); color: var(--deck-mark); }
+
+/* Probabilities. 29 bars, height straight off the model. */
+.reveal .bars {
+  display: flex; align-items: flex-end; gap: 2px; height: 170px;
+  margin-top: 6px; position: relative;
+}
+.reveal .bar { width: 12px; background: var(--coco-c01); position: relative; }
+.reveal .bar.target { background: var(--deck-ink); }
+/* The same bar after the update, drawn over the top as a fragment. */
+.reveal .bar .after {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--deck-mark);
+}
+.reveal .barlab {
+  font-size: 0.5em; color: var(--deck-quiet);
+  position: absolute; bottom: -1.5em; white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+/* --- the loop ------------------------------------------------------------ */
+.reveal .epochs {
+  display: flex; flex-direction: column; gap: 0.4em;
+  width: fit-content; margin: 0 auto;
+}
+.reveal .epoch { display: flex; gap: 0.8em; align-items: baseline; }
+.reveal .epoch .n { color: var(--coco-c01); min-width: 4.5em; }
+.reveal .epoch .out { color: var(--deck-ink); }
+.reveal .epoch.late .out { color: var(--deck-mark); }

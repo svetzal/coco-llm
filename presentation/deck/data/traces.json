@@ -1,0 +1,348 @@
+{
+ "source": "tools/export_deck_traces.py",
+ "corpus": "EXP-002-tokenized-computer-names.txt",
+ "config": {
+  "context": 2,
+  "embedding": 3,
+  "seed": 6809
+ },
+ "vocabulary": {
+  "vocabulary": [
+   "<END>",
+   "100",
+   "128",
+   "400",
+   "64",
+   "800",
+   "ACORN",
+   "AMIGA",
+   "APPLE",
+   "ARCHIMEDES",
+   "ATARI",
+   "BBC",
+   "COLOR",
+   "COMMODORE",
+   "COMPUTER",
+   "II",
+   "LISA",
+   "MACINTOSH",
+   "MICRO",
+   "MODEL",
+   "PET",
+   "SINCLAIR",
+   "SPECTRUM",
+   "ST",
+   "TANDY",
+   "TRS-80",
+   "ZX",
+   "ZX80",
+   "ZX81"
+  ],
+  "focus": "COMMODORE AMIGA",
+  "focus_tokens": [
+   {
+    "text": "COMMODORE",
+    "id": 13
+   },
+   {
+    "text": "AMIGA",
+    "id": 7
+   }
+  ],
+  "boundary": "<END>",
+  "walk": [
+   {
+    "context": [
+     0,
+     0
+    ],
+    "context_text": [
+     "<END>",
+     "<END>"
+    ],
+    "target": 13,
+    "target_text": "COMMODORE"
+   },
+   {
+    "context": [
+     0,
+     13
+    ],
+    "context_text": [
+     "<END>",
+     "COMMODORE"
+    ],
+    "target": 7,
+    "target_text": "AMIGA"
+   },
+   {
+    "context": [
+     13,
+     7
+    ],
+    "context_text": [
+     "COMMODORE",
+     "AMIGA"
+    ],
+    "target": 0,
+    "target_text": "<END>"
+   }
+  ],
+  "names": 18,
+  "examples": 58
+ },
+ "step": {
+  "context_text": [
+   "<END>",
+   "COMMODORE"
+  ],
+  "target_text": "AMIGA",
+  "target": 7,
+  "learning_rate": 0.35,
+  "vector_before": [
+   -0.0295,
+   -0.0454,
+   0.0415
+  ],
+  "vector_after": [
+   0.0696,
+   -0.1054,
+   0.0759
+  ],
+  "logits": [
+   0.006,
+   -0.008,
+   0.009,
+   0.003,
+   0.003,
+   -0.003,
+   -0.005,
+   0.001,
+   -0.001,
+   0.002,
+   0.008,
+   -0.007,
+   -0.001,
+   -0.0,
+   -0.012,
+   -0.008,
+   -0.009,
+   0.005,
+   -0.011,
+   0.002,
+   -0.002,
+   -0.005,
+   0.004,
+   -0.002,
+   -0.005,
+   0.012,
+   -0.005,
+   0.008,
+   -0.001
+  ],
+  "probabilities_before": [
+   0.03471,
+   0.03422,
+   0.03482,
+   0.03462,
+   0.0346,
+   0.03439,
+   0.03432,
+   0.03454,
+   0.03449,
+   0.03458,
+   0.03478,
+   0.03426,
+   0.03447,
+   0.0345,
+   0.03411,
+   0.03424,
+   0.03421,
+   0.03468,
+   0.03413,
+   0.03457,
+   0.03443,
+   0.03434,
+   0.03465,
+   0.03444,
+   0.03434,
+   0.03492,
+   0.03435,
+   0.03479,
+   0.03448
+  ],
+  "probabilities_after": [
+   0.03508,
+   0.03345,
+   0.03386,
+   0.03449,
+   0.03369,
+   0.03443,
+   0.03399,
+   0.04942,
+   0.03304,
+   0.03431,
+   0.03452,
+   0.03404,
+   0.03404,
+   0.03383,
+   0.03338,
+   0.03377,
+   0.03361,
+   0.03443,
+   0.03316,
+   0.03351,
+   0.03416,
+   0.03342,
+   0.03384,
+   0.03331,
+   0.03411,
+   0.03437,
+   0.03416,
+   0.0346,
+   0.034
+  ],
+  "top_before": [
+   {
+    "text": "TRS-80",
+    "p": 0.03492
+   },
+   {
+    "text": "128",
+    "p": 0.03482
+   },
+   {
+    "text": "ZX80",
+    "p": 0.03479
+   },
+   {
+    "text": "ATARI",
+    "p": 0.03478
+   },
+   {
+    "text": "<END>",
+    "p": 0.03471
+   }
+  ],
+  "error_at_target": -0.96546,
+  "target_weights_before": [
+   0.1214,
+   -0.0705,
+   0.0325
+  ],
+  "target_weights_after": [
+   0.1115,
+   -0.0858,
+   0.0465
+  ],
+  "loss": 3.3655,
+  "target_p_before": 0.03454,
+  "target_p_after": 0.04942
+ },
+ "loop": {
+  "epochs": 60,
+  "learning_rate": 0.35,
+  "losses": [
+   2.9803,
+   2.4429,
+   2.1762,
+   2.0185,
+   1.9229,
+   1.858,
+   1.7639,
+   1.6833,
+   1.6139,
+   1.5476,
+   1.4935,
+   1.4372,
+   1.4072,
+   1.3594,
+   1.324,
+   1.287,
+   1.2564,
+   1.2206,
+   1.1938,
+   1.1672,
+   1.1509,
+   1.1282,
+   1.1146,
+   1.0986,
+   1.087,
+   1.0692,
+   1.0545,
+   1.0394,
+   1.0247,
+   1.0125,
+   1.0022,
+   0.9955,
+   0.9914,
+   0.9889,
+   0.9875,
+   0.9847,
+   0.9826,
+   0.9796,
+   0.9734,
+   0.9688,
+   0.9668,
+   0.9635,
+   0.9605,
+   0.9601,
+   0.9574,
+   0.9539,
+   0.9486,
+   0.9455,
+   0.9406,
+   0.9351,
+   0.9288,
+   0.925,
+   0.9253,
+   0.925,
+   0.9244,
+   0.9244,
+   0.9251,
+   0.9281,
+   0.9312,
+   0.9278
+  ],
+  "checkpoints": [
+   0,
+   1,
+   5,
+   20,
+   60
+  ],
+  "samples": {
+   "0": [
+    "II APPLE COMMODORE ACORN 64 II",
+    "LISA ATARI ATARI COLOR MACINTOSH TANDY",
+    "ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR",
+    "SINCLAIR APPLE TANDY MACINTOSH MICRO APPLE"
+   ],
+   "1": [
+    "TANDY COMMODORE",
+    "TANDY II",
+    "TANDY COMPUTER",
+    "TANDY COMMODORE II"
+   ],
+   "5": [
+    "TANDY ATARI",
+    "TANDY COLOR 64",
+    "TANDY COLOR 400",
+    "TANDY ATARI COMPUTER"
+   ],
+   "20": [
+    "TANDY MODEL 100",
+    "TANDY MODEL 100",
+    "TANDY MODEL 100",
+    "TANDY MODEL 100"
+   ],
+   "60": [
+    "TANDY MODEL 100",
+    "TANDY MODEL 100",
+    "TANDY MODEL 100",
+    "TANDY MODEL 100"
+   ]
+  },
+  "parameter_count": 290
+ }
+}

@@ -50,6 +50,47 @@ audience can tell who is talking without being told.
   font cannot carry colour, so the glyph gives the shape and CSS gives the
   colour.
 
+## Figures
+
+Diagrams live in marked regions of `index.html`:
+
+```html
+<!-- FIGURE:step -->  ...generated...  <!-- /FIGURE:step -->
+```
+
+Everything outside the markers is hand-edited. Everything inside is generated,
+and will be overwritten:
+
+```sh
+uv run python tools/export_deck_traces.py   # run the model, write the numbers
+uv run python tools/make_deck_figures.py    # draw them, splice them in
+```
+
+**Every number in a figure comes from a real run.** The copy discipline says no
+sample output goes on a slide unless the machine produced it, and a figure is
+sample output. So `data/traces.json` is exported from the reference model:
+the 29 token identifiers, the three-number context vector, all 29
+probabilities, and the weights that move when the model is corrected. Nothing
+is rounded into a tidier shape. When someone in the front row asks whether
+those are the real numbers, the answer is yes.
+
+That also means a figure cannot drift away from the model. Change the model,
+re-export, and the slide changes with it.
+
+**Animation is reveal fragments and no JavaScript.** Where a figure has a
+before and an after, the after is drawn on top of the before as a fragment.
+Stepping forward replaces one with the other, and stepping back undoes it,
+which a scripted animation usually will not. Order is controlled with
+`data-fragment-index` so a figure's stages advance in the order the argument
+needs rather than in document order.
+
+To inspect a figure with every stage showing at once, open it with fragments
+off:
+
+```sh
+open "presentation/deck/index.html?fragments=false#/2"
+```
+
 ## Vendored
 
 `vendor/reveal/` holds reveal.js 6.0.1, MIT, with its `LICENSE`. It is checked
