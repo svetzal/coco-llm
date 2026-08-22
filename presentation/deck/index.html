@@ -403,12 +403,17 @@
       <div class="epoch head">
         <span class="n"></span><div class="outs"></div>
         <span class="novel">new</span>
-        <span class="novel">like a name</span>
+        <span class="novel">right shape</span>
         <span class="novel">both</span>
         <span class="enote"></span>
       </div>
       <div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out">II APPLE COMMODORE ACORN 64 II</div><div class="out">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR</div></div><span class="novel">100%</span><span class="novel">0%</span><span class="novel poor">0%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out">ARCHIMEDES ARCHIMEDES AMIGA</div></div><span class="novel">100%</span><span class="novel">6%</span><span class="novel poor">6%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out">ATARI ATARI</div></div><span class="novel">98%</span><span class="novel">54%</span><span class="novel poor">52%</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="novel">91%</span><span class="novel">98%</span><span class="novel good">90%</span><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="novel">28%</span><span class="novel">100%</span><span class="novel poor">28%</span><span class="enote"></span></div>
     </div>
+    <p class="cap rubric">
+      Right shape means two to four tokens starting with one of the six makers
+      in the corpus. It is a structure check, not a judgement:
+      <em>TANDY TANDY TANDY</em> would pass.
+    </p>
     <p class="cap invent fragment" data-fragment-index="5">
       Same machine, same arithmetic, same 580 bytes of weights.
       At 20 epochs it makes machines that never existed. At
@@ -417,8 +422,8 @@
     </p>
     <p class="cap fragment" data-fragment-index="6">
       New is not the same as good. Epoch 0 is 100% new and
-      0% a name; epoch 60 is 100% a name
-      because they <em>are</em> the names.
+      0% the right shape; epoch 60 is 100%
+      the right shape because they <em>are</em> the real names.
       <strong>Only the last column counts, and training past
       20 does not raise it.</strong>
     </p>
@@ -440,6 +445,20 @@
     worse. Same lesson as the epoch sweep in EXP-007, and we only know it
     because we measured the thing we cared about instead of the number the
     optimizer handed us.
+
+    IF ASKED WHAT "RIGHT SHAPE" MEANS, it is on the slide and it is two
+    checks and nothing else: two to four tokens, and the first token is one of
+    the six makers that start a real name in the corpus. ACORN, APPLE, ATARI,
+    COMMODORE, SINCLAIR, TANDY.
+
+    Be honest about how crude that is. TANDY TANDY TANDY passes it. So does
+    APPLE 400 400. It measures structure, not quality, and nothing in this
+    talk knows whether SINCLAIR AMIGA is a GOOD name.
+
+    It is still worth having, for two reasons. The rubric was written in
+    EXP-002 before a single sample was generated, so it could not be bent to
+    fit the result. And at epoch 20 only 3 of the 197 passes repeat a token,
+    so it is not inflated much where it matters.
 
     THE NEW COLUMN IS THE ARGUMENT. It is measured over 200 draws, not the two
     on screen. 91% new at epoch 20. 28% at epoch 60. The same 290 numbers,

@@ -169,5 +169,23 @@ Three findings:
   smaller, and it is the clearest evidence in the project that the optimizer's
   number is not the goal.
 
+### What the rubric cannot see
+
+The name-like test is two checks: the sample has two to four tokens, and its
+first token is one of the six makers that start a real name (ACORN, APPLE,
+ATARI, COMMODORE, SINCLAIR, TANDY). Nothing else. `TANDY TANDY TANDY` passes
+it, and so does `APPLE 400 400`.
+
+That is a measure of structure, not of quality, and it should not be quoted as
+though it were the latter. Two things keep it usable. It was written before any
+sample was seen, so it could not be adjusted to fit a result. And the
+degenerate cases are rare where the number is being used: of the 197 samples
+that pass at twenty epochs, 3 repeat a token. At five epochs 14 of 109 do, so
+the early figures are the inflated ones.
+
+A stronger rubric would reject repeated tokens outright. It has deliberately
+not been changed, because rewriting a rubric after seeing the results is how
+a measurement stops being evidence.
+
 Nothing above changes the hypothesis or the recorded twenty-epoch run. It
 records that the choice was checked afterwards and survived.

@@ -435,12 +435,17 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
       <div class="epoch head">
         <span class="n"></span><div class="outs"></div>
         <span class="novel">new</span>
-        <span class="novel">like a name</span>
+        <span class="novel">right shape</span>
         <span class="novel">both</span>
         <span class="enote"></span>
       </div>
       {"".join(rows)}
     </div>
+    <p class="cap rubric">
+      Right shape means two to four tokens starting with one of the six makers
+      in the corpus. It is a structure check, not a judgement:
+      <em>TANDY TANDY TANDY</em> would pass.
+    </p>
     <p class="cap invent fragment" data-fragment-index="5">
       Same machine, same arithmetic, same {split["weights"]} bytes of weights.
       At {trace["chosen"]} epochs it makes machines that never existed. At
@@ -449,8 +454,8 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
     </p>
     <p class="cap fragment" data-fragment-index="6">
       New is not the same as good. Epoch 0 is {first_new}% new and
-      {first_like}% a name; epoch {trace["epochs"]} is {last_like}% a name
-      because they <em>are</em> the names.
+      {first_like}% the right shape; epoch {trace["epochs"]} is {last_like}%
+      the right shape because they <em>are</em> the real names.
       <strong>Only the last column counts, and training past
       {trace["chosen"]} does not raise it.</strong>
     </p>

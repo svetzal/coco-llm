@@ -488,3 +488,10 @@
 }
 .reveal .epoch.head { margin-bottom: -0.2em; }
 .reveal .fig .cap em { color: var(--deck-loud); font-style: normal; }
+
+/* The rubric behind a column, stated where the column is. A percentage whose
+ * definition is off-screen is a number the audience has to take on trust,
+ * which is the opposite of what this deck is for. */
+.reveal .fig .cap.rubric {
+  color: var(--coco-c01); font-size: 13px; margin-top: 0.5em;
+}
