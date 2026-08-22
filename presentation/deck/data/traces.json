@@ -1054,13 +1054,23 @@
   "bytes": 580,
   "code_bytes": 2100,
   "data_bytes": 658,
-  "fixture_bytes": 597,
+  "fixture_bytes": 689,
   "working_bytes": 234,
-  "running_bytes": 3572,
+  "running_bytes": 3480,
   "total_bytes": 4169,
   "machine_bytes": 32768,
   "baseline_bytes": 4096,
   "launch_year": 1980,
-  "target_seconds": 180
+  "target_seconds": 180,
+  "verify_bytes": 689
+ },
+ "split": {
+  "learn_only": 730,
+  "use_only": 850,
+  "shared": 1086,
+  "verify": 689,
+  "weights": 580,
+  "to_use": 2516,
+  "to_learn": 730
  }
 }

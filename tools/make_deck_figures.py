@@ -362,7 +362,7 @@ def figure_parameters(trace: dict) -> str:
   </div>"""
 
 
-def figure_loop(trace: dict, budget: dict) -> str:
+def figure_loop(trace: dict, budget: dict, split: dict) -> str:
     """What it makes as the loop runs, and what the loop was budgeted to cost."""
     rows = []
     for n, epoch in enumerate(trace["checkpoints"]):
@@ -397,14 +397,21 @@ def figure_loop(trace: dict, budget: dict) -> str:
           whole run</span>
       </div>
       <div class="brow">
-        <span class="bkind">memory</span>
-        <span class="bsum">{budget["code_bytes"]:,} code
-          <span class="op">+</span> {budget["data_bytes"]} data
-          <span class="op">+</span> {budget["bytes"]} weights
-          <span class="op">+</span> {budget["working_bytes"]} working</span>
-        <span class="bval">{budget["running_bytes"]:,}</span>
-        <span class="bnote">bytes to run, plus {budget["fixture_bytes"]}
-          this build carries so it can check its own answer</span>
+        <span class="bkind">to use</span>
+        <span class="bsum">{split["use_only"]} inference
+          <span class="op">+</span> {split["shared"]:,} shared
+          <span class="op">+</span> {split["weights"]} weights</span>
+        <span class="bval">{split["to_use"]:,}</span>
+        <span class="bnote">bytes to run the finished model</span>
+      </div>
+      <div class="brow">
+        <span class="bkind">to learn</span>
+        <span class="bsum">training loop
+          <span class="op">+</span> corpus
+          <span class="op">+</span> progress display</span>
+        <span class="bval">+{split["learn_only"]}</span>
+        <span class="bnote">bytes more, and none of it is needed once the
+          model is trained</span>
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="6">
@@ -444,7 +451,7 @@ def main() -> None:
     deck = splice(deck, "ids", figure_identifiers(vocabulary))
     deck = splice(deck, "why", figure_why_three(traces["why_three"]))
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))
-    deck = splice(deck, "loop", figure_loop(traces["loop"], traces["budget"]))
+    deck = splice(deck, "loop", figure_loop(traces["loop"], traces["budget"], traces["split"]))
     DECK.write_text(deck, encoding="utf-8")
     print("spliced 7 figures into presentation/deck/index.html")
 

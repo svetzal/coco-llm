@@ -134,3 +134,21 @@ in rather than installed so the deck opens from a file with no toolchain and no
 network. A conference room is the wrong place to discover a missing dependency.
 Only the parts in use were extracted: the core, the notes plugin, and the
 highlight plugin.
+
+## Regenerating
+
+Three steps, in order. The middle one depends on the assembled 6809 build, so
+`make coco-bin` has to have run:
+
+```sh
+uv run python tools/export_deck_traces.py      # run the model, write the numbers
+uv run python tools/measure_train_vs_infer.py  # classify the image by job
+uv run python tools/make_deck_figures.py       # draw them, splice them in
+```
+
+`measure_train_vs_infer.py` splits the assembled image into what is needed to
+**learn** a model, what is needed to **use** one, what both phases share, and
+what only the self-check needs. It attributes every byte by symbol and refuses
+to run if any symbol is unclassified, so a new routine cannot quietly land in
+the wrong bucket. The classification is a judgement about each routine's job
+and lives in one table at the top of that file.

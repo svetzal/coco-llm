@@ -164,7 +164,15 @@ training run:
    in, what the weight was, how far it moved, where it landed. The sign of
    every change is the sign of its incoming number, which is the whole of
    backpropagation at this scale.
-6. **Do it again**, closing on the budget. 20 epochs times 58 examples times
+6. **Do it again**, closing on the budget, which now separates learning from
+   using. 2,516 bytes run the finished model: 850 of inference, 1,086 shared
+   with training, 580 of weights. Another 730 buys the ability to have learned
+   it, and every one of those is dead weight once training finishes. That is
+   the same division of labour EXP-006 and EXP-007 exploit by training on the
+   Mac, and the same one behind every model the audience has used: somebody
+   paid for the training, once, somewhere else.
+
+   The older breakdown of the block. 20 epochs times 58 examples times
    261 multiplies is 302,760 multiplies and 15.8 million instructions. Memory
    breaks down as 2,100 bytes of 6809 routines and messages, 658 of corpus and
    tables, 580 of weights and 234 of working space: 3,572 to run. The other
@@ -181,8 +189,8 @@ training run:
 
    The last fragment is the one to end on. The Color Computer was announced on
    31 July 1980 and sold that September; its cheapest model, catalogue
-   26-3001 at US$399, had 4,096 bytes. This needs 3,572 to run, so it would
-   have fitted the cheapest machine they sold, with 524 to spare.
+   26-3001 at US$399, had 4,096 bytes. This needs 3,480 to run, so it would
+   have fitted the cheapest machine they sold, with 616 to spare.
 
    **The caveat is part of the claim.** That is the whole of the machine's
    memory, and a real 4K CoCo still owes room to the 512-byte screen and to

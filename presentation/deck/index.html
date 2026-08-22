@@ -382,14 +382,21 @@
           whole run</span>
       </div>
       <div class="brow">
-        <span class="bkind">memory</span>
-        <span class="bsum">2,100 code
-          <span class="op">+</span> 658 data
-          <span class="op">+</span> 580 weights
-          <span class="op">+</span> 234 working</span>
-        <span class="bval">3,572</span>
-        <span class="bnote">bytes to run, plus 597
-          this build carries so it can check its own answer</span>
+        <span class="bkind">to use</span>
+        <span class="bsum">850 inference
+          <span class="op">+</span> 1,086 shared
+          <span class="op">+</span> 580 weights</span>
+        <span class="bval">2,516</span>
+        <span class="bnote">bytes to run the finished model</span>
+      </div>
+      <div class="brow">
+        <span class="bkind">to learn</span>
+        <span class="bsum">training loop
+          <span class="op">+</span> corpus
+          <span class="op">+</span> progress display</span>
+        <span class="bval">+730</span>
+        <span class="bnote">bytes more, and none of it is needed once the
+          model is trained</span>
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="6">
@@ -402,7 +409,7 @@
       The cheapest Color Computer of 1980 had
       4,096 bytes.
       <strong>This would have fitted it</strong>, with
-      524 to spare, before
+      616 to spare, before
       BASIC and the screen take theirs.
     </p>
   </div>
@@ -424,16 +431,29 @@
     Epochs buy time. 20 by 58 by 261 is 302,760 multiplies, and 15.8 million
     instructions for the whole run.
 
-    Parameters occupy memory, and the model does not get the machine to
-    itself. Break the number down if anyone asks, because "code" covers three
-    different things: 2,100 bytes of 6809 routines and screen messages, 658 of
-    corpus and tables (the 58 examples, a 256-byte softmax lookup, the token
-    strings), 580 of weights, 234 of working space. 3,572 to run.
+    Then the split, and this is the one worth pausing on. Every byte in the
+    image was classified by what job it does.
 
-    The extra 597 is the self-check: the reference model's final weights and
-    its checksum, so the CoCo can prove it trained to the same numbers the Mac
-    did. That is integrity machinery for this talk, not something the model
-    needs to exist, which is why it is counted separately.
+    TO USE the finished model: 850 bytes of inference, 1,086 shared with
+    training (the forward pass, the softmax table, the arithmetic), and the
+    580 bytes of weights. 2,516 in total.
+
+    TO LEARN it in the first place: 730 bytes more. The epoch and example
+    loops, the gradient updates, the 58 training examples, and the display
+    that shows the progress. Every one of those bytes is dead weight the
+    moment training finishes.
+
+    THE POINT: learning and using are different jobs with different costs, and
+    the machine only needs the learning half once. That is why EXP-006 and
+    EXP-007 can put a much bigger model on this machine by training it on the
+    Mac. Same idea as every model you have used: somebody paid for the
+    training, once, somewhere else.
+
+    Two more numbers if pressed. 234 bytes of working space. And 689 for the
+    self-check, the reference model's final weights and checksum so the CoCo
+    can prove it trained to the same numbers the Mac did. Integrity machinery
+    for this talk, not something the model needs, which is why it is counted
+    apart.
 
     DO NOT QUOTE A RUNTIME. The target was three minutes and we have a cycle
     projection, not a measurement. Say that out loud; it is on the slide.
@@ -452,8 +472,8 @@
     announced on 31 July 1980 and went on sale that September. The cheapest
     model, catalogue 26-3001, US$399, had 4,096 bytes of RAM.
 
-    This needs 3,572 to run. It would have fitted the cheapest machine they
-    sold, with 524 bytes to spare.
+    This needs 3,480 to run. It would have fitted the cheapest machine they
+    sold, with 616 bytes to spare.
 
     THE CAVEAT IS PART OF THE CLAIM, so say it: that is the whole of the
     machine's memory, and a real 4K CoCo still owes room to the 512-byte
