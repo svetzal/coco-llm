@@ -131,3 +131,13 @@
 
 .reveal .progress { color: var(--deck-mark); }
 .reveal .controls { color: var(--deck-quiet); }
+
+/* A lead line under a heading: one sentence that frames the figure below it.
+ * Distinct from .cap, which annotates a figure from inside it. */
+.reveal .lead {
+  font-size: 0.68em;
+  color: var(--deck-ink);
+  max-width: 30em;
+  margin: 0 auto 0.5em;
+  line-height: 1.3;
+}

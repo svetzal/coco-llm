@@ -232,3 +232,39 @@
   max-width: 46em;
 }
 .reveal .fig .cap strong { color: var(--deck-mark); }
+
+/* --- why three numbers ----------------------------------------------------
+ *
+ * The cost of each embedding width, so "why three" has an answer on screen.
+ * The interesting column is the last one: at this size the machine is not the
+ * constraint, which makes three a decision rather than a limit.
+ *
+ * These are floors and the header says so. MUL instructions alone at 11
+ * cycles, nothing else counted. No runtime claim goes on a slide until it is
+ * measured on the physical machine.
+ */
+.reveal .fig.why { font-size: 0.62em; }
+.reveal .wtable { display: inline-block; margin: 0.4em auto; }
+.reveal .wrow {
+  display: grid;
+  grid-template-columns: 7em 8em 10em 8em;
+  gap: 0 0.6em;
+  padding: 3px 0.5em;
+}
+.reveal .wrow .c { text-align: right; color: var(--deck-quiet); }
+.reveal .wrow .c.n { color: var(--deck-ink); }
+.reveal .wrow.head {
+  border-bottom: 1px solid var(--coco-c02);
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+.reveal .wrow.head .c {
+  font-family: var(--deck-prose);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.55em;
+  line-height: 1.25;
+  color: var(--coco-c01);
+}
+.reveal .wrow.chosen { background: rgba(250, 229, 61, 0.14); }
+.reveal .wrow.chosen .c { color: var(--deck-mark); }

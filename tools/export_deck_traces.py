@@ -217,6 +217,54 @@ def main() -> None:
         "parameter_count": model.parameter_count,
     }
 
+    # --- why three numbers ---------------------------------------------------
+    # Because every extra number costs multiplies, and multiplies are what the
+    # machine does not have. EXP-001 rejected the character model on exactly
+    # this arithmetic: 12,859,560 multiplies is about 159 seconds of bare MUL
+    # instructions at 11 cycles on a 0.89 MHz 6809, against a 180-second
+    # budget, before any load, store, sign correction or softmax.
+    #
+    # The work is linear in the embedding width, so the table below is the
+    # cost of the same run at each width. These are floors, not runtimes: MUL
+    # instructions alone, nothing else counted. EXP-001 uses the same floor
+    # argument, and the copy discipline allows a floor as long as it is
+    # labelled one.
+    MUL_CYCLES = 11
+    CLOCK_HZ = 894_886
+    widths = []
+    for width in range(1, 7):
+        per_example = 3 * len(vocabulary) * width
+        total = per_example * len(targets) * 20
+        widths.append(
+            {
+                "embedding": width,
+                "per_example": per_example,
+                "total": total,
+                "floor_seconds": round(total * MUL_CYCLES / CLOCK_HZ, 1),
+                "parameters": (
+                    config.context * len(vocabulary) * width
+                    + len(vocabulary) * width
+                    + len(vocabulary)
+                ),
+                "chosen": width == config.embedding,
+            }
+        )
+
+    why_three = {
+        "widths": widths,
+        "epochs": 20,
+        "examples": int(len(targets)),
+        "mul_cycles": MUL_CYCLES,
+        "clock_hz": CLOCK_HZ,
+        # The architecture this one replaced, for scale.
+        "rejected": {
+            "what": "the character model",
+            "multiplies": 12_859_560,
+            "floor_seconds": round(12_859_560 * MUL_CYCLES / CLOCK_HZ, 1),
+        },
+        "budget_seconds": 180,
+    }
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps(
@@ -231,6 +279,7 @@ def main() -> None:
                 "vocabulary": vocabulary_trace,
                 "step": step_trace,
                 "loop": loop_trace,
+                "why_three": why_three,
             },
             indent=1,
         )

@@ -201,6 +201,41 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
   </div>"""
 
 
+def figure_why_three(trace: dict) -> str:
+    """Why the embedding is three numbers wide. It was a choice, not a limit."""
+    rows = "".join(
+        f'<div class="wrow{" chosen" if r["chosen"] else ""}">'
+        f'<span class="c n">{r["embedding"]}</span>'
+        f'<span class="c">{r["parameters"]}</span>'
+        f'<span class="c">{r["total"]:,}</span>'
+        f'<span class="c">{r["floor_seconds"]:.1f}s</span></div>'
+        for r in trace["widths"]
+    )
+    rejected = trace["rejected"]
+    return f"""
+  <div class="fig why">
+    <div class="wtable">
+      <div class="wrow head">
+        <span class="c n">numbers<br>per word</span>
+        <span class="c">parameters</span>
+        <span class="c">multiplies<br>to train</span>
+        <span class="c">MUL time<br>alone</span>
+      </div>
+      {rows}
+    </div>
+    <p class="cap fragment" data-fragment-index="1">
+      The model this replaced needed
+      <strong>{rejected["multiplies"]:,}</strong> multiplies:
+      {rejected["floor_seconds"]:.0f} seconds of bare MUL instructions against a
+      {trace["budget_seconds"]}-second budget. It was rejected for it.
+    </p>
+    <p class="cap fragment" data-fragment-index="2">
+      So six would have fit here too.
+      <strong>Three is what we tried first, and it worked.</strong>
+    </p>
+  </div>"""
+
+
 def figure_loop(trace: dict) -> str:
     """What it makes as the loop runs. Includes where it stops improving."""
     rows = []
@@ -239,9 +274,10 @@ def main() -> None:
     deck = splice(deck, "vocabulary", figure_vocabulary(traces["vocabulary"]))
     deck = splice(deck, "tables", figure_tables(traces["step"]))
     deck = splice(deck, "step", figure_step(traces["step"], vocabulary))
+    deck = splice(deck, "why", figure_why_three(traces["why_three"]))
     deck = splice(deck, "loop", figure_loop(traces["loop"]))
     DECK.write_text(deck, encoding="utf-8")
-    print("spliced 4 figures into presentation/deck/index.html")
+    print("spliced 5 figures into presentation/deck/index.html")
 
 
 if __name__ == "__main__":

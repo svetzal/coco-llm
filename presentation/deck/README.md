@@ -106,6 +106,13 @@ lookup tables run at `0.4em` and an em-sized caption there came out at 8px.
 `.cap` is sized in px, which is stable because reveal scales the whole 1280
 canvas.
 
+**Three text roles, and they are not interchangeable.** `.lead` is a sentence
+under a heading that frames the figure below it. `.cap` annotates a figure from
+inside it and is px-sized so it survives a figure scaling itself down. `.lbl`
+names one part within a figure and is em-sized. Using `.cap` outside a `.fig`
+silently renders it at heading size, which is how the lookup caption first went
+wrong.
+
 To inspect a figure with every stage showing at once, open it with fragments
 off:
 

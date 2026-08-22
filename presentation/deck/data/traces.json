@@ -912,5 +912,67 @@
    ]
   },
   "parameter_count": 290
+ },
+ "why_three": {
+  "widths": [
+   {
+    "embedding": 1,
+    "per_example": 87,
+    "total": 100920,
+    "floor_seconds": 1.2,
+    "parameters": 116,
+    "chosen": false
+   },
+   {
+    "embedding": 2,
+    "per_example": 174,
+    "total": 201840,
+    "floor_seconds": 2.5,
+    "parameters": 203,
+    "chosen": false
+   },
+   {
+    "embedding": 3,
+    "per_example": 261,
+    "total": 302760,
+    "floor_seconds": 3.7,
+    "parameters": 290,
+    "chosen": true
+   },
+   {
+    "embedding": 4,
+    "per_example": 348,
+    "total": 403680,
+    "floor_seconds": 5.0,
+    "parameters": 377,
+    "chosen": false
+   },
+   {
+    "embedding": 5,
+    "per_example": 435,
+    "total": 504600,
+    "floor_seconds": 6.2,
+    "parameters": 464,
+    "chosen": false
+   },
+   {
+    "embedding": 6,
+    "per_example": 522,
+    "total": 605520,
+    "floor_seconds": 7.4,
+    "parameters": 551,
+    "chosen": false
+   }
+  ],
+  "epochs": 20,
+  "examples": 58,
+  "mul_cycles": 11,
+  "clock_hz": 894886,
+  "rejected": {
+   "what": "the character model",
+   "multiplies": 12859560,
+   "floor_seconds": 158.1
+  },
+  "budget_seconds": 180
  }
 }
