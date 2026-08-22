@@ -343,3 +343,40 @@
 /* The context-window label is two words and sits under a single digit, so it
  * gets room rather than forcing the column wide. */
 .reveal .term .tl { max-width: 7em; margin: 0 auto; line-height: 1.15; }
+
+/* --- what the loop was budgeted to cost -----------------------------------
+ *
+ * Epoch count and parameter count are both decisions, and their consequences
+ * are time and memory. This used to be one dim line under the samples, which
+ * buried the only place the talk shows a design budget being met.
+ */
+.reveal .epoch .enote {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.5em; letter-spacing: 0.1em; color: var(--coco-c01);
+  margin-left: 0.8em;
+}
+.reveal .epoch.chosen .out { color: var(--deck-mark); }
+.reveal .epoch.chosen .enote { color: var(--deck-mark); }
+
+.reveal .budget { width: fit-content; margin: 1.1em auto 0; }
+.reveal .brow {
+  display: grid;
+  /* The time row's sum is three terms long; too narrow a column wraps it and
+   * the value stops lining up with the row below. */
+  grid-template-columns: 4.5em 28em 5em 14em;
+  gap: 0 0.7em;
+  align-items: baseline;
+  margin: 0.35em 0;
+}
+.reveal .brow .bkind {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.6em; letter-spacing: 0.12em; color: var(--coco-c01);
+  text-align: right;
+}
+.reveal .brow .bsum { color: var(--deck-quiet); text-align: right; }
+.reveal .brow .bsum .op { color: var(--coco-c01); }
+.reveal .brow .bval { color: var(--deck-mark); text-align: right; }
+.reveal .brow .bnote {
+  font-family: var(--deck-prose); text-transform: none;
+  font-size: 0.62em; color: var(--deck-quiet); text-align: left;
+}

@@ -328,23 +328,52 @@ def figure_parameters(trace: dict) -> str:
   </div>"""
 
 
-def figure_loop(trace: dict) -> str:
-    """What it makes as the loop runs. Includes where it stops improving."""
+def figure_loop(trace: dict, budget: dict) -> str:
+    """What it makes as the loop runs, and what the loop was budgeted to cost."""
     rows = []
     for n, epoch in enumerate(trace["checkpoints"]):
         samples = trace["samples"][str(epoch)]
-        late = " late" if epoch >= 20 else ""
+        classes = "epoch"
+        note = ""
+        if epoch == trace["chosen"]:
+            classes += " chosen"
+            note = "we stop here"
+        elif epoch > trace["chosen"]:
+            classes += " late"
+            note = "no better"
         rows.append(
-            f'<div class="epoch{late} fragment" data-fragment-index="{n}">'
+            f'<div class="{classes} fragment" data-fragment-index="{n}">'
             f'<span class="n">epoch {epoch}</span>'
-            f'<span class="out">{esc(samples[0])}</span></div>'
+            f'<span class="out">{esc(samples[0])}</span>'
+            f'<span class="enote">{note}</span></div>'
         )
-    first, last = trace["losses"][0], trace["losses"][-1]
+
     return f"""
   <div class="fig">
     <div class="epochs">{"".join(rows)}</div>
-    <p class="lbl">loss {first:.2f} &rarr; {last:.2f} across
-      {trace["epochs"]} epochs, {trace["parameter_count"]} parameters</p>
+    <div class="budget fragment" data-fragment-index="5">
+      <div class="brow">
+        <span class="bkind">time</span>
+        <span class="bsum">{budget["epochs"]} epochs
+          <span class="op">&times;</span> {budget["examples"]} examples
+          <span class="op">&times;</span> {budget["per_example"]} multiplies</span>
+        <span class="bval">{budget["multiplies"]:,}</span>
+        <span class="bnote">about {budget["floor_seconds"]} seconds of
+          multiply instructions</span>
+      </div>
+      <div class="brow">
+        <span class="bkind">memory</span>
+        <span class="bsum">{budget["parameters"]} parameters
+          <span class="op">&times;</span> {budget["bytes_each"]} bytes</span>
+        <span class="bval">{budget["bytes"]}</span>
+        <span class="bnote">bytes, against the
+          {budget["screen_bytes"]}-byte screen it draws on</span>
+      </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="6">
+      Neither number is magic.
+      <strong>Both were chosen to fit this machine.</strong>
+    </p>
   </div>"""
 
 
@@ -369,7 +398,7 @@ def main() -> None:
     deck = splice(deck, "ids", figure_identifiers(vocabulary))
     deck = splice(deck, "why", figure_why_three(traces["why_three"]))
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))
-    deck = splice(deck, "loop", figure_loop(traces["loop"]))
+    deck = splice(deck, "loop", figure_loop(traces["loop"], traces["budget"]))
     DECK.write_text(deck, encoding="utf-8")
     print("spliced 7 figures into presentation/deck/index.html")
 

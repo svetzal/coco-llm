@@ -353,13 +353,34 @@
   </aside>
 </section>
 
-<section data-timing="45">
+<section data-timing="60">
   <h2>Do it again. And again.</h2>
   <!-- FIGURE:loop -->
   <div class="fig">
-    <div class="epochs"><div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><span class="out">II APPLE COMMODORE ACORN 64 II</span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><span class="out">TANDY COMMODORE</span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><span class="out">TANDY ATARI</span></div><div class="epoch late fragment" data-fragment-index="3"><span class="n">epoch 20</span><span class="out">TANDY MODEL 100</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><span class="out">TANDY MODEL 100</span></div></div>
-    <p class="lbl">loss 2.98 &rarr; 0.93 across
-      60 epochs, 290 parameters</p>
+    <div class="epochs"><div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><span class="out">II APPLE COMMODORE ACORN 64 II</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><span class="out">TANDY COMMODORE</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><span class="out">TANDY ATARI</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><span class="out">TANDY MODEL 100</span><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><span class="out">TANDY MODEL 100</span><span class="enote">no better</span></div></div>
+    <div class="budget fragment" data-fragment-index="5">
+      <div class="brow">
+        <span class="bkind">time</span>
+        <span class="bsum">20 epochs
+          <span class="op">&times;</span> 58 examples
+          <span class="op">&times;</span> 261 multiplies</span>
+        <span class="bval">302,760</span>
+        <span class="bnote">about 3.7 seconds of
+          multiply instructions</span>
+      </div>
+      <div class="brow">
+        <span class="bkind">memory</span>
+        <span class="bsum">290 parameters
+          <span class="op">&times;</span> 2 bytes</span>
+        <span class="bval">580</span>
+        <span class="bnote">bytes, against the
+          512-byte screen it draws on</span>
+      </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="6">
+      Neither number is magic.
+      <strong>Both were chosen to fit this machine.</strong>
+    </p>
   </div>
   <!-- /FIGURE:loop -->
   <aside class="notes">
@@ -371,6 +392,24 @@
     improving. Same lesson as the epoch sweep in EXP-007: more training is not
     more useful, and we only know that because we measured the behaviour we
     cared about instead of the number the optimizer gave us.
+
+    THEN THE BUDGET, and this is the point of the slide. Two numbers were
+    chosen along the way, 20 epochs and 290 parameters, and each one is a bill
+    that had to be paid.
+
+    Epochs buy time. 20 by 58 by 261 is 302,760 multiplies, about 3.7 seconds
+    of multiply instructions. Parameters occupy memory. 290 of them at two
+    bytes each is 580 bytes, which is more than the 512-byte screen this thing
+    draws on.
+
+    Land it: neither number is magic. Somebody picked each one so the whole
+    thing would run in a reasonable time and fit in a reasonable amount of
+    memory. That is what designing a model IS, and it is the same decision
+    being made today at a different scale.
+
+    The 60-epoch row is evidence that 20 was enough. It is not a rival choice.
+
+    SAY FLOOR. 3.7 seconds is multiply instructions only, not a runtime.
   </aside>
 </section>
 
@@ -394,7 +433,7 @@
 </section>
 
 <!-- ============ 4. Change one thing: the prompt · 3 min · EXP-005 ============ -->
-<section class="cue" data-timing="180">
+<section class="cue" data-timing="165">
   <p class="changed">We changed exactly one thing:<br><span class="one">the prompt</span></p>
   <p class="what">EXP-005 &middot; the prompted marketing completions</p>
   <aside class="notes">

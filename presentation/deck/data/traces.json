@@ -809,6 +809,7 @@
  },
  "loop": {
   "epochs": 60,
+  "chosen": 20,
   "learning_rate": 0.35,
   "losses": [
    2.9803,
@@ -1016,5 +1017,16 @@
   ],
   "total": 290,
   "gpt3": 175000000000
+ },
+ "budget": {
+  "epochs": 20,
+  "examples": 58,
+  "per_example": 261,
+  "multiplies": 302760,
+  "floor_seconds": 3.7,
+  "parameters": 290,
+  "bytes_each": 2,
+  "bytes": 580,
+  "screen_bytes": 512
  }
 }

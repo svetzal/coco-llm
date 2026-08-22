@@ -45,9 +45,9 @@ decided in advance rather than in the moment.
 | # | Block | Min | Cum | Surface | Arc |
 | --- | --- | ---: | ---: | --- | --- |
 | 1 | It already works | 3 | 3 | Slide | Mystery |
-| 2 | Tokens, and what a parameter is | 3 | 6 | Slides | Mechanism |
-| 3 | Random numbers, then not | 12 | 18 | Slides then EXP-004 live training | Mechanism |
-| 4 | Change one thing: the prompt | 3 | 21 | CoCo, EXP-005 prompted completions | Mechanism |
+| 2 | Tokens, and what a parameter is | 3.5 | 6.5 | Slides | Mechanism |
+| 3 | Random numbers, then not | 12 | 18.5 | Slides then EXP-004 live training | Mechanism |
+| 4 | Change one thing: the prompt | 2.75 | 21.25 | CoCo, EXP-005 prompted completions | Mechanism |
 | 5 | Change one thing: the context | 5 | 26 | CoCo, EXP-011 attention head | Mechanism |
 | 6 | A screen of things that never existed | 3 | 29 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the upbringing | 4 | 33 | Slide, EXP-003 fan-corpus bias | Limitation |
@@ -160,7 +160,13 @@ training run:
 4. **What a parameter is.** 2x29x3 plus 29x3 plus 29 is 290, counted out. Then
    the definition: one number training is allowed to change. Then GPT-3's 175
    billion, without editorial.
-5. **One step**, and **do it again**.
+5. **One step**, then **do it again**, which closes on the budget: 20 epochs
+   times 58 examples times 261 multiplies is 302,760 multiplies and about 3.7
+   seconds of multiply instructions, while 290 parameters at two bytes each is
+   580 bytes against a 512-byte screen. Neither number is magic. Somebody
+   picked each one so the thing would run in a reasonable time and fit in a
+   reasonable amount of memory. That is the only place in the talk a design
+   budget is shown being met, so do not rush it.
 
 Because that explanation is now front-loaded, the live run needs less talking
 over it and holds seven and a quarter minutes rather than nine. That is the

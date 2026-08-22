@@ -48,6 +48,23 @@ FOCUS = "COMMODORE AMIGA"
 LEARNING_RATE = 0.35
 EPOCHS = 60
 CHECKPOINTS = (0, 1, 5, 20, EPOCHS)
+# The number the project actually ships, from EXP-002 and EXP-004. The run
+# above goes past it on purpose: 60 epochs is evidence that 20 was enough, not
+# a competing choice. Every cost figure uses 20.
+CHOSEN_EPOCHS = 20
+SYMBOLS = ROOT / "build" / "coco-llm.sym"
+
+
+def symbol(name: str) -> int:
+    """Read an address out of the assembler's symbol dump."""
+    import re
+
+    match = re.search(
+        rf"^{re.escape(name)} EQU \$([0-9A-Fa-f]+)$", SYMBOLS.read_text(), re.MULTILINE
+    )
+    if match is None:
+        raise SystemExit(f"symbol not found in {SYMBOLS.name}: {name}")
+    return int(match.group(1), 16)
 
 
 def round_all(value, places=4):
@@ -210,6 +227,7 @@ def main() -> None:
 
     loop_trace = {
         "epochs": EPOCHS,
+        "chosen": CHOSEN_EPOCHS,
         "learning_rate": LEARNING_RATE,
         "losses": round_all(losses, 4),
         "checkpoints": list(CHECKPOINTS),
@@ -306,6 +324,29 @@ def main() -> None:
         "gpt3": 175_000_000_000,
     }
 
+    # --- what the two choices cost -------------------------------------------
+    # Epochs and parameter count are both budget decisions, and the budget has
+    # two halves: time, which multiplies buy, and memory, which parameters
+    # occupy. The byte figure is measured off the assembled 6809 build rather
+    # than calculated here, because the parameters are Q4.12 and a wrong
+    # assumption about their width would be invisible.
+    parameter_bytes = symbol("parameters_end") - symbol("position_embeddings")
+    per_example = 3 * len(vocabulary) * config.embedding
+    budget = {
+        "epochs": CHOSEN_EPOCHS,
+        "examples": int(len(targets)),
+        "per_example": per_example,
+        "multiplies": per_example * len(targets) * CHOSEN_EPOCHS,
+        "floor_seconds": round(
+            per_example * len(targets) * CHOSEN_EPOCHS * 11 / 894_886, 1
+        ),
+        "parameters": model.parameter_count,
+        "bytes_each": parameter_bytes // model.parameter_count,
+        "bytes": parameter_bytes,
+        "screen_bytes": 32 * 16,
+    }
+    assert budget["bytes"] == model.parameter_count * budget["bytes_each"]
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps(
@@ -322,6 +363,7 @@ def main() -> None:
                 "loop": loop_trace,
                 "why_three": why_three,
                 "parameters": parameters,
+                "budget": budget,
             },
             indent=1,
         )
