@@ -34,6 +34,7 @@ sys.path.insert(0, str(ROOT / "src" / "reference"))
 
 from token_lm import (  # noqa: E402
     ModelConfig,
+    assess_samples,
     TokenLanguageModel,
     build_vocabulary,
     load_names,
@@ -263,9 +264,16 @@ def main() -> None:
                 model.generate(temperature=0.7, random_seed=config.seed + n)
                 for n in range(NOVELTY_SAMPLES)
             ]
+            # Two axes, not one. Novelty alone rewards the untrained model,
+            # which invents constantly and never produces a name. name_like
+            # is EXP-002's rubric, written before any sample was seen: two to
+            # four tokens, first token a manufacturer that starts a real name.
+            assessed = assess_samples(drawn, names)
             novelty[str(epoch)] = {
                 "drawn": len(drawn),
                 "copied": sum(1 for text in drawn if text in corpus),
+                "name_like": sum(1 for a in assessed if a.name_like),
+                "both": sum(1 for a in assessed if a.novel and a.name_like),
             }
             samples[str(epoch)] = [
                 {

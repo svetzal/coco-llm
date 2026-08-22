@@ -125,7 +125,7 @@
 /* The two samples stack rather than sitting side by side: an untrained model
  * rambles for six tokens, and two of those on one line runs off the slide. */
 .reveal .epoch {
-  display: grid; grid-template-columns: 6em 32em 6.5em 6em;
+  display: grid; grid-template-columns: 6em 30em 4em 6.5em 4em 6em;
   gap: 0 0.8em; align-items: baseline;
 }
 .reveal .epoch .n {
@@ -481,3 +481,10 @@
 .reveal .epoch .novel.good { color: var(--coco-win); }
 .reveal .epoch .novel.poor { color: var(--coco-c01); }
 .reveal .fig .cap.invent { color: var(--deck-ink); }
+
+/* Column headings for the two quality measures. */
+.reveal .epoch.head .novel {
+  color: var(--coco-c01); font-size: 0.5em; line-height: 1.2;
+}
+.reveal .epoch.head { margin-bottom: -0.2em; }
+.reveal .fig .cap em { color: var(--deck-loud); font-style: normal; }

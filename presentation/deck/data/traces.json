@@ -1000,23 +1000,33 @@
   "novelty": {
    "0": {
     "drawn": 200,
-    "copied": 0
+    "copied": 0,
+    "name_like": 1,
+    "both": 1
    },
    "1": {
     "drawn": 200,
-    "copied": 0
+    "copied": 0,
+    "name_like": 12,
+    "both": 12
    },
    "5": {
     "drawn": 200,
-    "copied": 5
+    "copied": 5,
+    "name_like": 109,
+    "both": 104
    },
    "20": {
     "drawn": 200,
-    "copied": 18
+    "copied": 18,
+    "name_like": 197,
+    "both": 179
    },
    "60": {
     "drawn": 200,
-    "copied": 143
+    "copied": 143,
+    "name_like": 199,
+    "both": 56
    }
   },
   "parameter_count": 290

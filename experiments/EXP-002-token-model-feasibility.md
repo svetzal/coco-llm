@@ -121,3 +121,53 @@ Tokenization is now the leading architecture because it simultaneously improves
 audience comprehension and reduces training work. The experiment remains open
 until the integer test vectors run through the 6809 implementation and a
 complete training run is measured on the physical CoCo 1.
+
+## Appended evidence: was twenty epochs the right place to stop?
+
+Twenty was chosen in the hypothesis above and never tested. Building the
+presentation raised the obvious objection: if the model keeps improving, why
+not train longer and get names that read better?
+
+`tools/sweep_epoch_quality.py` answers it. At each point in a 120-epoch run it
+draws 200 samples and scores them on two axes: novel, and name-like by the
+rubric written above before any sample was seen.
+
+| Epochs | Loss | New | Like a name | Both |
+| ---: | ---: | ---: | ---: | ---: |
+| 0 | 3.368 | 100% | 0% | 0% |
+| 5 | 2.424 | 98% | 54% | 52% |
+| 10 | 2.072 | 94% | 91% | 84% |
+| 13 | 1.959 | 95% | 97% | 92% |
+| **15** | 1.898 | 94% | 98% | **93%** |
+| 20 | 1.786 | 91% | 98% | 90% |
+| 30 | 1.598 | 74% | 100% | 74% |
+| 40 | 1.421 | 55% | 99% | 55% |
+| 60 | 1.164 | 28% | 99% | 28% |
+| 120 | 0.957 | 2% | 99% | 1% |
+
+Neither axis alone is the quantity of interest. Novelty by itself rewards the
+untrained model, which invents constantly and never produces a name.
+Name-likeness by itself peaks when the model recites the corpus, because real
+names are trivially name-like. Only both at once measures the behaviour the
+demonstration needs.
+
+Three findings:
+
+- **The objection is wrong, and instructively so.** Name-likeness saturates at
+  98% by epoch 13 and never improves. Training past twenty cannot make the
+  output more recognizable, because it is already as recognizable as it gets.
+  What further training buys is recitation: by epoch 60 the model returns a
+  corpus name 72% of the time, and by epoch 120 almost always.
+- **Twenty is inside the plateau but is not its peak.** The useful band runs
+  from about 13 to 25 epochs, peaking at 15 with 93% against twenty's 90%. The
+  difference is small and twenty remains a defensible choice; it is also the
+  number the 6809 build has baked in as `TRAIN_EPOCHS`, so the deck and the
+  machine agree.
+- **Loss keeps falling the whole way** — 3.368 down to 0.957 — while the
+  behaviour we care about rises, plateaus, and then collapses. This is the
+  same result as the EXP-007 epoch sweep, reproduced on a model 28 times
+  smaller, and it is the clearest evidence in the project that the optimizer's
+  number is not the goal.
+
+Nothing above changes the hypothesis or the recorded twenty-epoch run. It
+records that the choice was checked afterwards and survived.

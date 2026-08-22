@@ -399,7 +399,16 @@
   <h2>Do it again. And again.</h2>
   <!-- FIGURE:loop -->
   <div class="fig">
-    <div class="epochs"><div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out">II APPLE COMMODORE ACORN 64 II</div><div class="out">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR</div></div><span class="novel poor">100% new</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out">ARCHIMEDES ARCHIMEDES AMIGA</div></div><span class="novel poor">100% new</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out">ATARI ATARI</div></div><span class="novel good">98% new</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="novel good">91% new</span><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="novel poor">28% new</span><span class="enote"></span></div></div>
+    <div class="epochs">
+      <div class="epoch head">
+        <span class="n"></span><div class="outs"></div>
+        <span class="novel">new</span>
+        <span class="novel">like a name</span>
+        <span class="novel">both</span>
+        <span class="enote"></span>
+      </div>
+      <div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out">II APPLE COMMODORE ACORN 64 II</div><div class="out">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR</div></div><span class="novel">100%</span><span class="novel">0%</span><span class="novel poor">0%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out">ARCHIMEDES ARCHIMEDES AMIGA</div></div><span class="novel">100%</span><span class="novel">6%</span><span class="novel poor">6%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out">ATARI ATARI</div></div><span class="novel">98%</span><span class="novel">54%</span><span class="novel poor">52%</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="novel">91%</span><span class="novel">98%</span><span class="novel good">90%</span><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="novel">28%</span><span class="novel">100%</span><span class="novel poor">28%</span><span class="enote"></span></div>
+    </div>
     <p class="cap invent fragment" data-fragment-index="5">
       Same machine, same arithmetic, same 580 bytes of weights.
       At 20 epochs it makes machines that never existed. At
@@ -407,10 +416,11 @@
       <strong>The only thing we changed was how long we trained it.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="6">
-      And new is not the same as good: at epoch 0 every draw is new and not
-      one of them is a name.
-      <strong>What we want is the narrow bit between reciting and
-      babbling.</strong>
+      New is not the same as good. Epoch 0 is 100% new and
+      0% a name; epoch 60 is 100% a name
+      because they <em>are</em> the names.
+      <strong>Only the last column counts, and training past
+      20 does not raise it.</strong>
     </p>
   </div>
   <!-- /FIGURE:loop -->
@@ -438,10 +448,21 @@
     it was given.
 
     THEN THE TRAP, and do not skip it, because someone will otherwise leave
-    thinking novelty is the goal. Epoch 0 scores 100% new. Every draw is new
-    and not one of them is a name. New is easy. New AND shaped like the thing
-    is the hard part, and it lives in a narrow band between reciting and
-    babbling.
+    thinking novelty is the goal. Epoch 0 scores 100% new and 0% a name. New
+    is easy. New AND shaped like the thing is the hard part, and only the
+    last column measures it.
+
+    IF SOMEONE ASKS WHY NOT TRAIN LONGER for more recognizable names, the
+    answer is on the screen: like-a-name is already 98% at epoch 20 and
+    saturates at 13. It cannot go up. What longer training buys is recitation,
+    and by epoch 60 that column reads 99% only because the model is handing
+    back real names.
+
+    The full sweep is in EXP-002. The useful band is roughly 13 to 25 epochs,
+    peaking at 15 with 93%. Twenty scores 90%, sits inside the band, and is
+    what the 6809 build has baked in, so the deck and the machine agree. If
+    pressed: yes, 15 is very slightly better, and no, we did not tune the demo
+    to flatter it.
 
     If someone asks whether these systems copy or create: they do both, it is
     the same machinery either way, and where a model lands between them is a

@@ -377,6 +377,19 @@ def figure_parameters(trace: dict) -> str:
 
 def figure_loop(trace: dict, budget: dict, split: dict) -> str:
     """What it makes as the loop runs, and what the loop was budgeted to cost."""
+    # Caption figures are computed, never typed, so they cannot disagree with
+    # the columns above them.
+    def pct(epoch, key):
+        counted = trace["novelty"][str(epoch)]
+        value = (
+            counted["drawn"] - counted["copied"] if key == "new" else counted[key]
+        )
+        return round(100 * value / counted["drawn"])
+
+    first_new = pct(trace["checkpoints"][0], "new")
+    first_like = pct(trace["checkpoints"][0], "name_like")
+    last_like = pct(trace["checkpoints"][-1], "name_like")
+
     # Two samples per checkpoint, always the same two, so nothing is picked
     # to suit the story. The second one is where the run turns.
     SHOW = (0, 2)
@@ -398,24 +411,36 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
             for i in SHOW
         )
         counted = trace["novelty"][str(epoch)]
-        new_pct = round(
-            100 * (counted["drawn"] - counted["copied"]) / counted["drawn"]
-        )
-        # Green only where novelty is worth having. At epoch 0 everything is
-        # new and none of it is a name, so the number is deliberately not
-        # dressed up as a good result.
-        quality = "good" if epoch >= 5 and new_pct >= 80 else "poor"
+        drawn = counted["drawn"]
+        new_pct = round(100 * (drawn - counted["copied"]) / drawn)
+        like_pct = round(100 * counted["name_like"] / drawn)
+        both_pct = round(100 * counted["both"] / drawn)
+        # Only the column that matters is coloured, and only where it is
+        # actually good. Novelty on its own rewards the untrained model, which
+        # invents constantly and never produces a name.
         rows.append(
             f'<div class="{classes} fragment" data-fragment-index="{n}">'
             f'<span class="n">epoch {epoch}</span>'
             f'<div class="outs">{shown}</div>'
-            f'<span class="novel {quality}">{new_pct}% new</span>'
+            f'<span class="novel">{new_pct}%</span>'
+            f'<span class="novel">{like_pct}%</span>'
+            f'<span class="novel {"good" if both_pct >= 80 else "poor"}">'
+            f'{both_pct}%</span>'
             f'<span class="enote">{note}</span></div>'
         )
 
     return f"""
   <div class="fig">
-    <div class="epochs">{"".join(rows)}</div>
+    <div class="epochs">
+      <div class="epoch head">
+        <span class="n"></span><div class="outs"></div>
+        <span class="novel">new</span>
+        <span class="novel">like a name</span>
+        <span class="novel">both</span>
+        <span class="enote"></span>
+      </div>
+      {"".join(rows)}
+    </div>
     <p class="cap invent fragment" data-fragment-index="5">
       Same machine, same arithmetic, same {split["weights"]} bytes of weights.
       At {trace["chosen"]} epochs it makes machines that never existed. At
@@ -423,10 +448,11 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
       <strong>The only thing we changed was how long we trained it.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="6">
-      And new is not the same as good: at epoch 0 every draw is new and not
-      one of them is a name.
-      <strong>What we want is the narrow bit between reciting and
-      babbling.</strong>
+      New is not the same as good. Epoch 0 is {first_new}% new and
+      {first_like}% a name; epoch {trace["epochs"]} is {last_like}% a name
+      because they <em>are</em> the names.
+      <strong>Only the last column counts, and training past
+      {trace["chosen"]} does not raise it.</strong>
     </p>
   </div>"""
 
