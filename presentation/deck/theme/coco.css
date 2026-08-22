@@ -1,0 +1,133 @@
+/* The CoCo LLM deck theme.
+ *
+ * The hardware has two looks and this deck uses both, for opposite purposes.
+ * A CoCo draws its body black on green and reverses to green on black for a
+ * title bar. The deck takes the reversed one: green on black, which is what a
+ * dark room and a projector want anyway. The machine keeps black on green.
+ *
+ * So cutting from a slide to XRoar inverts the screen. That is deliberate. The
+ * audience should be able to tell who is talking without being told, and the
+ * one thing they can always see is which way round the colours are.
+ *
+ * Colours come from coco-palette.css and are never written literally here.
+ */
+
+:root {
+  --deck-ink: var(--coco-bar);     /* #8EFF48, body text */
+  --deck-bg: var(--coco-c00);      /* black */
+  --deck-loud: var(--coco-white);  /* headings that have to carry */
+  --deck-mark: var(--coco-amber);  /* the one thing that changed */
+  --deck-quiet: var(--coco-c33);   /* supporting text, still green */
+  --deck-prose: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.reveal-viewport { background: var(--deck-bg); }
+
+.reveal {
+  font-family: var(--coco-type);
+  font-size: 34px;
+  color: var(--deck-ink);
+  -webkit-font-smoothing: none;
+  /* The MC6847 has no lowercase. Hot CoCo is faithful about that: it maps
+   * lowercase to the character ROM's INVERSE forms, so a lowercase letter
+   * comes out as a filled block with the letter knocked out of it, exactly
+   * as it would on the machine. Sentence-case text therefore renders
+   * reversed unless it is folded up first. Fold it up here, and reach for
+   * the effect deliberately with .inv below. */
+  text-transform: uppercase;
+}
+
+/* Inverse video, the CoCo's own way of showing lowercase. Lowercasing the text
+ * is not a trick: it is how the character ROM is addressed. */
+.reveal .inv { text-transform: lowercase; }
+
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: var(--coco-type);
+  color: var(--deck-loud);
+  text-transform: uppercase; /* the MC6847 has no lowercase and neither do we */
+  font-weight: normal;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  margin: 0 0 0.6em;
+  text-shadow: none;
+}
+.reveal h1 { font-size: 1.9em; }
+.reveal h2 { font-size: 1.45em; }
+.reveal h3 { font-size: 1.1em; color: var(--deck-ink); }
+
+.reveal p, .reveal li { line-height: 1.35; }
+.reveal strong { color: var(--deck-mark); font-weight: normal; }
+.reveal em { color: var(--deck-loud); font-style: normal; }
+.reveal a { color: var(--deck-mark); }
+
+/* Prose that has to be read as prose rather than admired. Rare by design: if a
+ * slide needs a paragraph, it is usually two slides. */
+.reveal .prose {
+  font-family: var(--deck-prose);
+  text-transform: none;
+  font-size: 0.8em;
+  color: var(--deck-quiet);
+  max-width: 22em;
+}
+
+/* The machine's own look, for anything quoted off a CoCo screen. Inverted
+ * against the deck on purpose. */
+.reveal .screen {
+  font-family: var(--coco-type);
+  background: var(--coco-bg);
+  color: var(--coco-ink);
+  white-space: pre;
+  text-transform: uppercase;
+  display: inline-block;
+  text-align: left;
+  padding: 0.5em 0.7em;
+  font-size: 0.8em;
+  line-height: 1;
+}
+.reveal .screen .bar {
+  display: block;
+  background: var(--coco-ink);
+  color: var(--coco-bar);
+}
+
+/* A cue slide: the block runs in XRoar, not here. Kept nearly empty so the
+ * projector is not competing with the emulator window. */
+.reveal .cue { color: var(--deck-quiet); }
+.reveal .cue h2 { color: var(--deck-ink); }
+.reveal .cue .what {
+  font-family: var(--deck-prose);
+  text-transform: none;
+  font-size: 0.55em;
+  color: var(--deck-quiet);
+  letter-spacing: 0.06em;
+}
+
+/* The spine of the talk. Three slides say this and they should look identical
+ * apart from the word that changes. */
+.reveal .changed { font-size: 1.5em; color: var(--deck-loud); }
+.reveal .changed .one { color: var(--deck-mark); }
+
+.reveal .big { font-size: 2.6em; color: var(--deck-loud); line-height: 1.1; }
+.reveal .sub { font-size: 0.75em; color: var(--deck-quiet); }
+
+/* Semigraphics marks, coloured by CSS because a font cannot carry colour. */
+.reveal .coco-block.win  { color: var(--coco-win); }
+.reveal .coco-block.tie  { color: var(--coco-tie); }
+.reveal .coco-block.loss { color: var(--coco-loss); }
+
+.reveal pre, .reveal code { font-family: var(--coco-type); }
+.reveal pre {
+  font-size: 0.55em;
+  box-shadow: none;
+  background: none;
+  width: auto;
+}
+.reveal pre code {
+  background: none;
+  color: var(--deck-ink);
+  padding: 0;
+  max-height: none;
+}
+
+.reveal .progress { color: var(--deck-mark); }
+.reveal .controls { color: var(--deck-quiet); }

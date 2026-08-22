@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CoCo LLM</title>
+
+<link rel="stylesheet" href="vendor/reveal/dist/reset.css">
+<link rel="stylesheet" href="vendor/reveal/dist/reveal.css">
+<link rel="stylesheet" href="../coco-palette.css">
+<link rel="stylesheet" href="../coco-type.css">
+<link rel="stylesheet" href="theme/coco.css">
+</head>
+<body>
+
+<!--
+  Nine blocks, forty minutes, five for questions. The structure here mirrors
+  presentation/runsheet.md block for block, and data-timing carries that
+  file's minute budget so the speaker view paces against it. Press S for the
+  speaker view; it shows the notes and whether you are behind.
+
+  Blocks 3, 4, 5, 6 and 8 run in XRoar, not here. Their slides are cues: they
+  stay nearly empty so the projector is not competing with the emulator.
+
+  Cut order, decided in advance: block 6 goes first, then block 4. Block 3
+  shortens rather than goes. Block 8 never goes.
+-->
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ============ 1. It already works · 3 min · slide ============ -->
+<section data-timing="180">
+  <h1>Coco LLM</h1>
+  <p class="sub">A 45-year-old computer, starting from random numbers</p>
+  <aside class="notes">
+    Photograph of the physical CoCo 1 showing a real trained run. Full screen,
+    no explanation.
+
+    Say the names. Say none were ever made. Say the machine is from 1981, has
+    32K, and started from random numbers about three minutes before the photo.
+
+    The promise: by the end you will know exactly how it did that, and be
+    unimpressed by it in precisely the right way.
+
+    Then the disclosure, once, and never again: that machine is at table N,
+    what I project is its emulator at its clock speed, nothing is sped up.
+  </aside>
+</section>
+
+<!-- ============ 2. What the machine thinks a word is · 4 min · slide ============ -->
+<section data-timing="240">
+  <h2>What is a word?</h2>
+  <p class="prose">The 29 token values, then COMMODORE AMIGA encoded, then the
+  three sliding two-token examples that one name produces.</p>
+  <aside class="notes">
+    One idea: the machine does not have words, it has numbers, and a person
+    chose which numbers.
+
+    Ask the room for a word that is not in the vocabulary. There is no graceful
+    answer, and that is the point. Full tokenizer exercise is on the table.
+  </aside>
+</section>
+
+<!-- ============ 3. Random numbers, then not · 11 min · EXP-004 ============ -->
+<section class="cue" data-timing="660">
+  <h2>Watch it learn</h2>
+  <p class="what">EXP-004 &middot; the live training run</p>
+  <aside class="notes">
+    THE CENTREPIECE. Reset to random weights, seed 6809, generate nonsense.
+    Start training. While epochs run, walk one step: scores, softmax, error,
+    backpropagation, update. Pause at PRESS ANY KEY, let the room choose when
+    to infer. Repeat seed 6809 and compare.
+
+    Two unsigned MULs only if the run gives you time. Best code beat, first to
+    drop.
+
+    LENGTH UNMEASURED. Eleven minutes is a planning figure.
+
+    If it does not improve, say so and inspect the evidence together. A
+    recorded run is a labelled comparison, never a substitute.
+  </aside>
+</section>
+
+<!-- ============ 4. Change one thing: the prompt · 3 min · EXP-005 ============ -->
+<section class="cue" data-timing="180">
+  <p class="changed">We changed exactly one thing:<br><span class="one">the prompt</span></p>
+  <p class="what">EXP-005 &middot; the prompted marketing completions</p>
+  <aside class="notes">
+    Title on the machine reads SAME MODEL - CHANGE THE PROMPT. Ask what stayed
+    fixed.
+
+    Take ARE YOU and have the room call the completion before revealing
+    KEEPING UP IN LITTLE COMPUTERS. It blended two campaigns without
+    understanding either.
+
+    SECOND TO CUT if running long.
+  </aside>
+</section>
+
+<!-- ============ 5. Change one thing: the context · 5 min · EXP-011 ============ -->
+<section class="cue" data-timing="300">
+  <p class="changed">We changed exactly one thing:<br><span class="one">the context</span></p>
+  <p class="what">EXP-011 &middot; the context-editing attention head</p>
+  <aside class="notes">
+    Most direct bearing on what people already use. Protect its time.
+
+    Retrieve LISA = CODE 2. Open the editor, type 6, show BEFORE, AFTER, and
+    MODEL 751B DID NOT CHANGE. Ask the same question, get the new answer.
+
+    LAND THIS LINE: Training changes the weights. Prompting changes the
+    context. Attention uses the context to produce this answer.
+
+    Then name the omission: key-value attention, not a transformer. We isolated
+    one mechanism so it could be watched.
+
+    V replay is optional depth and is NOT in the budget.
+  </aside>
+</section>
+
+<!-- ============ 6. A screen of things that never existed · 3 min · EXP-012 ============ -->
+<section class="cue" data-timing="180">
+  <h2>Things that never existed</h2>
+  <p class="what">EXP-012 &middot; the fake episode titles</p>
+  <aside class="notes">
+    One keystroke, sixteen invented titles.
+
+    The lesson is the split and it is visible in the sizes: 400 bytes of model
+    holding the shape of a title, 1,600 bytes of dictionary and rules holding
+    the words. It never learned what a Gothos is. It learned that something
+    goes there.
+
+    Corpus number reframes it: across all 79 real titles, only two adjacent
+    word pairs ever repeat. Nothing to generalize from. It memorized a shape.
+
+    FIRST TO CUT. Also the one place we leave the vintage-computer example, so
+    get in and out.
+  </aside>
+</section>
+
+<!-- ============ 7. Change one thing: the upbringing · 4 min · slide ============ -->
+<section data-timing="240">
+  <p class="changed">We changed exactly one thing:<br><span class="one">the upbringing</span></p>
+  <p class="what">EXP-003 &middot; the fan-corpus bias runs</p>
+  <aside class="notes">
+    Same architecture, same initial weights, same budget, same vocabulary, same
+    sampling seed. Different data. Different machine.
+
+    Then the harder half: the same balanced examples concatenated and
+    interleaved produce different behaviour. Order is a choice too, and nobody
+    set out to make it one.
+
+    Ask which human decision produced each behaviour. DO NOT ANSWER IT.
+  </aside>
+</section>
+
+<!-- ============ 8. Now you play it · 5 min · EXP-013 ============ -->
+<section class="cue" data-timing="300">
+  <h2>Now you play it</h2>
+  <p class="what">EXP-013 &middot; the game opponent that learns</p>
+  <aside class="notes">
+    NEVER CUT. Someone from the room calls throws.
+
+    It does not know the rules: RULES 0/25 says so. It does not know the player
+    either: MEMORY n/rounds says how little it has. Both stay on screen.
+
+    Six or eight rounds. It states its expectation BEFORE each throw. Around
+    twenty-five rounds it has the rules; it never finishes learning the person.
+
+    Press R in front of them and let it fall over.
+
+    QUOTE THE HUMAN NUMBER: 80% against six synthetic players with habits.
+    52.8% against a recorded 200-round session with a person who was trying.
+    Better than chance at three sigma, nowhere near enough to win.
+
+    Five of six synthetic players had a habit and one did not. A person plays
+    like the one that did not. The test set encoded an assumption about people
+    and the average hid it.
+
+    100 bytes. No neural network. A tiny table beat every model we tried,
+    which is why there is no model in there at all.
+
+    Invite whoever played to the table.
+  </aside>
+</section>
+
+<!-- ============ 9. Who decided · 2 min · slide ============ -->
+<section data-timing="120">
+  <h2>Who decided</h2>
+  <p class="prose">Task. Data. Budget. Success criterion. What counts as good
+  enough.</p>
+  <aside class="notes">
+    Not "language models are harmless" and not "no job will change." The
+    durable claim is smaller: the mechanism is understandable, the limitations
+    are observable, and every one of them traces back to a person who decided
+    something.
+
+    Close on the table. Say what is running there and that you will be at it.
+  </aside>
+</section>
+
+</div>
+</div>
+
+<script src="vendor/reveal/dist/reveal.js"></script>
+<script src="vendor/reveal/dist/plugin/notes.js"></script>
+<script src="vendor/reveal/dist/plugin/highlight.js"></script>
+<script>
+Reveal.initialize({
+  width: 1280,
+  height: 720,
+  margin: 0.06,
+  hash: true,
+  controls: false,
+  // The runsheet's budget, so the speaker view paces against it rather than
+  // against a guess. Per-slide data-timing overrides this.
+  defaultTiming: 120,
+  totalTime: 2400, // forty minutes of content; questions are outside it
+  transition: "none", // a 1981 machine does not dissolve
+  plugins: [RevealNotes, RevealHighlight],
+});
+</script>
+</body>
+</html>
