@@ -118,6 +118,27 @@ def main() -> None:
         "row": round_all(model.position_embeddings[0, ctx[1]].tolist()),
     }
 
+    # The whole lookup table, both slots. 2 slots x 29 words x 3 numbers is
+    # 174 of the model's 290 parameters, so this IS most of the model, and a
+    # figure that shows a row being fetched should be able to show what it was
+    # fetched from.
+    tables = [
+        {
+            "slot": position + 1,
+            "rows": [
+                {
+                    "text": vocabulary[token],
+                    "row": round_all(
+                        model.position_embeddings[position, token].tolist()
+                    ),
+                    "used": bool(token == ctx[position]),
+                }
+                for token in range(len(vocabulary))
+            ],
+        }
+        for position in range(config.context)
+    ]
+
     # A figure shows rounded values, and rounded addends do not always add up
     # to the rounded sum: here -0.0187 + -0.0266 displays as -0.0453 while the
     # true sum rounds to -0.0454. Someone in the front row will add them. So
@@ -146,6 +167,7 @@ def main() -> None:
         "target_text": example["target_text"],
         "target": target,
         "learning_rate": LEARNING_RATE,
+        "tables": tables,
         "lookups": lookups,
         "vector_display": vector_display,
         "other_slot": other_slot,

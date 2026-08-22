@@ -95,6 +95,17 @@ wider than the boxes it names, because `.lbl` is `nowrap` and will happily
 overrun its neighbours; and a figure with more than three stages in a row will
 not fit a 1280 slide at a size the back row can read.
 
+**A fetched value needs a visible source.** Showing a row pulled out of a
+table, without the table, makes the row look conjured. The lookup slide exists
+because the step figure asserted three numbers and could not say where they
+came from.
+
+**Caption with `.cap`, not `.lbl`.** `.lbl` is sized in `em` and scoped inside
+`.fig`, so it compounds with any figure that scales itself down to fit; the
+lookup tables run at `0.4em` and an em-sized caption there came out at 8px.
+`.cap` is sized in px, which is stable because reveal scales the whole 1280
+canvas.
+
 To inspect a figure with every stage showing at once, open it with fragments
 off:
 

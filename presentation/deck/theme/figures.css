@@ -11,6 +11,8 @@
  */
 
 .reveal .fig { font-size: 0.62em; line-height: 1.25; }
+/* Scoped to .fig on purpose: outside it there is no size context and a
+ * caption renders at full heading size. Keep captions inside the figure. */
 .reveal .fig .lbl {
   font-family: var(--deck-prose);
   text-transform: uppercase;
@@ -183,3 +185,50 @@
 }
 .reveal .look.aside .who { color: var(--deck-quiet); }
 .reveal .look.aside .num { border-style: dashed; }
+
+/* --- the lookup table itself ---------------------------------------------
+ *
+ * Showing a row being fetched without showing what it was fetched from leaves
+ * the row looking conjured. So both tables go on a slide of their own, all 29
+ * words of each, with the fetched row lit. Individual values are not meant to
+ * be read from the back: the shape is the message, and the shape is "this
+ * model is mostly a lookup table".
+ */
+/* 29 rows plus the pull-out plus a caption has to clear 720px under the
+ * title, so the rows are tight on purpose. */
+.reveal .fig.tables { font-size: 0.4em; line-height: 1.05; }
+.reveal .tcols { display: flex; gap: 2.2em; justify-content: center; }
+.reveal .tcol { flex: 0 0 auto; }
+.reveal .trow {
+  display: flex; gap: 0.5em; align-items: baseline;
+  padding: 0 0.3em; white-space: nowrap;
+}
+.reveal .trow .w {
+  width: 8.5em; text-align: right; color: var(--deck-quiet);
+}
+.reveal .trow .v { width: 5em; text-align: right; color: var(--coco-c01); }
+.reveal .trow.used { background: rgba(250, 229, 61, 0.14); }
+.reveal .trow.used .w { color: var(--deck-mark); }
+.reveal .trow.used .v { color: var(--deck-mark); }
+
+/* The two fetched rows, lifted out and added. */
+.reveal .pull {
+  margin-top: 0.7em; display: flex; flex-direction: column;
+  align-items: center; font-size: 1.25em;
+}
+
+/* A figure caption. Sized in px, not em, because a figure may scale itself
+ * down to fit (the lookup tables run at 0.4em) and an em-sized caption
+ * compounds with that until it is unreadable. reveal scales the whole 1280
+ * canvas, so px here is stable across displays. */
+.reveal .fig .cap {
+  font-family: var(--deck-prose);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--deck-quiet);
+  margin: 0.9em auto 0;
+  max-width: 46em;
+}
+.reveal .fig .cap strong { color: var(--deck-mark); }
