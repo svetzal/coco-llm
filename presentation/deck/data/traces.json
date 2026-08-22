@@ -92,6 +92,31 @@
   "examples": 58
  },
  "step": {
+  "nudges": [
+   {
+    "incoming": -0.0295,
+    "before": 0.1214,
+    "change": -0.0099,
+    "after": 0.1115,
+    "up": false
+   },
+   {
+    "incoming": -0.0454,
+    "before": -0.0705,
+    "change": -0.0153,
+    "after": -0.0858,
+    "up": false
+   },
+   {
+    "incoming": 0.0415,
+    "before": 0.0325,
+    "change": 0.014,
+    "after": 0.0465,
+    "up": true
+   }
+  ],
+  "wrongness": 0.9655,
+  "factor": 0.3379,
   "context_text": [
    "<END>",
    "COMMODORE"
@@ -1023,10 +1048,14 @@
   "examples": 58,
   "per_example": 261,
   "multiplies": 302760,
-  "floor_seconds": 3.7,
+  "instructions": 15824366,
   "parameters": 290,
   "bytes_each": 2,
   "bytes": 580,
-  "screen_bytes": 512
+  "code_bytes": 3355,
+  "working_bytes": 234,
+  "total_bytes": 4169,
+  "machine_bytes": 32768,
+  "target_seconds": 180
  }
 }

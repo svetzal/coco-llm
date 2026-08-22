@@ -380,3 +380,41 @@
   font-family: var(--deck-prose); text-transform: none;
   font-size: 0.62em; color: var(--deck-quiet); text-align: left;
 }
+
+/* --- the nudge, number by number ------------------------------------------
+ *
+ * Four columns, so the arithmetic can be read across: what came in, what the
+ * weight was, how far it moved, where it landed. The sign of the change
+ * always matches the sign of the incoming number, and putting those two
+ * columns on the same row is what makes that visible.
+ */
+.reveal .nudge { display: inline-block; margin-top: 0.2em; }
+.reveal .nrow {
+  display: grid;
+  grid-template-columns: 6em 6.5em 6.5em 8em 6.5em;
+  gap: 0 0.6em;
+  align-items: baseline;
+  padding: 2px 0;
+}
+.reveal .nrow .nlab {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.58em; letter-spacing: 0.08em; color: var(--coco-c01);
+  text-align: right;
+}
+.reveal .nrow .nv { text-align: right; white-space: nowrap; }
+.reveal .nrow .nv.in { color: var(--deck-loud); }
+.reveal .nrow .nv.was { color: var(--deck-quiet); }
+.reveal .nrow .nv.now { color: var(--deck-mark); }
+.reveal .nrow .nv.chg.up { color: var(--coco-win); }
+.reveal .nrow .nv.chg.dn { color: var(--coco-loss); }
+/* The arrow is not in the MC6847 character set, so it comes from the prose
+ * face rather than rendering as a missing glyph. */
+.reveal .nrow .arrow {
+  font-family: var(--deck-prose); margin-right: 0.35em;
+}
+.reveal .nrow.head { border-bottom: 1px solid var(--coco-c02);
+                     padding-bottom: 5px; margin-bottom: 3px; }
+.reveal .nrow.head .nv {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.55em; letter-spacing: 0.08em; color: var(--coco-c01);
+}

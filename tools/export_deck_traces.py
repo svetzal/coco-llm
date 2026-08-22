@@ -179,7 +179,40 @@ def main() -> None:
     error = probabilities_before.copy()
     error[target] -= 1.0
 
+    # --- the nudge, number by number -----------------------------------------
+    # The correction to the right answer's row is one multiplication repeated
+    # three times:
+    #
+    #     change = learning rate x how wrong we were x the incoming number
+    #
+    # so the SIGN of each change is the sign of the corresponding context
+    # number. Where the context went negative the weight goes down. That is
+    # the whole of backpropagation at this scale and it is worth showing
+    # rather than asserting.
+    #
+    # The changes are computed from the DISPLAYED before and after values, so
+    # the column adds up on screen. The factor is exported alongside for the
+    # formula line; multiplying it out agrees to within the last digit.
+    wrongness = 1.0 - float(probabilities_before[target])
+    factor = LEARNING_RATE * wrongness
+    nudges = []
+    for i in range(config.embedding):
+        was = round(float(weights_before[i]), 4)
+        now = round(float(weights_after[i]), 4)
+        nudges.append(
+            {
+                "incoming": round(float(vector_before[i]), 4),
+                "before": was,
+                "change": round(now - was, 4),
+                "after": now,
+                "up": now > was,
+            }
+        )
+
     step_trace = {
+        "nudges": nudges,
+        "wrongness": round(wrongness, 4),
+        "factor": round(factor, 4),
         "context_text": example["context_text"],
         "target_text": example["target_text"],
         "target": target,
@@ -330,20 +363,31 @@ def main() -> None:
     # occupy. The byte figure is measured off the assembled 6809 build rather
     # than calculated here, because the parameters are Q4.12 and a wrong
     # assumption about their width would be invisible.
+    # No seconds here. exhibit-copy.md forbids a runtime claim until it is
+    # measured on physical hardware, and the ~75s figure for this run is a
+    # cycle-model projection. Multiplies and instructions are counts, so they
+    # can be shown; what they take in wall time cannot, yet.
+    code_start = 0x2000
     parameter_bytes = symbol("parameters_end") - symbol("position_embeddings")
+    working_bytes = symbol("sample_count") + 2 - symbol("context_vector")
     per_example = 3 * len(vocabulary) * config.embedding
     budget = {
         "epochs": CHOSEN_EPOCHS,
         "examples": int(len(targets)),
         "per_example": per_example,
         "multiplies": per_example * len(targets) * CHOSEN_EPOCHS,
-        "floor_seconds": round(
-            per_example * len(targets) * CHOSEN_EPOCHS * 11 / 894_886, 1
-        ),
+        # Measured by instrumenting the exact 20-epoch reference run; see
+        # EXP-004's performance section.
+        "instructions": 15_824_366,
         "parameters": model.parameter_count,
         "bytes_each": parameter_bytes // model.parameter_count,
         "bytes": parameter_bytes,
-        "screen_bytes": 32 * 16,
+        "code_bytes": symbol("position_embeddings") - code_start,
+        "working_bytes": working_bytes,
+        "total_bytes": parameter_bytes + working_bytes
+        + (symbol("position_embeddings") - code_start),
+        "machine_bytes": 32 * 1024,
+        "target_seconds": 180,
     }
     assert budget["bytes"] == model.parameter_count * budget["bytes_each"]
 

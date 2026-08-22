@@ -160,13 +160,20 @@ training run:
 4. **What a parameter is.** 2x29x3 plus 29x3 plus 29 is 290, counted out. Then
    the definition: one number training is allowed to change. Then GPT-3's 175
    billion, without editorial.
-5. **One step**, then **do it again**, which closes on the budget: 20 epochs
-   times 58 examples times 261 multiplies is 302,760 multiplies and about 3.7
-   seconds of multiply instructions, while 290 parameters at two bytes each is
-   580 bytes against a 512-byte screen. Neither number is magic. Somebody
-   picked each one so the thing would run in a reasonable time and fit in a
-   reasonable amount of memory. That is the only place in the talk a design
-   budget is shown being met, so do not rush it.
+5. **One step**, which now shows the correction number by number: what came
+   in, what the weight was, how far it moved, where it landed. The sign of
+   every change is the sign of its incoming number, which is the whole of
+   backpropagation at this scale.
+6. **Do it again**, closing on the budget. 20 epochs times 58 examples times
+   261 multiplies is 302,760 multiplies and 15.8 million instructions. 580
+   bytes of weights plus 3,355 of code plus 234 working is 4,169 bytes sharing
+   a 32K machine with everything else. Neither number is magic; each was
+   picked so the run would finish in a reasonable time and leave room for the
+   rest of the program. That is the only place in the talk a design budget is
+   shown being met, so do not rush it.
+
+   **No runtime on this slide.** The three-minute target has a cycle-model
+   projection behind it and no hardware measurement, and the slide says so.
 
 Because that explanation is now front-loaded, the live run needs less talking
 over it and holds seven and a quarter minutes rather than nine. That is the

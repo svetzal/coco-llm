@@ -301,31 +301,46 @@
       </div>
       <div class="stage fragment" data-fragment-index="4">
         <p class="lbl">a score for every token</p>
-        <div class="bars"><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.6%"></div><div class="bar" style="height:69.4%"></div><div class="bar target" style="height:69.9%"><span class="after fragment" data-fragment-index="7" style="height:100.0%"></span><span class="barlab">AMIGA</span></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:69.0%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.8%"></div></div>
+        <div class="bars"><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.6%"></div><div class="bar" style="height:69.4%"></div><div class="bar target" style="height:69.9%"><span class="after fragment" data-fragment-index="6" style="height:100.0%"></span><span class="barlab">AMIGA</span></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.8%"></div><div class="bar" style="height:69.0%"></div><div class="bar" style="height:69.3%"></div><div class="bar" style="height:69.2%"></div><div class="bar" style="height:70.2%"></div><div class="bar" style="height:69.1%"></div><div class="bar" style="height:70.0%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.1%"></div><div class="bar" style="height:69.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.7%"></div><div class="bar" style="height:69.5%"></div><div class="bar" style="height:70.4%"></div><div class="bar" style="height:69.8%"></div></div>
       </div>
     </div>
 
-    <p class="half fragment" data-fragment-index="5">correct</p>
+    <p class="half fragment" data-fragment-index="3">correct</p>
     <div class="step-row">
-      <div class="stage fragment" data-fragment-index="5">
+      <div class="stage fragment" data-fragment-index="3">
         <p class="lbl">right answer</p>
         <div class="vec">
           <span class="num moved">AMIGA</span>
         </div>
         <p class="lbl">it gave it 3.5%</p>
       </div>
-      <div class="stage fragment" data-fragment-index="6">
-        <p class="lbl">its weights</p>
-        <div class="vec"><span class="num">+0.1214</span><span class="num">-0.0705</span><span class="num">+0.0325</span></div>
-      </div>
-      <div class="stage fragment" data-fragment-index="7">
-        <p class="lbl">nudged</p>
-        <div class="vec">
-          <span class="num moved">+0.1115</span><span class="num moved">-0.0858</span><span class="num moved">+0.0465</span>
+      <div class="stage fragment" data-fragment-index="4">
+        <div class="nudge">
+          <div class="nrow head">
+            <span class="nlab"></span>
+            <span class="nv">incoming</span>
+            <span class="nv">its weight</span>
+            <span class="nv">change</span>
+            <span class="nv">becomes</span>
+          </div>
+          <div class="nrow"><span class="nlab">number 1</span><span class="nv in">-0.0295</span><span class="nv was">+0.1214</span><span class="nv chg fragment dn" data-fragment-index="5"><span class="arrow">&darr;</span>-0.0099</span><span class="nv now fragment" data-fragment-index="6">+0.1115</span></div><div class="nrow"><span class="nlab">number 2</span><span class="nv in">-0.0454</span><span class="nv was">-0.0705</span><span class="nv chg fragment dn" data-fragment-index="5"><span class="arrow">&darr;</span>-0.0153</span><span class="nv now fragment" data-fragment-index="6">-0.0858</span></div><div class="nrow"><span class="nlab">number 3</span><span class="nv in">+0.0415</span><span class="nv was">+0.0325</span><span class="nv chg fragment up" data-fragment-index="5"><span class="arrow">&uarr;</span>+0.0140</span><span class="nv now fragment" data-fragment-index="6">+0.0465</span></div>
         </div>
-        <p class="lbl">now 4.9%</p>
+        <p class="lbl">
+          change = 0.35 learning rate
+          &times; 0.9655 wrong
+          &times; the incoming number
+        </p>
+        <p class="lbl fragment" data-fragment-index="6">
+          now 4.9%
+        </p>
       </div>
     </div>
+    <p class="cap fragment" data-fragment-index="6">
+      Every weight moves the way that would have raised
+      AMIGA's score.
+      <strong>The sign of each change is the sign of its incoming
+      number.</strong>
+    </p>
   </div>
   <!-- /FIGURE:step -->
   <aside class="notes">
@@ -365,21 +380,25 @@
           <span class="op">&times;</span> 58 examples
           <span class="op">&times;</span> 261 multiplies</span>
         <span class="bval">302,760</span>
-        <span class="bnote">about 3.7 seconds of
-          multiply instructions</span>
+        <span class="bnote">multiplies, and
+          15.8 million instructions for the
+          whole run</span>
       </div>
       <div class="brow">
         <span class="bkind">memory</span>
-        <span class="bsum">290 parameters
-          <span class="op">&times;</span> 2 bytes</span>
-        <span class="bval">580</span>
-        <span class="bnote">bytes, against the
-          512-byte screen it draws on</span>
+        <span class="bsum">580 weights
+          <span class="op">+</span> 3,355 code
+          <span class="op">+</span> 234 working</span>
+        <span class="bval">4,169</span>
+        <span class="bnote">bytes, and it shares the machine's
+          32K with everything else</span>
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="6">
-      Neither number is magic.
-      <strong>Both were chosen to fit this machine.</strong>
+      Neither number is magic. Both were chosen so this would finish in a
+      reasonable time and leave room for the rest of the program.
+      <strong>Whether it makes 3 minutes on the
+      real machine is still unmeasured.</strong>
     </p>
   </div>
   <!-- /FIGURE:loop -->
@@ -397,10 +416,17 @@
     chosen along the way, 20 epochs and 290 parameters, and each one is a bill
     that had to be paid.
 
-    Epochs buy time. 20 by 58 by 261 is 302,760 multiplies, about 3.7 seconds
-    of multiply instructions. Parameters occupy memory. 290 of them at two
-    bytes each is 580 bytes, which is more than the 512-byte screen this thing
-    draws on.
+    Epochs buy time. 20 by 58 by 261 is 302,760 multiplies, and 15.8 million
+    instructions for the whole run.
+
+    Parameters occupy memory, and the model does not get the machine to
+    itself. 580 bytes of weights, 3,355 of code, 234 of working space: 4,169
+    bytes that have to coexist with BASIC, the screen, and anything else
+    running. On a 32K machine that is the constraint that bites when you make
+    the vocabulary or the context window bigger.
+
+    DO NOT QUOTE A RUNTIME. The target was three minutes and we have a cycle
+    projection, not a measurement. Say that out loud; it is on the slide.
 
     Land it: neither number is magic. Somebody picked each one so the whole
     thing would run in a reasonable time and fit in a reasonable amount of
@@ -409,7 +435,8 @@
 
     The 60-epoch row is evidence that 20 was enough. It is not a rival choice.
 
-    SAY FLOOR. 3.7 seconds is multiply instructions only, not a runtime.
+    If asked how long it takes: it has not been timed on hardware. That is
+    the honest answer and it is the next thing to fix.
   </aside>
 </section>
 

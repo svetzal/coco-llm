@@ -133,7 +133,7 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
         overlay = ""
         if i == target:
             overlay = (
-                f'<span class="after fragment" data-fragment-index="7" '
+                f'<span class="after fragment" data-fragment-index="6" '
                 f'style="height:{100 * after[i] / top:.1f}%"></span>'
                 f'<span class="barlab">{esc(vocabulary[i])}</span>'
             )
@@ -165,6 +165,21 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
         for n, l in enumerate(trace["lookups"])
     )
 
+    nudge_rows = "".join(
+        f'<div class="nrow">'
+        f'<span class="nlab">number {i + 1}</span>'
+        f'<span class="nv in">{n["incoming"]:+.4f}</span>'
+        f'<span class="nv was">{n["before"]:+.4f}</span>'
+        f'<span class="nv chg fragment {"up" if n["up"] else "dn"}" '
+        f'data-fragment-index="5">'
+        f'<span class="arrow">{"&uarr;" if n["up"] else "&darr;"}</span>'
+        f'{n["change"]:+.4f}</span>'
+        f'<span class="nv now fragment" data-fragment-index="6">'
+        f'{n["after"]:+.4f}</span>'
+        f'</div>'
+        for i, n in enumerate(trace["nudges"])
+    )
+
     return f"""
   <div class="fig step">
     <p class="half">predict</p>
@@ -186,28 +201,42 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
       </div>
     </div>
 
-    <p class="half fragment" data-fragment-index="5">correct</p>
+    <p class="half fragment" data-fragment-index="3">correct</p>
     <div class="step-row">
-      <div class="stage fragment" data-fragment-index="5">
+      <div class="stage fragment" data-fragment-index="3">
         <p class="lbl">right answer</p>
         <div class="vec">
           <span class="num moved">{esc(trace["target_text"])}</span>
         </div>
         <p class="lbl">it gave it {trace["target_p_before"] * 100:.1f}%</p>
       </div>
-      <div class="stage fragment" data-fragment-index="6">
-        <p class="lbl">its weights</p>
-        <div class="vec">{numbers(trace["target_weights_before"])}</div>
-      </div>
-      <div class="stage fragment" data-fragment-index="7">
-        <p class="lbl">nudged</p>
-        <div class="vec">
-          {"".join(f'<span class="num moved">{v:+.4f}</span>'
-                   for v in trace["target_weights_after"])}
+      <div class="stage fragment" data-fragment-index="4">
+        <div class="nudge">
+          <div class="nrow head">
+            <span class="nlab"></span>
+            <span class="nv">incoming</span>
+            <span class="nv">its weight</span>
+            <span class="nv">change</span>
+            <span class="nv">becomes</span>
+          </div>
+          {nudge_rows}
         </div>
-        <p class="lbl">now {trace["target_p_after"] * 100:.1f}%</p>
+        <p class="lbl">
+          change = {trace["learning_rate"]} learning rate
+          &times; {trace["wrongness"]} wrong
+          &times; the incoming number
+        </p>
+        <p class="lbl fragment" data-fragment-index="6">
+          now {trace["target_p_after"] * 100:.1f}%
+        </p>
       </div>
     </div>
+    <p class="cap fragment" data-fragment-index="6">
+      Every weight moves the way that would have raised
+      {esc(trace["target_text"])}'s score.
+      <strong>The sign of each change is the sign of its incoming
+      number.</strong>
+    </p>
   </div>"""
 
 
@@ -358,21 +387,25 @@ def figure_loop(trace: dict, budget: dict) -> str:
           <span class="op">&times;</span> {budget["examples"]} examples
           <span class="op">&times;</span> {budget["per_example"]} multiplies</span>
         <span class="bval">{budget["multiplies"]:,}</span>
-        <span class="bnote">about {budget["floor_seconds"]} seconds of
-          multiply instructions</span>
+        <span class="bnote">multiplies, and
+          {budget["instructions"] / 1e6:.1f} million instructions for the
+          whole run</span>
       </div>
       <div class="brow">
         <span class="bkind">memory</span>
-        <span class="bsum">{budget["parameters"]} parameters
-          <span class="op">&times;</span> {budget["bytes_each"]} bytes</span>
-        <span class="bval">{budget["bytes"]}</span>
-        <span class="bnote">bytes, against the
-          {budget["screen_bytes"]}-byte screen it draws on</span>
+        <span class="bsum">{budget["bytes"]} weights
+          <span class="op">+</span> {budget["code_bytes"]:,} code
+          <span class="op">+</span> {budget["working_bytes"]} working</span>
+        <span class="bval">{budget["total_bytes"]:,}</span>
+        <span class="bnote">bytes, and it shares the machine's
+          {budget["machine_bytes"] // 1024}K with everything else</span>
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="6">
-      Neither number is magic.
-      <strong>Both were chosen to fit this machine.</strong>
+      Neither number is magic. Both were chosen so this would finish in a
+      reasonable time and leave room for the rest of the program.
+      <strong>Whether it makes {budget["target_seconds"] // 60} minutes on the
+      real machine is still unmeasured.</strong>
     </p>
   </div>"""
 
