@@ -1,0 +1,77 @@
+/* CoCo typography for the browser deck.
+ *
+ * Hot CoCo is Rebecca G. Bettencourt's TrueType rendering of the MC6847
+ * character generator, which is the chip that drew every character the CoCo 1
+ * ever put on a screen. Used under the Kreative Software Relay Fonts Free Use
+ * License; see fonts/FreeLicense.txt, which ships verbatim beside it.
+ *
+ * That licence permits use, display, embedding and redistribution, and forbids
+ * modification and derivative works. So the .ttf is served as it arrived. Do
+ * not subset it, do not convert it to WOFF2, and do not run it through a build
+ * step. The file is 80 KB, which is cheaper than the argument.
+ *
+ * Every glyph advances 800/1200 em, which is the VDG's 8 by 12 pixel cell
+ * exactly. The screen geometry below follows from that and not from taste.
+ */
+
+@font-face {
+  font-family: "Hot CoCo";
+  src: url("fonts/HotCoCo.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block; /* no flash of a substitute; the letterforms are the point */
+}
+
+:root {
+  --coco-type: "Hot CoCo", "Courier New", ui-monospace, monospace;
+
+  /* One character cell. Width is the real advance; height is the em box. */
+  --coco-cell-w: 0.6667em;
+  --coco-cell-h: 1em;
+
+  /* The whole VDG text screen, 32 by 16. */
+  --coco-screen-w: 21.334em; /* 32 cells */
+  --coco-screen-h: 16em;     /* 16 rows  */
+}
+
+/* A block of text pretending to be the machine. Black on green, which is the
+ * CoCo's own look and the body of every screen in this project. */
+.coco-screen {
+  font-family: var(--coco-type);
+  font-size: 1rem;
+  line-height: var(--coco-cell-h);
+  letter-spacing: 0;
+  background: var(--coco-bg);
+  color: var(--coco-ink);
+  width: var(--coco-screen-w);
+  padding: 0;
+  white-space: pre;
+  text-transform: uppercase; /* the MC6847 has no lowercase */
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  image-rendering: pixelated;
+}
+
+/* The reversed title bar, green on black. One row, full width. */
+.coco-screen .bar,
+.coco-bar {
+  display: block;
+  background: var(--coco-ink);
+  color: var(--coco-bar);
+}
+
+/* Semigraphics blocks live in the Private Use Area at E080-E0FF, one codepoint
+ * per VDG cell byte $80-$FF. A font cannot carry colour, so the glyph supplies
+ * the shape and CSS supplies the colour: U+E08F is the all-quadrants block. */
+.coco-block { font-family: var(--coco-type); }
+.coco-block.win  { color: var(--coco-win); }
+.coco-block.tie  { color: var(--coco-tie); }
+.coco-block.loss { color: var(--coco-loss); }
+
+/* Code on slides. Same letterforms as the machine, so an assembly excerpt and
+ * the screen it produces are visibly the same alphabet. */
+code, pre, .coco-code {
+  font-family: var(--coco-type);
+  font-variant-ligatures: none;
+  -webkit-font-smoothing: none;
+}
