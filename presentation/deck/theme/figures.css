@@ -502,3 +502,31 @@
  * together". */
 .reveal .epoch .out.repeats { color: var(--coco-orange); }
 .reveal .epoch .out.repeats .tag { color: var(--coco-orange); }
+
+/* --- assembly reveals -----------------------------------------------------
+ *
+ * Retyped code goes stale silently, so these are extracted from the source
+ * that assembles by tools/extract_code_excerpts.py. Highlighted lines are
+ * matched by their instruction, not by line number, so a highlight cannot
+ * drift onto the wrong instruction either.
+ */
+.reveal .fig.code { font-size: 0.8em; }
+.reveal .asm {
+  display: inline-block; text-align: left; margin: 0; padding: 0;
+  font-family: var(--coco-type); font-size: 1em; line-height: 1.28;
+  background: none; box-shadow: none; width: auto;
+}
+.reveal .cline {
+  color: var(--deck-quiet); white-space: pre; padding: 0 0.6em;
+}
+.reveal .cline.hot {
+  color: var(--deck-mark); background: rgba(250, 229, 61, 0.12);
+}
+/* The omission marker lines up with the code it stands in for, not with the
+ * label column. A path is also left in its real case: these are file names. */
+.reveal .cline.elide { color: var(--coco-c01); padding-left: 2.6em; }
+.reveal .fig.code .cap { margin-top: 1em; max-width: 40em; }
+.reveal .fig.code .cap .src {
+  display: block; margin-top: 0.5em; color: var(--coco-c01);
+  font-size: 0.85em; letter-spacing: 0.06em; text-transform: none;
+}

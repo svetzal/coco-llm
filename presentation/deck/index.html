@@ -625,21 +625,116 @@
   </aside>
 </section>
 
-<section class="cue" data-timing="540">
+<section class="cue" data-timing="120">
   <h2>Watch it learn</h2>
   <p class="what">EXP-004 &middot; the live training run</p>
   <aside class="notes">
-    THE CENTREPIECE. Reset to random weights, seed 6809, generate nonsense.
-    Start training. While epochs run, walk one step: scores, softmax, error,
-    backpropagation, update. Pause at PRESS ANY KEY, let the room choose when
-    to infer. Repeat seed 6809 and compare.
+    THE CENTREPIECE and the reason the talk exists. Block 2 did the
+    explaining, so this needs far less narration than it used to.
 
-    Two unsigned MULs only if the run gives you time. Best code beat, first to
-    drop.
+    Reset to random weights. Seed 6809. Generate, and read the nonsense out.
 
-    LENGTH UNMEASURED. Eleven minutes is a planning figure.
+    Start the training loop, and say what they are watching: 58 examples, 20
+    epochs, 1,160 corrections, each one the nudge from the One Step slide.
 
-    If it does not improve, say so and inspect the evidence together. A
+    Then LEAVE IT RUNNING and cut to the code. Do not narrate a progress
+    counter for seven minutes.
+
+    LENGTH UNMEASURED. Nine minutes here plus two in reserve. If training
+    finishes early, come back sooner; the code slides are the flexible part.
+  </aside>
+</section>
+
+<section data-timing="90">
+  <!-- FIGURE:twomuls -->
+  <p class="lead">one signed multiply, from two unsigned ones</p>
+  <div class="fig code">
+    <pre class="asm"><div class="cline">multiply_s8_s16</div><div class="cline">        sta     multiply_factor</div><div class="cline">        ldb     1,x</div><div class="cline hot">        mul</div><div class="cline">        std     multiply_product</div><div class="cline">        lda     multiply_factor</div><div class="cline">        ldb     ,x</div><div class="cline hot">        mul</div><div class="cline">        addb    multiply_product</div><div class="cline">        stb     multiply_product</div></pre>
+    <p class="cap">The 6809 multiplies two unsigned bytes. This makes a signed multiply out of two of them, and it is running right now. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
+  </div>
+  <!-- /FIGURE:twomuls -->
+  <aside class="notes">
+    FIRST CODE IN THE TALK. It is training while this is on screen.
+
+    The 6809 has a MUL instruction and it multiplies two UNSIGNED bytes. The
+    model needs signed multiplication. The first version did it a bit at a
+    time: correct, easy to explain, and 38.6 million instructions for the run.
+
+    This is what replaced it. Split the 16-bit operand, two MULs, add the
+    halves. 15.8 million instructions. The model is bit-for-bit identical: not
+    one output changed.
+
+    THE POINT, and it is a human one: the learning algorithm did not change.
+    Somebody understood both the mathematics and the machine, and that is what
+    turned a correct experiment into something you can watch happen.
+
+    The tests are what made that safe. You cannot optimise aggressively
+    without them; you can only hope.
+  </aside>
+</section>
+
+<section data-timing="60">
+  <!-- FIGURE:signfix -->
+  <p class="lead">and the correction that makes it signed</p>
+  <div class="fig code">
+    <pre class="asm"><div class="cline elide">...</div><div class="cline">        tst     multiply_factor</div><div class="cline">        bpl     multiply_ready</div><div class="cline">        lda     multiply_product</div><div class="cline hot">        suba    1,x</div><div class="cline">        sta     multiply_product</div></pre>
+    <p class="cap">A negative factor comes out 256 too large. One subtraction fixes it, and the model is bit-for-bit what it was before. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
+  </div>
+  <!-- /FIGURE:signfix -->
+  <aside class="notes">
+    OPTIONAL DEPTH. Drop this first if the run finishes early.
+
+    MUL is unsigned, so if the factor was negative its unsigned form is 256
+    too large. Subtract the multiplier's low byte from the high byte of the
+    result and it is correct again.
+
+    Worth showing because it is the kind of detail that decides whether a
+    thing is possible on this machine at all, and because it is five
+    instructions.
+  </aside>
+</section>
+
+<section data-timing="60">
+  <!-- FIGURE:lrcode -->
+  <p class="lead">the learning rate, in eight instructions</p>
+  <div class="fig code">
+    <pre class="asm"><div class="cline elide">...</div><div class="cline">        lbsr    experiment_multiply_training_context</div><div class="cline hot">        asra</div><div class="cline hot">        rorb</div><div class="cline hot">        asra</div><div class="cline hot">        rorb</div><div class="cline hot">        asra</div><div class="cline hot">        rorb</div><div class="cline hot">        asra</div><div class="cline hot">        rorb</div></pre>
+    <p class="cap">Shift right four times and you have divided by sixteen. That is the learning rate: not a setting, an instruction count. <span class="src">src/6809/training.asm - update_weight</span></p>
+  </div>
+  <!-- /FIGURE:lrcode -->
+  <aside class="notes">
+    CALLBACK to the nudge slide. We said the learning rate is 1/16. Here it
+    is.
+
+    Four asra/rorb pairs shift the 16-bit gradient right by four, which
+    divides it by sixteen. That is the whole of the learning rate.
+
+    Say why it is a sixteenth and not 0.1 or 0.03: because a shift is free and
+    a division is not. The hyperparameter everyone tunes is, on this machine,
+    a choice about which instructions exist.
+
+    Ask the room what a learning rate of 1/8 would cost here. One fewer pair.
+  </aside>
+</section>
+
+<section class="cue" data-timing="210">
+  <h2>Back to the machine</h2>
+  <p class="what">EXP-004 &middot; the comparison</p>
+  <aside class="notes">
+    Return to XRoar. It should be at or near the training boundary.
+
+    Pause at PRESS ANY KEY and let SOMEONE IN THE ROOM decide when inference
+    begins. That is the whole reason the pause exists.
+
+    Then the controlled comparison: same generation seed 6809, run again.
+    RANDOM WEIGHTS above the first output, LEARNED WEIGHTS above the second.
+    Architecture, initial weights, budget, vocabulary and sampling seed all
+    held; only training differs.
+
+    Eleven trained samples stay on screen so they see a distribution rather
+    than one lucky output.
+
+    If it did not improve, say so and inspect the evidence together. A
     recorded run is a labelled comparison, never a substitute.
   </aside>
 </section>

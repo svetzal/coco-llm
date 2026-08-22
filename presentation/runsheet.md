@@ -219,18 +219,38 @@ say so.
 
 ### 3. How it works, on the machine
 
-**On screen:** EXP-004, the live training run, in XRoar.
+**On screen:** EXP-004 in XRoar, then three assembly reveals while it trains,
+then back to XRoar.
 
-The centrepiece and the reason the talk exists, and it needs much less
-narration than it used to because block 2 did the explaining.
+Five slides, nine minutes, and the structure exists to solve a problem: the
+training run takes minutes and nobody should narrate a progress counter for
+that long. So the run starts, and the talk cuts to the code that is executing
+while it executes.
 
-Reset to random weights, seed 6809, generate visible nonsense. Start the
-training loop. Reach the declared boundary, pause at `PRESS ANY KEY`, and let
-someone in the room decide when to run inference. Repeat seed 6809 and compare
-random weights with learned weights on screen.
+| Slide | Sec | What happens |
+| --- | ---: | --- |
+| Watch it learn | 120 | Reset, seed 6809, read the nonsense out, start training |
+| One signed multiply from two unsigned | 90 | The optimisation that made this possible |
+| And the correction that makes it signed | 60 | Optional depth, first to drop |
+| The learning rate, in eight instructions | 60 | Callback: the 1/16 from block 2, physically |
+| Back to the machine | 210 | The pause, the audience's choice, the comparison |
 
-Reveal the two unsigned `MUL` operations only if the run gives you the time.
-It is the best code beat in the talk and it is also the first thing to drop.
+The three code slides are the deck's only assembly, and they are extracted
+from the source that assembles by `tools/extract_code_excerpts.py` rather than
+retyped, so a later change to the model cannot leave a slide quietly lying.
+Highlights are matched by instruction, not line number, for the same reason.
+The tool enforces the journey's five-to-twelve-line limit and refuses to emit
+an excerpt outside it.
+
+The best beat is the middle one, and it is a human point rather than a
+technical one: the first version multiplied a bit at a time and needed 38.6
+million instructions. This version needs 15.8 million and produces
+bit-for-bit identical output. The learning algorithm did not change. Somebody
+understood both the mathematics and the machine. The tests are what made
+changing it safe.
+
+If training finishes early, come back sooner and drop the sign correction.
+That is what it is there for.
 
 **This block's length is the largest open risk in the plan.** Nine minutes is
 a planning figure and the 2-minute reserve sits behind it, so there are eleven

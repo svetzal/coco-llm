@@ -521,6 +521,25 @@ def figure_cost(budget: dict, split: dict) -> str:
   </div>"""
 
 
+def figure_code(excerpt: dict, note: str) -> str:
+    """One assembly reveal, taken verbatim from the source that assembles."""
+    lines = "".join(
+        f'<div class="cline{" hot" if line["hot"] else ""}">'
+        f'{esc(line["text"])}</div>'
+        for line in excerpt["lines"]
+    )
+    elided = (
+        '<div class="cline elide">...</div>' if excerpt["begins_inside"] else ""
+    )
+    tail = '<div class="cline elide">...</div>' if excerpt["dropped_comments"] else ""
+    return f"""
+  <p class="lead">{esc(excerpt["title"])}</p>
+  <div class="fig code">
+    <pre class="asm">{elided}{lines}{tail}</pre>
+    <p class="cap">{note} <span class="src">{esc(excerpt["source"])}</span></p>
+  </div>"""
+
+
 def splice(source: str, name: str, body: str) -> str:
     pattern = re.compile(
         rf"(<!-- FIGURE:{re.escape(name)} -->).*?(<!-- /FIGURE:{re.escape(name)} -->)",
@@ -533,6 +552,7 @@ def splice(source: str, name: str, body: str) -> str:
 
 def main() -> None:
     traces = json.loads(TRACES.read_text())
+    code = json.loads((TRACES.parent / "code.json").read_text())
     vocabulary = traces["vocabulary"]["vocabulary"]
 
     deck = DECK.read_text()
@@ -544,8 +564,23 @@ def main() -> None:
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))
     deck = splice(deck, "loop", figure_loop(traces["loop"], traces["budget"], traces["split"]))
     deck = splice(deck, "cost", figure_cost(traces["budget"], traces["split"]))
+    deck = splice(deck, "twomuls", figure_code(
+        code["two_muls"],
+        "The 6809 multiplies two unsigned bytes. This makes a signed multiply "
+        "out of two of them, and it is running right now.",
+    ))
+    deck = splice(deck, "signfix", figure_code(
+        code["sign_fix"],
+        "A negative factor comes out 256 too large. One subtraction fixes it, "
+        "and the model is bit-for-bit what it was before.",
+    ))
+    deck = splice(deck, "lrcode", figure_code(
+        code["learning_rate"],
+        "Shift right four times and you have divided by sixteen. That is the "
+        "learning rate: not a setting, an instruction count.",
+    ))
     DECK.write_text(deck, encoding="utf-8")
-    print("spliced 8 figures into presentation/deck/index.html")
+    print("spliced 11 figures into presentation/deck/index.html")
 
 
 if __name__ == "__main__":

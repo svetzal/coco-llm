@@ -1,0 +1,125 @@
+{
+ "two_muls": {
+  "source": "src/6809/model_forward.asm - multiply_s8_s16",
+  "begins_inside": false,
+  "title": "one signed multiply, from two unsigned ones",
+  "lines": [
+   {
+    "text": "multiply_s8_s16",
+    "hot": false
+   },
+   {
+    "text": "        sta     multiply_factor",
+    "hot": false
+   },
+   {
+    "text": "        ldb     1,x",
+    "hot": false
+   },
+   {
+    "text": "        mul",
+    "hot": true
+   },
+   {
+    "text": "        std     multiply_product",
+    "hot": false
+   },
+   {
+    "text": "        lda     multiply_factor",
+    "hot": false
+   },
+   {
+    "text": "        ldb     ,x",
+    "hot": false
+   },
+   {
+    "text": "        mul",
+    "hot": true
+   },
+   {
+    "text": "        addb    multiply_product",
+    "hot": false
+   },
+   {
+    "text": "        stb     multiply_product",
+    "hot": false
+   }
+  ],
+  "dropped_comments": false,
+  "highlighted": 2
+ },
+ "sign_fix": {
+  "source": "src/6809/model_forward.asm - multiply_s8_s16",
+  "begins_inside": true,
+  "title": "and the correction that makes it signed",
+  "lines": [
+   {
+    "text": "        tst     multiply_factor",
+    "hot": false
+   },
+   {
+    "text": "        bpl     multiply_ready",
+    "hot": false
+   },
+   {
+    "text": "        lda     multiply_product",
+    "hot": false
+   },
+   {
+    "text": "        suba    1,x",
+    "hot": true
+   },
+   {
+    "text": "        sta     multiply_product",
+    "hot": false
+   }
+  ],
+  "dropped_comments": false,
+  "highlighted": 1
+ },
+ "learning_rate": {
+  "source": "src/6809/training.asm - update_weight",
+  "begins_inside": true,
+  "title": "the learning rate, in eight instructions",
+  "lines": [
+   {
+    "text": "        lbsr    experiment_multiply_training_context",
+    "hot": false
+   },
+   {
+    "text": "        asra",
+    "hot": true
+   },
+   {
+    "text": "        rorb",
+    "hot": true
+   },
+   {
+    "text": "        asra",
+    "hot": true
+   },
+   {
+    "text": "        rorb",
+    "hot": true
+   },
+   {
+    "text": "        asra",
+    "hot": true
+   },
+   {
+    "text": "        rorb",
+    "hot": true
+   },
+   {
+    "text": "        asra",
+    "hot": true
+   },
+   {
+    "text": "        rorb",
+    "hot": true
+   }
+  ],
+  "dropped_comments": false,
+  "highlighted": 8
+ }
+}
