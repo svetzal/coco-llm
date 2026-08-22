@@ -38,42 +38,57 @@ slide until it is measured, and an emulator measurement is labelled as one.
 
 ## The budget
 
-45 minutes total. 40 minutes of content, 5 minutes of questions. There is no
-slack in that, so every block below has a stated cost and the cut order is
-decided in advance rather than in the moment.
+45 minutes total: **36 minutes of content, 2 minutes of reserve, 7 for
+questions.**
+
+That reserve exists because of a measurement. Blocks 1 and 2 were budgeted at
+11 minutes on the assumption that eight figure slides need a minute each. Walked
+through, they take 2 to 3 minutes, or 3 to 5 with questions from the room. They
+now hold 5, and the six minutes that recovered went to the live training run,
+which had been squeezed twice to pay for those slides and is the one thing in
+the talk that has never been timed.
+
+Do not spend the reserve in advance. It is there for block 3.
 
 | # | Block | Slides | Min | Cum | Surface | Arc |
 | --- | --- | ---: | ---: | ---: | --- | --- |
-| 1 | It already works | 1 | 3 | 3 | Slide | Mystery |
-| 2 | How it works, on slides | 8 | 8 | 11 | Slides | Mechanism |
-| 3 | How it works, on the machine | 1 | 7.25 | 18.25 | EXP-004 live training | Mechanism |
-| 4 | Change one thing: the prompt | 1 | 2.75 | 21 | CoCo, EXP-005 prompted completions | Mechanism |
-| 5 | Change one thing: the context | 1 | 5 | 26 | CoCo, EXP-011 attention head | Mechanism |
-| 6 | A screen of things that never existed | 1 | 3 | 29 | CoCo, EXP-012 fake titles | Delight |
-| 7 | Change one thing: the upbringing | 1 | 4 | 33 | Slide, EXP-003 fan-corpus bias | Limitation |
-| 8 | Now you play it | 1 | 5 | 38 | CoCo, EXP-013 game opponent | Agency |
-| 9 | Who decided | 1 | 2 | 40 | Slide | Agency |
-| | Questions | | 5 | 45 | | |
+| 1 | It already works | 1 | 1 | 1 | Slide | Mystery |
+| 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
+| 3 | How it works, on the machine | 1 | 9 | 14 | EXP-004 live training | Mechanism |
+| 4 | Change one thing: the prompt | 1 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
+| 5 | Change one thing: the context | 1 | 5 | 22 | CoCo, EXP-011 attention head | Mechanism |
+| 6 | A screen of things that never existed | 1 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
+| 7 | Change one thing: the upbringing | 1 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
+| 8 | Now you play it | 1 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
+| 9 | Who decided | 1 | 2 | 36 | Slide | Agency |
+| | Reserve, held for block 3 | | 2 | 38 | | |
+| | Questions | | 7 | 45 | | |
 
 Blocks 2 and 3 were one block when this file was written. Building the figures
 split them: eight slides now carry the explanation that used to be narrated
-over the training run, so the run itself needs less talking and holds 7 minutes
-15 rather than 9. That is the single most important number in this file to
-revisit, because **EXP-004's training time has still never been measured on
-hardware** and it has been squeezed twice.
+over the training run.
+
+**Block 3 now holds 9 minutes and there are 2 more in reserve behind it.** That
+is more room than the original plan gave it, and it is deliberate, because
+**EXP-004's training time has still never been measured on hardware.** It is
+the only block in the talk whose length nobody knows.
 
 Block 2, slide by slide:
 
-| Slide | Min | What it settles |
+| Slide | Sec | What it settles |
 | --- | ---: | --- |
-| What is a word? | 2.5 | Tokenizing, tokens, and the context window, named where they first appear |
-| Thirteen doesn't mean anything | 0.5 | An identifier is a name; arithmetic on it proves nothing |
-| Why three? | 1 | The cost of each embedding width, and that six would have fitted |
-| Where the numbers live | 0.75 | Both lookup tables; the same word holds a different row per position |
-| What a parameter is | 0.75 | 2x29x3 + 29x3 + 29 = 290, and the definition |
-| One step | 0.75 | Predict, then correct, with the nudge number by number |
-| Do it again. And again. | 1 | Repeating, inventing, reciting: three failures that go in order |
-| What it cost | 0.75 | Time and memory, and what learning costs over using |
+| What is a word? | 40 | Tokenizing, tokens, and the context window, named where they first appear |
+| Thirteen doesn't mean anything | 20 | An identifier is a name; arithmetic on it proves nothing |
+| Why three? | 30 | The cost of each embedding width, and that six would have fitted |
+| Where the numbers live | 25 | Both lookup tables; the same token holds a different row per position |
+| What a parameter is | 25 | 2x29x3 + 29x3 + 29 = 290, and the definition |
+| One step | 40 | Predict, then correct, with the nudge number by number |
+| Do it again. And again. | 40 | Repeating, inventing, reciting: three failures that go in order |
+| What it cost | 20 | Time and memory, and what learning costs over using |
+
+These are seconds, not minutes, and that is the measurement talking. Eight
+figures that each carry one idea go faster than they look on paper. If the room
+asks questions the block stretches, and that is what it is for.
 
 Blocks 4, 5 and 7 repeat one sentence deliberately: *we changed exactly one
 thing*. That repetition is the spine of the talk. Prompt, context, and training
@@ -217,9 +232,10 @@ random weights with learned weights on screen.
 Reveal the two unsigned `MUL` operations only if the run gives you the time.
 It is the best code beat in the talk and it is also the first thing to drop.
 
-**This block's length is the largest open risk in the plan.** Seven minutes
-fifteen is a planning figure. Training has never been timed on hardware, and
-this block has been squeezed twice to pay for slides. See "Open decisions".
+**This block's length is the largest open risk in the plan.** Nine minutes is
+a planning figure and the 2-minute reserve sits behind it, so there are eleven
+available. That is more than the original plan gave it, and it is there
+because training has never been timed on hardware. See "Open decisions".
 
 If training does not improve, say so and inspect the evidence with the room.
 A previously recorded run may be shown as a labelled comparison and never as a
@@ -361,9 +377,9 @@ These block locking the runsheet. Each one is a question for Stacey, not a task
 to be worked around.
 
 1. **How long does EXP-004, the live training run, actually take?** Block 3
-   holds 7 minutes 15 for it and has never been timed. Everything downstream
-   floats until it is, and the block has now been squeezed twice to pay for
-   slides, so the margin is thinner than it looks. Projecting the emulator
+   holds 9 minutes with 2 more in reserve, and has never been timed. That is
+   generous cover for a number nobody knows, bought by measuring blocks 1 and
+   2 instead of guessing at them. It is still a guess. Projecting the emulator
    makes it cheap to settle: XRoar at `-ratelimit` runs the same clock, and
    the run can be trapped and wall-clocked on the laptop without touching
    hardware. **This is the next thing to do.**

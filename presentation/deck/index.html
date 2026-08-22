@@ -31,7 +31,7 @@
 <div class="slides">
 
 <!-- ============ 1. It already works · 3 min · slide ============ -->
-<section data-timing="180">
+<section data-timing="60">
   <h1>Coco LLM</h1>
   <p class="sub">A 45-year-old computer, starting from random numbers</p>
   <aside class="notes">
@@ -50,7 +50,7 @@
 </section>
 
 <!-- ============ 2. What the machine thinks a word is · 4 min · slide ============ -->
-<section data-timing="150">
+<section data-timing="40">
   <h2>What is a word?</h2>
   <p class="lead">Cutting text into pieces a machine can count is called
   <strong>tokenizing</strong>. The pieces are <strong>tokens</strong>. Here
@@ -96,7 +96,7 @@
 <!-- ============ 3. Random numbers, then not · 11 min · EXP-004 ============ -->
 <!-- Two figures set up the loop, then the machine runs it. Timing splits the
      block's eleven minutes: two minutes of setup, nine on the machine. -->
-<section data-timing="30">
+<section data-timing="20">
   <h2>Thirteen doesn't mean anything</h2>
   <!-- FIGURE:ids -->
   <div class="fig ids">
@@ -134,7 +134,7 @@
   </aside>
 </section>
 
-<section data-timing="60">
+<section data-timing="30">
   <h2>Why three?</h2>
   <p class="lead">One number puts a word on a line. Three put it in a space,
   so words can be near each other in more than one way.</p>
@@ -190,7 +190,7 @@
   </aside>
 </section>
 
-<section data-timing="45">
+<section data-timing="25">
   <h2>Where the numbers live</h2>
   <!-- FIGURE:tables -->
   <div class="fig tables">
@@ -234,7 +234,7 @@
   </aside>
 </section>
 
-<section data-timing="45">
+<section data-timing="25">
   <h2>What a parameter is</h2>
   <!-- FIGURE:params -->
   <div class="fig params">
@@ -281,7 +281,7 @@
   </aside>
 </section>
 
-<section data-timing="45">
+<section data-timing="40">
   <h2>One step</h2>
   <!-- FIGURE:step -->
   <div class="fig step">
@@ -395,7 +395,7 @@
   </aside>
 </section>
 
-<section data-timing="60">
+<section data-timing="40">
   <h2>Do it again. And again.</h2>
   <!-- FIGURE:loop -->
   <div class="fig">
@@ -511,7 +511,7 @@
   </aside>
 </section>
 
-<section data-timing="45">
+<section data-timing="20">
   <h2>What it cost</h2>
   <!-- FIGURE:cost -->
   <div class="fig">
@@ -625,7 +625,7 @@
   </aside>
 </section>
 
-<section class="cue" data-timing="435">
+<section class="cue" data-timing="540">
   <h2>Watch it learn</h2>
   <p class="what">EXP-004 &middot; the live training run</p>
   <aside class="notes">
@@ -645,7 +645,7 @@
 </section>
 
 <!-- ============ 4. Change one thing: the prompt · 3 min · EXP-005 ============ -->
-<section class="cue" data-timing="165">
+<section class="cue" data-timing="180">
   <p class="changed">We changed exactly one thing:<br><span class="one">the prompt</span></p>
   <p class="what">EXP-005 &middot; the prompted marketing completions</p>
   <aside class="notes">
@@ -777,7 +777,9 @@ Reveal.initialize({
   // The runsheet's budget, so the speaker view paces against it rather than
   // against a guess. Per-slide data-timing overrides this.
   defaultTiming: 120,
-  totalTime: 2400, // forty minutes of content; questions are outside it
+  // Measured, not guessed: the opening nine slides walk in 3-5 minutes.
+  // The rest of the slot is 2 minutes of reserve and 7 for questions.
+  totalTime: 2160,
   transition: "none", // a 1981 machine does not dissolve
   plugins: [RevealNotes, RevealHighlight],
 });
