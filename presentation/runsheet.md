@@ -17,12 +17,12 @@ decided in advance rather than in the moment.
 | --- | --- | ---: | ---: | --- | --- |
 | 1 | It already works | 3 | 3 | Slide | Mystery |
 | 2 | What the machine thinks a word is | 4 | 7 | Slide + room | Mechanism |
-| 3 | Random numbers, then not | 11 | 18 | CoCo, EXP-004 | Mechanism |
-| 4 | Change one thing: the prompt | 3 | 21 | CoCo, EXP-005 | Mechanism |
-| 5 | Change one thing: the context | 5 | 26 | CoCo, EXP-011 | Mechanism |
-| 6 | A screen of things that never existed | 3 | 29 | CoCo, EXP-012 | Delight |
-| 7 | Change one thing: the upbringing | 4 | 33 | Slide, EXP-003 | Limitation |
-| 8 | Now you play it | 5 | 38 | CoCo, EXP-013 | Agency |
+| 3 | Random numbers, then not | 11 | 18 | CoCo, EXP-004 live training | Mechanism |
+| 4 | Change one thing: the prompt | 3 | 21 | CoCo, EXP-005 prompted completions | Mechanism |
+| 5 | Change one thing: the context | 5 | 26 | CoCo, EXP-011 attention head | Mechanism |
+| 6 | A screen of things that never existed | 3 | 29 | CoCo, EXP-012 fake titles | Delight |
+| 7 | Change one thing: the upbringing | 4 | 33 | Slide, EXP-003 fan-corpus bias | Limitation |
+| 8 | Now you play it | 5 | 38 | CoCo, EXP-013 game opponent | Agency |
 | 9 | Who decided | 2 | 40 | Slide | Agency |
 | | Questions | 5 | 45 | | |
 
@@ -69,7 +69,8 @@ on the slide.
 
 ### 2. What the machine thinks a word is
 
-**On screen:** the 29 token values from EXP-004, then `COMMODORE AMIGA` encoded.
+**On screen:** the 29 token values from EXP-004, the live training run, then
+`COMMODORE AMIGA` encoded.
 
 One idea: the machine does not have words, it has numbers, and someone chose
 which numbers. Show the encoding, then show the three sliding two-token
@@ -81,7 +82,7 @@ anyone who wants to argue about it afterwards.
 
 ### 3. Random numbers, then not
 
-**On screen:** EXP-004, live, on the CoCo.
+**On screen:** EXP-004, the live training run, on the CoCo.
 
 The centrepiece and the reason the talk exists. Reset to random weights, seed
 6809, generate visible nonsense. Start the training loop. While the epochs run,
@@ -101,7 +102,8 @@ substitute.
 
 ### 4. Change one thing: the prompt
 
-**On screen:** EXP-005, title reading `SAME MODEL - CHANGE THE PROMPT`.
+**On screen:** EXP-005, the prompted marketing completions, title reading
+`SAME MODEL - CHANGE THE PROMPT`.
 
 Ask what stayed fixed. Take `ARE YOU` and ask the room to call the completion
 before showing `KEEPING UP IN LITTLE COMPUTERS`. It blended two campaigns into
@@ -109,7 +111,8 @@ something plausible without understanding either one.
 
 ### 5. Change one thing: the context
 
-**On screen:** EXP-011, weights labelled locked, context labelled temporary.
+**On screen:** EXP-011, the context-editing attention head, weights labelled
+locked and context labelled temporary.
 
 This is the block with the most direct bearing on what people already use, so
 protect its time. Retrieve `LISA = CODE 2`. Open the editor, type `6`, show
@@ -128,7 +131,7 @@ The score replay (`V`) is optional depth and is not in the budget.
 
 ### 6. A screen of things that never existed
 
-**On screen:** EXP-012, one keystroke, sixteen invented Star Trek titles.
+**On screen:** EXP-012, the fake episode titles, one keystroke, sixteen of them.
 
 The lesson is the split, and it is visible in the sizes: 400 bytes of model
 holding the shape of a title, against 1,600 bytes of dictionary and rules
@@ -158,7 +161,8 @@ for them.
 
 ### 8. Now you play it
 
-**On screen:** EXP-013 on the CoCo, and someone from the room at the keyboard.
+**On screen:** EXP-013, the game opponent that learns, on the CoCo, and someone
+from the room at the keyboard.
 
 It does not know the rules. `RULES 0/25` says so before a round is played. It
 does not know the player either, and `MEMORY n/rounds` says how little it has
@@ -204,12 +208,12 @@ a stage handles badly.
 
 | Item | Why it belongs there |
 | --- | --- |
-| EXP-006 completion workbench | One person types for two minutes. Unwatchable from row 12. |
-| EXP-007 sentence completion | Same, plus the `<END>` interface-failure story needs a conversation. |
-| EXP-013 playable opponent | Also on stage. On the table people play until it beats them. |
-| EXP-012 title generator | Runs unattended in a loop. Good attractor. |
+| EXP-006, the 8 KiB completion workbench | One person types for two minutes. Unwatchable from row 12. |
+| EXP-007, the all-RAM sentence completer | Same, plus the `<END>` interface-failure story needs a conversation. |
+| EXP-013, the playable game opponent | Also on stage. On the table people play until it beats them. |
+| EXP-012, the fake title generator | Runs unattended in a loop. Good attractor. |
 | The four table exercises | Already designed against a 10-second to 15-minute ladder. |
-| EXP-009 and EXP-010 music | Not stage-ready. Worth playing for anyone who asks. |
+| EXP-009 and EXP-010, the four-voice synthesizer and melody continuation | Not stage-ready. Worth playing for anyone who asks. |
 
 `table-exercises.md` currently assumes the table is the only surface. It needs
 a pass to say which demo is running on which machine and when the presenter is
@@ -220,10 +224,10 @@ absent.
 These block locking the runsheet. Each one is a question for Stacey, not a task
 to be worked around.
 
-1. **How long does EXP-004 actually train on a physical CoCo 1?** Block 3 is
-   eleven minutes of a forty-minute talk and its true length has never been
-   measured on hardware. Everything downstream floats until it is. This is the
-   single largest risk in the plan.
+1. **How long does EXP-004, the live training run, actually take on a physical
+   CoCo 1?** Block 3 is eleven minutes of a forty-minute talk and its true
+   length has never been measured on hardware. Everything downstream floats
+   until it is. This is the single largest risk in the plan.
 2. **Does the abstract still describe the talk?** It promises invented computer
    names and 1980s marketing phrases. Blocks 5, 6 and 8 are none of those
    things, and block 8 is the strongest beat in the set. Either the abstract
@@ -241,11 +245,12 @@ to be worked around.
 
 In dependency order. Items 1 and 2 block rehearsal, which blocks everything.
 
-1. **Stage launchers for EXP-012 and EXP-013.** `make present` stops at
-   EXP-011, so two of the nine blocks have no launcher and no rehearsal path.
+1. **Stage launchers for EXP-012 (fake titles) and EXP-013 (game opponent).**
+   `make present` stops at EXP-011, the attention head, so two of the nine
+   blocks have no launcher and no rehearsal path.
 2. **Rehearsal notes for blocks 6 and 8.** `demo-rehearsal-notes.md` stops at
-   EXP-011 as well.
-3. **Physical timing for EXP-004.** See open decision 1.
+   EXP-011, the attention head, as well.
+3. **Physical timing for EXP-004, the live training run.** See open decision 1.
 4. **Slide source for blocks 1, 2, 7 and 9.** The four blocks with no CoCo on
    screen, and the only ones that need a deck at all.
 5. **The photograph in block 1.** From a genuine run.

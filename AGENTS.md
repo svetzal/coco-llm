@@ -49,6 +49,41 @@ Keep these distinctions explicit:
 - this model shares the learning objective of modern generative language
   models, but not their transformer architecture or scale.
 
+## Never write a bare EXP number
+
+`EXP-004` names nothing. A reader who does not already hold thirteen experiment
+numbers in their head has to go and look it up, and working memory is small
+enough that they will have lost the sentence by the time they get back.
+
+Every reference to an experiment carries two or three words saying what it is,
+on first use in a document, in every table row, and every time it is the
+subject of a claim in conversation. `EXP-004, the live training run` costs four
+words. Making the reader leave costs the paragraph.
+
+The same applies to any other symbol that stands in for a thing: a bug number,
+an issue identifier, a run label, a commit hash.
+
+Use these glosses, so the short names stay stable across documents:
+
+| | Gloss |
+| --- | --- |
+| EXP-001 | the rejected character model |
+| EXP-002 | the token model |
+| EXP-003 | the fan-corpus bias runs |
+| EXP-004 | the live training run |
+| EXP-005 | the prompted marketing completions |
+| EXP-006 | the 8 KiB completion workbench |
+| EXP-007 | the all-RAM sentence completer |
+| EXP-008 | the rejected adaptive opponent |
+| EXP-009 | the four-voice synthesizer |
+| EXP-010 | the melody continuation |
+| EXP-011 | the context-editing attention head |
+| EXP-012 | the fake episode titles |
+| EXP-013 | the game opponent that learns |
+
+Shorten a gloss where the sentence already supplies the context, but do not
+drop it. Add a row here when an experiment is added.
+
 ## Lesson and demonstration design
 
 Make causality visible before adding explanation or metaphor. A learner should
