@@ -398,12 +398,13 @@ def figure_loop(trace: dict, budget: dict) -> str:
       </div>
       <div class="brow">
         <span class="bkind">memory</span>
-        <span class="bsum">{budget["bytes"]} weights
-          <span class="op">+</span> {budget["code_bytes"]:,} code
+        <span class="bsum">{budget["code_bytes"]:,} code
+          <span class="op">+</span> {budget["data_bytes"]} data
+          <span class="op">+</span> {budget["bytes"]} weights
           <span class="op">+</span> {budget["working_bytes"]} working</span>
-        <span class="bval">{budget["total_bytes"]:,}</span>
-        <span class="bnote">bytes, and it shares the machine's
-          {budget["machine_bytes"] // 1024}K with everything else</span>
+        <span class="bval">{budget["running_bytes"]:,}</span>
+        <span class="bnote">bytes to run, plus {budget["fixture_bytes"]}
+          this build carries so it can check its own answer</span>
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="6">
@@ -413,11 +414,11 @@ def figure_loop(trace: dict, budget: dict) -> str:
       real machine is still unmeasured.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="7">
-      The Color Computer shipped in {budget["launch_year"]} with
-      {budget["baseline_bytes"]:,} bytes in its cheapest model.
-      <strong>This misses that machine by
-      {budget["total_bytes"] - budget["baseline_bytes"]} bytes</strong> &mdash;
-      and only {budget["bytes"]} of it is the model.
+      The cheapest Color Computer of {budget["launch_year"]} had
+      {budget["baseline_bytes"]:,} bytes.
+      <strong>This would have fitted it</strong>, with
+      {budget["baseline_bytes"] - budget["running_bytes"]} to spare, before
+      BASIC and the screen take theirs.
     </p>
   </div>"""
 

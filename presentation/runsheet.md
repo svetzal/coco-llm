@@ -165,9 +165,13 @@ training run:
    every change is the sign of its incoming number, which is the whole of
    backpropagation at this scale.
 6. **Do it again**, closing on the budget. 20 epochs times 58 examples times
-   261 multiplies is 302,760 multiplies and 15.8 million instructions. 580
-   bytes of weights plus 3,355 of code plus 234 working is 4,169 bytes sharing
-   a 32K machine with everything else. Neither number is magic; each was
+   261 multiplies is 302,760 multiplies and 15.8 million instructions. Memory
+   breaks down as 2,100 bytes of 6809 routines and messages, 658 of corpus and
+   tables, 580 of weights and 234 of working space: 3,572 to run. The other
+   597 this build carries is the self-check, the reference model's final
+   weights and checksum so the CoCo can prove it trained to the same numbers
+   the Mac did. Integrity machinery for this talk, not something the model
+   needs, which is why it is counted apart. Neither number is magic; each was
    picked so the run would finish in a reasonable time and leave room for the
    rest of the program. That is the only place in the talk a design budget is
    shown being met, so do not rush it.
@@ -177,14 +181,18 @@ training run:
 
    The last fragment is the one to end on. The Color Computer was announced on
    31 July 1980 and sold that September; its cheapest model, catalogue
-   26-3001 at US$399, had 4,096 bytes. This needs 4,169 and misses the base
-   machine by 73. Be precise about what misses: the model is 580 bytes and
-   would have fitted seven times over. The training program around it is what
-   does not. Learning is expensive; the thing you learn is small.
+   26-3001 at US$399, had 4,096 bytes. This needs 3,572 to run, so it would
+   have fitted the cheapest machine they sold, with 524 to spare.
 
-   Do not let this become "it would have run in 1977". The machine did not
-   exist then, and a 4K CoCo still owes room to BASIC's workspace and the
-   screen, so the real gap is wider than 73 bytes.
+   **The caveat is part of the claim.** That is the whole of the machine's
+   memory, and a real 4K CoCo still owes room to the 512-byte screen and to
+   BASIC's workspace. It fits the chip; whether it fits alongside everything
+   else has not been tried. Do not let it become "it would have run in 1977"
+   either, because the machine did not exist then.
+
+   Keep the proportions in view: the model is 580 bytes and the program that
+   trains it is four times larger. Learning is expensive; the thing you learn
+   is small.
 
 Because that explanation is now front-loaded, the live run needs less talking
 over it and holds seven and a quarter minutes rather than nine. That is the

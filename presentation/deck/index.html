@@ -383,12 +383,13 @@
       </div>
       <div class="brow">
         <span class="bkind">memory</span>
-        <span class="bsum">580 weights
-          <span class="op">+</span> 3,355 code
+        <span class="bsum">2,100 code
+          <span class="op">+</span> 658 data
+          <span class="op">+</span> 580 weights
           <span class="op">+</span> 234 working</span>
-        <span class="bval">4,169</span>
-        <span class="bnote">bytes, and it shares the machine's
-          32K with everything else</span>
+        <span class="bval">3,572</span>
+        <span class="bnote">bytes to run, plus 597
+          this build carries so it can check its own answer</span>
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="6">
@@ -398,11 +399,11 @@
       real machine is still unmeasured.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="7">
-      The Color Computer shipped in 1980 with
-      4,096 bytes in its cheapest model.
-      <strong>This misses that machine by
-      73 bytes</strong> &mdash;
-      and only 580 of it is the model.
+      The cheapest Color Computer of 1980 had
+      4,096 bytes.
+      <strong>This would have fitted it</strong>, with
+      524 to spare, before
+      BASIC and the screen take theirs.
     </p>
   </div>
   <!-- /FIGURE:loop -->
@@ -424,10 +425,15 @@
     instructions for the whole run.
 
     Parameters occupy memory, and the model does not get the machine to
-    itself. 580 bytes of weights, 3,355 of code, 234 of working space: 4,169
-    bytes that have to coexist with BASIC, the screen, and anything else
-    running. On a 32K machine that is the constraint that bites when you make
-    the vocabulary or the context window bigger.
+    itself. Break the number down if anyone asks, because "code" covers three
+    different things: 2,100 bytes of 6809 routines and screen messages, 658 of
+    corpus and tables (the 58 examples, a 256-byte softmax lookup, the token
+    strings), 580 of weights, 234 of working space. 3,572 to run.
+
+    The extra 597 is the self-check: the reference model's final weights and
+    its checksum, so the CoCo can prove it trained to the same numbers the Mac
+    did. That is integrity machinery for this talk, not something the model
+    needs to exist, which is why it is counted separately.
 
     DO NOT QUOTE A RUNTIME. The target was three minutes and we have a cycle
     projection, not a measurement. Say that out loud; it is on the slide.
@@ -446,16 +452,20 @@
     announced on 31 July 1980 and went on sale that September. The cheapest
     model, catalogue 26-3001, US$399, had 4,096 bytes of RAM.
 
-    We need 4,169. We miss the base machine by 73 bytes.
+    This needs 3,572 to run. It would have fitted the cheapest machine they
+    sold, with 524 bytes to spare.
 
-    And be precise about what misses, because it matters: the MODEL is 580
-    bytes and would have fitted seven times over. It is the training program
-    around it that does not. Learning is expensive; the thing you learn is
-    small.
+    THE CAVEAT IS PART OF THE CLAIM, so say it: that is the whole of the
+    machine's memory, and a real 4K CoCo still owes room to the 512-byte
+    screen and to BASIC's own workspace. It fits the chip. Whether it fits
+    alongside everything else is a different question and we have not tried.
 
-    Do not claim it would have run in 1977. The Color Computer did not exist
-    then, and a 4K machine also has to find room for BASIC's workspace and the
-    screen, so the real gap is wider than 73. If someone asks, say that.
+    Do not let this become "it would have run in 1977". The Color Computer did
+    not exist then.
+
+    And keep the proportions in view: the MODEL is 580 bytes. The program that
+    trains it is four times larger. Learning is expensive; the thing you learn
+    is small.
   </aside>
 </section>
 

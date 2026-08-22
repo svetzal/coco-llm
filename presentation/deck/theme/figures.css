@@ -363,7 +363,7 @@
   display: grid;
   /* The time row's sum is three terms long; too narrow a column wraps it and
    * the value stops lining up with the row below. */
-  grid-template-columns: 4.5em 28em 5em 14em;
+  grid-template-columns: 4.5em 33em 5em 12em;
   gap: 0 0.7em;
   align-items: baseline;
   margin: 0.35em 0;

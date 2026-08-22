@@ -368,10 +368,28 @@ def main() -> None:
     # measured on physical hardware, and the ~75s figure for this run is a
     # cycle-model projection. Multiplies and instructions are counts, so they
     # can be shown; what they take in wall time cannot, yet.
+    # "Code" was doing too much work as a label, so the image is broken down
+    # by what each region actually is. Reading it off the symbol dump means
+    # the figure tracks the build rather than a stale hand count.
+    #
+    #   $2000                6809 routines and the on-screen message strings
+    #   training_examples    what the program needs to run: the 58 examples,
+    #                        the 256-byte softmax lookup, the token strings
+    #   expected_parameters  the self-check fixture: the reference model's
+    #                        final weights and its checksum, so the CoCo can
+    #                        prove it trained to the same numbers as the Mac.
+    #                        Real integrity machinery, and not part of what
+    #                        the model needs to exist.
+    #   position_embeddings  the weights
+    #   context_vector       working space
     code_start = 0x2000
+    code_bytes = symbol("training_examples") - code_start
+    data_bytes = symbol("expected_parameters") - symbol("training_examples")
+    fixture_bytes = symbol("position_embeddings") - symbol("expected_parameters")
     parameter_bytes = symbol("parameters_end") - symbol("position_embeddings")
     working_bytes = symbol("sample_count") + 2 - symbol("context_vector")
     per_example = 3 * len(vocabulary) * config.embedding
+    running = code_bytes + data_bytes + parameter_bytes + working_bytes
     budget = {
         "epochs": CHOSEN_EPOCHS,
         "examples": int(len(targets)),
@@ -383,14 +401,15 @@ def main() -> None:
         "parameters": model.parameter_count,
         "bytes_each": parameter_bytes // model.parameter_count,
         "bytes": parameter_bytes,
-        "code_bytes": symbol("position_embeddings") - code_start,
+        "code_bytes": code_bytes,
+        "data_bytes": data_bytes,
+        "fixture_bytes": fixture_bytes,
         "working_bytes": working_bytes,
-        "total_bytes": parameter_bytes + working_bytes
-        + (symbol("position_embeddings") - code_start),
+        "running_bytes": running,
+        "total_bytes": running + fixture_bytes,
         "machine_bytes": 32 * 1024,
         # The machine the talk is about shipped in a 4K base model. Announced
         # 31 July 1980, on sale that September, catalogue 26-3001, US$399.
-        # The footprint above misses it, and by how little is the point.
         "baseline_bytes": 4 * 1024,
         "launch_year": 1980,
         "target_seconds": 180,
