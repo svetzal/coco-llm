@@ -7,6 +7,13 @@ The current narrative is in
 [`learning-journey.md`](learning-journey.md). It is intentionally an argument
 and demonstration sequence, not yet a slide deck.
 
+The delivery plan is in [`runsheet.md`](runsheet.md): a 45-minute conference
+talk with an exhibit table running alongside it, budgeted block by block with
+the cut order decided in advance. The journey holds the argument; the runsheet
+holds what actually happens and for how long. Where they disagree about
+emphasis, the runsheet wins on stage and the journey wins in the written
+record.
+
 Supporting presentation material includes:
 
 - [`exhibit-copy.md`](exhibit-copy.md) — approved abstract, bio, and table copy;
