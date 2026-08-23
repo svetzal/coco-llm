@@ -232,6 +232,7 @@ while it executes.
 | Watch it learn | 120 | Reset, seed 6809, read the nonsense out, start training |
 | One signed multiply from two unsigned | 90 | The optimisation that made this possible |
 | And the correction that makes it signed | 60 | Optional depth, first to drop |
+| Why one subtraction is enough | 50 | The unsigned error, and where it lives |
 | The learning rate, in eight instructions | 40 | Callback: the 1/16 from block 2, physically |
 | Divide by two, four times over | 50 | The same eight instructions, acting on the bits |
 | Back to the machine | 180 | The pause, the audience's choice, the comparison |
@@ -249,6 +250,19 @@ million instructions. This version needs 15.8 million and produces
 bit-for-bit identical output. The learning algorithm did not change. Somebody
 understood both the mathematics and the machine. The tests are what made
 changing it safe.
+
+Two of those six slides show bits rather than mnemonics, and they are the
+ones that make the code mean something.
+
+**Why one subtraction is enough.** MUL takes unsigned bytes, so -121 arrives
+as 135, which is exactly 256 too big, and the product is too big by 256 times
+the multiplier. In the low sixteen bits, 256 times anything is that thing
+moved into the high byte, so the entire error is the multiplier's low byte
+sitting one byte up. Point at the two bit rows: **the low bytes are
+identical.** Only the high half moved. That is the proof, and it is on the
+screen rather than in the narration. Say clearly that these are worked
+numbers, chosen inside EXP-004's measured product range, not a captured
+training step.
 
 The bit slide is where the code stops being a screenshot. It takes the one
 number the deck has followed all along, `error x context` for AMIGA's first

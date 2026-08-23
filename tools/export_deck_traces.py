@@ -496,6 +496,39 @@ def main() -> None:
         ],
     }
 
+    # --- why the sign correction is one subtraction --------------------------
+    # MUL is unsigned. A negative 8-bit factor arrives as its two's complement,
+    # which is 256 too large, so the product is too large by 256 x multiplier.
+    # In the low sixteen bits that excess is exactly the multiplier's low byte
+    # sitting in the high half, which is why one SUBA fixes it.
+    #
+    # A worked instance rather than a captured one: these are not the operands
+    # of a specific training step, they are a factor and a multiplier chosen to
+    # sit inside EXP-004's measured product range so the result is honest about
+    # what the routine actually handles.
+    SIGN_FACTOR, SIGN_MULTIPLIER = -121, 60
+    unsigned_factor = SIGN_FACTOR & 0xFF
+    raw_product = (unsigned_factor * SIGN_MULTIPLIER) & 0xFFFF
+    excess_high = SIGN_MULTIPLIER & 0xFF
+    corrected = (raw_product - excess_high * 256) & 0xFFFF
+    as_signed = corrected - 0x10000 if corrected >= 0x8000 else corrected
+    assert as_signed == SIGN_FACTOR * SIGN_MULTIPLIER, "the correction must be exact"
+    assert abs(as_signed) <= 11_408, (
+        "outside EXP-004's measured product range, so the low word would not "
+        "be the whole answer and the slide would be misleading"
+    )
+
+    sign_fix = {
+        "factor": SIGN_FACTOR,
+        "unsigned_factor": unsigned_factor,
+        "multiplier": SIGN_MULTIPLIER,
+        "raw": raw_product,
+        "excess_high": excess_high,
+        "corrected": corrected,
+        "signed": as_signed,
+        "measured_max": 11_408,
+    }
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps(
@@ -514,6 +547,7 @@ def main() -> None:
                 "parameters": parameters,
                 "budget": budget,
                 "shift": shift,
+                "sign_fix": sign_fix,
             },
             indent=1,
         )

@@ -1218,6 +1218,16 @@
    }
   ]
  },
+ "sign_fix": {
+  "factor": -121,
+  "unsigned_factor": 135,
+  "multiplier": 60,
+  "raw": 8100,
+  "excess_high": 60,
+  "corrected": 58276,
+  "signed": -7260,
+  "measured_max": 11408
+ },
  "split": {
   "learn_only": 730,
   "use_only": 850,

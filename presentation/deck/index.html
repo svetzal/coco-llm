@@ -625,7 +625,7 @@
   </aside>
 </section>
 
-<section class="cue" data-timing="120">
+<section class="cue" data-timing="100">
   <h2>Watch it learn</h2>
   <p class="what">EXP-004 &middot; the live training run</p>
   <aside class="notes">
@@ -691,6 +691,72 @@
     Worth showing because it is the kind of detail that decides whether a
     thing is possible on this machine at all, and because it is five
     instructions.
+  </aside>
+</section>
+
+<section data-timing="50">
+  <p class="lead">why one subtraction is enough</p>
+  <!-- FIGURE:signbits -->
+  <div class="fig shifts sign">
+    <div class="brow2">
+      <span class="blab2">the factor</span>
+      <span class="plain">-121</span>
+      <span class="bexpl">MUL cannot take a negative, so it arrives as
+        135, which is 256 too big</span>
+    </div>
+    <div class="brow2 fragment" data-fragment-index="1">
+      <span class="blab2">two MULs give</span>
+      <span class="bits "><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span>
+      <span class="bexpl">135 &times;
+        60 = 8100, and wrong</span>
+    </div>
+    <div class="brow2 fragment" data-fragment-index="2">
+      <span class="blab2">too big by</span>
+      <span class="plain">256 &times; 60</span>
+      <span class="bexpl">which in the low word is just
+        60, sitting in the high byte</span>
+    </div>
+    <div class="brow2 fragment last" data-fragment-index="3">
+      <span class="blab2">suba 1,x</span>
+      <span class="bits "><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span>
+      <span class="bexpl">= -7260, and
+        -121 &times; 60 =
+        -7260</span>
+    </div>
+    <p class="cap fragment" data-fragment-index="4">
+      Compare the two bit rows: <strong>the low byte is identical.</strong>
+      Only the high half moved, because that is where the whole error was.
+      Five instructions is the difference between this machine being able to
+      train a model and not.
+    </p>
+  </div>
+  <!-- /FIGURE:signbits -->
+  <aside class="notes">
+    Step it. MUL takes two unsigned bytes, so a negative factor cannot be
+    handed to it as it is. -121 arrives as 135, and 135 is exactly 256 more
+    than -121.
+
+    So the product is too big by 256 times the multiplier. Here is the part
+    worth pausing on: in the low sixteen bits, 256 times anything is that
+    thing shifted into the HIGH BYTE. So the entire error is the multiplier's
+    low byte sitting one byte up.
+
+    Which is why the fix is one instruction. suba 1,x subtracts that byte from
+    the high half and the answer is correct: -7260, and -121 times 60 is
+    -7260.
+
+    SAY WHAT THESE NUMBERS ARE. A worked example, not a captured training
+    step, chosen to sit inside the product range EXP-004 actually measured.
+    Do not imply we caught the machine doing this exact multiply.
+
+    POINT AT THE TWO BIT ROWS. The low bytes are identical. Only the high
+    half moved, because that is where the entire error was. That is the proof
+    that one subtraction is enough, and it is on the screen rather than in
+    the explanation.
+
+    THE POINT: five instructions is the difference between this machine being
+    able to train a model and not. That is not a metaphor, it is the
+    arithmetic.
   </aside>
 </section>
 
@@ -773,7 +839,7 @@
   </aside>
 </section>
 
-<section class="cue" data-timing="180">
+<section class="cue" data-timing="150">
   <h2>Back to the machine</h2>
   <p class="what">EXP-004 &middot; the comparison</p>
   <aside class="notes">

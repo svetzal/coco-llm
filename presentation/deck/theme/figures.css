@@ -637,3 +637,14 @@
 .reveal .fig.shifts .cap code {
   font-family: var(--coco-type); color: var(--deck-ink); font-size: 1em;
 }
+
+/* The sign-correction reveal reuses the bit cells, with an explanation column
+ * instead of the decimal columns: here the interesting part is why one
+ * subtraction is enough, not the sequence of values. */
+.reveal .fig.sign .brow2 { grid-template-columns: 9em 20em auto; }
+.reveal .fig.sign .plain { color: var(--deck-loud); text-align: center; }
+.reveal .fig.sign .bexpl {
+  font-family: var(--deck-prose); text-transform: none;
+  font-size: 0.62em; color: var(--deck-quiet); text-align: left;
+}
+.reveal .fig.sign .brow2.last .bexpl { color: var(--deck-mark); }

@@ -571,6 +571,54 @@ def figure_shift(shift: dict) -> str:
   </div>"""
 
 
+def figure_sign(fix: dict) -> str:
+    """Why one subtraction turns an unsigned product into a signed one."""
+
+    def word(value: int, cls: str = "") -> str:
+        bits = format(value, "016b")
+        cells = "".join(
+            f'<span class="bit{" on" if b == "1" else ""}'
+            f'{" edge" if i == 7 else ""}">{b}</span>'
+            for i, b in enumerate(bits)
+        )
+        return f'<span class="bits {cls}">{cells}</span>'
+
+    return f"""
+  <div class="fig shifts sign">
+    <div class="brow2">
+      <span class="blab2">the factor</span>
+      <span class="plain">{fix["factor"]}</span>
+      <span class="bexpl">MUL cannot take a negative, so it arrives as
+        {fix["unsigned_factor"]}, which is 256 too big</span>
+    </div>
+    <div class="brow2 fragment" data-fragment-index="1">
+      <span class="blab2">two MULs give</span>
+      {word(fix["raw"])}
+      <span class="bexpl">{fix["unsigned_factor"]} &times;
+        {fix["multiplier"]} = {fix["raw"]}, and wrong</span>
+    </div>
+    <div class="brow2 fragment" data-fragment-index="2">
+      <span class="blab2">too big by</span>
+      <span class="plain">256 &times; {fix["multiplier"]}</span>
+      <span class="bexpl">which in the low word is just
+        {fix["excess_high"]}, sitting in the high byte</span>
+    </div>
+    <div class="brow2 fragment last" data-fragment-index="3">
+      <span class="blab2">suba 1,x</span>
+      {word(fix["corrected"])}
+      <span class="bexpl">= {fix["signed"]}, and
+        {fix["factor"]} &times; {fix["multiplier"]} =
+        {fix["factor"] * fix["multiplier"]}</span>
+    </div>
+    <p class="cap fragment" data-fragment-index="4">
+      Compare the two bit rows: <strong>the low byte is identical.</strong>
+      Only the high half moved, because that is where the whole error was.
+      Five instructions is the difference between this machine being able to
+      train a model and not.
+    </p>
+  </div>"""
+
+
 def figure_code(excerpt: dict, note: str) -> str:
     """One assembly reveal, taken verbatim from the source that assembles."""
     lines = "".join(
@@ -751,6 +799,7 @@ def main() -> None:
         "A negative factor comes out 256 too large. One subtraction fixes it, "
         "and the model is bit-for-bit what it was before.",
     ))
+    deck = splice(deck, "signbits", figure_sign(traces["sign_fix"]))
     deck = splice(deck, "shiftbits", figure_shift(traces["shift"]))
     deck = splice(deck, "lrcode", figure_code(
         code["learning_rate"],
@@ -758,7 +807,7 @@ def main() -> None:
         "learning rate: not a setting, an instruction count.",
     ))
     DECK.write_text(deck, encoding="utf-8")
-    print("spliced 15 figures into presentation/deck/index.html")
+    print("spliced 16 figures into presentation/deck/index.html")
 
 
 if __name__ == "__main__":
