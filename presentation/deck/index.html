@@ -796,10 +796,15 @@
     </div>
     <div class="brow2 fragment" data-fragment-index="0"><span class="blab2">gradient</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></span><span class="bfell"></span><span class="bdec">-6344</span></div><div class="brow2 fragment" data-fragment-index="1"><span class="blab2">asra rorb &times;1</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span><span class="bfell"><span class="fell">0</span></span><span class="bdec">-3172</span></div><div class="brow2 fragment" data-fragment-index="2"><span class="blab2">asra rorb &times;2</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span></span><span class="bfell"><span class="fell">0</span></span><span class="bdec">-1586</span></div><div class="brow2 fragment" data-fragment-index="3"><span class="blab2">asra rorb &times;3</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit edge">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span></span><span class="bfell"><span class="fell">0</span></span><span class="bdec">-793</span></div><div class="brow2 last fragment" data-fragment-index="4"><span class="blab2">asra rorb &times;4</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit edge">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span></span><span class="bfell"><span class="fell">1</span></span><span class="bdec">-397</span></div>
     <p class="cap fragment" data-fragment-index="5">
-      <code>asra</code> keeps the top bit and drops the bottom one into the
-      carry; <code>rorb</code> rotates that carry into the top of B. Watch the
-      leftmost bit: <strong>it stays 1 and copies itself downward, which is
-      how the value stays negative while it halves.</strong>
+      Two's complement: <strong>a leading 1 means negative.</strong> These
+      same sixteen bits read as 59,192 if you take them as unsigned.
+      The bits do not carry the sign. The instruction you choose does.
+    </p>
+    <p class="cap fragment" data-fragment-index="6">
+      <code>asra</code> keeps that top bit and drops the bottom one into the
+      carry; <code>rorb</code> rotates the carry into the top of B. Watch the
+      left edge: <strong>the 1 copies itself downward, which is how the value
+      stays negative while it halves.</strong>
     </p>
     <p class="cap rubric">
       A real update: SINCLAIR's third weight at epoch
@@ -818,10 +823,21 @@
     into the carry. RORB rotates that carry into the top of B. Together they
     move all sixteen bits one place right.
 
+    SAY THE CONVENTION BEFORE RELYING ON IT: two's complement, a leading 1
+    means negative. Do not assume the room knows.
+
+    And make the connection back two slides. These same sixteen bits read as
+    59,192 if you take them as unsigned. Nothing in the bits says which. THE
+    INSTRUCTION YOU CHOOSE DECIDES. That is exactly why MUL needed a
+    correction: MUL reads its input unsigned, so it read -121 as 135. Here
+    ASRA reads signed, so it preserves the top bit. Same bits, two readings,
+    and the programmer picks.
+
     POINT AT THE LEFT EDGE and step the rows. The sign bit stays 1 and copies
     itself downward, one more each time. That is what "arithmetic" shift
     means, and it is why -6344 halves to -3172 instead of turning into some
-    large positive number.
+    large positive number. LSRA, the logical shift, would put a 0 there and
+    -6344 would become 29,596.
 
     THEN POINT AT THE MIDDLE. Watch bits cross the gap: what falls out of A
     arrives at the top of B. That is the whole reason there are two different

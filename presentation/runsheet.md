@@ -269,11 +269,21 @@ screenshot. It takes a real weight update out of training, SINCLAIR's third
 weight at epoch 5, and shows the eight instructions moving its bits:
 -6344, -3172, -1586, -793, -397, with the bits that fall off the right in red.
 
-Two things to point at, in order. The left edge: the sign bit stays 1 and
-copies itself downward one more each step, which is what "arithmetic" shift
-means and why the value stays negative while it halves. Then the middle: bits
-cross the gap between A and B, which is the whole reason there are two
-different instructions rather than two ASRs.
+Say the convention before relying on it: **two's complement, a leading 1 means
+negative.** Do not assume the room knows, and do not ask them to watch a bit
+whose meaning has not been given.
+
+Then make the connection back two slides, because it is the same idea twice.
+These sixteen bits read as **59,192** taken unsigned and **-6344** taken
+signed. Nothing in the bits says which. **The instruction you choose decides.**
+That is exactly why `MUL` needed a correction: `MUL` reads unsigned, so it read
+-121 as 135. `ASRA` reads signed, so it preserves the top bit. `LSRA` would put
+a 0 there instead and -6344 would become 29,596.
+
+Then two things to point at, in order. The left edge: the sign bit copies
+itself downward one more each step, which is what "arithmetic" shift means.
+Then the middle: bits cross the gap between A and B, which is the whole reason
+there are two different instructions rather than two `ASR`s.
 
 The value is chosen for being legible, and the exporter searches for one:
 negative, with bits set in both bytes. A gradient whose high byte is all zeros

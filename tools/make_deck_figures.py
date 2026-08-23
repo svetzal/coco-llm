@@ -547,6 +547,10 @@ def figure_shift(shift: dict) -> str:
         )
 
     where = shift["source"]
+    # The unsigned reading of the same bits, so the convention is stated
+    # rather than assumed. It is also the number MUL would have produced.
+    first = shift["steps"][0]
+    unsigned = int(first["bits"], 2)
     return f"""
   <div class="fig shifts">
     <div class="bhead">
@@ -558,10 +562,15 @@ def figure_shift(shift: dict) -> str:
     </div>
     {"".join(rows)}
     <p class="cap fragment" data-fragment-index="{len(shift["steps"])}">
-      <code>asra</code> keeps the top bit and drops the bottom one into the
-      carry; <code>rorb</code> rotates that carry into the top of B. Watch the
-      leftmost bit: <strong>it stays 1 and copies itself downward, which is
-      how the value stays negative while it halves.</strong>
+      Two's complement: <strong>a leading 1 means negative.</strong> These
+      same sixteen bits read as {unsigned:,} if you take them as unsigned.
+      The bits do not carry the sign. The instruction you choose does.
+    </p>
+    <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 1}">
+      <code>asra</code> keeps that top bit and drops the bottom one into the
+      carry; <code>rorb</code> rotates the carry into the top of B. Watch the
+      left edge: <strong>the 1 copies itself downward, which is how the value
+      stays negative while it halves.</strong>
     </p>
     <p class="cap rubric">
       A real update: {esc(where["weight_of"])}'s third weight at epoch
