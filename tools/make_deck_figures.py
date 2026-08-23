@@ -522,13 +522,13 @@ def figure_cost(budget: dict, split: dict) -> str:
 
 
 def figure_shift(shift: dict) -> str:
-    """What the eight shift instructions do to the bits, one pair at a time."""
+    """What the eight shift instructions do to the bits of a real gradient."""
     rows = []
     for n, step in enumerate(shift["steps"]):
         bits = step["bits"]
         cells = "".join(
             f'<span class="bit{" on" if b == "1" else ""}'
-            f'{" edge" if i == 7 else ""}">{b}</span>'
+            f'{" edge" if i == 7 else ""}{" sign" if i == 0 else ""}">{b}</span>'
             for i, b in enumerate(bits)
         )
         dropped = (
@@ -543,11 +543,10 @@ def figure_shift(shift: dict) -> str:
             f'<span class="blab2">{label}</span>'
             f'<span class="bits">{cells}</span>'
             f'<span class="bfell">{dropped}</span>'
-            f'<span class="bdec">{step["value"]}</span>'
-            f'<span class="breal">{step["real"]:+.4f}</span></div>'
+            f'<span class="bdec">{step["value"]}</span></div>'
         )
 
-    first, last = shift["steps"][0], shift["steps"][-1]
+    where = shift["source"]
     return f"""
   <div class="fig shifts">
     <div class="bhead">
@@ -555,18 +554,20 @@ def figure_shift(shift: dict) -> str:
       <span class="bits"><span class="half">A &mdash; asra</span>
         <span class="half">B &mdash; rorb</span></span>
       <span class="bfell">out</span>
-      <span class="bdec">int</span>
-      <span class="breal">value</span>
+      <span class="bdec"></span>
     </div>
     {"".join(rows)}
     <p class="cap fragment" data-fragment-index="{len(shift["steps"])}">
-      Q4.12: the integer is the real value times {shift["scale"]}.
-      <code>asra</code> drops A's low bit into the carry and
-      <code>rorb</code> rotates it into the top of B, so the pair shifts all
-      sixteen bits at once. <strong>{first["value"]} becomes
-      {last["value"]}.</strong> The next instruction subtracts it from the
-      weight, which is why the One Step slide shows that change as
-      {-last["real"]:+.4f}.
+      <code>asra</code> keeps the top bit and drops the bottom one into the
+      carry; <code>rorb</code> rotates that carry into the top of B. Watch the
+      leftmost bit: <strong>it stays 1 and copies itself downward, which is
+      how the value stays negative while it halves.</strong>
+    </p>
+    <p class="cap rubric">
+      A real update: {esc(where["weight_of"])}'s third weight at epoch
+      {where["epoch"]}, error {where["error"]} times context
+      {where["context_value"]}. The weight goes {where["weight_before"]} to
+      {shift["weight_after"]}.
     </p>
   </div>"""
 
@@ -800,7 +801,7 @@ def main() -> None:
         "and the model is bit-for-bit what it was before.",
     ))
     deck = splice(deck, "signbits", figure_sign(traces["sign_fix"]))
-    deck = splice(deck, "shiftbits", figure_shift(traces["shift"]))
+    deck = splice(deck, "shiftbits", figure_shift(json.loads((TRACES.parent / "shift.json").read_text())))
     deck = splice(deck, "lrcode", figure_code(
         code["learning_rate"],
         "Shift right four times and you have divided by sixteen. That is the "

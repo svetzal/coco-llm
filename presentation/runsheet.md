@@ -264,18 +264,22 @@ screen rather than in the narration. Say clearly that these are worked
 numbers, chosen inside EXP-004's measured product range, not a captured
 training step.
 
-The bit slide is where the code stops being a screenshot. It takes the one
-number the deck has followed all along, `error x context` for AMIGA's first
-weight, and shows the eight instructions moving it: 117, 58, 29, 14, 7, with
-the bits that fall off the end in red. 7 divided by 4096 is 0.0017, which is
-the change on the One Step slide. Code, bits and arithmetic, one event seen
-three ways.
+**Divide by two, four times over** is where the code stops being a
+screenshot. It takes a real weight update out of training, SINCLAIR's third
+weight at epoch 5, and shows the eight instructions moving its bits:
+-6344, -3172, -1586, -793, -397, with the bits that fall off the right in red.
 
-Two details worth having ready. The discarded bits are a real rounding loss
-that accumulates over 1,160 updates, and it is also why the thing fits. And
-the sign: the shift produces +0.0017 while One Step shows -0.0017, because the
-instruction after these eight is a subtract. The shift sets the size of the
-step; the subtract makes it a step downward.
+Two things to point at, in order. The left edge: the sign bit stays 1 and
+copies itself downward one more each step, which is what "arithmetic" shift
+means and why the value stays negative while it halves. Then the middle: bits
+cross the gap between A and B, which is the whole reason there are two
+different instructions rather than two ASRs.
+
+The value is chosen for being legible, and the exporter searches for one:
+negative, with bits set in both bytes. A gradient whose high byte is all zeros
+teaches nothing. It comes from `FixedTokenLanguageModel`, the integer
+reference the 6809 matches bit for bit, whose `gradient >> 4` is literally
+these eight instructions.
 
 If training finishes early, come back sooner and drop the sign correction.
 That is what it is there for.

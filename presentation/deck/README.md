@@ -144,6 +144,8 @@ Three steps, in order. The middle one depends on the assembled 6809 build, so
 uv run python tools/export_deck_traces.py      # run the model, write the numbers
 uv run python tools/measure_train_vs_infer.py  # classify the image by job
 uv run python tools/export_bias_trace.py       # the five controlled bias runs
+uv run python tools/export_shift_trace.py      # a real weight update, bit by bit
+uv run python tools/export_prompt_trace.py     # prompted completions and the baseline
 uv run python tools/extract_code_excerpts.py   # pull assembly from the source
 uv run python tools/make_deck_figures.py       # draw them all, splice them in
 ```

@@ -1,0 +1,44 @@
+{
+ "fraction_bits": 12,
+ "scale": 4096,
+ "source": {
+  "gradient": -6344,
+  "epoch": 5,
+  "example": 37,
+  "token": "SINCLAIR",
+  "weight_of": "SINCLAIR",
+  "dimension": 2,
+  "context_value": 26,
+  "error": -244,
+  "weight_before": 683
+ },
+ "update": -397,
+ "weight_after": 1080,
+ "steps": [
+  {
+   "value": -6344,
+   "bits": "1110011100111000",
+   "dropped": null
+  },
+  {
+   "value": -3172,
+   "bits": "1111001110011100",
+   "dropped": 0
+  },
+  {
+   "value": -1586,
+   "bits": "1111100111001110",
+   "dropped": 0
+  },
+  {
+   "value": -793,
+   "bits": "1111110011100111",
+   "dropped": 0
+  },
+  {
+   "value": -397,
+   "bits": "1111111001110011",
+   "dropped": 1
+  }
+ ]
+}

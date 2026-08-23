@@ -648,3 +648,6 @@
   font-size: 0.62em; color: var(--deck-quiet); text-align: left;
 }
 .reveal .fig.sign .brow2.last .bexpl { color: var(--deck-mark); }
+
+/* The sign bit. It is the one to watch on this figure, so it is marked. */
+.reveal .bit.sign { box-shadow: inset 0 0 0 1px var(--coco-loss); }
