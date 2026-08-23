@@ -694,7 +694,7 @@
   </aside>
 </section>
 
-<section data-timing="60">
+<section data-timing="40">
   <!-- FIGURE:lrcode -->
   <p class="lead">the learning rate, in eight instructions</p>
   <div class="fig code">
@@ -717,7 +717,63 @@
   </aside>
 </section>
 
-<section class="cue" data-timing="210">
+<section data-timing="50">
+  <p class="lead">divide by two, four times over</p>
+  <!-- FIGURE:shiftbits -->
+  <div class="fig shifts">
+    <div class="bhead">
+      <span class="blab2"></span>
+      <span class="bits"><span class="half">A &mdash; asra</span>
+        <span class="half">B &mdash; rorb</span></span>
+      <span class="bfell">out</span>
+      <span class="bdec">int</span>
+      <span class="breal">value</span>
+    </div>
+    <div class="brow2 fragment" data-fragment-index="0"><span class="blab2">gradient</span><span class="bits"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit edge">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span></span><span class="bfell"></span><span class="bdec">117</span><span class="breal">+0.0286</span></div><div class="brow2 fragment" data-fragment-index="1"><span class="blab2">asra rorb &times;1</span><span class="bits"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit edge">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span></span><span class="bfell"><span class="fell">1</span></span><span class="bdec">58</span><span class="breal">+0.0142</span></div><div class="brow2 fragment" data-fragment-index="2"><span class="blab2">asra rorb &times;2</span><span class="bits"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit edge">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span></span><span class="bfell"><span class="fell">0</span></span><span class="bdec">29</span><span class="breal">+0.0071</span></div><div class="brow2 fragment" data-fragment-index="3"><span class="blab2">asra rorb &times;3</span><span class="bits"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit edge">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span></span><span class="bfell"><span class="fell">1</span></span><span class="bdec">14</span><span class="breal">+0.0034</span></div><div class="brow2 last fragment" data-fragment-index="4"><span class="blab2">asra rorb &times;4</span><span class="bits"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit edge">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span></span><span class="bfell"><span class="fell">0</span></span><span class="bdec">7</span><span class="breal">+0.0017</span></div>
+    <p class="cap fragment" data-fragment-index="5">
+      Q4.12: the integer is the real value times 4096.
+      <code>asra</code> drops A's low bit into the carry and
+      <code>rorb</code> rotates it into the top of B, so the pair shifts all
+      sixteen bits at once. <strong>117 becomes
+      7.</strong> The next instruction subtracts it from the
+      weight, which is why the One Step slide shows that change as
+      -0.0017.
+    </p>
+  </div>
+  <!-- /FIGURE:shiftbits -->
+  <aside class="notes">
+    WHAT THOSE EIGHT INSTRUCTIONS DO, on the one number the whole deck has
+    been following.
+
+    D is two registers side by side, A and B, and the gap on screen is that
+    boundary. ASRA shifts A right and drops its lowest bit into the carry
+    flag. RORB rotates that carry into the TOP of B. Together the pair moves
+    all sixteen bits one place right, which halves the value.
+
+    Step the rows. 117, 58, 29, 14, 7. Point at the bits sliding right, and at
+    the ones falling off the end in red: 1, 0, 1, 0. Those are thrown away.
+    That is the rounding error of a learning rate and it is real: the machine
+    keeps 7 where the exact answer is 7.3.
+
+    Q4.12 means twelve fractional bits, so the integer is the value times
+    4096.
+
+    THE PAYOFF: 7 divided by 4096 is 0.0017, and that is the number in
+    AMIGA'S CHANGE ROW back on the One Step slide. The code, the bits and the
+    arithmetic are one event seen three ways.
+
+    If someone asks about the discarded bits: yes, it loses precision, and yes
+    it accumulates over 1,160 updates. It is also why the whole thing fits and
+    runs.
+
+    ON THE SIGN, because someone will spot it: this value is +0.0017 and the
+    One Step slide shows -0.0017. The instruction after these eight is a
+    SUBTRACT. The shift produces the size of the step; subtracting it from the
+    weight is what makes it a step downward.
+  </aside>
+</section>
+
+<section class="cue" data-timing="180">
   <h2>Back to the machine</h2>
   <p class="what">EXP-004 &middot; the comparison</p>
   <aside class="notes">

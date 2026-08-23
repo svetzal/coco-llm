@@ -457,6 +457,45 @@ def main() -> None:
     }
     assert budget["bytes"] == model.parameter_count * budget["bytes_each"]
 
+    # --- what the four shifts actually do ------------------------------------
+    # The learning-rate code slide shows eight instructions. This is the value
+    # they operate on, so the code slide and the One Step slide can be shown to
+    # be the same arithmetic rather than merely described as related.
+    #
+    # The 6809 holds the gradient in D, which is the A and B registers side by
+    # side. ASRA shifts A right and drops its low bit into the carry; RORB
+    # rotates that carry into the top of B. The pair is one arithmetic shift of
+    # the whole 16-bit value, and four pairs divide it by sixteen.
+    #
+    # Q4.12 means twelve fractional bits, so the integer is the real value
+    # times 4096.
+    Q = 4096
+    output_error = float(probabilities_before[target]) - 1.0
+    gradient = output_error * vector_display[0]
+    steps = [{"value": round(gradient * Q), "dropped": None}]
+    for _ in range(4):
+        previous = steps[-1]["value"]
+        steps.append({"value": previous >> 1, "dropped": previous & 1})
+    assert round(steps[-1]["value"] / Q, 4) == abs(nudges[0]["change"]), (
+        "the shift must land on the change the One Step slide shows; if it "
+        "does not, one of the two figures is lying"
+    )
+
+    shift = {
+        "fraction_bits": 12,
+        "scale": Q,
+        "label": f"error x context for {vocabulary[target]}'s first weight",
+        "steps": [
+            {
+                "value": step["value"],
+                "bits": format(step["value"], "016b"),
+                "real": round(step["value"] / Q, 4),
+                "dropped": step["dropped"],
+            }
+            for step in steps
+        ],
+    }
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps(
@@ -474,6 +513,7 @@ def main() -> None:
                 "why_three": why_three,
                 "parameters": parameters,
                 "budget": budget,
+                "shift": shift,
             },
             indent=1,
         )

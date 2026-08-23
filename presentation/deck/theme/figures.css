@@ -596,3 +596,44 @@
 .reveal .ba .barrow { color: var(--coco-c01); text-align: center; }
 .reveal .ba .bto { color: var(--deck-mark); text-align: left;
                    white-space: nowrap; }
+
+/* --- what a shift does ----------------------------------------------------
+ *
+ * Eight instructions on the code slide are eight instructions. This is what
+ * they do to the value, bit by bit, on the one number the rest of the deck
+ * already follows.
+ */
+.reveal .fig.shifts { font-size: 0.62em; }
+.reveal .brow2, .reveal .bhead {
+  display: grid; grid-template-columns: 8em 20em 2em 3.5em 5em;
+  gap: 0 0.8em; align-items: center; margin: 0.3em 0;
+}
+.reveal .bhead .blab2, .reveal .bhead .bfell,
+.reveal .bhead .bdec, .reveal .bhead .breal,
+.reveal .brow2 .blab2 {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.6em; letter-spacing: 0.08em; color: var(--coco-c01);
+  text-align: right;
+}
+.reveal .bhead .bits { display: flex; }
+.reveal .bhead .half {
+  flex: 1; text-align: center; font-family: var(--deck-prose);
+  text-transform: uppercase; font-size: 0.6em; letter-spacing: 0.08em;
+  color: var(--coco-c01);
+}
+.reveal .bits { display: flex; gap: 1px; }
+.reveal .bit {
+  flex: 1; text-align: center; color: var(--coco-c02);
+  background: rgba(255, 255, 255, 0.03); padding: 1px 0;
+}
+.reveal .bit.on { color: var(--coco-c00); background: var(--deck-mark); }
+/* The gap between the two registers, because they are two registers. */
+.reveal .bit.edge { margin-right: 0.7em; }
+.reveal .bfell { text-align: center; }
+.reveal .fell { color: var(--coco-loss); }
+.reveal .brow2 .bdec { color: var(--deck-quiet); text-align: right; }
+.reveal .brow2 .breal { color: var(--deck-quiet); text-align: right; }
+.reveal .brow2.last .bdec, .reveal .brow2.last .breal { color: var(--deck-mark); }
+.reveal .fig.shifts .cap code {
+  font-family: var(--coco-type); color: var(--deck-ink); font-size: 1em;
+}

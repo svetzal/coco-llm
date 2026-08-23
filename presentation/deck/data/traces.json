@@ -1181,6 +1181,43 @@
   "target_seconds": 180,
   "verify_bytes": 689
  },
+ "shift": {
+  "fraction_bits": 12,
+  "scale": 4096,
+  "label": "error x context for AMIGA's first weight",
+  "steps": [
+   {
+    "value": 117,
+    "bits": "0000000001110101",
+    "real": 0.0286,
+    "dropped": null
+   },
+   {
+    "value": 58,
+    "bits": "0000000000111010",
+    "real": 0.0142,
+    "dropped": 1
+   },
+   {
+    "value": 29,
+    "bits": "0000000000011101",
+    "real": 0.0071,
+    "dropped": 0
+   },
+   {
+    "value": 14,
+    "bits": "0000000000001110",
+    "real": 0.0034,
+    "dropped": 1
+   },
+   {
+    "value": 7,
+    "bits": "0000000000000111",
+    "real": 0.0017,
+    "dropped": 0
+   }
+  ]
+ },
  "split": {
   "learn_only": 730,
   "use_only": 850,

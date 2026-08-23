@@ -521,6 +521,56 @@ def figure_cost(budget: dict, split: dict) -> str:
   </div>"""
 
 
+def figure_shift(shift: dict) -> str:
+    """What the eight shift instructions do to the bits, one pair at a time."""
+    rows = []
+    for n, step in enumerate(shift["steps"]):
+        bits = step["bits"]
+        cells = "".join(
+            f'<span class="bit{" on" if b == "1" else ""}'
+            f'{" edge" if i == 7 else ""}">{b}</span>'
+            for i, b in enumerate(bits)
+        )
+        dropped = (
+            ""
+            if step["dropped"] is None
+            else f'<span class="fell">{step["dropped"]}</span>'
+        )
+        label = "gradient" if n == 0 else f"asra rorb &times;{n}"
+        rows.append(
+            f'<div class="brow2{" last" if n == len(shift["steps"]) - 1 else ""}'
+            f' fragment" data-fragment-index="{n}">'
+            f'<span class="blab2">{label}</span>'
+            f'<span class="bits">{cells}</span>'
+            f'<span class="bfell">{dropped}</span>'
+            f'<span class="bdec">{step["value"]}</span>'
+            f'<span class="breal">{step["real"]:+.4f}</span></div>'
+        )
+
+    first, last = shift["steps"][0], shift["steps"][-1]
+    return f"""
+  <div class="fig shifts">
+    <div class="bhead">
+      <span class="blab2"></span>
+      <span class="bits"><span class="half">A &mdash; asra</span>
+        <span class="half">B &mdash; rorb</span></span>
+      <span class="bfell">out</span>
+      <span class="bdec">int</span>
+      <span class="breal">value</span>
+    </div>
+    {"".join(rows)}
+    <p class="cap fragment" data-fragment-index="{len(shift["steps"])}">
+      Q4.12: the integer is the real value times {shift["scale"]}.
+      <code>asra</code> drops A's low bit into the carry and
+      <code>rorb</code> rotates it into the top of B, so the pair shifts all
+      sixteen bits at once. <strong>{first["value"]} becomes
+      {last["value"]}.</strong> The next instruction subtracts it from the
+      weight, which is why the One Step slide shows that change as
+      {-last["real"]:+.4f}.
+    </p>
+  </div>"""
+
+
 def figure_code(excerpt: dict, note: str) -> str:
     """One assembly reveal, taken verbatim from the source that assembles."""
     lines = "".join(
@@ -701,13 +751,14 @@ def main() -> None:
         "A negative factor comes out 256 too large. One subtraction fixes it, "
         "and the model is bit-for-bit what it was before.",
     ))
+    deck = splice(deck, "shiftbits", figure_shift(traces["shift"]))
     deck = splice(deck, "lrcode", figure_code(
         code["learning_rate"],
         "Shift right four times and you have divided by sixteen. That is the "
         "learning rate: not a setting, an instruction count.",
     ))
     DECK.write_text(deck, encoding="utf-8")
-    print("spliced 14 figures into presentation/deck/index.html")
+    print("spliced 15 figures into presentation/deck/index.html")
 
 
 if __name__ == "__main__":

@@ -232,8 +232,9 @@ while it executes.
 | Watch it learn | 120 | Reset, seed 6809, read the nonsense out, start training |
 | One signed multiply from two unsigned | 90 | The optimisation that made this possible |
 | And the correction that makes it signed | 60 | Optional depth, first to drop |
-| The learning rate, in eight instructions | 60 | Callback: the 1/16 from block 2, physically |
-| Back to the machine | 210 | The pause, the audience's choice, the comparison |
+| The learning rate, in eight instructions | 40 | Callback: the 1/16 from block 2, physically |
+| Divide by two, four times over | 50 | The same eight instructions, acting on the bits |
+| Back to the machine | 180 | The pause, the audience's choice, the comparison |
 
 The three code slides are the deck's only assembly, and they are extracted
 from the source that assembles by `tools/extract_code_excerpts.py` rather than
@@ -248,6 +249,19 @@ million instructions. This version needs 15.8 million and produces
 bit-for-bit identical output. The learning algorithm did not change. Somebody
 understood both the mathematics and the machine. The tests are what made
 changing it safe.
+
+The bit slide is where the code stops being a screenshot. It takes the one
+number the deck has followed all along, `error x context` for AMIGA's first
+weight, and shows the eight instructions moving it: 117, 58, 29, 14, 7, with
+the bits that fall off the end in red. 7 divided by 4096 is 0.0017, which is
+the change on the One Step slide. Code, bits and arithmetic, one event seen
+three ways.
+
+Two details worth having ready. The discarded bits are a real rounding loss
+that accumulates over 1,160 updates, and it is also why the thing fits. And
+the sign: the shift produces +0.0017 while One Step shows -0.0017, because the
+instruction after these eight is a subtract. The shift sets the size of the
+step; the subtract makes it a step downward.
 
 If training finishes early, come back sooner and drop the sign correction.
 That is what it is there for.
