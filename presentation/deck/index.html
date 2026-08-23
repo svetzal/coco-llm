@@ -832,6 +832,26 @@
     it accumulates over 1,160 updates. It is also why the whole thing fits and
     runs.
 
+    IF ASKED WHY NOT ASRA AND ASRB, which an assembly-literate room will:
+
+    ASRA shifts A right, keeps the sign bit at the top, and drops the bit that
+    falls off the bottom into the CARRY. That bit now has to become B's new
+    top bit, and RORB is the instruction that does it: rotate right THROUGH
+    carry, carry into bit 7.
+
+    ASRB would sign-extend instead. It replicates B's OWN bit 7, so the bit
+    that fell out of A is thrown away and B's top bit is duplicated, which is
+    meaningless for a low byte. You get two independent 8-bit shifts rather
+    than one 16-bit shift.
+
+    Verified on the direct simulator: halving $0175 (373) gives 186 with
+    asra/rorb and 58 with asra/asrb. The 1 that fell out of A never arrives.
+
+    Nasty detail worth having: on some values they agree. If A's dropped bit
+    happens to equal B's top bit, both give the same answer. On the 117 on
+    this slide A is zero throughout, so asrb would coincidentally work here
+    too. That is exactly the kind of bug that survives casual testing.
+
     ON THE SIGN, because someone will spot it: this value is +0.0017 and the
     One Step slide shows -0.0017. The instruction after these eight is a
     SUBTRACT. The shift produces the size of the step; subtracting it from the

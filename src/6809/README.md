@@ -38,6 +38,26 @@ This folder contains the first complete bit-exact training implementation:
 - `tests/model_test.asm` and `tests/model_exp5_test.asm` — direct-simulator
   wrappers.
 
+### Running a one-off check on the direct simulator
+
+Useful when a claim about the CPU needs settling rather than assuming. Three
+things the invocation needs, each of which costs an attempt to rediscover:
+
+```sh
+.tools/6809/bin/6809 --ram-top 65535 --run scratch.asm
+```
+
+- `--run` executes; without it the tool only assembles and exits 0, which
+  looks like a pass.
+- End the program with `swi`. The simulator stops there and validates. A
+  `bra *` halt loop runs until you kill it.
+- Assertions are `;! label = #$xxxx` lines, and `end` is not accepted after
+  them; leave the file ending on the criteria.
+
+The exit status is non-zero when a criterion fails, and each is printed with
+its actual value, so a deliberately wrong assertion is a quick way to read a
+value out of memory.
+
 Each experiment driver is the composition root. Its short `start` routine calls
 the same screen initialization, model initialization, training, and
 verification functions before delegating to its lesson-specific presentation.
