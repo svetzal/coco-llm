@@ -522,6 +522,19 @@
 .reveal .cline.hot {
   color: var(--deck-mark); background: rgba(250, 229, 61, 0.12);
 }
+/* The register column: state after each instruction, computed from the
+ * exported traces by make_deck_figures.py. Hot CoCo is fixed-width, so ch
+ * aligns the column exactly; both spans refuse to shrink below content. */
+.reveal .fig.code.regs { font-size: 0.68em; }
+.reveal .fig.code.regs .cline { display: flex; }
+.reveal .fig.code.regs .cline .ct {
+  white-space: pre; flex: 0 0 auto; min-width: 34ch;
+}
+.reveal .fig.code.regs .cline .reg {
+  white-space: pre; flex: 0 0 auto; padding-left: 2ch;
+  color: var(--coco-c01);
+}
+.reveal .fig.code.regs .cline.hot .reg { color: var(--deck-mark); }
 /* The omission marker lines up with the code it stands in for, not with the
  * label column. A path is also left in its real case: these are file names. */
 .reveal .cline.elide { color: var(--coco-c01); padding-left: 2.6em; }

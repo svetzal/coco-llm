@@ -704,9 +704,9 @@
 <section data-timing="90">
   <!-- FIGURE:twomuls -->
   <p class="lead">one signed multiply, from two unsigned ones</p>
-  <div class="fig code">
-    <pre class="asm"><div class="cline">multiply_s8_s16</div><div class="cline">        sta     multiply_factor</div><div class="cline">        ldb     1,x</div><div class="cline hot">        mul</div><div class="cline">        std     multiply_product</div><div class="cline">        lda     multiply_factor</div><div class="cline">        ldb     ,x</div><div class="cline hot">        mul</div><div class="cline">        addb    multiply_product</div><div class="cline">        stb     multiply_product</div></pre>
-    <p class="cap">The 6809 multiplies two unsigned bytes. This makes a signed multiply out of two of them, and it is running right now. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
+  <div class="fig code regs">
+    <pre class="asm"><div class="cline"><span class="ct">multiply_s8_s16</span><span class="reg">A = 26, [X] = -244</span></div><div class="cline"><span class="ct">        sta     multiply_factor</span><span class="reg">factor = 26</span></div><div class="cline"><span class="ct">        ldb     1,x</span><span class="reg">B = 12, -244&#x27;s low byte</span></div><div class="cline hot"><span class="ct">        mul</span><span class="reg">D = 26 x 12 = 312</span></div><div class="cline"><span class="ct">        std     multiply_product</span><span class="reg">product = 312</span></div><div class="cline"><span class="ct">        lda     multiply_factor</span><span class="reg">A = 26 again</span></div><div class="cline"><span class="ct">        ldb     ,x</span><span class="reg">B = 255, -244&#x27;s high byte</span></div><div class="cline hot"><span class="ct">        mul</span><span class="reg">D = 26 x 255 = 6630</span></div><div class="cline"><span class="ct">        addb    multiply_product</span><span class="reg">B = 230 + 1 = 231</span></div><div class="cline"><span class="ct">        stb     multiply_product</span><span class="reg">product = -6344</span></div></pre>
+    <p class="cap">The 6809 multiplies two unsigned bytes. This makes a signed multiply out of two of them, and it is running right now. The register column is one captured training step: SINCLAIR's weight at epoch 5, context 26 times error -244. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
   </div>
   <!-- /FIGURE:twomuls -->
   <aside class="notes">
@@ -720,6 +720,14 @@
     halves. 15.8 million instructions. The model is bit-for-bit identical: not
     one output changed.
 
+    THE REGISTER COLUMN is a captured training step, not an invention:
+    SINCLAIR's weight update at epoch 5, context 26 times error -244. Two
+    things to point at. B holds 12 and then 255 — those are -244's two bytes
+    taken unsigned, because MUL never sees a sign. And the second MUL's high
+    half, 25, is never stored: the low sixteen bits are the whole answer.
+    The product this walk ends on, -6344, is the exact gradient the shift
+    slides are about to divide by sixteen. One update, traced end to end.
+
     THE POINT, and it is a human one: the learning algorithm did not change.
     Somebody understood both the mathematics and the machine, and that is what
     turned a correct experiment into something you can watch happen.
@@ -732,9 +740,9 @@
 <section data-timing="60">
   <!-- FIGURE:signfix -->
   <p class="lead">and the correction that makes it signed</p>
-  <div class="fig code">
-    <pre class="asm"><div class="cline elide">...</div><div class="cline">        tst     multiply_factor</div><div class="cline">        bpl     multiply_ready</div><div class="cline">        lda     multiply_product</div><div class="cline hot">        suba    1,x</div><div class="cline">        sta     multiply_product</div></pre>
-    <p class="cap">A negative factor comes out 256 too large. One subtraction fixes it, and the model is bit-for-bit what it was before. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
+  <div class="fig code regs">
+    <pre class="asm"><div class="cline elide">...</div><div class="cline"><span class="ct">        tst     multiply_factor</span><span class="reg">factor holds -121</span></div><div class="cline"><span class="ct">        bpl     multiply_ready</span><span class="reg">negative, so no branch</span></div><div class="cline"><span class="ct">        lda     multiply_product</span><span class="reg">A = 31, the product&#x27;s high byte</span></div><div class="cline hot"><span class="ct">        suba    1,x</span><span class="reg">A = 31 - 60 = -29</span></div><div class="cline"><span class="ct">        sta     multiply_product</span><span class="reg">product = -7260</span></div></pre>
+    <p class="cap">A negative factor comes out 256 too large. One subtraction fixes it, and the model is bit-for-bit what it was before. The column walks the next slide's worked example, -121 times 60. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
   </div>
   <!-- /FIGURE:signfix -->
   <aside class="notes">
@@ -747,6 +755,11 @@
     Worth showing because it is the kind of detail that decides whether a
     thing is possible on this machine at all, and because it is five
     instructions.
+
+    The register column runs the same worked numbers as the next slide, so
+    the bit rows there are these registers drawn in binary. Note the factor
+    here is negative where the captured step's was not — that is exactly why
+    the captured step skipped this correction and this example needs it.
   </aside>
 </section>
 
@@ -819,9 +832,9 @@
 <section data-timing="40">
   <!-- FIGURE:lrcode -->
   <p class="lead">the learning rate, in eight instructions</p>
-  <div class="fig code">
-    <pre class="asm"><div class="cline elide">...</div><div class="cline">        lbsr    experiment_multiply_training_context</div><div class="cline hot">        asra</div><div class="cline hot">        rorb</div><div class="cline hot">        asra</div><div class="cline hot">        rorb</div><div class="cline hot">        asra</div><div class="cline hot">        rorb</div><div class="cline hot">        asra</div><div class="cline hot">        rorb</div></pre>
-    <p class="cap">Shift right four times and you have divided by sixteen. That is the learning rate: not a setting, an instruction count. <span class="src">src/6809/training.asm - update_weight</span></p>
+  <div class="fig code regs">
+    <pre class="asm"><div class="cline elide">...</div><div class="cline"><span class="ct">        lbsr    experiment_multiply_training_context</span><span class="reg">D = the gradient, -6344</span></div><div class="cline hot"><span class="ct">        asra</span><span class="reg">A&#x27;s low bit, 1, waits in carry</span></div><div class="cline hot"><span class="ct">        rorb</span><span class="reg">D = -3172, and 0 fell off</span></div><div class="cline hot"><span class="ct">        asra</span><span class="reg">A&#x27;s low bit, 1, waits in carry</span></div><div class="cline hot"><span class="ct">        rorb</span><span class="reg">D = -1586, and 0 fell off</span></div><div class="cline hot"><span class="ct">        asra</span><span class="reg">A&#x27;s low bit, 1, waits in carry</span></div><div class="cline hot"><span class="ct">        rorb</span><span class="reg">D = -793, and 0 fell off</span></div><div class="cline hot"><span class="ct">        asra</span><span class="reg">A&#x27;s low bit, 0, waits in carry</span></div><div class="cline hot"><span class="ct">        rorb</span><span class="reg">D = -397, and 1 fell off</span></div></pre>
+    <p class="cap">Shift right four times and you have divided by sixteen. That is the learning rate: not a setting, an instruction count. It picks up the -6344 the multiply slide made. <span class="src">src/6809/training.asm - update_weight</span></p>
   </div>
   <!-- /FIGURE:lrcode -->
   <aside class="notes">
@@ -830,6 +843,12 @@
 
     Four asra/rorb pairs shift the 16-bit gradient right by four, which
     divides it by sixteen. That is the whole of the learning rate.
+
+    The register column starts at -6344 because the multiply slide just made
+    it — same captured update, picked up where that walk ended. And it shows
+    the carry doing the ferrying: each ASRA parks A's low bit in the carry,
+    each RORB collects it into the top of B. That is the gap the next slide
+    draws in bits.
 
     Say why it is a sixteenth and not 0.1 or 0.03: because a shift is free and
     a division is not. The hyperparameter everyone tunes is, on this machine,

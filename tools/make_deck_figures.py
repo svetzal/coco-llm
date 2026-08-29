@@ -630,20 +630,105 @@ def figure_sign(fix: dict) -> str:
   </div>"""
 
 
-def figure_code(excerpt: dict, note: str) -> str:
-    """One assembly reveal, taken verbatim from the source that assembles."""
-    lines = "".join(
-        f'<div class="cline{" hot" if line["hot"] else ""}">'
-        f'{esc(line["text"])}</div>'
-        for line in excerpt["lines"]
-    )
+def code_annotations(excerpt: dict, expected: list[tuple[str, str]]) -> list[str]:
+    """Pair each excerpt line with its register annotation, refusing on drift.
+
+    Each expectation names the instruction it annotates. If the source moves
+    and the excerpt no longer matches, the walk no longer describes the code,
+    so stop rather than splice annotations that quietly lie.
+    """
+    lines = excerpt["lines"]
+    if len(lines) != len(expected):
+        raise SystemExit(
+            f"{excerpt['title']}: {len(lines)} lines, {len(expected)} annotations"
+        )
+    for line, (mnemonic, _) in zip(lines, expected):
+        if not line["text"].strip().startswith(mnemonic):
+            raise SystemExit(
+                f"{excerpt['title']}: expected {mnemonic!r}, found {line['text']!r}"
+            )
+    return [note for _, note in expected]
+
+
+def annotate_two_muls(excerpt: dict, context_value: int, error: int) -> list[str]:
+    """Walk the captured training multiply through the excerpt, register by
+    register. The inputs are the same captured update the shift figure uses,
+    so the product this walk ends on is the gradient that figure divides."""
+    operand = error & 0xFFFF
+    high, low = operand >> 8, operand & 0xFF
+    first = context_value * low
+    second = context_value * high
+    b_after_add = (second & 0xFF) + (first >> 8) & 0xFF
+    product = (b_after_add << 8) | (first & 0xFF)
+    signed = product - 0x10000 if product & 0x8000 else product
+    assert signed == context_value * error, "walk disagrees with the arithmetic"
+    return code_annotations(excerpt, [
+        ("multiply_s8_s16", f"A = {context_value}, [X] = {error}"),
+        ("sta", f"factor = {context_value}"),
+        ("ldb", f"B = {low}, {error}'s low byte"),
+        ("mul", f"D = {context_value} x {low} = {first}"),
+        ("std", f"product = {first}"),
+        ("lda", f"A = {context_value} again"),
+        ("ldb", f"B = {high}, {error}'s high byte"),
+        ("mul", f"D = {context_value} x {high} = {second}"),
+        ("addb", f"B = {second & 0xFF} + {first >> 8} = {b_after_add}"),
+        ("stb", f"product = {signed}"),
+    ])
+
+
+def annotate_sign_fix(excerpt: dict, trace: dict) -> list[str]:
+    """Walk the worked correction: the product's high byte, minus the
+    multiplier's low byte, and the answer is signed."""
+    raw_high = trace["raw"] >> 8
+    corrected_high = raw_high - (trace["multiplier"] & 0xFF)
+    return code_annotations(excerpt, [
+        ("tst", f"factor holds {trace['factor']}"),
+        ("bpl", "negative, so no branch"),
+        ("lda", f"A = {raw_high}, the product's high byte"),
+        ("suba", f"A = {raw_high} - {trace['multiplier']} = {corrected_high}"),
+        ("sta", f"product = {trace['signed']}"),
+    ])
+
+
+def annotate_learning_rate(excerpt: dict, shift: dict) -> list[str]:
+    """Walk the captured gradient through the four shift pairs, showing the
+    carry ferrying A's low bit into B on every pair."""
+    steps = shift["steps"]
+    expected = [("lbsr", f"D = the gradient, {steps[0]['value']}")]
+    value = steps[0]["value"] & 0xFFFF
+    for step in steps[1:]:
+        carry = (value >> 8) & 1
+        expected.append(("asra", f"A's low bit, {carry}, waits in carry"))
+        expected.append(("rorb", f"D = {step['value']}, and {step['dropped']} fell off"))
+        value = step["value"] & 0xFFFF
+    return code_annotations(excerpt, expected)
+
+
+def figure_code(excerpt: dict, note: str, regs: list[str] | None = None) -> str:
+    """One assembly reveal, taken verbatim from the source that assembles.
+
+    With regs, each line carries the register state after it runs, computed
+    from the exported traces rather than typed."""
+    if regs is None:
+        lines = "".join(
+            f'<div class="cline{" hot" if line["hot"] else ""}">'
+            f'{esc(line["text"])}</div>'
+            for line in excerpt["lines"]
+        )
+    else:
+        lines = "".join(
+            f'<div class="cline{" hot" if line["hot"] else ""}">'
+            f'<span class="ct">{esc(line["text"])}</span>'
+            f'<span class="reg">{esc(reg)}</span></div>'
+            for line, reg in zip(excerpt["lines"], regs)
+        )
     elided = (
         '<div class="cline elide">...</div>' if excerpt["begins_inside"] else ""
     )
     tail = '<div class="cline elide">...</div>' if excerpt["dropped_comments"] else ""
     return f"""
   <p class="lead">{esc(excerpt["title"])}</p>
-  <div class="fig code">
+  <div class="fig code{" regs" if regs else ""}">
     <pre class="asm">{elided}{lines}{tail}</pre>
     <p class="cap">{note} <span class="src">{esc(excerpt["source"])}</span></p>
   </div>"""
@@ -800,22 +885,36 @@ def main() -> None:
     deck = splice(deck, "bias", figure_bias(bias))
     deck = splice(deck, "promptchange", figure_changed(prompt_change))
     deck = splice(deck, "contextchange", figure_changed(context_change))
+    shift = json.loads((TRACES.parent / "shift.json").read_text())
+    captured = shift["source"]
     deck = splice(deck, "twomuls", figure_code(
         code["two_muls"],
         "The 6809 multiplies two unsigned bytes. This makes a signed multiply "
-        "out of two of them, and it is running right now.",
+        "out of two of them, and it is running right now. The register column "
+        f"is one captured training step: {captured['weight_of']}'s weight at "
+        f"epoch {captured['epoch']}, context {captured['context_value']} times "
+        f"error {captured['error']}.",
+        annotate_two_muls(
+            code["two_muls"], captured["context_value"], captured["error"]
+        ),
     ))
     deck = splice(deck, "signfix", figure_code(
         code["sign_fix"],
         "A negative factor comes out 256 too large. One subtraction fixes it, "
-        "and the model is bit-for-bit what it was before.",
+        "and the model is bit-for-bit what it was before. The column walks "
+        "the next slide's worked example, "
+        f"{traces['sign_fix']['factor']} times "
+        f"{traces['sign_fix']['multiplier']}.",
+        annotate_sign_fix(code["sign_fix"], traces["sign_fix"]),
     ))
     deck = splice(deck, "signbits", figure_sign(traces["sign_fix"]))
-    deck = splice(deck, "shiftbits", figure_shift(json.loads((TRACES.parent / "shift.json").read_text())))
+    deck = splice(deck, "shiftbits", figure_shift(shift))
     deck = splice(deck, "lrcode", figure_code(
         code["learning_rate"],
         "Shift right four times and you have divided by sixteen. That is the "
-        "learning rate: not a setting, an instruction count.",
+        "learning rate: not a setting, an instruction count. It picks up the "
+        f"{captured['gradient']} the multiply slide made.",
+        annotate_learning_rate(code["learning_rate"], shift),
     ))
     DECK.write_text(deck, encoding="utf-8")
     print("spliced 16 figures into presentation/deck/index.html")

@@ -276,6 +276,14 @@ Highlights are matched by instruction, not line number, for the same reason.
 The tool enforces the journey's five-to-twelve-line limit and refuses to emit
 an excerpt outside it.
 
+Each code slide now carries a register column: the state after every
+instruction, computed from the exported traces by `make_deck_figures.py`,
+which refuses to splice if the excerpt's instructions drift from the walk.
+The multiply and the shifts walk one captured update — SINCLAIR's weight at
+epoch 5, context 26 times error -244, ending on the -6344 the shifts then
+divide — and the sign correction walks the worked example its bit slide
+draws. One training step, traced end to end across the block.
+
 The best beat is the middle one, and it is a human point rather than a
 technical one: the first version multiplied a bit at a time and needed 38.6
 million instructions. This version needs 15.8 million and produces
