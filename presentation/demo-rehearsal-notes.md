@@ -415,3 +415,142 @@ to systems whose scale normally hides them.
 - If Lisa is not selected, use Up or Down until the question says `LISA`.
 - Clear cancels the editor or returns from an answer.
 - After the edit, Enter asks again; Clear returns to the context table.
+
+## EXP-012: fake episode titles
+
+On stage this is block 6, the delight beat after the context edit. It is also
+the first block to cut, so rehearse it tight: in and out in three minutes. At
+the table it runs unattended in a loop all day.
+
+### EXP-012 question
+
+Can 400 bytes learn the shape of a title without learning a single word?
+
+### Before EXP-012 launch
+
+Launch with `make present EXP=12`. The screen fills with sixteen titles on
+load; any key deals another sixteen.
+
+> This is the one place we leave the vintage computers for a few minutes. This
+> model read the titles of every original Star Trek episode. All 79 of them.
+> Every title on this screen is fake.
+
+Deal one fresh screen in front of them so the invention is witnessed, not
+claimed.
+
+### The split
+
+> Here's the thing. The model in there is about 400 bytes, and it holds the
+> shape of a title: THE-something-OF-something. The words live somewhere else,
+> in 1,600 bytes of dictionary and rules. The model never learned what a
+> Gothos is. It learned that something goes there.
+
+### The corpus number
+
+> Why so small? Because there was nothing to generalize from. Across all 79
+> real titles, only two adjacent word pairs ever repeat. No phrase habits, no
+> house style at the word level. A shape, and a bag of words. So that is what
+> we built, and it is exactly as clever as it needs to be. Think about that a
+> minute.
+
+### Teaching point for EXP-012
+
+> When output looks creative, ask what is holding the shape and what is
+> holding the words. Here the split is two visible tables. In a large model
+> the same split exists; you just can't point at it.
+
+### Transition to the bias slide (stage) or the table
+
+> Everything so far came out of what the model read. So what happens when two
+> models read different things? Or the same things, in a different order?
+
+### EXP-012 recovery
+
+- If a key deals nothing, click the XRoar window once and press again.
+- There is no failure state; every screen is a fresh deal. If a title lands
+  strangely, read it out — the misses teach the split as well as the hits.
+
+## EXP-013: the game opponent that learns
+
+On stage this is block 8, and it never gets cut. Someone from the room plays;
+that is the point, so resist playing it yourself.
+
+### EXP-013 question
+
+Can 100 bytes learn the rules of a game, and the person across from it,
+starting from nothing?
+
+### Before EXP-013 launch
+
+Launch with `make present EXP=13`. Keys are on screen: 1 ROCK, 2 SPOCK,
+3 PAPER, 4 LIZARD, 5 SCISSORS. `R` makes it forget everything.
+
+> Rock, paper, scissors, lizard, Spock. Five throws instead of three. And fair
+> warning: the machine does not know the rules. I did not tell it what beats
+> what. RULES 0 out of 25 — that is it admitting it.
+
+### During play
+
+Volunteer at the laptop, or calling numbers from a seat; the laptop keyboard
+is easier to drive and the whole room can read the screen.
+
+> Watch the top line. IT EXPECTS — it calls its shot before every round. You
+> get to watch a prediction get made, and then get judged, live. Call your
+> shot, take your shot.
+
+Play six or eight rounds. Point at the counters as they move: RULES filling
+in as outcomes teach it what beats what, MEMORY saying how little it has on
+the player.
+
+> Around twenty-five rounds it will have the rules cold. It will never finish
+> learning you.
+
+Watch where RULES stops. Against a player with habits it stalls around seven
+to thirteen of twenty-five, because the machine only ever learns a winning
+answer to the moves you actually throw. Say that out loud: where the counter
+stops is a readout of how varied the volunteer is, not of the machine.
+
+### The reset
+
+Press `R` in front of them, or better, have the volunteer press it. The
+expectation line drops to `IT HAS NO IDEA YET` and both counters fall to
+zero.
+
+> Gone. Rules, habits, everything. That is the entire difference between this
+> thing and an opponent someone programmed — what it knows, it learned from
+> you, and one keystroke takes it all back.
+
+If someone challenges it: a person who genuinely randomises cannot be beaten,
+and say so rather than hope nobody tries. Reading the expectation line and
+playing against it beats the machine too — that is not a flaw, it is what a
+100-byte model of you deserves.
+
+### The honest number
+
+> Against six synthetic players with habits, it scores 80%. We recorded a
+> 200-round session against a person who was trying: 52.8%. It reads a person
+> better than chance — three sigma better — and nowhere near well enough to
+> win.
+>
+> Five of those six synthetic players had a habit. One did not. A person plays
+> like the one that did not. Our test set encoded an assumption about people,
+> and reporting the average hid it. Think about what your benchmarks are
+> quietly assuming.
+
+### Teaching point for EXP-013
+
+> 100 bytes. Two tables. No neural network anywhere in there — we tried
+> models, and a tiny table beat every one of them. Matching the machinery to
+> the job is a decision a person makes, and "no model" was the right call
+> here.
+
+Invite whoever played to the table: the real machine will happily lose to
+them again.
+
+### EXP-013 recovery
+
+- If a key does nothing, click the XRoar window once and try again.
+- Only 1-5 and R do anything; there is no way to wedge it.
+- If the opponent starts winning heavily and the room deflates, press R and
+  let the volunteer watch it fall back to guessing — the recovery is a better
+  lesson than the streak.
