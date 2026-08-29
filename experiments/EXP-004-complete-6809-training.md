@@ -104,6 +104,17 @@ the post-training keyboard prompt. The direct simulator verifies the subsequent
 generation path. Automated headless runs on this Mac do not provide a
 trustworthy stock-rate wall clock. Physical CoCo 1 timing remains the authority.
 
+Two emulator wall-clock measurements exist (2026-08-29), taken by trapping
+`wait_for_key` — the post-training `PRESS ANY KEY` — under `-ratelimit` and
+timing from process launch. The windowed SDL build reached the trap in **49
+seconds**; a headless `-ui null` run of the same binary took **96 seconds**,
+confirming that headless pacing is untrustworthy — but note the two bracket
+the 75-second projection from opposite sides, so neither is authoritative.
+What the pair does establish, at emulator confidence only: launch to
+`PRESS ANY KEY` is on the order of one to two minutes, not the several
+minutes the talk's block budget had held in reserve for it. Physical CoCo 1
+timing remains the open item and the authority for any printed claim.
+
 The interactive XRoar build enables its rate limiter and visibly advances an
 epoch counter from 1 through 20. The full-width row below cycles through all
 58 examples as `context context > expected token`; the expected token is

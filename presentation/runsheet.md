@@ -45,10 +45,13 @@ That reserve exists because of a measurement. Blocks 1 and 2 were budgeted at
 11 minutes on the assumption that eight figure slides need a minute each. Walked
 through, they take 2 to 3 minutes, or 3 to 5 with questions from the room. They
 now hold 5, and the six minutes that recovered went to the live training run,
-which had been squeezed twice to pay for those slides and is the one thing in
-the talk that has never been timed.
+which had been squeezed twice to pay for those slides.
 
-Do not spend the reserve in advance. It is there for block 3.
+The run has since been wall-clocked under the emulator: launch to `PRESS ANY
+KEY` in one to two minutes (an emulator measurement — see block 3). So block
+3's room is no longer covering an unknown; it is genuine slack, and the
+reserve behind it is genuine reserve. Do not spend it in advance anyway. It
+is there for questions.
 
 | # | Block | Slides | Min | Cum | Surface | Arc |
 | --- | --- | ---: | ---: | ---: | --- | --- |
@@ -68,10 +71,14 @@ Blocks 2 and 3 were one block when this file was written. Building the figures
 split them: eight slides now carry the explanation that used to be narrated
 over the training run.
 
-**Block 3 now holds 9 minutes and there are 2 more in reserve behind it.** That
-is more room than the original plan gave it, and it is deliberate, because
-**EXP-004's training time has still never been measured on hardware.** It is
-the only block in the talk whose length nobody knows.
+**Block 3 now holds 9 minutes and there are 2 more in reserve behind it.**
+That is more room than the run needs. Wall-clocked under XRoar at
+`-ratelimit` on 2026-08-29, launch to `PRESS ANY KEY` took **49 seconds**
+windowed and 96 headless — emulator measurements, labelled as such, with the
+two bracketing the 75-second cycle projection and physical hardware still the
+authority. The risk has flipped: the machine will be parked at the training
+boundary before the code slides are half done, and the block's room is for
+the comparison and the room's questions rather than for an unknown.
 
 Block 2, slide by slide:
 
@@ -122,9 +129,9 @@ seconds of dead air each, and the original budget spent roughly two minutes on
 it. Under the emulator each one is a window switch, so that time comes back as
 buffer rather than being spent.
 
-Do not spend it. Block 3, the live training run, has never been timed, and its
-eleven minutes is a planning figure. The recovered two minutes is the margin
-that absorbs being wrong about it.
+Do not spend it. Block 3, the live training run, now has an emulator wall
+clock — one to two minutes to the training boundary — so the recovered two
+minutes is genuine margin rather than cover for an unknown.
 
 Have four XRoar instances launched and parked before the talk starts, one per
 block, so a changeover is a window switch and not a `make` invocation on the
@@ -301,13 +308,17 @@ teaches nothing. It comes from `FixedTokenLanguageModel`, the integer
 reference the 6809 matches bit for bit, whose `gradient >> 4` is literally
 these eight instructions.
 
-If training finishes early, come back sooner and drop the sign correction.
-That is what it is there for.
+On the measured pace, training reaches `PRESS ANY KEY` during the first or
+second code slide, and that is fine: the machine parks there harmlessly, and
+the pause belongs to the audience anyway. Walk the code at its own speed. If
+the room is restless, drop the sign correction — that is what it is there
+for — and come back sooner.
 
-**This block's length is the largest open risk in the plan.** Nine minutes is
-a planning figure and the 2-minute reserve sits behind it, so there are eleven
-available. That is more than the original plan gave it, and it is there
-because training has never been timed on hardware. See "Open decisions".
+**This block's length is no longer the plan's largest open risk.** Measured
+under the emulator, launch to the training boundary is one to two minutes,
+so the nine minutes hold the launch, the code slides, the comparison, and
+room to breathe. What hardware timing would add is a printable number, not a
+planning one. See "Open decisions".
 
 If training does not improve, say so and inspect the evidence with the room.
 A previously recorded run may be shown as a labelled comparison and never as a
@@ -484,13 +495,13 @@ run the title generator in a loop while a visitor plays the other.
 These block locking the runsheet. Each one is a question for Stacey, not a task
 to be worked around.
 
-1. **How long does EXP-004, the live training run, actually take?** Block 3
-   holds 9 minutes with 2 more in reserve, and has never been timed. That is
-   generous cover for a number nobody knows, bought by measuring blocks 1 and
-   2 instead of guessing at them. It is still a guess. Projecting the emulator
-   makes it cheap to settle: XRoar at `-ratelimit` runs the same clock, and
-   the run can be trapped and wall-clocked on the laptop without touching
-   hardware. **This is the next thing to do.**
+1. ~~How long does EXP-004, the live training run, actually take?~~ Settled
+   at emulator confidence (2026-08-29): trapped at `wait_for_key` under
+   `-ratelimit`, launch to `PRESS ANY KEY` took 49 seconds windowed and 96
+   headless, bracketing the 75-second cycle projection. Recorded in EXP-004,
+   the live training run's, experiment notes. What remains is the hardware
+   number, which is the printable one and the exhibit-copy gate, not a
+   planning input.
 2. **Does the abstract still describe the talk?** It promises invented computer
    names and 1980s marketing phrases. Blocks 5, 6 and 8 are none of those
    things, and block 8 is the strongest beat in the set. Either the abstract
