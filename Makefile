@@ -45,24 +45,20 @@ present:
 # training the moment it loads, so block 3 launches it live with
 # `make present EXP=4`. Arrange the four windows in block order once they
 # are up; XRoar windows are otherwise indistinguishable.
-stage: build/coco-llm-exp5.bin build/coco-attention.bin \
-		build/coco-titles.bin build/coco-rpsls.bin build/roms/.coco1-roms
+STAGE_BINARIES := build/coco-llm-exp5.bin build/coco-attention.bin \
+	build/coco-titles.bin build/coco-rpsls.bin
+
+stage: $(STAGE_BINARIES) build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
-	$(XROAR) -machine cocous -ram 32 \
-		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
-		-ratelimit -run build/coco-llm-exp5.bin & \
-	$(XROAR) -machine cocous -ram 32 \
-		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
-		-ratelimit -run build/coco-attention.bin & \
-	$(XROAR) -machine cocous -ram 32 \
-		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
-		-ratelimit -run build/coco-titles.bin & \
-	$(XROAR) -machine cocous -ram 32 \
-		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
-		-ratelimit -run build/coco-rpsls.bin &
+	@for binary in $(STAGE_BINARIES); do \
+		nohup $(XROAR) -machine cocous -ram 32 \
+			-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+			-ratelimit -run $$binary >/dev/null 2>&1 & \
+	done
 	@echo "Parked: EXP-005 (block 4), EXP-011 (block 5)," \
 		"EXP-012 (block 6), EXP-013 (block 8)."
+	@echo "The windows detach from this terminal; quit them from XRoar itself."
 	@echo "Block 3 launches live: make present EXP=4"
 
 exp006-model:
