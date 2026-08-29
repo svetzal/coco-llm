@@ -59,6 +59,13 @@ The visitor has now run a forward pass, sampled from a softmax distribution, and
 fed the result back into the context — without any of those words being used.
 Introduce the vocabulary afterward, if at all.
 
+One piece of vocabulary is worth introducing, though, for anyone who has seen
+an API playground: **the die is the temperature dial.** Rolling is sampling.
+Ignoring the die and always taking the top row is greedy decoding, temperature
+zero — walk the deck that way once and every walk is identical. Temperature
+turned up flattens the printed ranges so the underdogs come up more often.
+A visitor who has wondered what that slider does has just operated it.
+
 ### Why a d20
 
 A twenty-sided die is uniform, resolves to 5%, and needs one throw. Print the

@@ -86,10 +86,20 @@ needs rather than in document order.
 
 **One vocabulary, and it is the audience's.** The deck names the terms people
 arrive already having heard, and uses them consistently: **token** and
-**tokenizing**, **context window**, **parameter**. Internal words are a tell
-that a figure was written from the code rather than for a reader, so "slot"
-became "window position" everywhere once the context window had a name. If a
-figure needs a word the audience has not been given, give it the word first.
+**tokenizing**, **context window**, **parameter**, **embedding**. Internal
+words are a tell that a figure was written from the code rather than for a
+reader, so "slot" became "window position" everywhere once the context window
+had a name. If a figure needs a word the audience has not been given, give it
+the word first.
+
+The speaker notes extend the same move to words the material earns but the
+slides do not need: **hallucination** and **overfitting** on the epochs
+slide, **inference**, **open weights** and **the P in GPT** on the cost
+slide, **temperature** against greedy decoding in block 4, **system prompts,
+RAG and memory** as context edits in block 5, **fine-tuning** as more
+upbringing in block 7, and long chats forgetting their start as the window
+sliding. The rule for adding one: the mechanism must already be on screen,
+so the word lands on something visible rather than replacing it.
 
 **Nothing in a figure may shrink.** Every box carries `flex: 0 0 auto`.
 Flex items shrink below their own content by default, and a bordered box

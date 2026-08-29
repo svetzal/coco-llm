@@ -99,6 +99,12 @@
     token context window, that is this, wider. Same word, same meaning. Do not
     labour it.
 
+    One experience to hang on the sliding: anyone who has had a long chat
+    where the model seems to forget how the conversation started has watched
+    this happen. The window slid, and the beginning fell out. Not moodiness,
+    not fading interest — arithmetic. This is the cheapest "so THAT'S why" in
+    the talk; spend one sentence on it.
+
     The window width is also why the next tables come in pairs.
   </aside>
 </section>
@@ -147,7 +153,8 @@
 <section data-timing="30">
   <h2>Why three?</h2>
   <p class="lead">One number puts a word on a line. Three put it in a space,
-  so words can be near each other in more than one way.</p>
+  so words can be near each other in more than one way. Those three numbers
+  are the word's <strong>embedding</strong>.</p>
   <!-- FIGURE:why -->
   <div class="fig why">
     <div class="wtable">
@@ -176,8 +183,13 @@
 
     First half is conceptual: one number can only say how much of one thing a
     word is. Three numbers give it a position in a space, so words can be
-    close in more than one way at once. Modern models use thousands of numbers
-    per word. Same idea, more room.
+    close in more than one way at once.
+
+    NAME THE WORD, because the room has heard it: those numbers are the
+    word's EMBEDDING. GPT-3 used 12,288 of them per token where we use
+    three. Same idea, more room. And when a vector database sells
+    "embeddings", it is selling rows like these, made for whole documents.
+    One word, demystified for free.
 
     Second half is the machine. Every extra number is another 29 by 3
     multiplies per example, and a MUL costs 11 cycles at 0.89 MHz.
@@ -221,7 +233,8 @@
   </div>
   <!-- /FIGURE:tables -->
   <aside class="notes">
-    ANSWERS "where did that row come from". It came from here.
+    ANSWERS "where did that row come from". It came from here. These are the
+    EMBEDDING tables — the word from the last slide, now with an address.
 
     Two tables BECAUSE THE CONTEXT WINDOW IS TWO TOKENS WIDE. One table per
     position in the window. Say that before anything else on this slide; it
@@ -454,9 +467,11 @@
     model has quietly stopped inventing and started reciting.
 
     Say it plainly: more training made the number better and the behaviour
-    worse. Same lesson as the epoch sweep in EXP-007, and we only know it
-    because we measured the thing we cared about instead of the number the
-    optimizer handed us.
+    worse. The industry's word for epoch 60 is OVERFITTING — the model has
+    stopped learning the shape of the data and started memorizing the data.
+    Same lesson as the epoch sweep in EXP-007, and we only know it because we
+    measured the thing we cared about instead of the number the optimizer
+    handed us.
 
     IF ASKED WHAT "RIGHT SHAPE" MEANS, it is on the slide and it is two
     checks and nothing else: two to four tokens, and the first token is one of
@@ -488,6 +503,12 @@
     words mean. It knows which tokens tend to follow which, and that alone is
     enough to produce something a person will read as plausible. That is not
     a trick this model plays and the big ones do not. It is the same trick.
+
+    AND NAME IT, because the room has heard the word: when a big model does
+    this with facts, the industry calls it HALLUCINATION. Different tokens
+    that sit together plausibly. SINCLAIR AMIGA is a hallucination we asked
+    for. It is not a malfunction bolted onto the mechanism; it IS the
+    mechanism, pointed somewhere we happen to mind.
 
     Red is the third failure, and it only shows up later.
 
@@ -582,7 +603,10 @@
 
     TO USE the finished model: 850 bytes of inference, 1,086 shared with
     training (the forward pass, the softmax table, the arithmetic), and the
-    580 bytes of weights. 2,516 in total.
+    580 bytes of weights. 2,516 in total. INFERENCE is the industry's word
+    for this half — when a provider bills you per token, this is the half
+    being billed. And when a lab ships an "open-weights" model, the weights
+    file is the thing it ships: 580 bytes here, gigabytes there, same file.
 
     TO LEARN it in the first place: 730 bytes more. The epoch and example
     loops, the gradient updates, the 58 training examples, and the display
@@ -593,7 +617,8 @@
     the machine only needs the learning half once. That is why EXP-006 and
     EXP-007 can put a much bigger model on this machine by training it on the
     Mac. Same idea as every model you have used: somebody paid for the
-    training, once, somewhere else.
+    training, once, somewhere else. That is the P in GPT — Pre-trained — and
+    now the room can unpack a third of the acronym for themselves.
 
     Two more numbers if pressed. 234 bytes of working space. And 689 for the
     self-check, the reference model's final weights and checksum so the CoCo
@@ -942,6 +967,12 @@
     KEEPING UP IN LITTLE COMPUTERS. It blended two campaigns without
     understanding either.
 
+    IF SOMEONE ASKS ABOUT TEMPERATURE: greedy decoding is temperature zero —
+    always take the top-scoring token, which is why the same prompt gives the
+    same answer every time here. Turning temperature up means sampling lower
+    scorers sometimes. The d20 on the exhibit table is that dial, made of
+    plastic.
+
     SECOND TO CUT if running long.
   </aside>
 </section>
@@ -984,6 +1015,17 @@
     Then name the omission: key-value attention, not a transformer. We isolated
     one mechanism so it could be watched.
 
+    THE TIE TO WHAT THEY USE, worth one breath: every bolt-on the industry
+    sells for making a model seem to know things — system prompts, retrieval
+    (the RAG in every vendor deck), memory features — is this same move. Put
+    a fact into context; leave the weights alone. And the caution transfers
+    whole: attention uses what is in context faithfully, wrong or right. Type
+    a wrong code and it will retrieve the wrong code with total confidence.
+
+    If a lab-brag comes up: the needle-in-a-haystack scores in model
+    announcements are this exact game — find the one relevant record in the
+    pile of context. Ours is eight records; theirs is a phone book.
+
     V replay is optional depth and is NOT in the budget.
   </aside>
 </section>
@@ -1006,6 +1048,11 @@
 
     Corpus number reframes it: across all 79 real titles, only two adjacent
     word pairs ever repeat. Nothing to generalize from. It memorized a shape.
+
+    CALLBACK worth one line: this is hallucination as a product. Ask this
+    machinery for facts and these screens would be errors; ask it for
+    invention and they are the deliverable. Identical machinery — which one
+    you get was a decision about the task, and hold that for the last slide.
 
     FIRST TO CUT. Also the one place we leave the vintage-computer example, so
     get in and out.
@@ -1058,6 +1105,11 @@
 
     Also worth a beat: concatenated ends at loss 2.18 and interleaved at 0.88.
     The bad ordering trained worse as well as more narrowly.
+
+    IF FINE-TUNING COMES UP: fine-tuning is more of exactly this — training
+    that moves the weights, on data somebody chose. A company fine-tuning a
+    model on its own documents is choosing an upbringing, and it inherits
+    every trap on this slide, ordering included.
 
     Ask which human decision produced each row. DO NOT ANSWER IT.
   </aside>

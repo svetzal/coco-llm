@@ -115,6 +115,11 @@ Ask the room to predict the continuation, then press Enter to reveal
 > The prompt is not a magic instruction channel. It is temporary state. Same
 > weights, different context, different scores, different completion.
 
+If temperature comes up: greedy decoding is temperature zero — always the
+top-scoring token, which is why the same prompt repeats its answer exactly.
+Turning temperature up means sometimes taking a lower scorer. The d20 on the
+table is that dial, made of plastic.
+
 Two prompts establish the lesson. Use `POWER WITHOUT` → `THE PRICE` as an
 optional third result or let the room explore the remaining prompts. Running
 all six risks turning the lesson into a memory trick.
@@ -140,6 +145,13 @@ Can a model trained on the Mac save typing on a stock CoCo?
 >
 > Point to the title when it appears: `MAC TRAINED - COCO PREDICTS`. We are not
 > disguising where the expensive work happened.
+
+Two industry words are sitting right here, so hand them over. Pretrained is
+the P in GPT — somebody paid for the training once, somewhere else, and this
+machine only does inference. And squeezing each trained weight into a single
+byte, rounded and clipped, is quantization — the same trade that puts a
+4-bit model on a phone, made for the same reason: the small machine has to
+hold it.
 
 ### Orient to the workbench
 
@@ -395,6 +407,13 @@ Call this content-addressed key-value attention, not a transformer. It has no
 residual stream, normalization, feed-forward layer, or stack of causal
 self-attention blocks. The isolated mechanism is the point.
 
+Then the tie to what the room already uses, one breath: system prompts,
+retrieval (the RAG in every vendor deck), and memory features are all this
+same move — put a fact into context and leave the weights alone. The caution
+transfers whole: type the wrong code and attention retrieves the wrong code
+with total confidence. And the needle-in-a-haystack scores labs advertise are
+this exact game, played against a phone book instead of eight records.
+
 ### Closing the demonstration sequence
 
 > What did this old computer let us separate?
@@ -458,6 +477,11 @@ claimed.
 > When output looks creative, ask what is holding the shape and what is
 > holding the words. Here the split is two visible tables. In a large model
 > the same split exists; you just can't point at it.
+>
+> And this is hallucination as a product. Ask this machinery for facts and
+> every one of these screens is an error. Ask it for invention and they are
+> the deliverable. Same machinery — which one you get was a decision a person
+> made about the task.
 
 ### Transition to the bias slide (stage) or the table
 

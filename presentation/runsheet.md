@@ -189,14 +189,18 @@ Every number in every figure is exported from the reference model by
    is a whole word because we chose that. Then, on the sliding rows, the two
    boxes it looks at are the **context window**, two tokens wide, and it
    slides. Say once that a model advertising a 200,000-token window means this,
-   wider. Ask for a word outside the vocabulary; there is no graceful answer.
+   wider — and that the sliding is why a long chat seems to forget its own
+   beginning: the start fell out of the window. Ask for a word outside the
+   vocabulary; there is no graceful answer.
 2. **Thirteen doesn't mean anything.** An identifier is a name, not a
    description. `ZX80` is 27 and `ZX81` is 28 by alphabetical accident, and
    `APPLE` 8 sits beside `ARCHIMEDES` 9 for the same reason. Arithmetic on it
    proves nothing, which is the problem the next slide solves.
-3. **Why three?** One number puts a word on a line; three put it in a space.
-   Then the cost of each width, and the admission that **six would have
-   fitted**. Three is a decision, not a limit. Hold that for block 9.
+3. **Why three?** One number puts a word on a line; three put it in a space,
+   and those numbers are the word's **embedding** — name it, because the room
+   has heard it sold. Then the cost of each width, and the admission that
+   **six would have fitted**. Three is a decision, not a limit. Hold that for
+   block 9.
 4. **Where the numbers live.** Both lookup tables, all 29 tokens, with the two
    fetched rows lit. A context window of two means two tables. `COMMODORE`
    holds a different row in each, which is the whole of what positional means.
@@ -220,8 +224,11 @@ Every number in every figure is exported from the reference model by
    *different* tokens that sit together plausibly, `SINCLAIR AMIGA`,
    `COMMODORE ATARI`, neither of which existed. The machine has no idea what
    those words mean; it knows which tokens follow which, and that alone is
-   enough. Then the trap: epoch 0 is 100% new and 0% the right shape. New is
-   easy. If asked why not train longer for more recognizable names, the answer
+   enough — and when a big model does it with facts the industry calls it
+   **hallucination**, so hand the room that word here, where the mechanism is
+   on screen. Epoch 60's recitation gets its industry name too:
+   **overfitting**. Then the trap: epoch 0 is 100% new and 0% the right
+   shape. New is easy. If asked why not train longer for more recognizable names, the answer
    is on screen: right shape is already 98% at epoch 20 and saturates at 13.
    Longer training buys recitation, not recognizability.
 8. **What it cost.** 2,516 bytes run the finished model; another 730 buys
@@ -348,6 +355,10 @@ just a table on a slide. The strongest live reveal is `ARE YOU` becoming
 `KEEPING UP IN LITTLE COMPUTERS`: it blended two campaigns into something
 plausible without understanding either.
 
+If temperature comes up: greedy decoding is temperature zero, which is why a
+repeated prompt repeats its answer. The d20 at the exhibit table is the
+temperature dial, made of plastic.
+
 ### 5. Change one thing: the context
 
 **On screen:** the same held-and-changed shape, then EXP-011 in XRoar.
@@ -371,8 +382,11 @@ The line to land:
 > the context to produce this answer.
 
 Then name the omission: this is key-value attention, not a transformer. We
-isolated one mechanism so it could be watched. The score replay (`V`) is
-optional depth and is not in the budget.
+isolated one mechanism so it could be watched. Worth one breath after it:
+system prompts, retrieval (RAG), and memory features are all this same move —
+a fact placed in context, weights untouched — and attention will use a wrong
+fact just as faithfully. The score replay (`V`) is optional depth and is not
+in the budget.
 
 ### 6. A screen of things that never existed
 
@@ -386,6 +400,10 @@ something goes there.
 Say the corpus number, because it reframes the whole demo: across all 79 real
 titles, only two adjacent word pairs ever repeat. There was nothing to
 generalize from. It memorized a shape.
+
+One callback earns its sentence: this is hallucination as a product. Asked
+for facts, these screens would be errors; asked for invention, they are the
+deliverable. Which one you get was a decision about the task.
 
 Note the second scenario cost. This is the one place the talk leaves the
 vintage-computer example, so get in and out.
