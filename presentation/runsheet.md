@@ -126,9 +126,19 @@ Do not spend it. Block 3, the live training run, has never been timed, and its
 eleven minutes is a planning figure. The recovered two minutes is the margin
 that absorbs being wrong about it.
 
-Have all five XRoar instances launched and parked before the talk starts, one
-per block, so a changeover is a window switch and not a `make` invocation on
-the projector. Rehearse the switching, not only the demos.
+Have four XRoar instances launched and parked before the talk starts, one per
+block, so a changeover is a window switch and not a `make` invocation on the
+projector. `make stage` launches all four in one command: EXP-005 (trains
+itself on load and parks at PRESS ANY KEY), EXP-011 (parks at the context
+table), EXP-012 (parks showing titles), and EXP-013 (parks at the RPSLS keys;
+press `R` before the talk if anyone played it during setup). XRoar windows
+are indistinguishable from each other, so arrange them in block order once
+they are up. **EXP-004 is the exception and is launched live**
+with `make present EXP=4` at the top of block 3, because it starts training
+the moment it loads — the launch is the reset, and parking it early would
+burn the run. Keep a terminal at the repository root ready for exactly that
+command, and rehearse the switching, not only the demos. The same launch cues
+are in the deck's speaker notes on each cue slide.
 
 ## The blocks
 
@@ -501,26 +511,21 @@ to be worked around.
 
 ## What has to be built
 
-In dependency order. Item 1 blocks locking the runsheet; items 2 and 3 block
-rehearsing half the talk.
+In dependency order. The launcher and rehearsal-note gaps that blocked
+rehearsing half the talk are closed; what remains is legibility, the two
+missing figures, and the physical-world items.
 
-1. **Time EXP-004, the live training run**, trapped and wall-clocked under
-   XRoar at `-ratelimit`. Block 3 is 7 minutes 15 of a 40-minute talk, has
-   never been measured, and has been squeezed twice. Everything downstream
-   floats until this number exists. See open decision 1.
-2. **Stage launchers for EXP-012 (fake titles) and EXP-013 (game opponent).**
-   `make present` stops at EXP-011, the attention head, so blocks 6 and 8 have
-   no launcher and no rehearsal path.
-3. **Rehearsal notes for blocks 6 and 8.** `demo-rehearsal-notes.md` stops at
-   EXP-011 as well.
-4. **A projector legibility check** for XRoar and for the deck, and whatever
+1. ~~Stage launchers for EXP-012 (fake titles) and EXP-013 (game opponent).~~
+   Done: `make present` now lists and launches both.
+2. ~~Rehearsal notes for blocks 6 and 8.~~ Done: `demo-rehearsal-notes.md`
+   covers EXP-012, the fake titles, and EXP-013, the game opponent.
+3. **A projector legibility check** for XRoar and for the deck, and whatever
    scaling flags the stage targets turn out to need. See open decision 3.
-5. **Slides for blocks 1, 7 and 9**, the three that still have no figure. Block
-   7 in particular is the bias comparison and is currently a heading with
-   nothing under it.
-6. **The photograph in block 1**, of the physical machine, from a genuine run.
-7. **The handout**, if decision 5 says yes.
-8. **A table plan** revising `table-exercises.md` for two surfaces and two
+4. **Slides for blocks 1 and 9**, the two still without a figure. Block 7,
+   the bias comparison, now carries the five stacked bars.
+5. **The photograph in block 1**, of the physical machine, from a genuine run.
+6. **The handout**, if decision 5 says yes.
+7. **A table plan** revising `table-exercises.md` for two surfaces and two
    physical machines.
 
 ## Deck state
@@ -533,5 +538,7 @@ uv run python tools/measure_train_vs_infer.py  # classify the image by job
 uv run python tools/make_deck_figures.py       # draw them, splice them in
 ```
 
-Blocks 1, 7 and 9 are the three with no figure yet. Blocks 3, 4, 5, 6 and 8
-run in XRoar and their slides are cues.
+Blocks 1 and 9 are the two with no figure yet; block 7 now carries the bias
+bars. Blocks 3, 4, 5, 6 and 8 run in XRoar and their slides are cues, each
+cue slide's speaker notes naming the `make present` command or window switch
+it needs.

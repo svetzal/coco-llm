@@ -35,6 +35,16 @@
   <h1>Coco LLM</h1>
   <p class="sub">A 45-year-old computer, starting from random numbers</p>
   <aside class="notes">
+    PRE-FLIGHT, done before walking on: make stage launches the four parked
+    XRoar windows in one command.
+    - EXP-005, block 4 (trains itself, parks at PRESS ANY KEY)
+    - EXP-011, block 5 (parks at the context table)
+    - EXP-012, block 6 (parks showing sixteen fake titles)
+    - EXP-013, block 8 (parks at the RPSLS keys; press R if anyone played it)
+    The windows look identical, so arrange them in block order. EXP-004 is
+    NOT parked: it starts training the moment it loads, so block 3 launches
+    it live. Keep a terminal at the repo root ready for make present EXP=4.
+
     Photograph of the physical CoCo 1 showing a real trained run. Full screen,
     no explanation.
 
@@ -629,13 +639,20 @@
   <h2>Watch it learn</h2>
   <p class="what">EXP-004 &middot; the live training run</p>
   <aside class="notes">
+    LAUNCH: make present EXP=4, live, in the terminal — this one is never
+    parked because it starts training the moment it loads. The launch IS the
+    reset: fresh random weights, nothing carried over.
+
     THE CENTREPIECE and the reason the talk exists. Block 2 did the
     explaining, so this needs far less narration than it used to.
 
-    Reset to random weights. Seed 6809. Generate, and read the nonsense out.
+    The machine runs its own sequence on load: it seeds 6809, generates once
+    from the random weights, and starts training. The nonsense is captured,
+    not lingered on — it comes back labelled RANDOM WEIGHTS on the comparison
+    screen, which is where to read it out.
 
-    Start the training loop, and say what they are watching: 58 examples, 20
-    epochs, 1,160 corrections, each one the nudge from the One Step slide.
+    Say what they are watching: 58 examples, 20 epochs, 1,160 corrections,
+    each one the nudge from the One Step slide.
 
     Then LEAVE IT RUNNING and cut to the code. Do not narrate a progress
     counter for seven minutes.
@@ -865,7 +882,8 @@
   <h2>Back to the machine</h2>
   <p class="what">EXP-004 &middot; the comparison</p>
   <aside class="notes">
-    Return to XRoar. It should be at or near the training boundary.
+    SWITCH back to the EXP-004 XRoar window launched at Watch it learn. It
+    should be at or near the training boundary.
 
     Pause at PRESS ANY KEY and let SOMEONE IN THE ROOM decide when inference
     begins. That is the whole reason the pause exists.
@@ -908,8 +926,11 @@
     of the answer, handed over before the machine starts. People conflate
     these constantly and this slide is the cheapest place to separate them.
 
-    THEN go to the machine and let someone pick a prompt live, so it is not
-    just a table on a slide.
+    THEN go to the machine: SWITCH to the parked EXP-005 XRoar window
+    (pre-flight: make present EXP=5). It trained itself on load and is
+    sitting at PRESS ANY KEY; one keypress reaches the prompt selector.
+    Up/Down chooses a prompt, Enter generates. Let someone pick a prompt
+    live, so it is not just a table on a slide.
 
     Title on the machine reads SAME MODEL - CHANGE THE PROMPT. Ask what stayed
     fixed.
@@ -946,8 +967,10 @@
     model stayed put. Two different things a person can change, neither of
     them the weights.
 
-    THEN the machine, so they watch a person do it rather than read that
-    someone did.
+    THEN the machine: SWITCH to the parked EXP-011 XRoar window (pre-flight:
+    make present EXP=11), sitting at the context table. Enter asks, E opens
+    the editor, Clear backs out. They watch a person do it rather than read
+    that someone did.
 
     Retrieve LISA = CODE 2. Open the editor, type 6, show BEFORE, AFTER, and
     MODEL 751B DID NOT CHANGE. Ask the same question, get the new answer.
@@ -967,6 +990,10 @@
   <h2>Things that never existed</h2>
   <p class="what">EXP-012 &middot; the fake episode titles</p>
   <aside class="notes">
+    SWITCH to the parked EXP-012 XRoar window (pre-flight: make present
+    EXP=12), already showing a screen of titles. Any key deals sixteen fresh
+    ones — deal at least one screen live so the invention is witnessed.
+
     One keystroke, sixteen invented titles.
 
     The lesson is the split and it is visible in the sizes: 400 bytes of model
@@ -1038,6 +1065,11 @@
   <h2>Now you play it</h2>
   <p class="what">EXP-013 &middot; the game opponent that learns</p>
   <aside class="notes">
+    SWITCH to the parked EXP-013 XRoar window (pre-flight: make present
+    EXP=13). Keys are on its screen: 1 ROCK, 2 SPOCK, 3 PAPER, 4 LIZARD,
+    5 SCISSORS; R resets. If anything was played during setup, press R now so
+    it starts knowing nothing.
+
     NEVER CUT. Someone from the room calls throws.
 
     It does not know the rules: RULES 0/25 says so. It does not know the player

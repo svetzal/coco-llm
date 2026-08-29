@@ -80,10 +80,15 @@ The bias demonstration is therefore part of the main argument, not a detached
 ethics aside. It connects the mechanics of learning directly to the need for
 human judgement.
 
+The deck in [`deck/`](deck/) carries the slide source and per-slide speaker
+notes; press `S` in the browser for reveal.js's speaker view, which shows the
+notes, the next slide, and pacing against the runsheet's budget. The cue
+slides' notes include the `make present` command or window switch each demo
+needs. Rehearsal cues and recovery paths for every stage demo are in
+`demo-rehearsal-notes.md`.
+
 Future material may include:
 
-- slide source and speaker notes;
-- live-demo runbook and recovery paths;
 - audience handout;
 - photographs and video;
 - cited sources.
