@@ -208,8 +208,11 @@ Every number in every figure is exported from the reference model by
    of the model's 290 parameters are these tables.
 4. **Why three?** The question the tables plant, answered before the room
    asks it. One number puts a word on a line; three put it in a space. Then
-   the cost of each width, and the admission that **six would have fitted**.
-   Three is a decision, not a limit. Hold that for block 9.
+   the cost of each width, with the first slide's choice priced as the
+   callback: character tokens instead of word tokens would cost 12.8 million
+   multiplies against a 180-second budget, and we built that one first and
+   rejected it. Then the admission that **six would have fitted**. Three is
+   a decision, not a limit. Hold that for block 9.
 5. **What a parameter is.** `2 x 29 x 3` plus `29 x 3` plus `29` is 290,
    counted out. Then the definition: one number training is allowed to change.
    Then GPT-3's 175 billion, without editorial.

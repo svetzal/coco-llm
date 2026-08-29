@@ -218,10 +218,11 @@
       <div class="wrow"><span class="c n">1</span><span class="c">116</span><span class="c">100,920</span><span class="c">1.2s</span></div><div class="wrow"><span class="c n">2</span><span class="c">203</span><span class="c">201,840</span><span class="c">2.5s</span></div><div class="wrow chosen"><span class="c n">3</span><span class="c">290</span><span class="c">302,760</span><span class="c">3.7s</span></div><div class="wrow"><span class="c n">4</span><span class="c">377</span><span class="c">403,680</span><span class="c">5.0s</span></div><div class="wrow"><span class="c n">5</span><span class="c">464</span><span class="c">504,600</span><span class="c">6.2s</span></div><div class="wrow"><span class="c n">6</span><span class="c">551</span><span class="c">605,520</span><span class="c">7.4s</span></div>
     </div>
     <p class="cap fragment" data-fragment-index="1">
-      The model this replaced needed
+      A token could have been a character instead. That model needs
       <strong>12,859,560</strong> multiplies:
       158 seconds of bare MUL instructions against a
-      180-second budget. It was rejected for it.
+      180-second budget. We built it first, and rejected
+      it.
     </p>
     <p class="cap fragment" data-fragment-index="2">
       So six would have fit here too.
@@ -245,6 +246,14 @@
     Second half is the machine. Every extra number is another 29 by 3
     multiplies per example, and a MUL costs 11 cycles at 0.89 MHz.
 
+    FRAGMENT 1 IS A CALLBACK to the first slide: a token is a whole word
+    because we chose that. Here is the other choice, priced. Make each token
+    a character and the model has to predict every letter: 12.8 million
+    multiplies, 158 seconds of bare MUL against a 180-second budget. We
+    built that one first, and rejected it. Words over letters is a 42-fold
+    reduction — the biggest single decision in the model, and it is a
+    tokenization decision, not an arithmetic one.
+
     THEN THE HONEST BIT, and do not skip it: six would have fit. The multiply
     floor at three is under four seconds. The machine was not the constraint
     here.
@@ -253,10 +262,6 @@
     when the evidence says quality is insufficient. It never said that. So the
     width is a decision somebody made, not a limit the hardware imposed. Hold
     that thought for the last slide.
-
-    The model that DID blow the budget was the character-level one: 12.8
-    million multiplies, 158 seconds of bare MUL against 180. That is what
-    moving from letters to words bought, and it is a 42-fold reduction.
 
     SAY "FLOOR" OUT LOUD. These are multiply instructions only. Nothing here
     is a measured runtime.

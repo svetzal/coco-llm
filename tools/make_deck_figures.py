@@ -326,10 +326,11 @@ def figure_why_three(trace: dict) -> str:
       {rows}
     </div>
     <p class="cap fragment" data-fragment-index="1">
-      The model this replaced needed
+      A token could have been a character instead. That model needs
       <strong>{rejected["multiplies"]:,}</strong> multiplies:
       {rejected["floor_seconds"]:.0f} seconds of bare MUL instructions against a
-      {trace["budget_seconds"]}-second budget. It was rejected for it.
+      {trace["budget_seconds"]}-second budget. We built it first, and rejected
+      it.
     </p>
     <p class="cap fragment" data-fragment-index="2">
       So six would have fit here too.
