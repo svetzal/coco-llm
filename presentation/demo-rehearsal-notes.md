@@ -1,8 +1,8 @@
 # Demonstration rehearsal notes
 
 These notes are glanceable cues rather than a script. Keep the demonstration
-in the foreground, ask the audience to call the result before revealing it,
-and treat surprising output as evidence rather than something to defend.
+in the foreground. Ask the audience to call the result before you reveal it.
+Treat surprising output as evidence, not something to defend.
 
 ## EXP-004: the CoCo learns
 
@@ -155,18 +155,21 @@ hold it.
 
 ### Orient to the workbench
 
-Right Arrow is the original CoCo keyboard's Tab-equivalent. It predicts when
-the popover is closed and accepts the selected word when it is open. Up and
-Down choose, Enter also accepts, Left erases, and Clear resets the editor.
+Right Arrow is the original CoCo keyboard's Tab-equivalent:
+
+- Right Arrow, popover closed: predict.
+- Right Arrow, popover open: accept the selected word.
+- Up and Down: choose a word. Enter also accepts.
+- Left: erase. Clear: reset the editor.
 
 > Black on green is what we type. Green on dark is what the model proposes.
 > The text and position carry those roles too; colour is reinforcement.
 
 ### First phrase: prefix completion
 
-Type `PRESS TAB TO C`, then press Right Arrow. The `C` masks suggestions that
-do not match the prefix, leaving `COMPLETE` as the intended result. Press Right
-Arrow again to accept it.
+Type `PRESS TAB TO C`. Press Right Arrow. The `C` masks suggestions that do
+not match the prefix, so `COMPLETE` is the intended result. Press Right Arrow
+again to accept it.
 
 > The model predicted a complete word, but the editor also did ordinary useful
 > work: it filtered the vocabulary using the `C` we supplied. Not every useful
@@ -177,15 +180,15 @@ Arrow again to accept it.
 
 ### Second phrase: ranked alternatives
 
-Press Clear, type `THE COMMODORE`, and press Right Arrow. The frozen test vector
+Press Clear. Type `THE COMMODORE`. Press Right Arrow. The frozen test vector
 ranks `64`, `VIC`, and `AMIGA` as its top three suggestions.
 
 > One context, three plausible continuations. The model is ranking words, not
 > retrieving one required answer. Up and Down expose that distribution as a
 > choice for the person.
 
-Accept one suggestion if useful, then stop. The interaction is the lesson;
-filling the editor adds little.
+Accept one suggestion if it is useful, then stop. The interaction is the
+lesson. Filling the editor adds little.
 
 ### The failed call
 
@@ -197,9 +200,9 @@ filling the editor adds little.
 > keystrokes and beat both simple baselines. Failed experiment, useful bounded
 > prototype. Those can both be true.
 
-Do not describe 58.8 percent as a measured physical typing improvement. It is
-an offline held-out keystroke simulation; physical keyboard latency and
-behaviour remain unverified.
+Do not describe 58.8 percent as a measured physical typing improvement. It
+is an offline simulation on held-out text. Nobody has measured the physical
+keyboard's latency or behaviour yet.
 
 ### Teaching point for EXP-006
 
@@ -232,12 +235,12 @@ What does four times the model memory buy us—and what does it not buy us?
 > This buys us all 255 token identifiers, five tokens of context, and real
 > punctuation tokens. It does not make the machine understand sentences.
 
-Point again to `MAC TRAINED - COCO PREDICTS`. The provenance remains fixed;
-memory layout and the inference task changed.
+Point again to `MAC TRAINED - COCO PREDICTS`. The provenance stays fixed.
+The memory layout and the inference task changed.
 
 ### First phrase: a larger context
 
-Type `THE MODEL CAN`, then press Right Arrow. The frozen test vector ranks
+Type `THE MODEL CAN`. Press Right Arrow. The frozen test vector ranks
 `SUGGEST`, `BE`, and `REMEMBER`.
 
 > We have a broader sentence corpus now, but this is still the same basic act:
@@ -249,9 +252,9 @@ to show that the editor can hold one.
 
 ### Second phrase: punctuation and stopping
 
-Press Clear and type `RUN THE PROGRAM.` with the period attached normally.
-Press Right Arrow. The top suggestion should be `<END>`, followed by `THEN` and
-`?`. Accept `<END>`; the sentence remains unchanged and the status reads
+Press Clear. Type `RUN THE PROGRAM.` with the period attached normally.
+Press Right Arrow. The top suggestion should be `<END>`, followed by `THEN`
+and `?`. Accept `<END>`. The sentence stays unchanged and the status reads
 `END OF PHRASE`.
 
 > The period is a token in the five-token context. And `<END>` is the model
@@ -339,7 +342,7 @@ Point to these three elements before pressing anything:
 > This table is the information available for this interaction. It currently
 > says Lisa is code two. Above it, model 751B's weights are locked.
 
-Ask the room what answer it expects, then press Enter.
+Ask the room what answer it expects. Press Enter.
 
 ### Beat 2: answer from context
 
@@ -353,7 +356,7 @@ Point to `QUESTION: LISA`, the starred best match, `ANSWER: CODE 2`, and
 
 Press `E`.
 
-### Beat 3: perform the context edit
+### Beat 3: edit the context
 
 The editor shows `BEFORE: LISA = CODE 2` and asks for a new code.
 
@@ -380,8 +383,8 @@ Pause. Do not dilute the comparison with mechanism immediately.
 
 ### Optional depth: replay the scores
 
-Press `V` only if the room asks how Lisa was selected. The slow view reveals
-one stored score per Enter press and marks the best record seen so far.
+Press `V` only if the room asks how the model selected Lisa. The slow view
+reveals one stored score per Enter press and marks the best record so far.
 
 > The answer arrived too quickly to watch. This is a replay of work already
 > completed—not the processor pretending to think.
@@ -389,8 +392,7 @@ one stored score per Enter press and marks the best record seen so far.
 > Attention selected the Lisa record by its key, then copied the value we just
 > typed.
 
-Press Clear to return. Do not imply that the paced replay was required for
-inference.
+Press Clear to return. Do not imply that inference needed the paced replay.
 
 ### Evidence and limit
 
@@ -430,10 +432,10 @@ to systems whose scale normally hides them.
 
 ### EXP-011 recovery
 
-- If a key does nothing, click the XRoar window once and try again.
+- If a key does nothing, click the XRoar window once. Try again.
 - If Lisa is not selected, use Up or Down until the question says `LISA`.
 - Clear cancels the editor or returns from an answer.
-- After the edit, Enter asks again; Clear returns to the context table.
+- After the edit, Enter asks again. Clear returns to the context table.
 
 ## EXP-012: fake episode titles
 
@@ -448,14 +450,14 @@ Can 400 bytes learn the shape of a title without learning a single word?
 ### Before EXP-012 launch
 
 Launch with `make present EXP=12`. The screen fills with sixteen titles on
-load; any key deals another sixteen.
+load. Any key deals another sixteen.
 
 > This is the one place we leave the vintage computers for a few minutes. This
 > model read the titles of every original Star Trek episode. All 79 of them.
 > Every title on this screen is fake.
 
-Deal one fresh screen in front of them so the invention is witnessed, not
-claimed.
+Deal one fresh screen in front of them, so the room watches the invention
+happen rather than hears that it did.
 
 ### The split
 
@@ -490,14 +492,14 @@ claimed.
 
 ### EXP-012 recovery
 
-- If a key deals nothing, click the XRoar window once and press again.
-- There is no failure state; every screen is a fresh deal. If a title lands
+- If a key deals nothing, click the XRoar window once. Press again.
+- There is no failure state. Every screen is a fresh deal. If a title lands
   strangely, read it out — the misses teach the split as well as the hits.
 
 ## EXP-013: the game opponent that learns
 
-On stage this is block 8, and it never gets cut. Someone from the room plays;
-that is the point, so resist playing it yourself.
+On stage this is block 8, and it never gets cut. Someone from the room
+plays. That is the point, so resist playing it yourself.
 
 ### EXP-013 question
 
@@ -515,8 +517,9 @@ Launch with `make present EXP=13`. Keys are on screen: 1 ROCK, 2 SPOCK,
 
 ### During play
 
-Volunteer at the laptop, or calling numbers from a seat; the laptop keyboard
-is easier to drive and the whole room can read the screen.
+A volunteer at the laptop works, and so does calling numbers from a seat.
+The laptop keyboard is easier to drive, and the whole room can read the
+screen.
 
 > Watch the top line. IT EXPECTS — it calls its shot before every round. You
 > get to watch a prediction get made, and then get judged, live. Call your
@@ -573,8 +576,8 @@ them again.
 
 ### EXP-013 recovery
 
-- If a key does nothing, click the XRoar window once and try again.
-- Only 1-5 and R do anything; there is no way to wedge it.
-- If the opponent starts winning heavily and the room deflates, press R and
-  let the volunteer watch it fall back to guessing — the recovery is a better
+- If a key does nothing, click the XRoar window once. Try again.
+- Only 1-5 and R do anything. There is no way to wedge it.
+- If the opponent starts winning heavily and the room deflates, press R.
+  Let the volunteer watch it fall back to guessing. The recovery is a better
   lesson than the streak.

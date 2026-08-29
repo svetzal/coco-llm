@@ -133,19 +133,22 @@ Do not spend it. Block 3, the live training run, now has an emulator wall
 clock — one to two minutes to the training boundary — so the recovered two
 minutes is genuine margin rather than cover for an unknown.
 
-Have four XRoar instances launched and parked before the talk starts, one per
-block, so a changeover is a window switch and not a `make` invocation on the
-projector. `make stage` launches all four in one command: EXP-005 (trains
-itself on load and parks at PRESS ANY KEY), EXP-011 (parks at the context
-table), EXP-012 (parks showing titles), and EXP-013 (parks at the RPSLS keys;
-press `R` before the talk if anyone played it during setup). XRoar windows
-are indistinguishable from each other, so arrange them in block order once
-they are up. **EXP-004 is the exception and is launched live**
-with `make present EXP=4` at the top of block 3, because it starts training
-the moment it loads — the launch is the reset, and parking it early would
-burn the run. Keep a terminal at the repository root ready for exactly that
-command, and rehearse the switching, not only the demos. The same launch cues
-are in the deck's speaker notes on each cue slide.
+Before the talk, run `make stage`. It launches and parks four XRoar
+instances, so each changeover is a window switch and not a `make` invocation
+on the projector:
+
+- EXP-005, block 4 — trains itself on load and parks at `PRESS ANY KEY`.
+- EXP-011, block 5 — parks at the context table.
+- EXP-012, block 6 — parks showing titles.
+- EXP-013, block 8 — parks at the RPSLS keys. Press `R` if anyone played it
+  during setup.
+
+The windows look identical. Arrange them in block order. **EXP-004 is the
+exception. Launch it live** with `make present EXP=4` at the top of block 3:
+it starts training the moment it loads, so the launch is the reset, and an
+early launch would burn the run. Keep a terminal at the repository root
+ready for that command. Rehearse the switching, not only the demos. The
+same launch cues are in the deck's speaker notes on each cue slide.
 
 ## The blocks
 

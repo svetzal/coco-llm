@@ -49,7 +49,7 @@ it.
 ```
 
 1. Start at the `# #` card. `#` means "nothing came before this."
-2. Roll, read off the word, write it on the slip.
+2. Roll. Read off the word. Write it on the slip.
 3. The next card is the second word of this card plus the word just rolled —
    each card pre-prints half of that lookup, which is what keeps people from
    getting lost.
