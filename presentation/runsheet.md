@@ -86,8 +86,8 @@ Block 2, slide by slide:
 | --- | ---: | --- |
 | What is a word? | 40 | Tokenizing, tokens, and the context window, named where they first appear |
 | Thirteen doesn't mean anything | 20 | An identifier is a name; arithmetic on it proves nothing |
+| Where the numbers live | 25 | The embedding tables, named at first sight; the same token holds a different row per position |
 | Why three? | 30 | The cost of each embedding width, and that six would have fitted |
-| Where the numbers live | 25 | Both lookup tables; the same token holds a different row per position |
 | What a parameter is | 25 | 2x29x3 + 29x3 + 29 = 290, and the definition |
 | One step | 40 | Predict, then correct, with the nudge number by number |
 | Do it again. And again. | 40 | Repeating, inventing, reciting: three failures that go in order |
@@ -199,15 +199,17 @@ Every number in every figure is exported from the reference model by
    description. `ZX80` is 27 and `ZX81` is 28 by alphabetical accident, and
    `APPLE` 8 sits beside `ARCHIMEDES` 9 for the same reason. Arithmetic on it
    proves nothing, which is the problem the next slide solves.
-3. **Why three?** One number puts a word on a line; three put it in a space,
-   and those numbers are the word's **embedding** — name it, because the room
-   has heard it sold. Then the cost of each width, and the admission that
-   **six would have fitted**. Three is a decision, not a limit. Hold that for
-   block 9.
-4. **Where the numbers live.** Both lookup tables, all 29 tokens, with the two
-   fetched rows lit. A context window of two means two tables. `COMMODORE`
-   holds a different row in each, which is the whole of what positional means.
-   174 of the model's 290 parameters are these tables.
+3. **Where the numbers live.** The fix for arithmetic on names: every token
+   gets three comparable numbers per window position, and here they all are,
+   with the two fetched rows lit. Name each row an **embedding** here, at
+   first sight — the room has heard the word sold, and a row of numbers is
+   all it is. A context window of two means two tables. `COMMODORE` holds a
+   different row in each, which is the whole of what positional means. 174
+   of the model's 290 parameters are these tables.
+4. **Why three?** The question the tables plant, answered before the room
+   asks it. One number puts a word on a line; three put it in a space. Then
+   the cost of each width, and the admission that **six would have fitted**.
+   Three is a decision, not a limit. Hold that for block 9.
 5. **What a parameter is.** `2 x 29 x 3` plus `29 x 3` plus `29` is 290,
    counted out. Then the definition: one number training is allowed to change.
    Then GPT-3's 175 billion, without editorial.
