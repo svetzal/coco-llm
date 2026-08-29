@@ -21,7 +21,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	xroar-attention exp012-corpus exp012-vocabulary exp012-tokenizations \
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
 	exp013-sweep exp013-play exp013-record rpsls-bin rpsls-test xroar-rpsls \
-	present tools
+	present stage tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -39,6 +39,31 @@ PRESENTER := $(UV) run python tools/present_experiment.py
 
 present:
 	@$(PRESENTER) $(if $(EXP),run $(EXP),list)
+
+# Pre-flight for the talk: launch the four parkable XRoar instances in the
+# background, one per demo block. EXP-004 is deliberately absent - it starts
+# training the moment it loads, so block 3 launches it live with
+# `make present EXP=4`. Arrange the four windows in block order once they
+# are up; XRoar windows are otherwise indistinguishable.
+stage: build/coco-llm-exp5.bin build/coco-attention.bin \
+		build/coco-titles.bin build/coco-rpsls.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-llm-exp5.bin & \
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-attention.bin & \
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-titles.bin & \
+	$(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-rpsls.bin &
+	@echo "Parked: EXP-005 (block 4), EXP-011 (block 5)," \
+		"EXP-012 (block 6), EXP-013 (block 8)."
+	@echo "Block 3 launches live: make present EXP=4"
 
 exp006-model:
 	$(UV) run python tools/export_exp_006.py

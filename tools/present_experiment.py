@@ -43,6 +43,14 @@ EXPERIMENTS = {
         "Edit context without training",
         "Change one context record, keep weights locked, and ask again.",
     ),
+    "EXP-012": (
+        "Fake episode titles",
+        "One keystroke, sixteen invented titles; any key deals another screen.",
+    ),
+    "EXP-013": (
+        "The game opponent that learns",
+        "Play RPSLS with keys 1-5; R makes it forget everything it learned.",
+    ),
 }
 
 
@@ -59,12 +67,12 @@ def normalize_experiment(value: str) -> str:
         number = int(normalized)
     except ValueError as error:
         raise argparse.ArgumentTypeError(
-            f"unknown experiment {value!r}; try 4, 5, 6, 7, or 11"
+            f"unknown experiment {value!r}; try 4, 5, 6, 7, 11, 12, or 13"
         ) from error
     experiment = f"EXP-{number:03d}"
     if experiment not in EXPERIMENTS:
         raise argparse.ArgumentTypeError(
-            f"unknown experiment {value!r}; try 4, 5, 6, 7, or 11"
+            f"unknown experiment {value!r}; try 4, 5, 6, 7, 11, 12, or 13"
         )
     return experiment
 
@@ -373,12 +381,54 @@ def run_exp_011() -> dict[str, Any]:
     return payload
 
 
+def run_exp_012() -> dict[str, Any]:
+    payload = {
+        "experiment": "EXP-012",
+        "status": "interactive",
+        "model_bytes": 400,
+        "dictionary_and_rules_bytes": 1600,
+        "command": "make xroar-titles",
+    }
+    heading(
+        "EXP-012 — FAKE EPISODE TITLES",
+        "Can 400 bytes of model hold the shape of a title it never understood?",
+    )
+    print("Launching the title generator in stock-rate XRoar.")
+    print("It deals sixteen invented titles at once; any key deals another")
+    print("screen. It also runs unattended, which is its job at the table.")
+    print()
+    subprocess.run(["make", "xroar-titles"], cwd=ROOT, check=True)
+    return payload
+
+
+def run_exp_013() -> dict[str, Any]:
+    payload = {
+        "experiment": "EXP-013",
+        "status": "interactive",
+        "table_bytes": 100,
+        "command": "make xroar-rpsls",
+    }
+    heading(
+        "EXP-013 — THE GAME OPPONENT THAT LEARNS",
+        "Can 100 bytes learn the rules, and the person, from nothing?",
+    )
+    print("Launching the RPSLS opponent in stock-rate XRoar.")
+    print("1 ROCK, 2 SPOCK, 3 PAPER, 4 LIZARD, 5 SCISSORS. It states its")
+    print("expectation before each throw; RULES and MEMORY count what it")
+    print("knows. R resets both counters to nothing, live.")
+    print()
+    subprocess.run(["make", "xroar-rpsls"], cwd=ROOT, check=True)
+    return payload
+
+
 RUNNERS: dict[str, Callable[[], dict[str, Any]]] = {
     "EXP-004": run_exp_004,
     "EXP-005": run_exp_005,
     "EXP-006": run_exp_006,
     "EXP-007": run_exp_007,
     "EXP-011": run_exp_011,
+    "EXP-012": run_exp_012,
+    "EXP-013": run_exp_013,
 }
 
 
