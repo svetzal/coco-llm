@@ -737,7 +737,62 @@
 </section>
 
 <!-- ============ 5. Change one thing: the size · 5 min · EXP-007 ============ -->
-<section class="cue" data-timing="180">
+<!-- The vocabulary split (1 boundary + 6 punctuation + 248 words = 255) is
+     EXP-007, the all-RAM sentence completer's recorded design: one-byte
+     token identifiers cap the vocabulary at 255, and the tokenizer
+     uppercases, keeps words and numbers whole, and emits . , ? ! : ; as
+     tokens of their own. Verified against build/exp007/vocabulary.txt. -->
+<section data-timing="60">
+  <h2>One byte of vocabulary</h2>
+  <p class="lead">A token identifier is one byte, so the vocabulary caps at
+  <strong>255 tokens</strong>. Every seat is a decision.</p>
+  <div class="fig">
+    <div class="budget">
+      <div class="brow fragment" data-fragment-index="1">
+        <span class="bkind">the boundary</span>
+        <span class="bsum">&lt;END&gt; &mdash; how a phrase says it
+          stopped</span>
+        <span class="bval">1</span>
+        <span class="bnote">seat</span>
+      </div>
+      <div class="brow fragment" data-fragment-index="2">
+        <span class="bkind">punctuation</span>
+        <span class="bsum">. , ? ! : ; &mdash; each a token of its
+          own</span>
+        <span class="bval">6</span>
+        <span class="bnote">seats</span>
+      </div>
+      <div class="brow fragment" data-fragment-index="3">
+        <span class="bkind">words</span>
+        <span class="bsum">the corpus's words and numbers, kept whole</span>
+        <span class="bval">248</span>
+        <span class="bnote">seats, 71 more than EXP-006 had</span>
+      </div>
+    </div>
+    <div class="slide-window"><div class="win-row fragment" data-fragment-index="4"><span class="cell ctx">RUN</span><span class="cell ctx">THE</span><span class="cell ctx">PROGRAM</span><span class="cell tgt">.</span></div></div>
+    <p class="cap fragment" data-fragment-index="4">
+      The period is a token. It takes a context position like any word,
+      which is how a model can learn what follows the end of a
+      sentence.
+    </p>
+    <p class="cap fragment" data-fragment-index="5">
+      The rules are three lines: uppercase everything, keep words and
+      numbers whole, give six marks tokens of their own.
+      <strong>Same lesson as the first slide: a token is what we
+      chose.</strong>
+    </p>
+  </div>
+  <aside class="notes">
+    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 1/3</strong></p>
+    <p>TOKENIZING, ROUND THREE, and this time the ceiling is physical. Block 2 chose 29 word tokens. Block 4 chose 38. This model wants real sentences, and its identifier is one byte, so the whole vocabulary — words, punctuation, the boundary — caps at 255. The budget is the byte.</p>
+    <p>Step the seats. One for the boundary. Six for punctuation — and that is the interesting decision: a period becomes a TOKEN, sitting in the context window like any word. That is how a model can learn that sentences stop, and what tends to come after a stop. The remaining 248 seats go to the words the corpus needs, 71 more than EXP-006 had room for.</p>
+    <p>The tokenized sentence is the payoff: RUN THE PROGRAM period is FOUR tokens, and the demo two slides from now will predict the end-of-phrase token right after that period.</p>
+    <p>If the scale question comes: GPT's tokenizer plays the same game with about 100,000 seats, and the seats are still decisions — that is why it once split words strangely and why it counts letters badly. Different budget, same committee.</p>
+    <p>Callback available if wanted: the table's "write your name" card. 248 word seats means most names in this room are still unsayable.</p>
+  </aside>
+</section>
+
+<section class="cue" data-timing="150">
   <h2>It finishes your sentences</h2>
   <p class="what">EXP-007 &middot; the all-RAM sentence completer</p>
   <p class="call"><span class="k">The call:</span> a model over a hundred
@@ -745,13 +800,13 @@
   word before you type it &mdash; on the same machine. The Mac trained it;
   the CoCo only predicts.</p>
   <aside class="notes">
-    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 1/2</strong></p>
+    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 2/3</strong></p>
     <p>SWITCH to the parked EXP-007 XRoar window, sitting at the completion editor. Read the call first, then the machine.</p>
     <ul><li>Right Arrow, popover closed: predict. Popover open: accept.</li><li>Up and Down: choose. Enter also accepts.</li><li>Left: erase. Clear: reset the editor.</li></ul>
     <p>POINT AT THE TITLE: MAC TRAINED - COCO PREDICTS. That is the P in GPT, running. 16,193 packed bytes expanded to 32,385 working parameters into the RAM where BASIC's ROM normally sits. The expensive half happened once, somewhere else.</p>
     <p>BEAT ONE, the job: type THE MODEL CAN, press Right Arrow. It ranks SUGGEST, BE, REMEMBER. Accept SUGGEST. This is your phone's keyboard, in 1981, and the room should feel that recognition before any caveat.</p>
     <p>BEAT TWO, the window: press Clear. Type I KNOW THE OLD MODEL CAN and predict — note the top three. Clear. Type WE KNOW THE OLD MODEL CAN — the SAME three. It sees exactly five tokens, so I and WE both fell out the window: for this model those are the same sentence. When a long chat seems to forget how it started, this is why, and they just watched it.</p>
-    <p>BEAT THREE, the stop: Clear. Type RUN THE PROGRAM. with the period, and predict. The top suggestion is the end-of-phrase token. Then the story: our first interface HID that token, because token zero also meant no suggestion — the model said stop, our product said pick something else, and made the model look foolish. We fixed the interface and retrained nothing. Some apparent AI failures are product-policy failures. Think about that a minute.</p>
+    <p>BEAT THREE, the stop: Clear. Type RUN THE PROGRAM. with the period, and predict. The top suggestion is the end-of-phrase token — the period seat from the vocabulary slide, doing its job. Then the story: our first interface HID that token, because token zero also meant no suggestion — the model said stop, our product said pick something else, and made the model look foolish. We fixed the interface and retrained nothing. Some apparent AI failures are product-policy failures. Think about that a minute.</p>
     <p>THE CONTEXT TIE, one breath: everything typed into that editor is context. The ranking moves with it; nothing retrains. System prompts, retrieval, memory features — all of them are ways of putting things into context, and training changed the weights exactly once, on the Mac.</p>
     <p>Then advance to the size slide and land the block's claim.</p>
   </aside>
@@ -761,7 +816,7 @@
      scores (59.3% top-three, 58.8% keystrokes) are recorded in EXP-006, the
      8 KiB completion workbench's write-up, and EXP-007's (60.0%, 51.7%) in
      its manifest and write-up. Offline simulations, labelled as such. -->
-<section data-timing="120">
+<section data-timing="90">
   <p class="changed">We changed exactly one thing:<br><span class="one">the size</span></p>
   <div class="fig changed">
     <p class="held"><span class="hlead">held fixed</span><span>the task: rank the next word</span><span class="hsep">&middot;</span><span>the training recipe, on the Mac</span><span class="hsep">&middot;</span><span>the machine and its editor</span></p>
@@ -774,7 +829,7 @@
     </p>
   </div>
   <aside class="notes">
-    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 2/2</strong></p>
+    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 3/3</strong></p>
     <p>THE EXPLAINER, and the block's reason to exist. Ask the question before the fragments: we made it four times bigger — what did that buy?</p>
     <p>Step the rows. Parameters: 8,188 to 32,385. Top-three accuracy: up seven tenths of a point. Keystrokes saved: DOWN seven points. Let the third row land in silence for a beat.</p>
     <p>What the memory actually bought: all 255 token identifiers, a fifth context token, real punctuation — a more expressive task, attempted. Not a general quality improvement on the task it already had.</p>

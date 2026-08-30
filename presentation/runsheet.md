@@ -59,7 +59,7 @@ is there for questions.
 | 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
 | 3 | How it works, on the machine | 7 | 9 | 14 | EXP-004 live training | Mechanism |
 | 4 | Change one thing: the prompt | 3 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
-| 5 | Change one thing: the size | 2 | 5 | 22 | CoCo, EXP-007 all-RAM completion | Mechanism |
+| 5 | Change one thing: the size | 3 | 5 | 22 | CoCo, EXP-007 all-RAM completion | Mechanism |
 | 6 | A screen of things that never existed | 2 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the upbringing | 1 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
 | 8 | Now you play it | 2 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
@@ -433,8 +433,18 @@ temperature dial, made of plastic.
 
 ### 5. Change one thing: the size
 
-**On screen:** the call, then EXP-007 in XRoar, then the held-and-changed
-size comparison.
+**On screen:** the vocabulary budget, then the call and EXP-007 in XRoar,
+then the held-and-changed size comparison.
+
+The block opens with "One byte of vocabulary" — tokenizing, round three,
+with a physical ceiling. A token identifier is one byte, so the whole
+vocabulary caps at 255 seats: one for the boundary, six for punctuation
+(each mark a token of its own, occupying a context position like any
+word — which is how a model can learn that sentences stop), and 248 for
+words, 71 more than EXP-006 had. `RUN THE PROGRAM.` tokenizes to four
+tokens on screen, and the demo pays it off two slides later when the
+period predicts the stop. The closing line is the first slide's, matured:
+a token is what we chose.
 
 The block promotes the practical branch to the stage. The call: a model
 over a hundred times the size of the one that trained live will rank your
@@ -653,7 +663,7 @@ missing figures, and the physical-world items.
 
 ## Deck state
 
-Twenty-seven slides, 36 minutes of content. The demo blocks follow one
+Twenty-eight slides, 36 minutes of content. The demo blocks follow one
 shape: the cue slide states **the call** — the block's falsifiable
 hypothesis — the machine takes the shot, and blocks 6 and 8 close on an
 explainer slide (the byte split; the honest number) so the lesson lands on
