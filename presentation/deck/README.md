@@ -47,8 +47,15 @@ Each of the runsheet's nine blocks owns a palette colour, worn as a thin
 band under the title bar on every slide and as the full background of the
 chapter card that opens the block. The bar text and band come from
 `data-bar` and `data-block` attributes on each `<section>`; a new slide
-copies its neighbours'. The cards carry only a number, the block title, and
-the arc word — the spoken segue lives in their notes, not on the wall.
+copies its neighbours'. The bar itself is pinned to the browser viewport —
+full projector width, immovable across slides — by a few lines of script
+in `index.html` that mirror the current slide's attributes on every slide
+change; it cannot be a pseudo-element on the sections, because
+`position: fixed` inside reveal's transformed slides pins to the slide box
+and bounces with its height. That script is the theme's one scripted
+piece; figures stay fragment-animated with no JavaScript. The cards carry
+only a number, the block title, and the arc word — the spoken segue lives
+in their notes, not on the wall.
 
 Emphasis is deep red on the green field. The old deck's cue — a slide and
 an XRoar window being colour-inverses of each other — is retired; the title

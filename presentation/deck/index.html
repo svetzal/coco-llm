@@ -1100,6 +1100,24 @@ Reveal.initialize({
   backgroundTransition: "none", // and neither do its chapter cards
   plugins: [RevealNotes, RevealHighlight],
 });
+
+// The title bar and block band, pinned to the browser viewport. They cannot
+// be pseudo-elements on the sections: position:fixed inside reveal's
+// transformed slides pins to the slide box and bounces with its height.
+// This mirrors the current slide's data-bar text and --blk colour instead.
+const deckBar = document.createElement("div");
+deckBar.className = "deck-bar";
+const deckBand = document.createElement("div");
+deckBand.className = "deck-band";
+document.body.append(deckBar, deckBand);
+function wearTheBar() {
+  const slide = Reveal.getCurrentSlide();
+  deckBar.textContent = slide.getAttribute("data-bar") || "";
+  deckBand.style.background =
+    getComputedStyle(slide).getPropertyValue("--blk") || "transparent";
+}
+Reveal.on("ready", wearTheBar);
+Reveal.on("slidechanged", wearTheBar);
 </script>
 </body>
 </html>

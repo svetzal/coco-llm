@@ -35,25 +35,25 @@
 .reveal section[data-block="8"] { --blk: var(--coco-c53); }
 .reveal section[data-block="9"] { --blk: var(--coco-win); }
 
-/* The machine's reversed title bar, worn by every slide. position: fixed
- * resolves against the transformed .slides canvas, so the bar pins to the
- * canvas top whatever the slide's height or centring. */
-.reveal .slides section[data-bar]::before {
-  content: attr(data-bar);
-  position: fixed; top: 0; left: 0; right: 0;
-  height: 42px; line-height: 42px;
+/* The machine's reversed title bar. It lives OUTSIDE the scaled slide
+ * canvas, pinned to the browser viewport, because a fixed pseudo-element
+ * inside reveal's transformed sections pins to the section instead and
+ * bounces with each slide's height. A few lines of script in index.html
+ * mirror the current slide's data-bar text and --blk colour into these two
+ * elements on every slide change - the one scripted piece of the theme. */
+.deck-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  height: 5.4vh; line-height: 5.4vh;
   background: var(--coco-c00); color: var(--coco-bar);
-  font-family: var(--coco-type); font-size: 21px;
-  text-align: left; padding: 0 18px;
+  font-family: var(--coco-type); font-size: 2.7vh;
+  text-transform: uppercase;
+  text-align: left; padding: 0 1.6vh;
   letter-spacing: 0.06em;
-  /* The bar renders small inside the scaled canvas; without antialiasing
-   * the pixel font's single-pixel strokes vanish at that size. */
   -webkit-font-smoothing: antialiased;
 }
-.reveal .slides section[data-block]::after {
-  content: "";
-  position: fixed; top: 42px; left: 0; right: 0; height: 8px;
-  background: var(--blk);
+.deck-band {
+  position: fixed; top: 5.4vh; left: 0; right: 0; z-index: 40;
+  height: 1vh;
 }
 /* Clearance so a tall slide's content starts below the chrome. */
 .reveal .slides section[data-bar] { padding-top: 60px; }
