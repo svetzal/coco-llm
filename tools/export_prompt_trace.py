@@ -64,8 +64,16 @@ def main() -> None:
         "checksum": model.checksum()[:16],
         # The before. Same weights, same seed, same decoding, no prompt.
         "unprompted": ask(None),
+        # Whether each completion reproduces a corpus line verbatim - the
+        # experiment's called shot expected most to (the model is overfit on
+        # purpose) and at least one to blend instead.
         "completions": [
-            {"prompt": prompt, "completion": ask(prompt)} for prompt in prompts
+            {
+                "prompt": prompt,
+                "completion": (completion := ask(prompt)),
+                "verbatim": f"{prompt} {completion}" in phrases,
+            }
+            for prompt in prompts
         ],
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)

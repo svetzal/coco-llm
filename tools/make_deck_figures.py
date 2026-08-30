@@ -790,6 +790,13 @@ def figure_second_model(prompts: dict, first: dict, first_epochs: int) -> str:
       <strong>The machinery did not change. The reading material
       did.</strong>
     </p>
+    <p class="cap fragment" data-fragment-index="3">
+      {prompts["epochs"]} epochs on eight lines memorizes them:
+      {sum(c["verbatim"] for c in prompts["completions"])} of the
+      {len(prompts["completions"])} prompted completions are corpus lines,
+      verbatim. Block 2 called that <strong>overfitting</strong>. Here it
+      is the assignment: the room has to recognize the campaigns.
+    </p>
   </div>"""
 
 

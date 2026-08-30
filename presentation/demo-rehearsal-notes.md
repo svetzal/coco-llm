@@ -119,10 +119,16 @@ Ask the room to predict the continuation, then press Enter to reveal
 > The prompt is not a magic instruction channel. It is temporary state. Same
 > weights, different context, different scores, different completion.
 
-If temperature comes up: greedy decoding is temperature zero — always the
-top-scoring token, which is why the same prompt repeats its answer exactly.
-Turning temperature up means sometimes taking a lower scorer. The d20 on the
-table is that dial, made of plastic.
+If someone notices the answers never vary, agree — and name both causes.
+Greedy decoding is temperature zero: always the top-scoring token, so the
+same prompt repeats its answer exactly. The d20 on the table is that dial,
+made of plastic. And the model is overfit on purpose: eighty epochs on
+eight lines memorizes them, and five of the six completions are corpus
+lines verbatim. The called shot asked for exactly that — five recognizable
+continuations and at least one blend — because this demo's job is slogans
+the room recognizes. Recitation was the failure in the names model and is
+the assignment here. Whether overfitting is a bug is a decision about the
+task.
 
 Two prompts establish the lesson. Use `POWER WITHOUT` → `THE PRICE` — Atari's
 ST-era slogan — as an optional third result, or let the room explore the

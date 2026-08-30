@@ -80,27 +80,33 @@
  "completions": [
   {
    "prompt": "I ADORE",
-   "completion": "MY 64"
+   "completion": "MY 64",
+   "verbatim": true
   },
   {
    "prompt": "ARE YOU",
-   "completion": "KEEPING UP IN LITTLE COMPUTERS"
+   "completion": "KEEPING UP IN LITTLE COMPUTERS",
+   "verbatim": false
   },
   {
    "prompt": "WHY BUY",
-   "completion": "JUST A VIDEO GAME"
+   "completion": "JUST A VIDEO GAME",
+   "verbatim": true
   },
   {
    "prompt": "POWER WITHOUT",
-   "completion": "THE PRICE"
+   "completion": "THE PRICE",
+   "verbatim": true
   },
   {
    "prompt": "GET YOUR",
-   "completion": "START IN COLOR COMPUTING"
+   "completion": "START IN COLOR COMPUTING",
+   "verbatim": true
   },
   {
    "prompt": "THE COMPUTER",
-   "completion": "FOR THE REST OF US"
+   "completion": "FOR THE REST OF US",
+   "verbatim": true
   }
  ]
 }

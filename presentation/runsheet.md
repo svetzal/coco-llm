@@ -384,6 +384,15 @@ in this one, an alphabetical accident both times. The numbers line carries
 the rest: 29 tokens to 38, 290 parameters to 380, 58 examples to 53, 20
 epochs to 80. The machinery did not change. The reading material did.
 
+The last fragment names the elephant: eighty epochs on eight lines is
+overfitting, and it is the assignment. Five of the six prompted
+completions are corpus lines verbatim, exactly as EXP-005, the prompted
+marketing completions, called its shot — five recognizable continuations,
+at least one blend. Recitation was block 2's failure mode because that
+model's job was inventing; this model's job is slogans the room
+recognizes. Whether overfitting is a bug is a decision about the task,
+and that lands in block 9's lap where it belongs.
+
 Then the experiment. The slide teaches; the machine proves it. Read the
 controls out loud first:
 all 380 numbers, the same checksum before and after, the same seed, the same

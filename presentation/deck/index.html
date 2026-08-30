@@ -639,6 +639,13 @@
       <strong>The machinery did not change. The reading material
       did.</strong>
     </p>
+    <p class="cap fragment" data-fragment-index="3">
+      80 epochs on eight lines memorizes them:
+      5 of the
+      6 prompted completions are corpus lines,
+      verbatim. Block 2 called that <strong>overfitting</strong>. Here it
+      is the assignment: the room has to recognize the campaigns.
+    </p>
   </div>
   <!-- /FIGURE:vocab5 -->
   <aside class="notes">
@@ -646,7 +653,9 @@
     <p>THE SETUP SLIDE, so the next one's claim is airtight. Say it plainly: this is a NEW model. Same architecture, same training loop, same machine, retrained on eight lines of 1980s advertising. Anyone quietly assuming it is the names model gets corrected here, before the experiment, not after.</p>
     <p>The grid is its whole vocabulary, and the highlighted tokens are the only survivors from the first model: 64, COLOR, COMMODORE, COMPUTER, and the boundary. Different reading material, almost entirely different words.</p>
     <p>THE CALLBACK, fragment one: COMMODORE was 13 in the first model. Here it is 9. Alphabetical accident, both times. The identifier is still just a name, and nothing carried over — same word, different number, different rows, learned from scratch.</p>
-    <p>Fragment two is the numbers: more words, more parameters (still ten per token — the same arithmetic from What a parameter is), fewer examples, more epochs. Eighty epochs is a choice, the way twenty was.</p>
+    <p>Fragment two is the numbers: more words, more parameters (still ten per token — the same arithmetic from What a parameter is), fewer examples, more epochs. Eighty epochs is a choice, the way twenty was — and fragment three says what kind.</p>
+    <p>SAY THE OVERFIT OUT LOUD, because someone sharp will notice the answers never vary. Eighty epochs on eight lines memorizes them: five of the six prompted completions are corpus lines, verbatim. Block 2 called recitation the failure — for a model whose job was inventing. This model's job is completing famous slogans, so recitation IS the assignment, and the experiment's called shot said so up front: five recognizable continuations, at least one blend. Whether overfitting is a bug is a decision about the task. Hold that for the last slide.</p>
+    <p>The other reason answers never vary: greedy decoding, temperature zero, same seed. That is the held-fixed control, not a limitation.</p>
     <p>Then the handoff: with THIS model trained and frozen, we change exactly one thing.</p>
   </aside>
 </section>
@@ -667,6 +676,7 @@
     <p>Read the held-fixed line out. All 380 numbers, same checksum before and after, same seed, same greedy decoding. Nothing about the model differs between these four answers.</p>
     <p>Then step the four, and NAME THE COMPANY behind each — the room's age will divide on which ones land, and the names are the fun:</p>
     <ul><li>WHY BUY JUST A VIDEO GAME: Commodore, the VIC-20 ads. The William Shatner ones.</li><li>I ADORE MY 64: Commodore again, the C64 jingle.</li><li>ARE YOU / KEEPING UP IN LITTLE COMPUTERS: a blend of two companies. It starts inside Commodore's "Are You Keeping Up with the Commodore" and ends inside Radio Shack's "The Biggest Name in Little Computers".</li><li>THE COMPUTER FOR THE REST OF US: Apple, the 1984 Macintosh launch.</li></ul>
+    <p>Three of these four are corpus lines verbatim — the overfit from the last slide doing its assignment. ARE YOU is the one that is not, which is why it is the strongest reveal: the model had no memorized continuation, so its statistics blended two competitors.</p>
     <p>Sources for all of them are cited in EXP-005, the prompted marketing completions.</p>
     <p>If the room explores the other prompts at the machine: POWER WITHOUT THE PRICE is Atari's ST-era slogan, and GET YOUR START IN COLOR COMPUTING sold Radio Shack's MC-10 — the CoCo's little sibling, worth a wink given what is running this talk.</p>
     <p>LAND THE DEFINITION: a prompt is not training. It is the first few tokens of the answer, handed over before the machine starts. People conflate these constantly and this slide is the cheapest place to separate them.</p>
