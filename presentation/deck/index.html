@@ -30,12 +30,12 @@
 <div class="reveal">
 <div class="slides">
 
-<!-- ============ 1. It already works · 3 min · slide ============ -->
-<section data-timing="60" data-block="1" data-bar="COCO LLM - 1/9 IT ALREADY WORKS">
+<!-- ============ 1. Watch it work · 1 min · slide + live launch ============ -->
+<section data-timing="60" data-block="1" data-bar="COCO LLM - 1/9 WATCH IT WORK">
   <h1>Coco LLM</h1>
   <p class="sub">A 45-year-old computer, starting from random numbers</p>
   <aside class="notes">
-    <p><strong>BLOCK 1 OF 9 - IT ALREADY WORKS</strong></p>
+    <p><strong>BLOCK 1 OF 9 - WATCH IT WORK</strong></p>
     <p>PRE-FLIGHT, before you walk on. Run: <strong>make stage</strong>. It launches the four parked XRoar windows:</p>
     <ul><li>EXP-005, block 4 (trains itself, parks at PRESS ANY KEY)</li><li>EXP-007, block 5 (parks at the completion editor)</li><li>EXP-012, block 6 (parks showing sixteen fake titles)</li><li>EXP-013, block 8 (parks at the RPSLS keys. Press R if anyone played it)</li></ul>
     <p>The windows look identical. Arrange them in block order. EXP-004 is NOT parked in advance: it starts training the moment it loads, and block 1 launches it in front of the room. Every block has a command — make block1 through block9 — and each demo block's target relaunches its window if a parked one dies.</p>
@@ -48,17 +48,17 @@
 </section>
 
 <!-- ============ 2. What the machine thinks a word is · 4 min · slide ============ -->
-<section class="chapter" data-block="2" data-bar="COCO LLM - 2/9 ON SLIDES" data-background-color="var(--coco-amber)" data-timing="10">
+<section class="chapter" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS" data-background-color="var(--coco-amber)" data-timing="10">
   <p class="chnum">2</p>
-  <h2>HOW IT WORKS,<br>ON SLIDES</h2>
+  <h2>HOW IT WORKS</h2>
   <p class="charc">mechanism</p>
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - ON SLIDES - CHAPTER CARD</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - CHAPTER CARD</strong></p>
     <p>The promise is made and the machine is training behind this slide. Now the mechanism: eight figures, one idea each, in the words the room arrived with.</p>
   </aside>
 </section>
 
-<section data-timing="40" data-block="2" data-bar="COCO LLM - 2/9 ON SLIDES">
+<section data-timing="40" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
   <h2>What is a word?</h2>
   <p class="lead">Cutting text into pieces a machine can count is called
   <strong>tokenizing</strong>. The pieces are <strong>tokens</strong>. Here
@@ -80,7 +80,7 @@
   </div>
   <!-- /FIGURE:vocabulary -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 1/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 1/8</strong></p>
     <p>TWO WORDS TO NAME, and most of the room has heard both without ever being shown one.</p>
     <p>TOKENIZING first: the machine does not have words, it has numbers, and a person chose which numbers.</p>
     <p>Ask the room for a word that is not in the vocabulary. There is no graceful answer, and that is the point. Full tokenizer exercise is on the table.</p>
@@ -94,7 +94,7 @@
 <!-- ============ 3. Random numbers, then not · 11 min · EXP-004 ============ -->
 <!-- Two figures set up the loop, then the machine runs it. Timing splits the
      block's eleven minutes: two minutes of setup, nine on the machine. -->
-<section data-timing="20" data-block="2" data-bar="COCO LLM - 2/9 ON SLIDES">
+<section data-timing="20" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
   <h2>Thirteen doesn't mean anything</h2>
   <!-- FIGURE:ids -->
   <div class="fig ids">
@@ -114,7 +114,7 @@
   </div>
   <!-- /FIGURE:ids -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 2/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 2/8</strong></p>
     <p>THE BRIDGE. Block 2 left them holding COMMODORE = 13. This says why that is not enough, and it has to land before any table of numbers.</p>
     <p>13 is thirteenth in the alphabet. That is the whole reason.</p>
     <p>Step the three comparisons. ZX80 is 27 and ZX81 is 28, next to each other and genuinely related, which is a coincidence. APPLE is 8 and ARCHIMEDES is 9, just as close, and one is Apple and the other is Acorn. Then APPLE 8, LISA 16, MACINTOSH 17: one company, scattered across the range.</p>
@@ -125,7 +125,7 @@
 
 
 
-<section data-timing="25" data-block="2" data-bar="COCO LLM - 2/9 ON SLIDES">
+<section data-timing="25" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
   <h2>Where the numbers live</h2>
   <!-- FIGURE:tables -->
   <div class="fig tables">
@@ -146,7 +146,7 @@
   </div>
   <!-- /FIGURE:tables -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 3/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 3/8</strong></p>
     <p>THE FIX for arithmetic on names: give every token numbers that CAN be compared. Here they all are — three numbers per token, per window position. SAY THE WORD while pointing at a row: this is the token's EMBEDDING. The room has heard the word sold; a row of numbers is all it is. The next slide answers why three of them.</p>
     <p>Two tables BECAUSE THE CONTEXT WINDOW IS TWO TOKENS WIDE. One table per position in the window. Say that before anything else on this slide; it is the only reason the screen is split in half.</p>
     <p>29 words in each, three numbers per word. That is 174 numbers, and the model only has 290, so most of this model is a lookup table.</p>
@@ -156,7 +156,7 @@
   </aside>
 </section>
 
-<section data-timing="30" data-block="2" data-bar="COCO LLM - 2/9 ON SLIDES">
+<section data-timing="30" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
   <h2>Why three?</h2>
   <p class="lead">Each row of three you just saw is a word's
   <strong>embedding</strong>. One number would put a word on a line. Three
@@ -187,7 +187,7 @@
   </div>
   <!-- /FIGURE:why -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 4/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 4/8</strong></p>
     <p>THE QUESTION THE LAST SLIDE PLANTED. They have just seen the triples, so answer it before they ask.</p>
     <p>First half is conceptual: one number can only say how much of one thing a word is. Three numbers give it a position in a space, so words can be close in more than one way at once.</p>
     <p>The width is where the scale comparison lives: GPT-3's embedding is 12,288 numbers long where ours is three. Same idea, more room. And when a vector database sells "embeddings", it is selling rows like the ones on the last slide, made for whole documents.</p>
@@ -199,7 +199,7 @@
   </aside>
 </section>
 
-<section data-timing="25" data-block="2" data-bar="COCO LLM - 2/9 ON SLIDES">
+<section data-timing="25" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
   <h2>What a parameter is</h2>
   <!-- FIGURE:params -->
   <div class="fig params">
@@ -221,7 +221,7 @@
   </div>
   <!-- /FIGURE:params -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 5/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 5/8</strong></p>
     <p>THE OTHER WORD EVERYONE HAS HEARD. Nobody has had it explained.</p>
     <p>We just chose 3 numbers per token. This is what that choice multiplies up to. Step the three lines and let the arithmetic do the work.</p>
     <p>The 2 in the first line is the context window. Every term in these sums is a decision somebody made: how wide the window is, how many tokens exist, how many numbers describe each one.</p>
@@ -232,7 +232,7 @@
   </aside>
 </section>
 
-<section data-timing="40" data-block="2" data-bar="COCO LLM - 2/9 ON SLIDES">
+<section data-timing="40" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
   <h2>One step</h2>
   <!-- FIGURE:step -->
   <div class="fig step">
@@ -305,7 +305,7 @@
   </div>
   <!-- /FIGURE:step -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 6/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 6/8</strong></p>
     <p>Real numbers, exported from the reference model. Say that out loud once.</p>
     <p>Step through. The context is two tokens, and the three numbers are not calculated from them: every slot-and-word pair OWNS a stored row, and the machine looks up two rows and adds them. Say "adds" out loud. That is the arithmetic.</p>
     <p>Fragment 4 is the one worth pausing on: COMMODORE in slot 1 has a different row from COMMODORE in slot 2. That is the whole of what "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE are not the same context. If someone asks how it knows about word order, this is the answer and it is on the screen.</p>
@@ -319,7 +319,7 @@
   </aside>
 </section>
 
-<section data-timing="40" data-block="2" data-bar="COCO LLM - 2/9 ON SLIDES">
+<section data-timing="40" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
   <h2>Do it again. And again.</h2>
   <!-- FIGURE:loop -->
   <div class="fig">
@@ -356,7 +356,7 @@
   </div>
   <!-- /FIGURE:loop -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 7/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 7/8</strong></p>
     <p>Step through the epochs. Nonsense, then a first-word habit, then shape, then TANDY MODEL 100 four times out of four.</p>
     <p>DO NOT SKIP THE LAST ONE. At epoch 20 it makes SINCLAIR AMIGA and COMMODORE ATARI: machines that never existed and could have. That is the promise of the talk, on screen.</p>
     <p>At epoch 60 it makes COMMODORE 64, and that is a real computer sitting in the training data. The loss is still falling, 1.83 down to 1.27, and the model has quietly stopped inventing and started reciting.</p>
@@ -378,7 +378,7 @@
   </aside>
 </section>
 
-<section data-timing="20" data-block="2" data-bar="COCO LLM - 2/9 ON SLIDES">
+<section data-timing="20" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
   <h2>What it cost</h2>
   <!-- FIGURE:cost -->
   <div class="fig">
@@ -427,7 +427,7 @@
   </div>
   <!-- /FIGURE:cost -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 8/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 8/8</strong></p>
     <p>THEN THE BUDGET, and this is the point of the slide. Two numbers were chosen along the way, 20 epochs and 290 parameters, and each one is a bill that had to be paid.</p>
     <p>Epochs buy time. 20 by 58 by 261 is 302,760 multiplies, and 15.8 million instructions for the whole run.</p>
     <p>Then the split, and this is the one worth pausing on. Every byte in the image was classified by what job it does.</p>

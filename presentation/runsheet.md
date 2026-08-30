@@ -55,7 +55,7 @@ is there for questions.
 
 | # | Block | Slides | Min | Cum | Surface | Arc |
 | --- | --- | ---: | ---: | ---: | --- | --- |
-| 1 | It already works | 1 | 1 | 1 | Slide + EXP-004 launched live | Mystery |
+| 1 | Watch it work | 1 | 1 | 1 | Slide + EXP-004 launched live | Mystery |
 | 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
 | 3 | How it works, on the machine | 7 | 9 | 14 | EXP-004 live training | Mechanism |
 | 4 | Change one thing: the prompt | 3 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
@@ -171,7 +171,7 @@ says where you are.
 
 ## The blocks
 
-### 1. It already works
+### 1. Watch it work
 
 **On screen:** the block 1 launch, then a photograph of the physical CoCo 1
 showing a real trained run, full screen, no explanation.

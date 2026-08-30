@@ -76,7 +76,7 @@ block1: build/coco-llm.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
 	@open presentation/deck/index.html
-	@echo "BLOCK 1 - IT ALREADY WORKS - deck opened, launching EXP-004 in"
+	@echo "BLOCK 1 - WATCH IT WORK - deck opened, launching EXP-004 in"
 	@echo "front of the room. It starts training from random weights the"
 	@echo "moment it loads; block 2's slides explain it while it runs."
 	@echo "Call the shot out loud, then press S on the deck for notes."
@@ -86,7 +86,7 @@ block1: build/coco-llm.bin build/roms/.coco1-roms
 	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
 block2:
-	@echo "BLOCK 2 - ON SLIDES - eight figures. EXP-004 is training in"
+	@echo "BLOCK 2 - HOW IT WORKS - eight figures. EXP-004 is training in"
 	@echo "the window block 1 opened; it parks at PRESS ANY KEY."
 
 block3: build/coco-llm.bin build/roms/.coco1-roms
