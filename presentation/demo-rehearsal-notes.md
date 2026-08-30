@@ -94,18 +94,20 @@ weights or vocabulary used by EXP-004.
 
 Press Enter to reveal `MY 64`.
 
-> That looks like retrieval. For this prompt it has reconstructed the familiar
-> continuation. But it is not looking up an advertisement. The two words
-> changed the scores, and greedy inference repeatedly chose the strongest next
-> token.
+> That's Commodore's own jingle — "I Adore My 64" ran on radio and
+> television. It looks like retrieval. For this prompt it has reconstructed
+> the familiar continuation. But it is not looking up an advertisement. The
+> two words changed the scores, and greedy inference repeatedly chose the
+> strongest next token.
 
 ### Second prompt: `ARE YOU`
 
 Ask the room to predict the continuation, then press Enter to reveal
 `KEEPING UP IN LITTLE COMPUTERS`.
 
-> That was not one advertising campaign. It begins with Commodore's “Are you
-> keeping up” and ends inside Radio Shack's world of “little computers.”
+> That was not one advertising campaign. It begins with Commodore's “Are You
+> Keeping Up with the Commodore” and ends inside Radio Shack's “The Biggest
+> Name in Little Computers.”
 >
 > The model learned reusable statistical structure strongly enough to blend
 > the campaigns. It did not learn their history or understand either company.
@@ -120,9 +122,13 @@ top-scoring token, which is why the same prompt repeats its answer exactly.
 Turning temperature up means sometimes taking a lower scorer. The d20 on the
 table is that dial, made of plastic.
 
-Two prompts establish the lesson. Use `POWER WITHOUT` → `THE PRICE` as an
-optional third result or let the room explore the remaining prompts. Running
-all six risks turning the lesson into a memory trick.
+Two prompts establish the lesson. Use `POWER WITHOUT` → `THE PRICE` — Atari's
+ST-era slogan — as an optional third result, or let the room explore the
+remaining prompts: `WHY BUY` → `JUST A VIDEO GAME` is Commodore's Shatner-era
+VIC-20 line, `THE COMPUTER` → `FOR THE REST OF US` is the 1984 Macintosh
+launch, and `GET YOUR` → `START IN COLOR COMPUTING` sold Radio Shack's MC-10.
+Running all six risks turning the lesson into a memory trick. Sources for
+every line are cited in EXP-005, the prompted marketing completions.
 
 ### Transition to EXP-006
 
