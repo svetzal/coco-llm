@@ -92,9 +92,9 @@ block2:
 block3: build/coco-llm.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
-	@echo "BLOCK 3 - ON THE MACHINE - normally a window switch: EXP-004"
-	@echo "has been training since block 1. This launches a FRESH run"
-	@echo "(the launch is the reset) - the recovery if that window died."
+	@echo "BLOCK 3 - A LITTLE 6809 ASSEMBLY - normally a window switch:"
+	@echo "EXP-004 has been training since block 1. This launches a"
+	@echo "FRESH run (launch = reset) - the recovery if that window died."
 	@nohup $(XROAR) -machine cocous -ram 32 \
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
 		-ratelimit -run build/coco-llm.bin >/dev/null 2>&1 &

@@ -57,7 +57,7 @@ is there for questions.
 | --- | --- | ---: | ---: | ---: | --- | --- |
 | 1 | Watch it work | 1 | 1 | 1 | Slide + EXP-004 launched live | Mystery |
 | 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
-| 3 | How it works, on the machine | 7 | 9 | 14 | EXP-004 live training | Mechanism |
+| 3 | A little 6809 assembly | 7 | 9 | 14 | EXP-004 live training | Mechanism |
 | 4 | Change one thing: the prompt | 3 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
 | 5 | Change one thing: the size | 3 | 5 | 22 | CoCo, EXP-007 all-RAM completion | Mechanism |
 | 6 | A screen of things that never existed | 2 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
@@ -166,7 +166,7 @@ the terminal**: the prompt comes straight back, and no Ctrl-C, closed
 terminal window, or stray keystroke on the laptop can kill a running
 emulator. Quitting one is done from XRoar itself, deliberately. The deck's speaker notes
 carry the same cues, and every slide's notes open with a block marker —
-`BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 2/7` — so the speaker view always
+`BLOCK 3 OF 9 - A LITTLE 6809 ASSEMBLY - SLIDE 2/7` — so the speaker view always
 says where you are.
 
 ## The blocks
@@ -279,7 +279,7 @@ Every number in every figure is exported from the reference model by
 cycle-model projection behind it and no hardware measurement, and the slides
 say so.
 
-### 3. How it works, on the machine
+### 3. A little 6809 assembly
 
 **On screen:** the EXP-004 window that block 1 launched, now parked at the
 training boundary, then three assembly reveals, then the comparison.
