@@ -1,24 +1,74 @@
 /* The CoCo LLM deck theme.
  *
- * The hardware has two looks and this deck uses both, for opposite purposes.
- * A CoCo draws its body black on green and reverses to green on black for a
- * title bar. The deck takes the reversed one: green on black, which is what a
- * dark room and a projector want anyway. The machine keeps black on green.
+ * The deck wears the machine's own body: black ink on the composite screen
+ * green, with the CoCo's reversed title bar - green on black - pinned to the
+ * top of every slide as chrome. Projectors want a bright field, which the
+ * old green-on-black deck did not give them, and the deck and the machine
+ * now speak one visual language: what the room sees on a slide is what the
+ * room sees on the CoCo's screens, bar and all.
  *
- * So cutting from a slide to XRoar inverts the screen. That is deliberate. The
- * audience should be able to tell who is talking without being told, and the
- * one thing they can always see is which way round the colours are.
+ * Each of the runsheet's nine blocks owns a palette colour. It shows as a
+ * thin band under the title bar on every slide, and as the full background
+ * of the chapter card that opens the block.
  *
  * Colours come from coco-palette.css and are never written literally here.
  */
 
 :root {
-  --deck-ink: var(--coco-bar);     /* #8EFF48, body text */
-  --deck-bg: var(--coco-c00);      /* black */
-  --deck-loud: var(--coco-white);  /* headings that have to carry */
-  --deck-mark: var(--coco-amber);  /* the one thing that changed */
-  --deck-quiet: var(--coco-c33);   /* supporting text, still green */
+  --deck-ink: var(--coco-ink);     /* black, the machine's body text */
+  --deck-bg: var(--coco-bg);       /* #44C532, the composite screen green */
+  --deck-loud: var(--coco-c00);    /* headings: pure black */
+  --deck-mark: var(--coco-c06);    /* deep red: the one thing that changed */
+  --deck-quiet: var(--coco-c01);   /* dark green, supporting text */
   --deck-prose: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* One colour per block, worn as the band under the title bar and as the
+ * chapter card's background. */
+.reveal section[data-block="1"] { --blk: var(--coco-white); }
+.reveal section[data-block="2"] { --blk: var(--coco-amber); }
+.reveal section[data-block="3"] { --blk: var(--coco-orange); }
+.reveal section[data-block="4"] { --blk: var(--coco-tie); }
+.reveal section[data-block="5"] { --blk: var(--coco-cyan); }
+.reveal section[data-block="6"] { --blk: var(--coco-magenta); }
+.reveal section[data-block="7"] { --blk: var(--coco-loss); }
+.reveal section[data-block="8"] { --blk: var(--coco-c53); }
+.reveal section[data-block="9"] { --blk: var(--coco-win); }
+
+/* The machine's reversed title bar, worn by every slide. position: fixed
+ * resolves against the transformed .slides canvas, so the bar pins to the
+ * canvas top whatever the slide's height or centring. */
+.reveal .slides section[data-bar]::before {
+  content: attr(data-bar);
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 42px; line-height: 42px;
+  background: var(--coco-c00); color: var(--coco-bar);
+  font-family: var(--coco-type); font-size: 21px;
+  text-align: left; padding: 0 18px;
+  letter-spacing: 0.06em;
+  /* The bar renders small inside the scaled canvas; without antialiasing
+   * the pixel font's single-pixel strokes vanish at that size. */
+  -webkit-font-smoothing: antialiased;
+}
+.reveal .slides section[data-block]::after {
+  content: "";
+  position: fixed; top: 42px; left: 0; right: 0; height: 8px;
+  background: var(--blk);
+}
+/* Clearance so a tall slide's content starts below the chrome. */
+.reveal .slides section[data-bar] { padding-top: 60px; }
+
+/* A chapter card: full-bleed block colour (set with data-background-color on
+ * the section), a number the back row can read, and nothing else. The segue
+ * lives in the speaker notes, not on the wall. */
+.reveal .chapter .chnum {
+  font-size: 4.2em; line-height: 1; margin: 0 0 0.1em;
+  color: var(--coco-c00);
+}
+.reveal .chapter h2 { color: var(--coco-c00); }
+.reveal .chapter .charc {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.5em; letter-spacing: 0.4em; color: var(--coco-c16);
 }
 
 .reveal-viewport { background: var(--deck-bg); }
@@ -76,6 +126,7 @@
   font-family: var(--coco-type);
   background: var(--coco-bg);
   color: var(--coco-ink);
+  border: 2px solid var(--coco-c00);
   white-space: pre;
   text-transform: uppercase;
   display: inline-block;

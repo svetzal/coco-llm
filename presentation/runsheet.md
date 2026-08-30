@@ -669,7 +669,15 @@ missing figures, and the physical-world items.
 
 ## Deck state
 
-Twenty-eight slides, 36 minutes of content. The demo blocks follow one
+Twenty-eight content slides plus eight chapter cards, 36 minutes of
+content. A card in the block's palette colour opens every block after the
+first — number, title, arc word, ten seconds each — and its speaker notes
+carry the spoken segue, so a section change is a hard colour cut rather
+than another wall of text. The cards' eighty seconds ride the changeover
+buffer the emulator staging recovered. Every slide wears the machine's
+reversed title bar naming its block, with the block colour as a band
+beneath it; the deck body is the machine's own black-on-green, flipped
+from the old dark theme because projectors want a bright field. The demo blocks follow one
 shape: the cue slide states **the call** — the block's falsifiable
 hypothesis — the machine takes the shot, and blocks 6 and 8 close on an
 explainer slide (the byte split; the honest number) so the lesson lands on

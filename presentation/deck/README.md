@@ -24,8 +24,8 @@ key maps and launch lists; the block marker's `<p>` wrapped in `<strong>`;
 and a literal `<` in note text written as `&lt;` — a bare `<END>` parses as
 a tag and silently vanishes from the speaker window.
 If the speaker view says you are behind, that is the runsheet's cut order
-becoming relevant: block 6 goes first, then block 4, block 3 shortens rather
-than goes, block 8 never goes.
+becoming relevant: block 6 goes first, then block 5's demo shortens to its
+slide, block 3 shortens rather than goes, block 8 never goes.
 
 Blocks 3, 4, 5, 6 and 8 run in XRoar rather than here. Their slides carry the
 `cue` class and stay nearly empty so the projector is not competing with the
@@ -36,12 +36,23 @@ lands the lesson after the demo.
 
 ## Why it looks like this
 
-The machine draws its body black on green and reverses to green on black for a
-title bar. The deck takes the reversed one, which is also what a dark room
-wants. The machine keeps black on green.
+The deck wears the machine's own body: black ink on the composite screen
+green, with the CoCo's reversed title bar — green on black — pinned to the
+top of every slide as chrome. Projectors want a bright field, which the old
+green-on-black deck did not give them, and the deck and the machine now
+speak one visual language: what the room sees on a slide is what the room
+sees on the CoCo's screens, bar and all.
 
-So cutting from a slide to XRoar inverts the screen. That is the point: the
-audience can tell who is talking without being told.
+Each of the runsheet's nine blocks owns a palette colour, worn as a thin
+band under the title bar on every slide and as the full background of the
+chapter card that opens the block. The bar text and band come from
+`data-bar` and `data-block` attributes on each `<section>`; a new slide
+copies its neighbours'. The cards carry only a number, the block title, and
+the arc word — the spoken segue lives in their notes, not on the wall.
+
+Emphasis is deep red on the green field. The old deck's cue — a slide and
+an XRoar window being colour-inverses of each other — is retired; the title
+bar now does that wayfinding job by name.
 
 ## Writing slides
 
