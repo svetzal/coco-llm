@@ -61,8 +61,10 @@ technical success is not the same as useful quality.
 
 If the weights stop changing, what can the starting context change?
 
-`SAME MODEL` means the same EXP-005 weights across all six prompts, not the same
-weights or vocabulary used by EXP-004.
+`SAME MODEL` means the same EXP-005 weights across all six prompts, not the
+same weights or vocabulary used by EXP-004. On stage the "A second model"
+slide settles this before the experiment: all 38 tokens, the five survivors
+from the first model highlighted, and COMMODORE demoted from 13 to 9.
 
 ### Before EXP-005 launch
 

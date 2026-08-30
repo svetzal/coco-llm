@@ -26,6 +26,7 @@ from token_lm import (  # noqa: E402
 )
 
 CORPUS = ROOT / "experiments" / "data" / "EXP-005-marketing-language.txt"
+FIRST_CORPUS = ROOT / "experiments" / "data" / "EXP-002-tokenized-computer-names.txt"
 PROMPTS = ROOT / "experiments" / "data" / "EXP-005-prompts.txt"
 OUT = ROOT / "presentation" / "deck" / "data" / "prompts.json"
 EPOCHS = 80
@@ -49,10 +50,16 @@ def main() -> None:
         )
 
     prompts = [line.strip() for line in PROMPTS.read_text().splitlines() if line.strip()]
+    # The block 4 intro slide shows this vocabulary against the first model's,
+    # so both lists are exported the same way the models build them.
+    first_vocabulary, _ = build_vocabulary(load_names(FIRST_CORPUS))
     payload = {
         "parameters": model.parameter_count,
         "vocabulary": len(vocabulary),
         "epochs": EPOCHS,
+        "examples": len(targets),
+        "tokens": list(vocabulary),
+        "first_model_tokens": list(first_vocabulary),
         "final_loss": round(losses[-1], 3),
         "checksum": model.checksum()[:16],
         # The before. Same weights, same seed, same decoding, no prompt.

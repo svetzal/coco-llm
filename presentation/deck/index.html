@@ -617,7 +617,41 @@
 </section>
 
 <!-- ============ 4. Change one thing: the prompt · 3 min · EXP-005 ============ -->
-<section class="cue" data-timing="180">
+<section data-timing="60">
+  <h2>A second model</h2>
+  <p class="lead">Same architecture, same training loop, same machine &mdash;
+  retrained on eight lines of 1980s advertising.</p>
+  <!-- FIGURE:vocab5 -->
+  <div class="fig">
+    <div class="vocab"><div class="tok hot"><span class="id">0</span>&lt;END&gt;</div><div class="tok"><span class="id">1</span>1980S</div><div class="tok hot"><span class="id">2</span>64</div><div class="tok"><span class="id">3</span>A</div><div class="tok"><span class="id">4</span>ADORE</div><div class="tok"><span class="id">5</span>ARE</div><div class="tok"><span class="id">6</span>BIGGEST</div><div class="tok"><span class="id">7</span>BUY</div><div class="tok hot"><span class="id">8</span>COLOR</div><div class="tok hot"><span class="id">9</span>COMMODORE</div><div class="tok hot"><span class="id">10</span>COMPUTER</div><div class="tok"><span class="id">11</span>COMPUTERS</div><div class="tok"><span class="id">12</span>COMPUTING</div><div class="tok"><span class="id">13</span>FOR</div><div class="tok"><span class="id">14</span>GAME</div><div class="tok"><span class="id">15</span>GET</div><div class="tok"><span class="id">16</span>I</div><div class="tok"><span class="id">17</span>IN</div><div class="tok"><span class="id">18</span>JUST</div><div class="tok"><span class="id">19</span>KEEPING</div><div class="tok"><span class="id">20</span>LITTLE</div><div class="tok"><span class="id">21</span>MY</div><div class="tok"><span class="id">22</span>NAME</div><div class="tok"><span class="id">23</span>OF</div><div class="tok"><span class="id">24</span>POWER</div><div class="tok"><span class="id">25</span>PRICE</div><div class="tok"><span class="id">26</span>REST</div><div class="tok"><span class="id">27</span>START</div><div class="tok"><span class="id">28</span>THE</div><div class="tok"><span class="id">29</span>UP</div><div class="tok"><span class="id">30</span>US</div><div class="tok"><span class="id">31</span>VIDEO</div><div class="tok"><span class="id">32</span>WHY</div><div class="tok"><span class="id">33</span>WITH</div><div class="tok"><span class="id">34</span>WITHOUT</div><div class="tok"><span class="id">35</span>WONDER</div><div class="tok"><span class="id">36</span>YOU</div><div class="tok"><span class="id">37</span>YOUR</div></div>
+    <p class="cap fragment" data-fragment-index="1">
+      Only 5 tokens survive from the first model:
+      64, COLOR, COMMODORE, COMPUTER, and &lt;END&gt;. And COMMODORE, 13 there, is
+      9 here. <strong>The identifier is still just a
+      name.</strong>
+    </p>
+    <p class="cap fragment" data-fragment-index="2">
+      29 tokens &rarr; 38.
+      290 parameters &rarr;
+      380.
+      58 examples &rarr; 53.
+      20 epochs &rarr; 80.
+      <strong>The machinery did not change. The reading material
+      did.</strong>
+    </p>
+  </div>
+  <!-- /FIGURE:vocab5 -->
+  <aside class="notes">
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 1/2</strong></p>
+    <p>THE SETUP SLIDE, so the next one's claim is airtight. Say it plainly: this is a NEW model. Same architecture, same training loop, same machine, retrained on eight lines of 1980s advertising. Anyone quietly assuming it is the names model gets corrected here, before the experiment, not after.</p>
+    <p>The grid is its whole vocabulary, and the highlighted tokens are the only survivors from the first model: 64, COLOR, COMMODORE, COMPUTER, and the boundary. Different reading material, almost entirely different words.</p>
+    <p>THE CALLBACK, fragment one: COMMODORE was 13 in the first model. Here it is 9. Alphabetical accident, both times. The identifier is still just a name, and nothing carried over — same word, different number, different rows, learned from scratch.</p>
+    <p>Fragment two is the numbers: more words, more parameters (still ten per token — the same arithmetic from What a parameter is), fewer examples, more epochs. Eighty epochs is a choice, the way twenty was.</p>
+    <p>Then the handoff: with THIS model trained and frozen, we change exactly one thing.</p>
+  </aside>
+</section>
+
+<section class="cue" data-timing="120">
   <p class="changed">We changed exactly one thing:<br><span class="one">the prompt</span></p>
   <!-- FIGURE:promptchange -->
   <div class="fig changed">
@@ -628,7 +662,7 @@
   </div>
   <!-- /FIGURE:promptchange -->
   <aside class="notes">
-    <p><strong>BLOCK 4 OF 9 - THE PROMPT</strong></p>
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 2/2</strong></p>
     <p>THE SLIDE DOES THE TEACHING NOW, so use it before you touch the machine.</p>
     <p>Read the held-fixed line out. All 380 numbers, same checksum before and after, same seed, same greedy decoding. Nothing about the model differs between these four answers.</p>
     <p>Then step the four, and NAME THE COMPANY behind each — the room's age will divide on which ones land, and the names are the fun:</p>

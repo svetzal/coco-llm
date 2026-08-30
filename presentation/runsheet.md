@@ -58,7 +58,7 @@ is there for questions.
 | 1 | It already works | 1 | 1 | 1 | Slide + EXP-004 launched live | Mystery |
 | 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
 | 3 | How it works, on the machine | 7 | 9 | 14 | EXP-004 live training | Mechanism |
-| 4 | Change one thing: the prompt | 1 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
+| 4 | Change one thing: the prompt | 2 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
 | 5 | Change one thing: the context | 1 | 5 | 22 | CoCo, EXP-011 attention head | Mechanism |
 | 6 | A screen of things that never existed | 2 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the upbringing | 1 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
@@ -371,9 +371,21 @@ substitute.
 
 ### 4. Change one thing: the prompt
 
-**On screen:** the held-fixed line and four asks, then EXP-005 in XRoar.
+**On screen:** the second model's vocabulary, then the held-fixed line and
+four asks, then EXP-005 in XRoar.
 
-The slide teaches; the machine proves it. Read the controls out loud first:
+The block opens with "A second model", because the coming claim is only
+airtight if the room knows what already changed. Same architecture, same
+training loop, same machine, retrained on eight lines of 1980s advertising:
+all 38 tokens on screen, with the five survivors from the first model
+highlighted — 64, COLOR, COMMODORE, COMPUTER, and the boundary. The
+callback does the teaching: COMMODORE was 13 in the first model and is 9
+in this one, an alphabetical accident both times. The numbers line carries
+the rest: 29 tokens to 38, 290 parameters to 380, 58 examples to 53, 20
+epochs to 80. The machinery did not change. The reading material did.
+
+Then the experiment. The slide teaches; the machine proves it. Read the
+controls out loud first:
 all 380 numbers, the same checksum before and after, the same seed, the same
 greedy decoding. Nothing about the model differs between the four answers.
 
@@ -604,7 +616,7 @@ missing figures, and the physical-world items.
 
 ## Deck state
 
-Twenty-four slides, 36 minutes of content. The demo blocks follow one
+Twenty-five slides, 36 minutes of content. The demo blocks follow one
 shape: the cue slide states **the call** — the block's falsifiable
 hypothesis — the machine takes the shot, and blocks 6 and 8 close on an
 explainer slide (the byte split; the honest number) so the lesson lands on

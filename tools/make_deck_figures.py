@@ -754,6 +754,45 @@ def figure_code(
   </div>"""
 
 
+def figure_second_model(prompts: dict, first: dict, first_epochs: int) -> str:
+    """EXP-005's vocabulary beside the first model's numbers: the machinery
+    held, the reading material replaced, and almost no words in common."""
+
+    def parameters(count: int) -> int:
+        return 2 * count * 3 + count * 3 + count
+
+    if parameters(len(prompts["tokens"])) != prompts["parameters"]:
+        raise SystemExit("second model's parameter arithmetic drifted")
+    survivors = set(prompts["tokens"]) & set(first["vocabulary"])
+    chips = "".join(
+        f'<div class="tok{" hot" if token in survivors else ""}">'
+        f'<span class="id">{index}</span>{esc(token)}</div>'
+        for index, token in enumerate(prompts["tokens"])
+    )
+    named = ", ".join(sorted(survivors - {"<END>"})) + ", and &lt;END&gt;"
+    old_id = first["vocabulary"].index("COMMODORE")
+    new_id = prompts["tokens"].index("COMMODORE")
+    return f"""
+  <div class="fig">
+    <div class="vocab">{chips}</div>
+    <p class="cap fragment" data-fragment-index="1">
+      Only {len(survivors)} tokens survive from the first model:
+      {named}. And COMMODORE, {old_id} there, is
+      {new_id} here. <strong>The identifier is still just a
+      name.</strong>
+    </p>
+    <p class="cap fragment" data-fragment-index="2">
+      {len(first["vocabulary"])} tokens &rarr; {len(prompts["tokens"])}.
+      {parameters(len(first["vocabulary"]))} parameters &rarr;
+      {prompts["parameters"]}.
+      {first["examples"]} examples &rarr; {prompts["examples"]}.
+      {first_epochs} epochs &rarr; {prompts["epochs"]}.
+      <strong>The machinery did not change. The reading material
+      did.</strong>
+    </p>
+  </div>"""
+
+
 # One colour per maker, so the same maker is the same colour in every bar.
 MAKER_CLASS = {"APPLE": "mk-a", "COMMODORE": "mk-c", "TANDY": "mk-t"}
 
@@ -903,6 +942,8 @@ def main() -> None:
     deck = splice(deck, "loop", figure_loop(traces["loop"], traces["budget"], traces["split"]))
     deck = splice(deck, "cost", figure_cost(traces["budget"], traces["split"]))
     deck = splice(deck, "bias", figure_bias(bias))
+    deck = splice(deck, "vocab5", figure_second_model(
+        prompts, traces["vocabulary"], traces["budget"]["epochs"]))
     deck = splice(deck, "promptchange", figure_changed(prompt_change))
     deck = splice(deck, "contextchange", figure_changed(context_change))
     shift = json.loads((TRACES.parent / "shift.json").read_text())
@@ -939,7 +980,8 @@ def main() -> None:
         annotate_learning_rate(code["learning_rate"], shift),
     ))
     DECK.write_text(deck, encoding="utf-8")
-    print("spliced 16 figures into presentation/deck/index.html")
+    count = deck.count("<!-- FIGURE:")
+    print(f"spliced {count} figures into presentation/deck/index.html")
 
 
 if __name__ == "__main__":

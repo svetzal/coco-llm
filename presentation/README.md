@@ -34,7 +34,7 @@ Supporting presentation material includes:
 - [`card-concepts/`](card-concepts/) — exploratory visual directions for that
   exercise, not final print artwork.
 
-The deck is built: twenty-four slides across the runsheet's nine blocks.
+The deck is built: twenty-five slides across the runsheet's nine blocks.
 `learning-journey.md` holds the argument and the evidence; `runsheet.md`
 holds what happens on the day.
 
