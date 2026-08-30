@@ -578,7 +578,7 @@
     <p class="cap fragment" data-fragment-index="5">
       Two's complement: <strong>a leading 1 means negative.</strong> These
       same sixteen bits read as 59,192 if you take them as unsigned.
-      The bits do not carry the sign. The instruction you choose does.
+      The bits don't care about the sign. The instruction you choose does.
     </p>
     <p class="cap fragment" data-fragment-index="6">
       <code>asra</code> keeps that top bit and drops the bottom one into the
@@ -589,26 +589,18 @@
     </p>
     <p class="cap fragment" data-fragment-index="7">
       Every number in this model is a whole number, because this machine has
-      no other kind. Running a model in integers is what the industry calls
-      <strong>quantization</strong> &mdash; the 4-bit models on phones make
-      the same trade &mdash; and the carry outs falling off the right are
-      its price, paid here in the open.
+      no other kind. Effectively, we are doing
+      <strong>quantization</strong> to 16 bits. The 4-bit models on phones
+      make the same trade.
     </p>
     <p class="cap fragment" data-fragment-index="8">
-      And the landing: four halvings is one multiplication by
+      Four halvings is one multiplication by
       <strong>0.0625</strong> &mdash; the
-      nudge rate from One step, the rate I chose. -6344 times
+      nudge rate I chose for each training step. -6344 times
       0.0625 is exactly
       -396.5; the shifts land on
-      -397. That last carry out &mdash; the 1
-      &mdash; is the missing half.
-      <strong>The hyperparameter is these eight instructions.</strong>
-    </p>
-    <p class="cap rubric">
-      A real update: SINCLAIR's third weight at epoch
-      5, error -244 times context
-      26. The weight goes 683 to
-      1080.
+      -397. That last carry out (the 1)
+      is the 0.5 we lose in <strong>quantization</strong>.
     </p>
   </div>
   <!-- /FIGURE:shiftbits -->

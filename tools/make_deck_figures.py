@@ -555,7 +555,6 @@ def figure_shift(shift: dict) -> str:
             f'<span class="decimal">{step["value"]}</span></div>'
         )
 
-    where = shift["source"]
     # The unsigned reading of the same bits, so the convention is stated
     # rather than assumed. It is also the number MUL would have produced.
     first = shift["steps"][0]
@@ -583,7 +582,7 @@ def figure_shift(shift: dict) -> str:
     <p class="cap fragment" data-fragment-index="{len(shift["steps"])}">
       Two's complement: <strong>a leading 1 means negative.</strong> These
       same sixteen bits read as {unsigned:,} if you take them as unsigned.
-      The bits do not carry the sign. The instruction you choose does.
+      The bits don't care about the sign. The instruction you choose does.
     </p>
     <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 1}">
       <code>asra</code> keeps that top bit and drops the bottom one into the
@@ -594,26 +593,18 @@ def figure_shift(shift: dict) -> str:
     </p>
     <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 2}">
       Every number in this model is a whole number, because this machine has
-      no other kind. Running a model in integers is what the industry calls
-      <strong>quantization</strong> &mdash; the 4-bit models on phones make
-      the same trade &mdash; and the carry outs falling off the right are
-      its price, paid here in the open.
+      no other kind. Effectively, we are doing
+      <strong>quantization</strong> to 16 bits. The 4-bit models on phones
+      make the same trade.
     </p>
     <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 3}">
-      And the landing: four halvings is one multiplication by
+      Four halvings is one multiplication by
       <strong>{1 / 2 ** (len(shift["steps"]) - 1)}</strong> &mdash; the
-      nudge rate from One step, the rate I chose. {first["value"]} times
+      nudge rate I chose for each training step. {first["value"]} times
       {1 / 2 ** (len(shift["steps"]) - 1)} is exactly
       {first["value"] / 2 ** (len(shift["steps"]) - 1)}; the shifts land on
-      {shift["steps"][-1]["value"]}. That last carry out &mdash; the 1
-      &mdash; is the missing half.
-      <strong>The hyperparameter is these eight instructions.</strong>
-    </p>
-    <p class="cap rubric">
-      A real update: {esc(where["weight_of"])}'s third weight at epoch
-      {where["epoch"]}, error {where["error"]} times context
-      {where["context_value"]}. The weight goes {where["weight_before"]} to
-      {shift["weight_after"]}.
+      {shift["steps"][-1]["value"]}. That last carry out (the 1)
+      is the 0.5 we lose in <strong>quantization</strong>.
     </p>
   </div>"""
 
@@ -726,8 +717,8 @@ def annotate_sign_fix(excerpt: dict, trace: dict) -> tuple[str, list[str]]:
         ("tst", f"factor holds {trace['factor']}"),
         ("bpl", "negative, so no branch"),
         ("lda", f"A = {raw_high}, the high byte"),
-        ("suba", f"A = {raw_high} - the multiplier {trace['multiplier']}"
-                 f" = {corrected_high}"),
+        ("suba", (f"A = {raw_high} - the multiplier {trace['multiplier']}"
+                  f" = {corrected_high}")),
         ("sta", f"product = {corrected_high} : {raw_low} = {trace['signed']}"),
     ])
 

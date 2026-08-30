@@ -634,7 +634,14 @@
  *   decimal            the signed value at the row's end
  *   explain            the sign figure's right-hand explanation column
  */
-.reveal .fig.shifts { font-size: 0.62em; }
+/* The walk centres as one unit: rows, header, and captions share the
+ * figure's fit-content width. */
+.reveal .fig.shifts {
+  font-size: 0.62em;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
 .reveal .bitrow, .reveal .bithead {
   display: grid; grid-template-columns: 8em 20em 2em 3.5em 5em;
   gap: 0 0.8em; align-items: center; margin: 0.3em 0;
