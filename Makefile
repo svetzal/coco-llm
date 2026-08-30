@@ -66,13 +66,17 @@ stage: $(STAGE_BINARIES) build/roms/.coco1-roms
 # experiment numbers. Blocks 4, 5, 6 and 8 are normally parked in advance by
 # `make stage`; their targets are the rehearsal path and the relaunch for a
 # dead window. Block 3 is the one launched live during the talk.
+# The deck opens first, then the emulator launches: the most recent launch
+# takes focus, so XRoar fronts the training screen with the deck ready
+# underneath for the switch to block 2's slides.
 block1: build/coco-llm.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
-	@echo "BLOCK 1 - IT ALREADY WORKS - launching EXP-004 in front of the"
-	@echo "room. It starts training from random weights the moment it"
-	@echo "loads; block 2's slides explain it while it runs. Call the"
-	@echo "shot out loud before switching to the deck."
+	@open presentation/deck/index.html
+	@echo "BLOCK 1 - IT ALREADY WORKS - deck opened, launching EXP-004 in"
+	@echo "front of the room. It starts training from random weights the"
+	@echo "moment it loads; block 2's slides explain it while it runs."
+	@echo "Call the shot out loud, then press S on the deck for notes."
 	@nohup $(XROAR) -machine cocous -ram 32 \
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
 		-ratelimit -run build/coco-llm.bin >/dev/null 2>&1 &

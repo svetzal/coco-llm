@@ -170,11 +170,13 @@ says where you are.
 showing a real trained run, full screen, no explanation.
 
 Open by launching the experiment the next block explains: `make block1`
-starts EXP-004, the live training run, in front of the room. It resets to
-random weights and starts training the moment it loads. Call the shot out
-loud — seed 6809 draws nonsense from these random weights right now, and
-after 1,160 corrections the same seed will draw names — then leave it
-running and go to the slides. It trains, at the 1981 clock rate, while
+opens the deck in the browser and starts EXP-004, the live training run,
+in front of the room — the emulator launches second so it takes focus,
+with the deck ready underneath. EXP-004 resets to random weights and
+starts training the moment it loads. Call the shot out loud — seed 6809
+draws nonsense from these random weights right now, and after 1,160
+corrections the same seed will draw names — then switch to the deck and
+press `S` for the speaker view. It trains, at the 1981 clock rate, while
 block 2 explains exactly what it is doing.
 
 Then the photograph. Say the names. Say that none of them were ever made.
