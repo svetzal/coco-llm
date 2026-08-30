@@ -34,14 +34,14 @@
   width: 100%;
 }
 .reveal .tok {
-  border: 1px solid var(--coco-c02);
+  border: 1px solid var(--deck-line);
   padding: 2px 2px;
   text-align: center;
   color: var(--deck-quiet);
   font-size: 0.8em;
   overflow-wrap: anywhere;
 }
-.reveal .tok .id { display: block; font-size: 0.62em; color: var(--coco-c01); }
+.reveal .tok .id { display: block; font-size: 0.62em; color: var(--deck-quiet); }
 .reveal .tok.hot {
   border-color: var(--deck-mark);
   color: var(--deck-mark);
@@ -59,7 +59,7 @@
   justify-content: flex-start;
 }
 .reveal .cell {
-  border: 1px solid var(--coco-c02);
+  border: 1px solid var(--deck-line);
   padding: 2px 8px;
   min-width: 5.5em;
   text-align: center;
@@ -69,7 +69,7 @@
 }
 .reveal .cell.ctx { color: var(--deck-quiet); }
 .reveal .cell.tgt { border-color: var(--deck-mark); color: var(--deck-mark); }
-.reveal .arrow { color: var(--coco-c01); }
+.reveal .arrow { color: var(--deck-quiet); }
 
 /* --- one training step ---------------------------------------------------
  *
@@ -93,7 +93,7 @@
   display: flex; gap: 4px; justify-content: center; margin-top: 4px;
 }
 .reveal .num {
-  border: 1px solid var(--coco-c02); padding: 2px 6px;
+  border: 1px solid var(--deck-line); padding: 2px 6px;
   flex: 0 0 auto; white-space: nowrap;
 }
 .reveal .num.moved { border-color: var(--deck-mark); color: var(--deck-mark); }
@@ -104,7 +104,7 @@
   margin-top: 6px; margin-bottom: 1.6em; position: relative;
 }
 .reveal .bars > .bar { flex: 0 0 auto; }
-.reveal .bar { width: 12px; background: var(--coco-c01); position: relative; }
+.reveal .bar { width: 12px; background: var(--deck-quiet); position: relative; }
 .reveal .bar.target { background: var(--deck-ink); }
 /* The same bar after the update, drawn over the top as a fragment. */
 .reveal .bar .after {
@@ -129,7 +129,7 @@
   gap: 0 0.8em; align-items: baseline;
 }
 .reveal .epoch .n {
-  color: var(--coco-c01); text-align: right; white-space: nowrap;
+  color: var(--deck-quiet); text-align: right; white-space: nowrap;
 }
 /* Left-aligned so the samples read as a list rather than a ragged centre. */
 .reveal .epoch .outs {
@@ -144,7 +144,7 @@
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-size: 0.55em;
-  color: var(--coco-c01);
+  color: var(--deck-quiet);
   /* Generous space above, because the row's own stage labels sit right
    * underneath this one and nowrap labels are wider than they look. */
   margin: 1.1em 0 0.5em;
@@ -172,7 +172,7 @@
   text-transform: uppercase;
   font-size: 0.6em;
   letter-spacing: 0.1em;
-  color: var(--coco-c01);
+  color: var(--deck-quiet);
 }
 .reveal .look .who { color: var(--deck-ink); text-align: right; }
 .reveal .look .vec { margin-top: 0; }
@@ -183,7 +183,7 @@
 .reveal .look.sum { margin-top: 5px; }
 .reveal .look.sum .who,
 .reveal .look.sum .vec {
-  border-top: 1px solid var(--coco-c02);
+  border-top: 1px solid var(--deck-line);
   padding-top: 6px;
 }
 .reveal .look.sum .who { color: var(--deck-mark); }
@@ -217,7 +217,7 @@
 .reveal .trow .w {
   width: 8.5em; text-align: right; color: var(--deck-quiet);
 }
-.reveal .trow .v { width: 5em; text-align: right; color: var(--coco-c01); }
+.reveal .trow .v { width: 5em; text-align: right; color: var(--deck-quiet); }
 .reveal .trow.used { background: rgba(0, 0, 0, 0.16); }
 .reveal .trow.used .w { color: var(--deck-mark); }
 .reveal .trow.used .v { color: var(--deck-mark); }
@@ -265,7 +265,7 @@
 .reveal .wrow .c { text-align: right; color: var(--deck-quiet); }
 .reveal .wrow .c.n { color: var(--deck-ink); }
 .reveal .wrow.head {
-  border-bottom: 1px solid var(--coco-c02);
+  border-bottom: 1px solid var(--deck-line);
   padding-bottom: 6px;
   margin-bottom: 4px;
 }
@@ -275,7 +275,7 @@
   letter-spacing: 0.08em;
   font-size: 0.55em;
   line-height: 1.25;
-  color: var(--coco-c01);
+  color: var(--deck-quiet);
 }
 .reveal .wrow.chosen { background: rgba(0, 0, 0, 0.16); }
 .reveal .wrow.chosen .c { color: var(--deck-mark); }
@@ -294,20 +294,20 @@
 .reveal .idset { display: flex; gap: 0.5em; justify-content: flex-end;
                  width: 17em; }
 .reveal .idchip {
-  border: 1px solid var(--coco-c02); padding: 2px 8px;
+  border: 1px solid var(--deck-line); padding: 2px 8px;
   color: var(--deck-ink); white-space: nowrap; flex: 0 0 auto;
 }
 .reveal .idchip.big { border-color: var(--deck-mark); color: var(--deck-mark); }
 .reveal .idchip .idn {
-  display: block; font-size: 0.62em; color: var(--coco-c01);
+  display: block; font-size: 0.62em; color: var(--deck-quiet);
 }
 .reveal .idchip.big .idn { color: var(--deck-mark); }
 .reveal .idnote {
   font-family: var(--deck-prose); text-transform: none;
   font-size: 0.62em; color: var(--deck-quiet); text-align: left; width: 17em;
 }
-.reveal .idnote.yes { color: var(--coco-win); }
-.reveal .idnote.no { color: var(--coco-loss); }
+.reveal .idnote.yes { color: var(--deck-ink); }
+.reveal .idnote.no { color: var(--deck-mark); }
 
 /* --- what a parameter is --------------------------------------------------
  *
@@ -333,9 +333,9 @@
 .reveal .term .tn { display: block; color: var(--deck-ink); }
 .reveal .term .tl {
   display: block; font-family: var(--deck-prose); text-transform: uppercase;
-  font-size: 0.5em; letter-spacing: 0.08em; color: var(--coco-c01);
+  font-size: 0.5em; letter-spacing: 0.08em; color: var(--deck-quiet);
 }
-.reveal .prow .op { color: var(--coco-c01); text-align: center; }
+.reveal .prow .op { color: var(--deck-quiet); text-align: center; }
 .reveal .prow .pcount { color: var(--deck-mark); text-align: right; }
 .reveal .prow .pwhat {
   font-family: var(--deck-prose); text-transform: none;
@@ -344,7 +344,7 @@
 .reveal .prow.total { margin-top: 0.9em; }
 .reveal .prow.total .pcount,
 .reveal .prow.total .pwhat {
-  border-top: 1px solid var(--coco-c02); padding-top: 8px;
+  border-top: 1px solid var(--deck-line); padding-top: 8px;
   color: var(--deck-loud);
 }
 
@@ -363,7 +363,7 @@
  */
 .reveal .epoch .enote {
   font-family: var(--deck-prose); text-transform: uppercase;
-  font-size: 0.5em; letter-spacing: 0.1em; color: var(--coco-c01);
+  font-size: 0.5em; letter-spacing: 0.1em; color: var(--deck-quiet);
 }
 .reveal .epoch.chosen .out { color: var(--deck-mark); }
 .reveal .epoch.chosen .enote { color: var(--deck-mark); }
@@ -380,11 +380,11 @@
 }
 .reveal .brow .bkind {
   font-family: var(--deck-prose); text-transform: uppercase;
-  font-size: 0.6em; letter-spacing: 0.12em; color: var(--coco-c01);
+  font-size: 0.6em; letter-spacing: 0.12em; color: var(--deck-quiet);
   text-align: right;
 }
 .reveal .brow .bsum { color: var(--deck-quiet); text-align: right; }
-.reveal .brow .bsum .op { color: var(--coco-c01); }
+.reveal .brow .bsum .op { color: var(--deck-quiet); }
 .reveal .brow .bval { color: var(--deck-mark); text-align: right; }
 .reveal .brow .bnote {
   font-family: var(--deck-prose); text-transform: none;
@@ -409,15 +409,15 @@
 }
 .reveal .nrow .nlab {
   font-family: var(--deck-prose); text-transform: uppercase;
-  font-size: 0.58em; letter-spacing: 0.08em; color: var(--coco-c01);
+  font-size: 0.58em; letter-spacing: 0.08em; color: var(--deck-quiet);
   text-align: right;
 }
 .reveal .nrow .nv { text-align: right; white-space: nowrap; }
 .reveal .nrow .nv.in { color: var(--deck-loud); }
 .reveal .nrow .nv.was { color: var(--deck-quiet); }
 .reveal .nrow .nv.now { color: var(--deck-mark); }
-.reveal .nrow .nv.chg.up { color: var(--coco-win); }
-.reveal .nrow .nv.chg.dn { color: var(--coco-loss); }
+.reveal .nrow .nv.chg.up { color: var(--deck-mark); }
+.reveal .nrow .nv.chg.dn { color: var(--deck-mark); }
 /* The arrow is not in the MC6847 character set, so it comes from the prose
  * face rather than rendering as a missing glyph. */
 .reveal .nrow .arrow { font-family: var(--deck-prose); margin-right: 0.3em; }
@@ -453,19 +453,19 @@
 }
 .reveal .frow .fterm { text-align: center; color: var(--deck-quiet); }
 .reveal .frow .fterm.hot { color: var(--deck-ink); }
-.reveal .frow .fop { color: var(--coco-c01); text-align: center; }
+.reveal .frow .fop { color: var(--deck-quiet); text-align: center; }
 .reveal .frow.why .fterm {
   font-family: var(--deck-prose); text-transform: none;
-  font-size: 0.6em; color: var(--coco-c01); line-height: 1.2;
+  font-size: 0.6em; color: var(--deck-quiet); line-height: 1.2;
   padding-top: 0.2em;
 }
 
 /* A generated sample that turned out to be lifted from the training data. */
-.reveal .epoch .out.copied { color: var(--coco-loss); }
+.reveal .epoch .out.copied { color: var(--deck-mark); }
 .reveal .epoch .out .tag {
   font-family: var(--deck-prose); text-transform: uppercase;
   font-size: 0.5em; letter-spacing: 0.1em; margin-left: 0.5em;
-  color: var(--coco-loss);
+  color: var(--deck-mark);
 }
 
 
@@ -478,13 +478,13 @@
   font-size: 0.55em; letter-spacing: 0.08em; text-align: right;
   white-space: nowrap;
 }
-.reveal .epoch .novel.good { color: var(--coco-win); }
-.reveal .epoch .novel.poor { color: var(--coco-c01); }
+.reveal .epoch .novel.good { color: var(--deck-ink); }
+.reveal .epoch .novel.poor { color: var(--deck-quiet); }
 .reveal .fig .cap.invent { color: var(--deck-ink); }
 
 /* Column headings for the two quality measures. */
 .reveal .epoch.head .novel {
-  color: var(--coco-c01); font-size: 0.5em; line-height: 1.2;
+  color: var(--deck-quiet); font-size: 0.5em; line-height: 1.2;
 }
 .reveal .epoch.head { margin-bottom: -0.2em; }
 .reveal .fig .cap em { color: var(--deck-loud); font-style: normal; }
@@ -493,15 +493,15 @@
  * definition is off-screen is a number the audience has to take on trust,
  * which is the opposite of what this deck is for. */
 .reveal .fig .cap.rubric {
-  color: var(--coco-c01); font-size: 13px; margin-top: 0.5em;
+  color: var(--deck-quiet); font-size: 13px; margin-top: 0.5em;
 }
 
 /* Saying the same token twice is a different failure from saying something
  * that was in the training data, so it gets its own colour. It also
  * disappears earlier, which is the step from "starts like a name" to "hangs
  * together". */
-.reveal .epoch .out.repeats { color: var(--coco-orange); }
-.reveal .epoch .out.repeats .tag { color: var(--coco-orange); }
+.reveal .epoch .out.repeats { color: var(--coco-c04); }
+.reveal .epoch .out.repeats .tag { color: var(--coco-c04); }
 
 /* --- assembly reveals -----------------------------------------------------
  *
@@ -532,15 +532,15 @@
 }
 .reveal .fig.code.regs .cline .reg {
   white-space: pre; flex: 0 0 auto; padding-left: 2ch;
-  color: var(--coco-c01);
+  color: var(--deck-quiet);
 }
 .reveal .fig.code.regs .cline.hot .reg { color: var(--deck-mark); }
 /* The omission marker lines up with the code it stands in for, not with the
  * label column. A path is also left in its real case: these are file names. */
-.reveal .cline.elide { color: var(--coco-c01); padding-left: 2.6em; }
+.reveal .cline.elide { color: var(--deck-quiet); padding-left: 2.6em; }
 .reveal .fig.code .cap { margin-top: 1em; max-width: 40em; }
 .reveal .fig.code .cap .src {
-  display: block; margin-top: 0.5em; color: var(--coco-c01);
+  display: block; margin-top: 0.5em; color: var(--deck-quiet);
   font-size: 0.85em; letter-spacing: 0.06em; text-transform: none;
 }
 
@@ -591,9 +591,9 @@
 }
 .reveal .held .hlead {
   text-transform: uppercase; letter-spacing: 0.12em;
-  color: var(--coco-c01); margin-right: 0.8em;
+  color: var(--deck-quiet); margin-right: 0.8em;
 }
-.reveal .held .hsep { color: var(--coco-c01); margin: 0 0.5em; }
+.reveal .held .hsep { color: var(--deck-quiet); margin: 0 0.5em; }
 .reveal .deltas { width: fit-content; margin: 0 auto; }
 .reveal .ba {
   display: grid; grid-template-columns: 9em 11em 1.5em 22em;
@@ -601,12 +601,12 @@
 }
 .reveal .ba .balab {
   font-family: var(--deck-prose); text-transform: uppercase;
-  font-size: 0.6em; letter-spacing: 0.08em; color: var(--coco-c01);
+  font-size: 0.6em; letter-spacing: 0.08em; color: var(--deck-quiet);
   text-align: right;
 }
 .reveal .ba .bfrom { color: var(--deck-loud); text-align: right;
                      white-space: nowrap; }
-.reveal .ba .barrow { color: var(--coco-c01); text-align: center; }
+.reveal .ba .barrow { color: var(--deck-quiet); text-align: center; }
 .reveal .ba .bto { color: var(--deck-mark); text-align: left;
                    white-space: nowrap; }
 /* A header row over the deltas, naming what the two columns are, for the
@@ -614,7 +614,7 @@
 .reveal .ba.hdr .bfrom, .reveal .ba.hdr .bto {
   font-family: var(--deck-prose); font-size: 0.55em;
   letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--coco-c01);
+  color: var(--deck-quiet);
 }
 
 /* --- what a shift does ----------------------------------------------------
@@ -632,25 +632,28 @@
 .reveal .bhead .bdec, .reveal .bhead .breal,
 .reveal .brow2 .blab2 {
   font-family: var(--deck-prose); text-transform: uppercase;
-  font-size: 0.6em; letter-spacing: 0.08em; color: var(--coco-c01);
+  font-size: 0.6em; letter-spacing: 0.08em; color: var(--deck-quiet);
   text-align: right;
 }
 .reveal .bhead .bits { display: flex; }
 .reveal .bhead .half {
   flex: 1; text-align: center; font-family: var(--deck-prose);
   text-transform: uppercase; font-size: 0.6em; letter-spacing: 0.08em;
-  color: var(--coco-c01);
+  color: var(--deck-quiet);
 }
 .reveal .bits { display: flex; gap: 1px; }
 .reveal .bit {
-  flex: 1; text-align: center; color: var(--coco-c02);
+  flex: 1; text-align: center; color: var(--deck-line);
   background: rgba(0, 0, 0, 0.08); padding: 1px 0;
 }
 .reveal .bit.on { color: var(--coco-white); background: var(--deck-mark); }
 /* The gap between the two registers, because they are two registers. */
 .reveal .bit.edge { margin-right: 0.7em; }
 .reveal .bfell { text-align: center; }
-.reveal .fell { color: var(--coco-loss); }
+.reveal .fell {
+  color: var(--coco-c00); background: var(--coco-amber);
+  padding: 0 0.25em;
+}
 .reveal .brow2 .bdec { color: var(--deck-quiet); text-align: right; }
 .reveal .brow2 .breal { color: var(--deck-quiet); text-align: right; }
 .reveal .brow2.last .bdec, .reveal .brow2.last .breal { color: var(--deck-mark); }
@@ -670,4 +673,4 @@
 .reveal .fig.sign .brow2.last .bexpl { color: var(--deck-mark); }
 
 /* The sign bit. It is the one to watch on this figure, so it is marked. */
-.reveal .bit.sign { box-shadow: inset 0 0 0 1px var(--coco-loss); }
+.reveal .bit.sign { box-shadow: inset 0 0 0 1px var(--deck-mark); }

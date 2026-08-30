@@ -57,9 +57,16 @@ piece; figures stay fragment-animated with no JavaScript. The cards carry
 only a number, the block title, and the arc word — the spoken segue lives
 in their notes, not on the wall.
 
-Emphasis is deep red on the green field. The old deck's cue — a slide and
-an XRoar window being colour-inverses of each other — is retired; the title
-bar now does that wayfinding job by name.
+Emphasis is navy on the green field, not red: red-on-green is a hue-only
+signal that vanishes for the most common colourblindness, and it measured
+under 4:1 luminance besides. The working rules: every colour on the green
+body clears its WCAG ratio (quiet text is c03 at 4.55:1; the old c01
+measured 2.87:1), no meaning rides on hue alone — the loop slide's failure
+rows carry their tags in words, the shift slide's dropped bits sit on amber
+chips at 16:1, the nudge rows keep their arrows — and any new colour gets
+measured against `--coco-bg` before it ships. The old deck's cue — a slide
+and an XRoar window being colour-inverses of each other — is retired; the
+title bar does that wayfinding job by name.
 
 ## Writing slides
 

@@ -256,9 +256,9 @@ Every number in every figure is exported from the reference model by
    nudges shrink as the model improves without anyone turning them down.
    AMIGA moves to 3.7%. Almost nothing, and there are 1,160 steps in a run.
 7. **Do it again. And again.** The strongest slide in the block. Three
-   failures, three colours, and they go away in order. Orange is repeating a
-   token: 41% of draws at epoch 0, 9% at epoch 5, 1% at epoch 20. Red is
-   lifted from the corpus. What is left at epoch 20 is the argument:
+   failures, each named by its tag, and they go away in order. REPEATS: 41%
+   of draws at epoch 0, 9% at epoch 5, 1% at epoch 20. IN THE CORPUS is
+   lifted from the training data. What is left at epoch 20 is the argument:
    *different* tokens that sit together plausibly, `SINCLAIR AMIGA`,
    `COMMODORE ATARI`, neither of which existed. The machine has no idea what
    those words mean; it knows which tokens follow which, and that alone is

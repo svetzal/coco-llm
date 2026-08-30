@@ -18,8 +18,13 @@
   --deck-ink: var(--coco-ink);     /* black, the machine's body text */
   --deck-bg: var(--coco-bg);       /* #44C532, the composite screen green */
   --deck-loud: var(--coco-c00);    /* headings: pure black */
-  --deck-mark: var(--coco-c06);    /* deep red: the one thing that changed */
-  --deck-quiet: var(--coco-c01);   /* dark green, supporting text */
+  /* Emphasis is navy, not red: red on the green body vanishes for
+   * red-green colourblind viewers, while blue survives every common CVD
+   * and carries 4.1:1 luminance contrast of its own. */
+  --deck-mark: var(--coco-c13);    /* navy: the one thing that changed */
+  /* 4.55:1 on the green body; the old c01 measured 2.87:1. */
+  --deck-quiet: var(--coco-c03);   /* darker green, supporting text */
+  --deck-line: var(--coco-c02);    /* borders and rules */
   --deck-prose: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
