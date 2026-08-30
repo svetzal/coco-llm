@@ -563,9 +563,9 @@
     <div class="bhead">
       <span class="blab2"></span>
       <span class="bits"><span class="half">A &mdash; asra</span>
-        <span class="carry chead">carry</span>
+        <span class="carry chead">carry in</span>
         <span class="half">B &mdash; rorb</span></span>
-      <span class="bfell">out</span>
+      <span class="bfell">carry out</span>
       <span class="bdec"></span>
     </div>
     <div class="brow2 signrow">
@@ -582,16 +582,17 @@
     </p>
     <p class="cap fragment" data-fragment-index="6">
       <code>asra</code> keeps that top bit and drops the bottom one into the
-      carry; <code>rorb</code> rotates the carry into the top of B. Watch the
-      left edge: <strong>the 1 copies itself downward, which is how the value
-      stays negative while it halves.</strong>
+      carry; <code>rorb</code> carries it in to B's top, then drops B's
+      bottom bit into the same carry, uncollected: the
+      <strong>carry out</strong>. Watch the left edge: <strong>the 1 copies
+      itself downward, which keeps the value negative as it halves.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="7">
       Every number in this model is a whole number, because this machine has
       no other kind. Running a model in integers is what the industry calls
       <strong>quantization</strong> &mdash; the 4-bit models on phones make
-      the same trade &mdash; and the bits falling off the right are its
-      price, paid here in the open.
+      the same trade &mdash; and the carry outs falling off the right are
+      its price, paid here in the open.
     </p>
     <p class="cap fragment" data-fragment-index="8">
       And the landing: four halvings is one multiplication by
@@ -599,7 +600,8 @@
       nudge rate from One step, the rate I chose. -6344 times
       0.0625 is exactly
       -396.5; the shifts land on
-      -397, the dropped bits paying the difference.
+      -397. That last carry out &mdash; the 1
+      &mdash; is the missing half.
       <strong>The hyperparameter is these eight instructions.</strong>
     </p>
     <p class="cap rubric">
@@ -617,11 +619,11 @@
     <p>SAY THE CONVENTION BEFORE RELYING ON IT: two's complement, a leading 1 means negative. Do not assume the room knows.</p>
     <p>And make the connection back two slides. These same sixteen bits read as 59,192 if you take them as unsigned. Nothing in the bits says which. THE INSTRUCTION YOU CHOOSE DECIDES. That is exactly why MUL needed a correction: MUL reads its input unsigned, so it read -121 as 135. Here ASRA reads signed, so it preserves the top bit. Same bits, two readings, and the programmer picks.</p>
     <p>POINT AT THE LEFT EDGE and step the rows. The sign bit stays 1 and copies itself downward, one more each time. That is what "arithmetic" shift means, and it is why -6344 halves to -3172 instead of turning into some large positive number. LSRA, the logical shift, would put a 0 there and -6344 would become 29,596.</p>
-    <p>THEN POINT AT THE CARRY COLUMN. The arrows show the bit in flight: ASRA drops it out of A, it rides the carry, RORB delivers it into the top of B — 1, 1, 1, then 0. That is the whole reason there are two different instructions instead of two ASRs.</p>
+    <p>THEN POINT AT THE CARRY IN COLUMN. The arrows show the bit in flight: ASRA drops it out of A, it rides the carry, RORB delivers it into the top of B — 1, 1, 1, then 0. That is the whole reason there are two different instructions instead of two ASRs.</p>
     <p>-6344, -3172, -1586, -793, -397. The weight goes from 683 to 1080.</p>
-    <p>The bits falling off the right are thrown away: 0, 0, 0, 1. That is the rounding error of a learning rate. It accumulates over 1,160 updates, and it is also why the whole thing fits and runs.</p>
+    <p>THE CARRY OUT COLUMN is the same flag one step later: RORB drops B's low bit back into the carry and nothing collects it — 0, 0, 0, 1, thrown away. Same word, same hardware bit, two fates: carried in, or carried out. That orphaned bit is the rounding error of a learning rate; it accumulates over 1,160 updates, and it is also why the whole thing fits and runs.</p>
     <p>NAME THE WORD on the way: every number in this model is a whole number — the machine has no other kind — and running a model in integers is QUANTIZATION. The 4-bit models on phones make the same trade for the same reason, and the bits falling off the right are the price, visible for once.</p>
-    <p>THE LANDING, last fragment, and say it slowly: everything they just watched is one multiplication by 0.0625 — the nudge rate from One step, the rate I chose. -6344 times 0.0625 is exactly -396.5; the shifts land on -397; the dropped bits paid the difference. Close it: THE HYPERPARAMETER IS THESE EIGHT INSTRUCTIONS.</p>
+    <p>THE LANDING, last fragment, and say it slowly: everything they just watched is one multiplication by 0.0625 — the nudge rate from One step, the rate I chose. -6344 times 0.0625 is exactly -396.5; the shifts land on -397; that last carry out — the 1 — is the missing half. Close it: THE HYPERPARAMETER IS THESE EIGHT INSTRUCTIONS.</p>
     <p>IF ASKED WHY NOT ASRA AND ASRB, which an assembly-literate room will: ASRB sign-extends B instead of taking the carry, so the bit that fell out of A is thrown away and B's own top bit is duplicated. You get two independent 8-bit shifts. Verified on the direct simulator: halving $0175 gives 186 with asra/rorb and 58 with asra/asrb.</p>
     <p>Nasty detail worth having: on some values the two agree, whenever A's dropped bit happens to equal B's top bit. That is a bug that survives casual testing.</p>
   </aside>

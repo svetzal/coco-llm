@@ -669,6 +669,7 @@
 .reveal .brow2 .bdec { color: var(--deck-quiet); text-align: right; }
 .reveal .brow2 .breal { color: var(--deck-quiet); text-align: right; }
 .reveal .brow2.last .bdec, .reveal .brow2.last .breal { color: var(--deck-mark); }
+.reveal .fig.shifts .cap { max-width: 54em; margin-top: 0.5em; }
 .reveal .fig.shifts .cap code {
   font-family: var(--coco-type); color: var(--deck-ink); font-size: 1em;
 }
@@ -688,7 +689,7 @@
 .reveal .bit.sign { box-shadow: inset 0 0 0 1px var(--deck-mark); }
 /* The column marker over the sign bit: same cells as a bit row so the
  * minus lands exactly over bit fifteen, with the row's chrome removed. */
-.reveal .signrow { margin-bottom: 2px; }
+.reveal .signrow { margin-bottom: 0; }
 .reveal .signrow .bit {
   background: none; color: var(--deck-mark); line-height: 1;
 }

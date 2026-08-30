@@ -565,9 +565,9 @@ def figure_shift(shift: dict) -> str:
     <div class="bhead">
       <span class="blab2"></span>
       <span class="bits"><span class="half">A &mdash; asra</span>
-        <span class="carry chead">carry</span>
+        <span class="carry chead">carry in</span>
         <span class="half">B &mdash; rorb</span></span>
-      <span class="bfell">out</span>
+      <span class="bfell">carry out</span>
       <span class="bdec"></span>
     </div>
     <div class="brow2 signrow">
@@ -587,16 +587,17 @@ def figure_shift(shift: dict) -> str:
     </p>
     <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 1}">
       <code>asra</code> keeps that top bit and drops the bottom one into the
-      carry; <code>rorb</code> rotates the carry into the top of B. Watch the
-      left edge: <strong>the 1 copies itself downward, which is how the value
-      stays negative while it halves.</strong>
+      carry; <code>rorb</code> carries it in to B's top, then drops B's
+      bottom bit into the same carry, uncollected: the
+      <strong>carry out</strong>. Watch the left edge: <strong>the 1 copies
+      itself downward, which keeps the value negative as it halves.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 2}">
       Every number in this model is a whole number, because this machine has
       no other kind. Running a model in integers is what the industry calls
       <strong>quantization</strong> &mdash; the 4-bit models on phones make
-      the same trade &mdash; and the bits falling off the right are its
-      price, paid here in the open.
+      the same trade &mdash; and the carry outs falling off the right are
+      its price, paid here in the open.
     </p>
     <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 3}">
       And the landing: four halvings is one multiplication by
@@ -604,7 +605,8 @@ def figure_shift(shift: dict) -> str:
       nudge rate from One step, the rate I chose. {first["value"]} times
       {1 / 2 ** (len(shift["steps"]) - 1)} is exactly
       {first["value"] / 2 ** (len(shift["steps"]) - 1)}; the shifts land on
-      {shift["steps"][-1]["value"]}, the dropped bits paying the difference.
+      {shift["steps"][-1]["value"]}. That last carry out &mdash; the 1
+      &mdash; is the missing half.
       <strong>The hyperparameter is these eight instructions.</strong>
     </p>
     <p class="cap rubric">
