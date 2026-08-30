@@ -66,46 +66,75 @@ stage: $(STAGE_BINARIES) build/roms/.coco1-roms
 # experiment numbers. Blocks 4, 5, 6 and 8 are normally parked in advance by
 # `make stage`; their targets are the rehearsal path and the relaunch for a
 # dead window. Block 3 is the one launched live during the talk.
-block1:
-	@echo "BLOCK 1 - IT ALREADY WORKS - launches EXP-004 in front of the"
+block1: build/coco-llm.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	@echo "BLOCK 1 - IT ALREADY WORKS - launching EXP-004 in front of the"
 	@echo "room. It starts training from random weights the moment it"
-	@echo "loads; blocks 2's slides explain it while it runs. Call the"
+	@echo "loads; block 2's slides explain it while it runs. Call the"
 	@echo "shot out loud before switching to the deck."
-	@$(MAKE) xroar
+	@nohup $(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-llm.bin >/dev/null 2>&1 &
+	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
 block2:
 	@echo "BLOCK 2 - ON SLIDES - eight figures. EXP-004 is training in"
 	@echo "the window block 1 opened; it parks at PRESS ANY KEY."
 
-block3:
+block3: build/coco-llm.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
 	@echo "BLOCK 3 - ON THE MACHINE - normally a window switch: EXP-004"
-	@echo "has been training since block 1. Running this target launches"
-	@echo "a FRESH run (the launch is the reset) - the recovery path if"
-	@echo "the block 1 window died."
-	@$(MAKE) xroar
+	@echo "has been training since block 1. This launches a FRESH run"
+	@echo "(the launch is the reset) - the recovery if that window died."
+	@nohup $(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-llm.bin >/dev/null 2>&1 &
+	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
-block4:
+block4: build/coco-llm-exp5.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
 	@echo "BLOCK 4 - THE PROMPT - EXP-005 trains itself, parks at"
 	@echo "PRESS ANY KEY. Up/Down chooses a prompt, Enter generates."
-	@$(MAKE) xroar-exp5
+	@nohup $(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-llm-exp5.bin >/dev/null 2>&1 &
+	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
-block5:
+block5: build/coco-attention.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
 	@echo "BLOCK 5 - THE CONTEXT - EXP-011 parks at the context table."
 	@echo "Enter asks, E edits, Clear backs out, V is optional depth."
-	@$(MAKE) xroar-attention
+	@nohup $(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-attention.bin >/dev/null 2>&1 &
+	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
-block6:
+block6: build/coco-titles.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
 	@echo "BLOCK 6 - NEVER EXISTED - EXP-012 parks showing titles."
 	@echo "Any key deals sixteen fresh ones."
-	@$(MAKE) xroar-titles
+	@nohup $(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-titles.bin >/dev/null 2>&1 &
+	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
 block7:
 	@echo "BLOCK 7 - THE UPBRINGING - slides only, the five bias bars."
 
-block8:
+block8: build/coco-rpsls.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
 	@echo "BLOCK 8 - YOU PLAY IT - EXP-013 parks at the RPSLS keys."
 	@echo "1-5 throw, R forgets everything. Press R before the talk."
-	@$(MAKE) xroar-rpsls
+	@nohup $(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-rpsls.bin >/dev/null 2>&1 &
+	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
 block9:
 	@echo "BLOCK 9 - WHO DECIDED - slides only. Close on the table."

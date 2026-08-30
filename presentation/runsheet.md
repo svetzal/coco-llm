@@ -154,7 +154,10 @@ run if that window dies. Rehearse the switching, not only the demos.
 Every block has a command, `make block1` through `make block9`. The
 slide-only blocks print what the block is; each demo block's target prints
 its keys and launches its emulator, which makes it the rehearsal path and
-the relaunch for a window that dies mid-talk. The deck's speaker notes
+the relaunch for a window that dies mid-talk. Every launch **detaches from
+the terminal**: the prompt comes straight back, and no Ctrl-C, closed
+terminal window, or stray keystroke on the laptop can kill a running
+emulator. Quitting one is done from XRoar itself, deliberately. The deck's speaker notes
 carry the same cues, and every slide's notes open with a block marker —
 `BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 2/7` — so the speaker view always
 says where you are.
