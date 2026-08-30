@@ -507,11 +507,16 @@ One callback earns its sentence: this is hallucination as a product. Asked
 for facts, these screens would be errors; asked for invention, they are the
 deliverable. Which one you get was a decision about the task.
 
-The block runs call, demo, explainer. The cue slide calls the shot — 400
-bytes that never learned a word are about to deal plausible titles — the
-machine deals them, and the explainer slide "Where the trick lives" shows
-the split: 400 bytes of learned shape against 1,591 bytes of hand-written
-dictionary and rules, with the two-repeated-pairs corpus fact under it.
+The block runs corpus, call, demo, explainer. The cue slide calls the
+shot — 400 bytes that never learned a word are about to deal plausible
+titles — the machine deals them, and the explainer slide "Where the trick
+lives" shows the three-way split: 400 bytes of learned shape, 1,333 of
+hand-written dictionary, and 258 of rules, with the rules laid out row by
+row alongside the failure each one vetoes — the transition mask (else
+TRISKELION THE MAN TRAP), the slot grammar (refuses A TRIBBLES and THE
+GOTHOS), and the fingerprints that keep it from dealing a real title. The
+landing: the model proposes, the rules dispose, the dictionary supplies —
+and every veto is a decision a person wrote down.
 
 Note the second scenario cost. This is the one place the talk leaves the
 vintage-computer example, so get in and out.

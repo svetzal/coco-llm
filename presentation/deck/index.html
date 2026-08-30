@@ -983,33 +983,68 @@
      its corpus analysis. -->
 <section data-timing="60" data-block="6" data-bar="COCO LLM - 6/9 NEVER EXISTED">
   <h2>Where the trick lives</h2>
+  <!-- The three-way split and the rules are EXP-012, the fake episode
+       titles' recorded design: its size table (400 model, 1,228 nouns + 105
+       frame words, 60 + 40 + 158 of rules) and its "How it stays readable"
+       section, counterexamples included. -->
   <div class="fig">
     <div class="budget">
       <div class="brow fragment" data-fragment-index="1">
         <span class="bkind">the shape</span>
-        <span class="bsum">a title's shape, learned from 79 real ones</span>
+        <span class="bsum">a title's skeleton, learned from 79 real
+          ones</span>
         <span class="bval">400</span>
         <span class="bnote">bytes of model</span>
       </div>
       <div class="brow fragment" data-fragment-index="2">
         <span class="bkind">the words</span>
-        <span class="bsum">dictionary and rules, written by hand</span>
-        <span class="bval">1,591</span>
-        <span class="bnote">bytes, and no learning in them</span>
+        <span class="bsum">113 noun phrases and the frame words, spelled
+          out</span>
+        <span class="bval">1,333</span>
+        <span class="bnote">bytes of dictionary</span>
+      </div>
+      <div class="brow fragment" data-fragment-index="3">
+        <span class="bkind">the rules</span>
+        <span class="bsum">three hand-written vetoes</span>
+        <span class="bval">258</span>
+        <span class="bnote">bytes, and here they are</span>
       </div>
     </div>
-    <p class="cap fragment" data-fragment-index="3">
-      Across all 79 real titles, only two adjacent word pairs ever repeat.
-      There was no phrasing to learn. <strong>It never learned what a Gothos
-      is. It learned that something goes there.</strong>
+    <div class="budget fragment" data-fragment-index="4">
+      <div class="brow">
+        <span class="bkind">transitions</span>
+        <span class="bsum">only word-to-word steps the corpus takes</span>
+        <span class="bval">60</span>
+        <span class="bnote">else: TRISKELION THE MAN TRAP</span>
+      </div>
+      <div class="brow">
+        <span class="bkind">grammar</span>
+        <span class="bsum">which word classes fit a blank, read from both
+          sides</span>
+        <span class="bval">40</span>
+        <span class="bnote">refuses A TRIBBLES, THE GOTHOS</span>
+      </div>
+      <div class="brow">
+        <span class="bkind">fingerprints</span>
+        <span class="bsum">a 16-bit hash of every real title</span>
+        <span class="bval">158</span>
+        <span class="bnote">it cannot deal a real one</span>
+      </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="5">
+      The model proposes a shape. The rules veto anything the corpus never
+      licensed. The nouns fill what survives. <strong>The learning is the
+      400; everything else was written by hand.</strong>
     </p>
   </div>
   <aside class="notes">
     <p><strong>BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 3/3</strong></p>
-    <p>THE EXPLAINER, after they have seen the titles dealt. The lesson is the split, and it is visible in the sizes: 400 bytes of model hold the shape of a title; 1,591 bytes of dictionary and rules hold the words, and no learning ever touched them.</p>
-    <p>The corpus number is why the split had to be this way: across all 79 real titles, only two adjacent word pairs ever repeat. Nothing to generalize from. It memorized a shape.</p>
-    <p>CALLBACK worth one line: this is hallucination as a product. Ask this machinery for facts and every dealt screen is an error; ask it for invention and they are the deliverable. Identical machinery — which one you get was a decision about the task, and hold that for the last slide.</p>
-    <p>When output looks creative, ask what is holding the shape and what is holding the words. Here you can point at each. In a large model the same split exists; you just can't point at it.</p>
+    <p>THE EXPLAINER, after the titles are dealt. Step the split: 400 bytes of model hold the shape; 1,333 of dictionary hold the words; 258 of rules keep it honest. No learning ever touched the last two.</p>
+    <p>THE RULES ROW IS THE FUN, and each veto has a named failure — say them out loud. Without the transition mask it deals TRISKELION THE MAN TRAP. Without the grammar it deals A TRIBBLES and THE GOTHOS. And the fingerprints exist because a generator advertised as making titles up must never deal a real one.</p>
+    <p>Say what the rules ARE: table lookups, not arithmetic, and every veto is a decision a person wrote down. Three more deposits for the last slide.</p>
+    <p>HOW THEY FACTOR IN, one sentence: the model proposes, the rules dispose, the dictionary supplies. When a big model has guardrails bolted around it, this is the same architecture with more zeros.</p>
+    <p>CALLBACK worth one line: this is hallucination as a product. Ask this machinery for facts and every dealt screen is an error; ask it for invention and they are the deliverable. Which one you get was a decision about the task.</p>
+    <p>When output looks creative, ask what is holding the shape, what is holding the words, and who wrote the rules. Here you can point at all three. In a large model the same split exists; you just can't point at it.</p>
   </aside>
 </section>
 
