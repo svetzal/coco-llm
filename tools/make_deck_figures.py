@@ -683,13 +683,15 @@ def annotate_sign_fix(excerpt: dict, trace: dict) -> tuple[str, list[str]]:
     raw_high, raw_low = trace["raw"] >> 8, trace["raw"] & 0xFF
     corrected_high = raw_high - (trace["multiplier"] & 0xFF)
     entry = (
-        f"the MULs left {trace['raw']} = bytes {raw_high} and {raw_low}"
+        f"two MULs made {trace['unsigned_factor']} x {trace['multiplier']}"
+        f" = {trace['raw']} = {raw_high} : {raw_low}"
     )
     return entry, code_annotations(excerpt, [
         ("tst", f"factor holds {trace['factor']}"),
         ("bpl", "negative, so no branch"),
-        ("lda", f"A = {raw_high}, the stored high byte"),
-        ("suba", f"A = {raw_high} - {trace['multiplier']} = {corrected_high}"),
+        ("lda", f"A = {raw_high}, the high byte"),
+        ("suba", f"A = {raw_high} - the multiplier {trace['multiplier']}"
+                 f" = {corrected_high}"),
         ("sta", f"product = {corrected_high} : {raw_low} = {trace['signed']}"),
     ])
 

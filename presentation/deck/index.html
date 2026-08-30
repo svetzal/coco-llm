@@ -744,7 +744,7 @@
   <!-- FIGURE:signfix -->
   <p class="lead">and the correction that makes it signed</p>
   <div class="fig code regs">
-    <pre class="asm"><div class="cline elide"><span class="ct">...</span><span class="reg">the MULs left 8100 = bytes 31 and 164</span></div><div class="cline"><span class="ct">        tst     multiply_factor</span><span class="reg">factor holds -121</span></div><div class="cline"><span class="ct">        bpl     multiply_ready</span><span class="reg">negative, so no branch</span></div><div class="cline"><span class="ct">        lda     multiply_product</span><span class="reg">A = 31, the stored high byte</span></div><div class="cline hot"><span class="ct">        suba    1,x</span><span class="reg">A = 31 - 60 = -29</span></div><div class="cline"><span class="ct">        sta     multiply_product</span><span class="reg">product = -29 : 164 = -7260</span></div></pre>
+    <pre class="asm"><div class="cline elide"><span class="ct">...</span><span class="reg">two MULs made 135 x 60 = 8100 = 31 : 164</span></div><div class="cline"><span class="ct">        tst     multiply_factor</span><span class="reg">factor holds -121</span></div><div class="cline"><span class="ct">        bpl     multiply_ready</span><span class="reg">negative, so no branch</span></div><div class="cline"><span class="ct">        lda     multiply_product</span><span class="reg">A = 31, the high byte</span></div><div class="cline hot"><span class="ct">        suba    1,x</span><span class="reg">A = 31 - the multiplier 60 = -29</span></div><div class="cline"><span class="ct">        sta     multiply_product</span><span class="reg">product = -29 : 164 = -7260</span></div></pre>
     <p class="cap">A negative factor comes out 256 too large. One subtraction fixes it, and the model is bit-for-bit what it was before. The column walks the next slide's worked example, -121 times 60. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
   </div>
   <!-- /FIGURE:signfix -->
@@ -763,10 +763,15 @@
     the bit rows there are these registers drawn in binary. The dots row
     says what the elided code left behind: this example's own two MULs made
     135 x 60 = 8100, bytes 31 and 164 — that is where lda's 31 comes from.
-    And 164 survives to the last line untouched: the correction only ever
-    edits the high byte. Note the factor here is negative where the captured
-    step's was not — that is exactly why the captured step skipped this
-    correction and this example needs it.
+
+    WHERE THE 60 COMES FROM: suba 1,x reaches back to the multiplier, still
+    sitting at X — the same 1,x the MULs loaded from. Nothing new arrives
+    for the fix; it reuses an input it already had. And 164 survives to the
+    last line untouched: the correction only ever edits the high byte.
+
+    Note the factor here is negative where the captured step's was not —
+    that is exactly why the captured step skipped this correction and this
+    example needs it.
   </aside>
 </section>
 
