@@ -527,11 +527,19 @@ def figure_shift(shift: dict) -> str:
     rows = []
     for n, step in enumerate(shift["steps"]):
         bits = step["bits"]
-        cells = "".join(
-            f'<span class="bit{" on" if b == "1" else ""}'
-            f'{" edge" if i == 7 else ""}{" sign" if i == 0 else ""}">{b}</span>'
-            for i, b in enumerate(bits)
-        )
+        # The bit riding the carry this row is B's new top bit: ASRA dropped
+        # it out of A, RORB collected it. The gradient row has not shifted
+        # yet, so its carry cell stays empty.
+        carry = f"&rarr;{bits[8]}&rarr;" if n > 0 else ""
+        cells = []
+        for i, b in enumerate(bits):
+            cells.append(
+                f'<span class="bit{" on" if b == "1" else ""}'
+                f'{" edge" if i == 7 else ""}'
+                f'{" sign" if i == 0 else ""}">{b}</span>'
+            )
+            if i == 7:
+                cells.append(f'<span class="carry">{carry}</span>')
         dropped = (
             ""
             if step["dropped"] is None
@@ -542,7 +550,7 @@ def figure_shift(shift: dict) -> str:
             f'<div class="brow2{" last" if n == len(shift["steps"]) - 1 else ""}'
             f' fragment" data-fragment-index="{n}">'
             f'<span class="blab2">{label}</span>'
-            f'<span class="bits">{cells}</span>'
+            f'<span class="bits">{"".join(cells)}</span>'
             f'<span class="bfell">{dropped}</span>'
             f'<span class="bdec">{step["value"]}</span></div>'
         )
@@ -557,6 +565,7 @@ def figure_shift(shift: dict) -> str:
     <div class="bhead">
       <span class="blab2"></span>
       <span class="bits"><span class="half">A &mdash; asra</span>
+        <span class="carry chead">carry</span>
         <span class="half">B &mdash; rorb</span></span>
       <span class="bfell">out</span>
       <span class="bdec"></span>
@@ -565,6 +574,7 @@ def figure_shift(shift: dict) -> str:
       <span class="blab2"></span>
       <span class="bits">{"".join(
         f'<span class="bit">{"&minus;" if i == 0 else ""}</span>'
+        + ('<span class="carry"></span>' if i == 7 else "")
         for i in range(len(shift["steps"][0]["bits"])))}</span>
       <span class="bfell"></span>
       <span class="bdec"></span>

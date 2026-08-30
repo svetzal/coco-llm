@@ -647,8 +647,20 @@
   background: rgba(0, 0, 0, 0.08); padding: 1px 0;
 }
 .reveal .bit.on { color: var(--coco-white); background: var(--deck-mark); }
-/* The gap between the two registers, because they are two registers. */
+/* The gap between the two registers, because they are two registers. In
+ * the shift figure the gap is a real carry column instead: the bit ASRA
+ * drops rides it, arrows in and out, and RORB collects it into B's top. */
 .reveal .bit.edge { margin-right: 0.7em; }
+.reveal .fig.shifts:not(.sign) .bit.edge { margin-right: 0; }
+.reveal .carry {
+  flex: 0 0 auto; width: 3.4em; text-align: center;
+  color: var(--deck-mark); white-space: nowrap;
+}
+.reveal .carry.chead {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.6em; letter-spacing: 0.08em; color: var(--deck-quiet);
+  width: 5.67em; /* 3.4em at row size, restated at this font size */
+}
 .reveal .bfell { text-align: center; }
 .reveal .fell {
   color: var(--coco-c00); background: var(--coco-amber);
