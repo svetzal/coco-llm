@@ -67,15 +67,21 @@ stage: $(STAGE_BINARIES) build/roms/.coco1-roms
 # `make stage`; their targets are the rehearsal path and the relaunch for a
 # dead window. Block 3 is the one launched live during the talk.
 block1:
-	@echo "BLOCK 1 - IT ALREADY WORKS - slides only."
-	@echo "The deck: open presentation/deck/index.html, press S for notes."
+	@echo "BLOCK 1 - IT ALREADY WORKS - launches EXP-004 in front of the"
+	@echo "room. It starts training from random weights the moment it"
+	@echo "loads; blocks 2's slides explain it while it runs. Call the"
+	@echo "shot out loud before switching to the deck."
+	@$(MAKE) xroar
 
 block2:
-	@echo "BLOCK 2 - ON SLIDES - eight figures, no machine."
+	@echo "BLOCK 2 - ON SLIDES - eight figures. EXP-004 is training in"
+	@echo "the window block 1 opened; it parks at PRESS ANY KEY."
 
 block3:
-	@echo "BLOCK 3 - ON THE MACHINE - EXP-004 starts training on load."
-	@echo "The launch is the reset. Any CoCo key at PRESS ANY KEY infers."
+	@echo "BLOCK 3 - ON THE MACHINE - normally a window switch: EXP-004"
+	@echo "has been training since block 1. Running this target launches"
+	@echo "a FRESH run (the launch is the reset) - the recovery path if"
+	@echo "the block 1 window died."
 	@$(MAKE) xroar
 
 block4:

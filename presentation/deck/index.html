@@ -44,10 +44,17 @@
     - EXP-012, block 6 (parks showing sixteen fake titles)
     - EXP-013, block 8 (parks at the RPSLS keys. Press R if anyone played it)
     The windows look identical. Arrange them in block order. EXP-004 is NOT
-    parked: it starts training the moment it loads, so block 3 launches it
-    live. Keep a terminal at the repo root ready for: make block3
-    Every block has a command — make block1 through block9 — and each
-    demo block's target relaunches its window if a parked one dies.
+    parked in advance: it starts training the moment it loads, and block 1
+    launches it in front of the room. Every block has a command — make
+    block1 through block9 — and each demo block's target relaunches its
+    window if a parked one dies.
+
+    LAUNCH: make block1, as the talk opens, with the room watching. EXP-004
+    resets to random weights and starts training right there. CALL THE SHOT
+    OUT LOUD: seed 6809 draws nonsense from these random weights right now —
+    after 1,160 corrections, the same seed will draw names. Then leave it
+    running and go to the slides: block 2 explains exactly what it is doing
+    while it does it. It parks at PRESS ANY KEY when done.
 
     Photograph of the physical CoCo 1 showing a real trained run. Full screen,
     no explanation.
@@ -695,34 +702,27 @@
 <section class="cue" data-timing="100">
   <h2>Watch it learn</h2>
   <p class="what">EXP-004 &middot; the live training run</p>
-  <p class="call"><span class="k">The call:</span> the same seed that draws
-  nonsense from random weights will draw names after 1,160 corrections.
-  Nothing arrives from the Mac.</p>
+  <p class="call"><span class="k">The call, made at launch:</span> the same
+  seed that drew nonsense from random weights will draw names after 1,160
+  corrections. Nothing arrived from the Mac.</p>
   <aside class="notes">
     BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 1/7
 
-    LAUNCH: make block3, live, in the terminal — this one is never parked
-    because it starts training the moment it loads. The launch IS the reset:
-    fresh random weights, nothing carried over.
+    SWITCH to the EXP-004 window that block 1 launched. It has been training
+    since the talk opened — measured at one to two minutes, so it is parked
+    at PRESS ANY KEY by now. (Recovery: make block3 launches a fresh run if
+    that window died. The launch is the reset.)
 
-    THE CENTREPIECE and the reason the talk exists. Block 2 did the
-    explaining, so this needs far less narration than it used to.
+    THE CENTREPIECE and the reason the talk exists. The room watched this
+    start from random weights before they knew what training was. Block 2
+    just explained it. Now show what ran: 58 examples, 20 epochs, 1,160
+    corrections, each one the nudge from the One Step slide. The machine
+    seeded 6809 and generated once from the random weights on load — that
+    nonsense comes back labelled RANDOM WEIGHTS on the comparison screen,
+    which is where to read it out.
 
-    The machine runs its own sequence on load: it seeds 6809, generates once
-    from the random weights, and starts training. The nonsense is captured,
-    not lingered on — it comes back labelled RANDOM WEIGHTS on the comparison
-    screen, which is where to read it out.
-
-    Say what they are watching: 58 examples, 20 epochs, 1,160 corrections,
-    each one the nudge from the One Step slide.
-
-    Then LEAVE IT RUNNING and cut to the code. Do not narrate a progress
-    counter.
-
-    MEASURED under the emulator: launch to PRESS ANY KEY in one to two
-    minutes, so training finishes during the first code slide or two. It
-    parks there harmlessly — the pause is the audience's. Walk the code at
-    its own pace; drop the sign correction if the room is restless.
+    Do not touch the keyboard yet. The pause is the audience's, and the code
+    comes first: cut to the assembly that just did the work.
   </aside>
 </section>
 
@@ -731,13 +731,14 @@
   <p class="lead">one signed multiply, from two unsigned ones</p>
   <div class="fig code regs">
     <pre class="asm"><div class="cline"><span class="ct">multiply_s8_s16</span><span class="reg">A = 26, [X] = -244</span></div><div class="cline"><span class="ct">        sta     multiply_factor</span><span class="reg">factor = 26</span></div><div class="cline"><span class="ct">        ldb     1,x</span><span class="reg">B = 12, -244&#x27;s low byte</span></div><div class="cline hot"><span class="ct">        mul</span><span class="reg">D = 26 x 12 = 312 = A 1 : B 56</span></div><div class="cline"><span class="ct">        std     multiply_product</span><span class="reg">product = bytes 1 and 56</span></div><div class="cline"><span class="ct">        lda     multiply_factor</span><span class="reg">A = 26 again</span></div><div class="cline"><span class="ct">        ldb     ,x</span><span class="reg">B = 255, -244&#x27;s high byte</span></div><div class="cline hot"><span class="ct">        mul</span><span class="reg">D = 26 x 255 = 6630 = A 25 : B 230</span></div><div class="cline"><span class="ct">        addb    multiply_product</span><span class="reg">B = 230 + the stored 1 = 231</span></div><div class="cline"><span class="ct">        stb     multiply_product</span><span class="reg">product = 231 : 56 = -6344</span></div></pre>
-    <p class="cap">The 6809 multiplies two unsigned bytes. This makes a signed multiply out of two of them, and it is running right now. The register column is one captured training step: SINCLAIR's weight at epoch 5, context 26 times error -244. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
+    <p class="cap">The 6809 multiplies two unsigned bytes. This makes a signed multiply out of two of them, and it is what just ran. The register column is one captured training step: SINCLAIR's weight at epoch 5, context 26 times error -244. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
   </div>
   <!-- /FIGURE:twomuls -->
   <aside class="notes">
     BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 2/7
 
-    FIRST CODE IN THE TALK. It is training while this is on screen.
+    FIRST CODE IN THE TALK. This is what was running behind block 2's
+    slides, and it has just finished.
 
     The 6809 has a MUL instruction and it multiplies two UNSIGNED bytes. The
     model needs signed multiplication. The first version did it a bit at a
@@ -991,8 +992,8 @@
   <aside class="notes">
     BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 7/7
 
-    SWITCH back to the EXP-004 XRoar window launched at Watch it learn. On
-    the measured pace it has been parked at PRESS ANY KEY for a while.
+    SWITCH back to the EXP-004 XRoar window launched at block 1, parked at
+    PRESS ANY KEY since somewhere in block 2.
 
     Pause at PRESS ANY KEY and let SOMEONE IN THE ROOM decide when inference
     begins. That is the whole reason the pause exists.

@@ -55,7 +55,7 @@ is there for questions.
 
 | # | Block | Slides | Min | Cum | Surface | Arc |
 | --- | --- | ---: | ---: | ---: | --- | --- |
-| 1 | It already works | 1 | 1 | 1 | Slide | Mystery |
+| 1 | It already works | 1 | 1 | 1 | Slide + EXP-004 launched live | Mystery |
 | 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
 | 3 | How it works, on the machine | 7 | 9 | 14 | EXP-004 live training | Mechanism |
 | 4 | Change one thing: the prompt | 1 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
@@ -116,9 +116,10 @@ Announced here so it is a decision, not a panic.
    claim is measured.
 2. **Block 4** goes second. Block 5 already carries "the model did not change,"
    and the abstract's marketing-language promise survives on the table.
-3. **Block 3 shortens, it does not go.** If training is running long, let the
-   epochs finish in silence; block 2 has already done the explaining. The run
-   is the promise.
+3. **Block 3 shortens, it does not go.** The run already happened, launched
+   at block 1 and trained behind block 2; what shortens is the code walk,
+   starting with the sign correction. The comparison is the promise and it
+   stays.
 4. **Block 8 never goes.** It is the strongest lesson in the set and the only
    one an audience member performs.
 
@@ -144,10 +145,11 @@ on the projector:
   during setup.
 
 The windows look identical. Arrange them in block order. **EXP-004 is the
-exception. Launch it live** with `make block3` at the top of block 3: it
-starts training the moment it loads, so the launch is the reset, and an
-early launch would burn the run. Keep a terminal at the repository root
-ready for that command. Rehearse the switching, not only the demos.
+exception. It launches live, in front of the room, with `make block1` as
+the talk opens**: it starts training the moment it loads, so the launch is
+the reset, and it trains while block 2 explains it. Keep a terminal at the
+repository root ready for that command; `make block3` relaunches a fresh
+run if that window dies. Rehearse the switching, not only the demos.
 
 Every block has a command, `make block1` through `make block9`. The
 slide-only blocks print what the block is; each demo block's target prints
@@ -161,12 +163,21 @@ says where you are.
 
 ### 1. It already works
 
-**On screen:** a photograph of the physical CoCo 1 showing a real trained run,
-full screen, no explanation.
+**On screen:** the block 1 launch, then a photograph of the physical CoCo 1
+showing a real trained run, full screen, no explanation.
 
-Say the names. Say that none of them were ever made. Say the machine is from
-1981, has 32 kilobytes, and started from random numbers about three minutes
-before that photograph was taken.
+Open by launching the experiment the next block explains: `make block1`
+starts EXP-004, the live training run, in front of the room. It resets to
+random weights and starts training the moment it loads. Call the shot out
+loud — seed 6809 draws nonsense from these random weights right now, and
+after 1,160 corrections the same seed will draw names — then leave it
+running and go to the slides. It trains, at the 1981 clock rate, while
+block 2 explains exactly what it is doing.
+
+Then the photograph. Say the names. Say that none of them were ever made.
+Say the machine is from 1981, has 32 kilobytes, and started from random
+numbers about three minutes before that photograph was taken — and that the
+one behind this window started from random numbers a few seconds ago.
 
 Then make the promise: by the end of this you will know exactly how it did
 that, and you will be unimpressed by it in precisely the right way.
@@ -258,17 +269,17 @@ say so.
 
 ### 3. How it works, on the machine
 
-**On screen:** EXP-004 in XRoar, then three assembly reveals while it trains,
-then back to XRoar.
+**On screen:** the EXP-004 window that block 1 launched, now parked at the
+training boundary, then three assembly reveals, then the comparison.
 
-Five slides, nine minutes, and the structure exists to solve a problem: the
-training run takes minutes and nobody should narrate a progress counter for
-that long. So the run starts, and the talk cuts to the code that is executing
-while it executes.
+Seven slides, nine minutes. The run started in front of the room at block 1
+and trained while block 2 explained it — measured at one to two minutes, it
+is parked at `PRESS ANY KEY` by now. Nobody narrated a progress counter,
+and nobody had to.
 
 | Slide | Sec | What happens |
 | --- | ---: | --- |
-| Watch it learn | 120 | Reset, seed 6809, read the nonsense out, start training |
+| Watch it learn | 120 | Return to the machine; say what ran: 58 examples, 20 epochs, 1,160 corrections |
 | One signed multiply from two unsigned | 90 | The optimisation that made this possible |
 | And the correction that makes it signed | 60 | Optional depth, first to drop |
 | Why one subtraction is enough | 50 | The unsigned error, and where it lives |
@@ -338,17 +349,16 @@ teaches nothing. It comes from `FixedTokenLanguageModel`, the integer
 reference the 6809 matches bit for bit, whose `gradient >> 4` is literally
 these eight instructions.
 
-On the measured pace, training reaches `PRESS ANY KEY` during the first or
-second code slide, and that is fine: the machine parks there harmlessly, and
-the pause belongs to the audience anyway. Walk the code at its own speed. If
+The machine waits at `PRESS ANY KEY` for as long as the code takes: the
+pause belongs to the audience anyway. Walk the code at its own speed. If
 the room is restless, drop the sign correction — that is what it is there
-for — and come back sooner.
+for.
 
 **This block's length is no longer the plan's largest open risk.** Measured
 under the emulator, launch to the training boundary is one to two minutes,
-so the nine minutes hold the launch, the code slides, the comparison, and
-room to breathe. What hardware timing would add is a printable number, not a
-planning one. See "Open decisions".
+and the launch moved to block 1, so the nine minutes here hold only the
+code slides, the comparison, and room to breathe. What hardware timing
+would add is a printable number, not a planning one. See "Open decisions".
 
 If training does not improve, say so and inspect the evidence with the room.
 A previously recorded run may be shown as a labelled comparison and never as a

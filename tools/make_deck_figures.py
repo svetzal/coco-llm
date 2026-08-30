@@ -910,7 +910,7 @@ def main() -> None:
     deck = splice(deck, "twomuls", figure_code(
         code["two_muls"],
         "The 6809 multiplies two unsigned bytes. This makes a signed multiply "
-        "out of two of them, and it is running right now. The register column "
+        "out of two of them, and it is what just ran. The register column "
         f"is one captured training step: {captured['weight_of']}'s weight at "
         f"epoch {captured['epoch']}, context {captured['context_value']} times "
         f"error {captured['error']}.",
