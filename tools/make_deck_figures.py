@@ -676,17 +676,21 @@ def annotate_two_muls(excerpt: dict, context_value: int, error: int) -> list[str
     ])
 
 
-def annotate_sign_fix(excerpt: dict, trace: dict) -> list[str]:
+def annotate_sign_fix(excerpt: dict, trace: dict) -> tuple[str, list[str]]:
     """Walk the worked correction: the product's high byte, minus the
-    multiplier's low byte, and the answer is signed."""
-    raw_high = trace["raw"] >> 8
+    multiplier's low byte, and the answer is signed. The first element
+    annotates the elided lines with the product those two MULs left."""
+    raw_high, raw_low = trace["raw"] >> 8, trace["raw"] & 0xFF
     corrected_high = raw_high - (trace["multiplier"] & 0xFF)
-    return code_annotations(excerpt, [
+    entry = (
+        f"the MULs left {trace['raw']} = bytes {raw_high} and {raw_low}"
+    )
+    return entry, code_annotations(excerpt, [
         ("tst", f"factor holds {trace['factor']}"),
         ("bpl", "negative, so no branch"),
-        ("lda", f"A = {raw_high}, the product's high byte"),
+        ("lda", f"A = {raw_high}, the stored high byte"),
         ("suba", f"A = {raw_high} - {trace['multiplier']} = {corrected_high}"),
-        ("sta", f"product = {trace['signed']}"),
+        ("sta", f"product = {corrected_high} : {raw_low} = {trace['signed']}"),
     ])
 
 
@@ -704,11 +708,18 @@ def annotate_learning_rate(excerpt: dict, shift: dict) -> list[str]:
     return code_annotations(excerpt, expected)
 
 
-def figure_code(excerpt: dict, note: str, regs: list[str] | None = None) -> str:
+def figure_code(
+    excerpt: dict,
+    note: str,
+    regs: list[str] | None = None,
+    entry: str | None = None,
+) -> str:
     """One assembly reveal, taken verbatim from the source that assembles.
 
     With regs, each line carries the register state after it runs, computed
-    from the exported traces rather than typed."""
+    from the exported traces rather than typed. With entry, the elide row
+    says what the elided code left behind, so the first fetched value has a
+    visible source."""
     if regs is None:
         lines = "".join(
             f'<div class="cline{" hot" if line["hot"] else ""}">'
@@ -722,9 +733,16 @@ def figure_code(excerpt: dict, note: str, regs: list[str] | None = None) -> str:
             f'<span class="reg">{esc(reg)}</span></div>'
             for line, reg in zip(excerpt["lines"], regs)
         )
-    elided = (
-        '<div class="cline elide">...</div>' if excerpt["begins_inside"] else ""
-    )
+    if entry is not None and not excerpt["begins_inside"]:
+        raise SystemExit(f"{excerpt['title']}: entry note without elided lines")
+    elided = ""
+    if excerpt["begins_inside"]:
+        entry_span = (
+            f'<span class="ct">...</span><span class="reg">{esc(entry)}</span>'
+            if entry is not None
+            else "..."
+        )
+        elided = f'<div class="cline elide">{entry_span}</div>'
     tail = '<div class="cline elide">...</div>' if excerpt["dropped_comments"] else ""
     return f"""
   <p class="lead">{esc(excerpt["title"])}</p>
@@ -898,6 +916,7 @@ def main() -> None:
             code["two_muls"], captured["context_value"], captured["error"]
         ),
     ))
+    sign_entry, sign_regs = annotate_sign_fix(code["sign_fix"], traces["sign_fix"])
     deck = splice(deck, "signfix", figure_code(
         code["sign_fix"],
         "A negative factor comes out 256 too large. One subtraction fixes it, "
@@ -905,7 +924,8 @@ def main() -> None:
         "the next slide's worked example, "
         f"{traces['sign_fix']['factor']} times "
         f"{traces['sign_fix']['multiplier']}.",
-        annotate_sign_fix(code["sign_fix"], traces["sign_fix"]),
+        sign_regs,
+        entry=sign_entry,
     ))
     deck = splice(deck, "signbits", figure_sign(traces["sign_fix"]))
     deck = splice(deck, "shiftbits", figure_shift(shift))
