@@ -19,6 +19,8 @@ from __future__ import annotations
 import html
 import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
@@ -989,7 +991,31 @@ def splice(source: str, name: str, body: str) -> str:
     return pattern.sub(lambda m: f"{m.group(1)}{body}\n  {m.group(2)}", source)
 
 
+def refuse_to_eat_hand_edits() -> None:
+    """Splicing overwrites every FIGURE region, so uncommitted deck edits may
+    include hand-written caption changes this run would silently destroy.
+    That has happened. Commit the deck first (porting any figure-region edits
+    into this file), or pass --anyway to splice regardless."""
+    if "--anyway" in sys.argv:
+        return
+    try:
+        dirty = subprocess.run(
+            ["git", "diff", "--quiet", "--", str(DECK)],
+            cwd=ROOT,
+        ).returncode != 0
+    except OSError:
+        return
+    if dirty:
+        raise SystemExit(
+            f"{DECK.relative_to(ROOT)} has uncommitted changes, which may be "
+            "hand edits inside FIGURE regions that splicing would erase.\n"
+            "Commit the deck first (port any figure-region edits into "
+            "make_deck_figures.py), or re-run with --anyway."
+        )
+
+
 def main() -> None:
+    refuse_to_eat_hand_edits()
     traces = json.loads(TRACES.read_text())
     code = json.loads((TRACES.parent / "code.json").read_text())
     bias = json.loads((TRACES.parent / "bias.json").read_text())

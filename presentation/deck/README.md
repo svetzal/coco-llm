@@ -98,7 +98,10 @@ Diagrams live in marked regions of `index.html`:
 ```
 
 Everything outside the markers is hand-edited. Everything inside is generated,
-and will be overwritten:
+and will be overwritten. The splicer refuses to run while index.html has
+uncommitted changes — they may be hand edits inside FIGURE regions it would
+silently destroy, which has happened. Commit first (porting any
+figure-region edits into make_deck_figures.py), or pass --anyway:
 
 ```sh
 uv run python tools/export_deck_traces.py   # run the model, write the numbers
