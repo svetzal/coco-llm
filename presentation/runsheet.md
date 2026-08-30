@@ -63,7 +63,7 @@ is there for questions.
 | 6 | A screen of things that never existed | 2 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the upbringing | 1 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
 | 8 | Now you play it | 2 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
-| 9 | Who decided | 1 | 2 | 36 | Slide | Agency |
+| 9 | Who decided? | 1 | 2 | 36 | Slide | Agency |
 | | Reserve, held for block 3 | | 2 | 38 | | |
 | | Questions | | 7 | 45 | | |
 
@@ -86,12 +86,12 @@ Block 2, slide by slide:
 | --- | ---: | --- |
 | What is a word? | 40 | Tokenizing, tokens, and the context window, named where they first appear |
 | Thirteen doesn't mean anything | 20 | An identifier is a name; arithmetic on it proves nothing |
-| Where the numbers live | 25 | The embedding tables, named at first sight; the same token holds a different row per position |
+| Where do the numbers live? | 25 | The embedding tables, named at first sight; the same token holds a different row per position |
 | Why three? | 30 | The cost of each embedding width, and that six would have fitted |
-| What a parameter is | 25 | 2x29x3 + 29x3 + 29 = 290, and the definition |
+| What is a parameter? | 25 | 2x29x3 + 29x3 + 29 = 290, and the definition |
 | One step | 40 | Predict, then correct, with the nudge number by number |
 | Do it again. And again. | 40 | Repeating, inventing, reciting: three failures that go in order |
-| What it cost | 20 | Time and memory, and what learning costs over using |
+| What did it cost? | 20 | Time and memory, and what learning costs over using |
 
 These are seconds, not minutes, and that is the measurement talking. Eight
 figures that each carry one idea go faster than they look on paper. If the room
@@ -114,7 +114,7 @@ Announced here so it is a decision, not a panic.
 1. **Block 6** goes first, the fake titles. It is the delight beat, and the
    table runs it in a loop all day on the real machine.
 
-   Inside block 2, the first slide to drop is **What it cost**, then **Why
+   Inside block 2, the first slide to drop is **What did it cost?**, then **Why
    three?**. Both answer questions rather than advance the argument, and both
    have their evidence written up in EXP-002 for anyone who asks at the table.
    **Never drop "Do it again. And again."** It is where the talk's central
@@ -580,7 +580,7 @@ set encoded an assumption about people, and reporting its average hid that.
 100 bytes. No neural network. A tiny table beat every model we tried, which is
 why there is no model here at all.
 
-### 9. Who decided
+### 9. Who decided?
 
 **On screen:** slides.
 

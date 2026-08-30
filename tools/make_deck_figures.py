@@ -235,7 +235,7 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
           </div>
           <div class="frow why">
             <span class="fterm"></span><span class="fop"></span>
-            <span class="fterm">a rate we chose</span>
+            <span class="fterm">a rate I chose</span>
             <span class="fop"></span>
             <span class="fterm">how wrong it was</span>
             <span class="fop"></span>
@@ -329,12 +329,12 @@ def figure_why_three(trace: dict) -> str:
       A token could have been a character instead. That model needs
       <strong>{rejected["multiplies"]:,}</strong> multiplies:
       {rejected["floor_seconds"]:.0f} seconds of bare MUL instructions against a
-      {trace["budget_seconds"]}-second budget. We built it first, and rejected
-      it.
+      {trace["budget_seconds"]}-second budget. I built it first, and
+      rejected it.
     </p>
     <p class="cap fragment" data-fragment-index="2">
       So six would have fit here too.
-      <strong>Three is what we tried first, and it worked.</strong>
+      <strong>I tried three first, and it worked.</strong>
     </p>
   </div>"""
 
@@ -401,7 +401,7 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
         note = ""
         if epoch == trace["chosen"]:
             classes += " chosen"
-            note = "we stop here"
+            note = "I stop here"
         elif epoch > trace["chosen"]:
             classes += " late"
         marks = []
@@ -507,7 +507,7 @@ def figure_cost(budget: dict, split: dict) -> str:
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="4">
-      Neither number is magic. Both were chosen so this would finish in a
+      Neither number is magic. I picked both so this would finish in a
       reasonable time and leave room for the rest of the program.
       <strong>Whether it makes {budget["target_seconds"] // 60} minutes on the
       real machine is still unmeasured.</strong>
@@ -860,7 +860,7 @@ def figure_second_costs(prompts: dict, first_budget: dict) -> str:
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="3">
-      The whole bill followed two decisions: the vocabulary and the epochs.
+      The whole bill followed two decisions I made: the vocabulary and the epochs.
       {budget["floor_seconds"]:.1f} seconds of bare MUL instructions — a
       floor, not a runtime. <strong>The machine still was not the
       constraint.</strong>

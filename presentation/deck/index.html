@@ -126,7 +126,7 @@
 
 
 <section data-timing="25" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
-  <h2>Where the numbers live</h2>
+  <h2>Where do the numbers live?</h2>
   <!-- FIGURE:tables -->
   <div class="fig tables">
     <p class="cap top">A context window of 2 tokens means
@@ -177,12 +177,12 @@
       A token could have been a character instead. That model needs
       <strong>12,859,560</strong> multiplies:
       158 seconds of bare MUL instructions against a
-      180-second budget. We built it first, and rejected
-      it.
+      180-second budget. I built it first, and
+      rejected it.
     </p>
     <p class="cap fragment" data-fragment-index="2">
       So six would have fit here too.
-      <strong>Three is what we tried first, and it worked.</strong>
+      <strong>I tried three first, and it worked.</strong>
     </p>
   </div>
   <!-- /FIGURE:why -->
@@ -192,7 +192,7 @@
     <p>First half is conceptual: one number can only say how much of one thing a word is. Three numbers give it a position in a space, so words can be close in more than one way at once.</p>
     <p>The width is where the scale comparison lives: GPT-3's embedding is 12,288 numbers long where ours is three. Same idea, more room. And when a vector database sells "embeddings", it is selling rows like the ones on the last slide, made for whole documents.</p>
     <p>Second half is the machine. Every extra number is another 29 by 3 multiplies per example, and a MUL costs 11 cycles at 0.89 MHz.</p>
-    <p>FRAGMENT 1 IS A CALLBACK to the first slide: a token is a whole word because we chose that. Here is the other choice, priced. Make each token a character and the model has to predict every letter: 12.8 million multiplies, 158 seconds of bare MUL against a 180-second budget. We built that one first, and rejected it. Words over letters is a 42-fold reduction — the biggest single decision in the model, and it is a tokenization decision, not an arithmetic one.</p>
+    <p>FRAGMENT 1 IS A CALLBACK to the first slide: a token is a whole word because I decided that. Here is the other choice, priced. Make each token a character and the model has to predict every letter: 12.8 million multiplies, 158 seconds of bare MUL against a 180-second budget. I built that one first, and rejected it. Words over letters is a 42-fold reduction — the biggest single decision in the model, and it is a tokenization decision, not an arithmetic one.</p>
     <p>THEN THE HONEST BIT, and do not skip it: six would have fit. The multiply floor at three is under four seconds. The machine was not the constraint here.</p>
     <p>Three is the smallest we tried and it worked, and the rule was expand only when the evidence says quality is insufficient. It never said that. So the width is a decision somebody made, not a limit the hardware imposed. Hold that thought for the last slide.</p>
     <p>SAY "FLOOR" OUT LOUD. These are multiply instructions only. Nothing here is a measured runtime.</p>
@@ -200,7 +200,7 @@
 </section>
 
 <section data-timing="25" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
-  <h2>What a parameter is</h2>
+  <h2>What is a parameter?</h2>
   <!-- FIGURE:params -->
   <div class="fig params">
     <div class="ptable">
@@ -223,7 +223,7 @@
   <aside class="notes">
     <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 5/8</strong></p>
     <p>THE OTHER WORD EVERYONE HAS HEARD. Nobody has had it explained.</p>
-    <p>We just chose 3 numbers per token. This is what that choice multiplies up to. Step the three lines and let the arithmetic do the work.</p>
+    <p>I just chose 3 numbers per token. This is what that choice multiplies up to. Step the three lines and let the arithmetic do the work.</p>
     <p>The 2 in the first line is the context window. Every term in these sums is a decision somebody made: how wide the window is, how many tokens exist, how many numbers describe each one.</p>
     <p>174 is the two embedding tables from Where the numbers live. 87 is a second table, one row per word it can predict. 29 is a starting nudge per word. 290 in total, and every one accounted for.</p>
     <p>THE DEFINITION, say it plainly: a parameter is one number that training is allowed to change. That is all it has ever meant.</p>
@@ -282,7 +282,7 @@
           </div>
           <div class="frow why">
             <span class="fterm"></span><span class="fop"></span>
-            <span class="fterm">a rate we chose</span>
+            <span class="fterm">a rate I chose</span>
             <span class="fop"></span>
             <span class="fterm">how wrong it was</span>
             <span class="fop"></span>
@@ -306,16 +306,13 @@
   <!-- /FIGURE:step -->
   <aside class="notes">
     <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 6/8</strong></p>
-    <p>Real numbers, exported from the reference model. Say that out loud once.</p>
-    <p>Step through. The context is two tokens, and the three numbers are not calculated from them: every slot-and-word pair OWNS a stored row, and the machine looks up two rows and adds them. Say "adds" out loud. That is the arithmetic.</p>
-    <p>Fragment 4 is the one worth pausing on: COMMODORE in slot 1 has a different row from COMMODORE in slot 2. That is the whole of what "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE are not the same context. If someone asks how it knows about word order, this is the answer and it is on the screen.</p>
-    <p>Those three numbers then give a score to all 29 tokens. The right answer is AMIGA and it gave AMIGA 3.5%, barely better than guessing at 1 in 29.</p>
-    <p>So nudge the weights that produced that score. Three numbers move, and AMIGA goes from 3.5% to 3.7%. Barely anything. That is the honest scale of one step, and there are 1,160 of them in a run.</p>
-    <p>WHAT SETS THE SIZE, which is the question everyone has: three things multiplied.</p>
-    <p>The learning rate, 1/16, is a number we chose. On the CoCo it is four shift instructions, which is why it is a sixteenth and not something tidier.</p>
-    <p>How wrong it was, 0.9655, is one minus what it gave the right answer. That term is the self-correcting one: as the model improves it shrinks, so the nudges shrink themselves. Nobody turns that down. It is why the thing settles instead of oscillating.</p>
-    <p>The incoming number decides how much each weight is to blame. A weight fed by a big number contributed more to the wrong score, so it moves more.</p>
-    <p>THAT IS THE WHOLE ALGORITHM. Everything after this is doing it 58 times an epoch, 60 epochs, on a machine from 1981.</p>
+    <p>Say once: real numbers, exported from the reference model.</p>
+    <p>Step it. The three numbers are not calculated — every window-position-and-token pair OWNS a stored row; the machine looks up two and ADDS them. Say "adds".</p>
+    <p>PAUSE ON FRAGMENT 4: COMMODORE in position 1 has a different row than in position 2. That is all "positional" means, and why COMMODORE AMIGA and AMIGA COMMODORE differ. Word-order questions land here.</p>
+    <p>Score all 29: AMIGA gets 3.5%, barely beats 1-in-29. Nudge: AMIGA moves to 3.7%. Barely anything — the honest scale of one step, and there are 1,160 in a run.</p>
+    <p>WHAT SETS THE SIZE — everyone's question — three things multiplied:</p>
+    <ul><li>Learning rate 1/16: a number I chose. Four shift instructions on the CoCo, which is why it is a sixteenth and not something tidier.</li><li>How wrong it was, 0.9655: one minus the right answer's score. Self-correcting — the nudges shrink as it improves, nobody turns them down. Why it settles instead of oscillating.</li><li>The incoming number: how much this weight is to blame. Fed by a big number, it moved more.</li></ul>
+    <p>THAT IS THE WHOLE ALGORITHM. The rest is 58 examples, 20 epochs, on a machine from 1981.</p>
   </aside>
 </section>
 
@@ -331,7 +328,7 @@
         <span class="novel">both</span>
         <span class="enote"></span>
       </div>
-      <div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out repeats">II APPLE COMMODORE ACORN 64 II<span class="tag">repeats</span></div><div class="out repeats">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR<span class="tag">repeats</span></div></div><span class="novel">100%</span><span class="novel">0%</span><span class="novel poor">0%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out repeats">ARCHIMEDES ARCHIMEDES AMIGA<span class="tag">repeats</span></div></div><span class="novel">100%</span><span class="novel">6%</span><span class="novel poor">6%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out repeats">ATARI ATARI<span class="tag">repeats</span></div></div><span class="novel">98%</span><span class="novel">54%</span><span class="novel poor">52%</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="novel">91%</span><span class="novel">98%</span><span class="novel good">90%</span><span class="enote">we stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="novel">28%</span><span class="novel">100%</span><span class="novel poor">28%</span><span class="enote"></span></div>
+      <div class="epoch fragment" data-fragment-index="0"><span class="n">epoch 0</span><div class="outs"><div class="out repeats">II APPLE COMMODORE ACORN 64 II<span class="tag">repeats</span></div><div class="out repeats">ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR<span class="tag">repeats</span></div></div><span class="novel">100%</span><span class="novel">0%</span><span class="novel poor">0%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="1"><span class="n">epoch 1</span><div class="outs"><div class="out">II APPLE BBC 64 100 COMMODORE</div><div class="out repeats">ARCHIMEDES ARCHIMEDES AMIGA<span class="tag">repeats</span></div></div><span class="novel">100%</span><span class="novel">6%</span><span class="novel poor">6%</span><span class="enote"></span></div><div class="epoch fragment" data-fragment-index="2"><span class="n">epoch 5</span><div class="outs"><div class="out">COMPUTER ARCHIMEDES</div><div class="out repeats">ATARI ATARI<span class="tag">repeats</span></div></div><span class="novel">98%</span><span class="novel">54%</span><span class="novel poor">52%</span><span class="enote"></span></div><div class="epoch chosen fragment" data-fragment-index="3"><span class="n">epoch 20</span><div class="outs"><div class="out">SINCLAIR AMIGA</div><div class="out">COMMODORE ATARI</div></div><span class="novel">91%</span><span class="novel">98%</span><span class="novel good">90%</span><span class="enote">I stop here</span></div><div class="epoch late fragment" data-fragment-index="4"><span class="n">epoch 60</span><div class="outs"><div class="out">SINCLAIR BBC</div><div class="out copied">COMMODORE 64<span class="tag">in the corpus</span></div></div><span class="novel">28%</span><span class="novel">100%</span><span class="novel poor">28%</span><span class="enote"></span></div>
     </div>
     <p class="cap rubric">
       Right shape means two to four tokens starting with one of the six makers
@@ -357,29 +354,19 @@
   <!-- /FIGURE:loop -->
   <aside class="notes">
     <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 7/8</strong></p>
-    <p>Step through the epochs. Nonsense, then a first-word habit, then shape, then TANDY MODEL 100 four times out of four.</p>
-    <p>DO NOT SKIP THE LAST ONE. At epoch 20 it makes SINCLAIR AMIGA and COMMODORE ATARI: machines that never existed and could have. That is the promise of the talk, on screen.</p>
-    <p>At epoch 60 it makes COMMODORE 64, and that is a real computer sitting in the training data. The loss is still falling, 1.83 down to 1.27, and the model has quietly stopped inventing and started reciting.</p>
-    <p>Say it plainly: more training made the number better and the behaviour worse. The industry's word for epoch 60 is OVERFITTING — the model has stopped learning the shape of the data and started memorizing the data. Same lesson as the epoch sweep in EXP-007, and we only know it because we measured the thing we cared about instead of the number the optimizer handed us.</p>
-    <p>IF ASKED WHAT "RIGHT SHAPE" MEANS, it is on the slide and it is two checks and nothing else: two to four tokens, and the first token is one of the six makers that start a real name in the corpus. ACORN, APPLE, ATARI, COMMODORE, SINCLAIR, TANDY.</p>
-    <p>Be honest about how crude that is. TANDY TANDY TANDY passes it. So does APPLE 400 400. It measures structure, not quality, and nothing in this talk knows whether SINCLAIR AMIGA is a GOOD name.</p>
-    <p>It is still worth having, for two reasons. The rubric was written in EXP-002 before a single sample was generated, so it could not be bent to fit the result. And at epoch 20 only 3 of the 197 passes repeat a token, so it is not inflated much where it matters.</p>
-    <p>WATCH THE TAGS DOWN THE SAMPLES, because they are three different failures and they go away in order. The tags carry the words; the tints only reinforce them.</p>
-    <p>REPEATS goes first: at epoch 0, 41% of draws say the same word twice; by epoch 5, 9%; by 20, 1%. That is the model learning that a name does not repeat itself, and it learns it before anything else.</p>
-    <p>What is left at epoch 20 is the interesting thing, and it is what the whole talk is about: DIFFERENT tokens that sit together plausibly. SINCLAIR AMIGA. COMMODORE ATARI. Nobody made those. They read as though somebody could have.</p>
-    <p>Say the hard part out loud: the machine has no idea what any of those words mean. It knows which tokens tend to follow which, and that alone is enough to produce something a person will read as plausible. That is not a trick this model plays and the big ones do not. It is the same trick.</p>
-    <p>AND NAME IT, because the room has heard the word: when a big model does this with facts, the industry calls it HALLUCINATION. Different tokens that sit together plausibly. SINCLAIR AMIGA is a hallucination we asked for. It is not a malfunction bolted onto the mechanism; it IS the mechanism, pointed somewhere we happen to mind.</p>
-    <p>IN THE CORPUS is the third failure, and it only shows up later.</p>
-    <p>THE NEW COLUMN IS THE ARGUMENT. It is measured over 200 draws, not the two on screen. 91% new at epoch 20. 28% at epoch 60. The same 290 numbers, the same arithmetic, the same machine: the only thing that changed is how long we trained it, and it slid from making things up to handing back what it was given.</p>
-    <p>THEN THE TRAP, and do not skip it, because someone will otherwise leave thinking novelty is the goal. Epoch 0 scores 100% new and 0% a name. New is easy. New AND shaped like the thing is the hard part, and only the last column measures it.</p>
-    <p>IF SOMEONE ASKS WHY NOT TRAIN LONGER for more recognizable names, the answer is on the screen: like-a-name is already 98% at epoch 20 and saturates at 13. It cannot go up. What longer training buys is recitation, and by epoch 60 that column reads 99% only because the model is handing back real names.</p>
-    <p>The full sweep is in EXP-002. The useful band is roughly 13 to 25 epochs, peaking at 15 with 93%. Twenty scores 90%, sits inside the band, and is what the 6809 build has baked in, so the deck and the machine agree. If pressed: yes, 15 is very slightly better, and no, we did not tune the demo to flatter it.</p>
-    <p>If someone asks whether these systems copy or create: they do both, it is the same machinery either way, and where a model lands between them is a training decision somebody made.</p>
+    <p>Step the epochs: nonsense, a first-word habit, shape, recitation.</p>
+    <p>LAND EPOCH 20 — the promise, on screen: SINCLAIR AMIGA, COMMODORE ATARI. Never existed, could have. The machine has no idea what the words mean; it knows which tokens follow which, and that alone is enough. Same trick as the big ones. NAME IT: with facts, the industry calls this HALLUCINATION — one I asked for. Not a malfunction bolted on; the mechanism, pointed somewhere we happen to mind.</p>
+    <p>EPOCH 60: COMMODORE 64 — real, sitting in the training data. Loss still falling, 1.83 to 1.27, while the behaviour got worse. NAME IT: OVERFITTING. I only know because I measured the thing I cared about, not the number the optimizer handed me.</p>
+    <p>WATCH THE TAGS down the samples — three failures, leaving in order; the tags carry the words. REPEATS goes first: 41% at epoch 0, 9% at 5, 1% at 20 — the first thing it learns. IN THE CORPUS only shows up late.</p>
+    <p>THE NEW COLUMN is the argument, measured over 200 draws: 91% at epoch 20, 28% at 60. Same 290 numbers, same arithmetic — only training length moved, and it slid from inventing to reciting.</p>
+    <p>THE TRAP, do not skip: epoch 0 is 100% new and 0% a name. New is easy. New AND shaped is the game, and only the last column scores it.</p>
+    <p>If asked:</p>
+    <ul><li>Right shape? On the slide: two to four tokens, first token one of the six makers (ACORN, APPLE, ATARI, COMMODORE, SINCLAIR, TANDY). Crude — TANDY TANDY TANDY passes. But written in EXP-002 before any sample existed, and only 3 of 197 passes repeat a token at epoch 20.</li><li>Train longer for better names? Like-a-name is 98% at 20 and saturates at 13. Longer buys recitation.</li><li>Why 20? EXP-002's sweep: useful band 13-25, peak 15 at 93%; twenty scores 90% and matches the 6809 build. And no, I did not tune the demo to flatter it.</li><li>Copy or create? Both — same machinery, and where a model lands between them is a training decision somebody made.</li></ul>
   </aside>
 </section>
 
 <section data-timing="20" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
-  <h2>What it cost</h2>
+  <h2>What did it cost?</h2>
   <!-- FIGURE:cost -->
   <div class="fig">
     <div class="budget">
@@ -412,7 +399,7 @@
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="4">
-      Neither number is magic. Both were chosen so this would finish in a
+      Neither number is magic. I picked both so this would finish in a
       reasonable time and leave room for the rest of the program.
       <strong>Whether it makes 3 minutes on the
       real machine is still unmeasured.</strong>
@@ -428,29 +415,23 @@
   <!-- /FIGURE:cost -->
   <aside class="notes">
     <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 8/8</strong></p>
-    <p>THEN THE BUDGET, and this is the point of the slide. Two numbers were chosen along the way, 20 epochs and 290 parameters, and each one is a bill that had to be paid.</p>
-    <p>Epochs buy time. 20 by 58 by 261 is 302,760 multiplies, and 15.8 million instructions for the whole run.</p>
-    <p>Then the split, and this is the one worth pausing on. Every byte in the image was classified by what job it does.</p>
-    <p>TO USE the finished model: 850 bytes of inference, 1,086 shared with training (the forward pass, the softmax table, the arithmetic), and the 580 bytes of weights. 2,516 in total. INFERENCE is the industry's word for this half — when a provider bills you per token, this is the half being billed. And when a lab ships an "open-weights" model, the weights file is the thing it ships: 580 bytes here, gigabytes there, same file.</p>
-    <p>TO LEARN it in the first place: 730 bytes more. The epoch and example loops, the gradient updates, the 58 training examples, and the display that shows the progress. Every one of those bytes is dead weight the moment training finishes.</p>
-    <p>THE POINT: learning and using are different jobs with different costs, and the machine only needs the learning half once. That is why EXP-006 and EXP-007 can put a much bigger model on this machine by training it on the Mac. Same idea as every model you have used: somebody paid for the training, once, somewhere else. That is the P in GPT — Pre-trained — and now the room can unpack a third of the acronym for themselves.</p>
-    <p>Two more numbers if pressed. 234 bytes of working space. And 689 for the self-check, the reference model's final weights and checksum so the CoCo can prove it trained to the same numbers the Mac did. Integrity machinery for this talk, not something the model needs, which is why it is counted apart.</p>
-    <p>DO NOT QUOTE A RUNTIME. The target was three minutes and we have a cycle projection, not a measurement. Say that out loud; it is on the slide.</p>
-    <p>Land it: neither number is magic. Somebody picked each one so the whole thing would run in a reasonable time and fit in a reasonable amount of memory. That is what designing a model IS, and it is the same decision being made today at a different scale.</p>
-    <p>The 60-epoch row is evidence that 20 was enough. It is not a rival choice.</p>
-    <p>If asked how long it takes: one to two minutes under the emulator at stock rate, and it has not been timed on hardware — say both halves. No runtime goes on a slide until the hardware number exists.</p>
-    <p>LAST FRAGMENT, and it is the one to end on. The Color Computer was announced on 31 July 1980 and went on sale that September. The cheapest model, catalogue 26-3001, US$399, had 4,096 bytes of RAM.</p>
-    <p>This needs 3,480 to run. It would have fitted the cheapest machine they sold, with 616 bytes to spare.</p>
-    <p>THE CAVEAT IS PART OF THE CLAIM, so say it: that is the whole of the machine's memory, and a real 4K CoCo still owes room to the 512-byte screen and to BASIC's own workspace. It fits the chip. Whether it fits alongside everything else is a different question and we have not tried.</p>
-    <p>Do not let this become "it would have run in 1977". The Color Computer did not exist then.</p>
-    <p>And keep the proportions in view: the MODEL is 580 bytes. The program that trains it is four times larger. Learning is expensive; the thing you learn is small.</p>
+    <p>THE BUDGET is the point: I picked two numbers — 20 epochs, 290 parameters — and each one is a bill.</p>
+    <p>Time: 20 x 58 x 261 = 302,760 multiplies, 15.8 million instructions for the run.</p>
+    <p>THE SPLIT — every byte in the image classified by job:</p>
+    <ul><li>TO USE: 850 inference + 1,086 shared + 580 weights = 2,516. Name INFERENCE — the half a provider bills per token. An "open-weights" release ships the weights file: 580 bytes here, gigabytes there, same file.</li><li>TO LEARN: 730 more — the loops, the gradients, the 58 examples, the progress display. Dead weight the moment training finishes.</li></ul>
+    <p>THE POINT: learning and using are different jobs, and the learning half runs once. That is how EXP-006 and EXP-007 put bigger models on this machine — the Mac paid. Same as every model the room has used: somebody paid once, somewhere else. The P in GPT.</p>
+    <p>DO NOT QUOTE A RUNTIME. Three minutes was a target; I have a cycle projection, not a measurement. Say so — it is on the slide.</p>
+    <p>LAST FRAGMENT, the ender: announced 31 July 1980, on sale that September. The cheapest CoCo, catalogue 26-3001, US$399, had 4,096 bytes. This needs 3,480 — it fits, 616 to spare. SAY THE CAVEAT: that is the chip; a real 4K machine still owes the 512-byte screen and BASIC's workspace. And not "it would have run in 1977" — the machine did not exist.</p>
+    <p>Keep the proportions in view: the model is 580 bytes and its trainer is four times bigger. Learning is expensive; the thing you learn is small.</p>
+    <p>If asked:</p>
+    <ul><li>Working space 234 bytes; self-check 689 (reference weights and checksum, so the CoCo proves it trained to the Mac's numbers) — integrity machinery, counted apart.</li><li>How long? One to two minutes under the emulator, not timed on hardware — say both halves.</li><li>The 60-epoch row is evidence that 20 was enough, not a rival choice.</li></ul>
   </aside>
 </section>
 
 <section class="chapter" data-block="3" data-bar="COCO LLM - 3/9 A LITTLE 6809 ASSEMBLY" data-background-color="var(--coco-orange)" data-timing="10">
   <p class="chnum">3</p>
   <h2>A LITTLE<br>6809 ASSEMBLY</h2>
-  <p class="charc">mechanism</p>
+  <p class="charc">The instructions that just did the learning</p>
   <aside class="notes">
     <p><strong>BLOCK 3 OF 9 - A LITTLE 6809 ASSEMBLY - CHAPTER CARD</strong></p>
     <p>The slides said what it does. The machine has been doing it since the talk started. Go and look.</p>
@@ -551,7 +532,7 @@
     <p>Step it. MUL takes two unsigned bytes, so a negative factor cannot be handed to it as it is. -121 arrives as 135, and 135 is exactly 256 more than -121.</p>
     <p>So the product is too big by 256 times the multiplier. Here is the part worth pausing on: in the low sixteen bits, 256 times anything is that thing shifted into the HIGH BYTE. So the entire error is the multiplier's low byte sitting one byte up.</p>
     <p>Which is why the fix is one instruction. suba 1,x subtracts that byte from the high half and the answer is correct: -7260, and -121 times 60 is -7260.</p>
-    <p>SAY WHAT THESE NUMBERS ARE. A worked example, not a captured training step, chosen to sit inside the product range EXP-004 actually measured. Do not imply we caught the machine doing this exact multiply.</p>
+    <p>SAY WHAT THESE NUMBERS ARE. A worked example, not a captured training step, chosen to sit inside the product range EXP-004 actually measured. Do not imply I caught the machine doing this exact multiply.</p>
     <p>POINT AT THE TWO BIT ROWS. The low bytes are identical. Only the high half moved, because that is where the entire error was. That is the proof that one subtraction is enough, and it is on the screen rather than in the explanation.</p>
     <p>THE POINT: five instructions is the difference between this machine being able to train a model and not. That is not a metaphor, it is the arithmetic.</p>
   </aside>
@@ -640,7 +621,7 @@
 <section class="chapter" data-block="4" data-bar="COCO LLM - 4/9 THE PROMPT" data-background-color="var(--coco-tie)" data-timing="10">
   <p class="chnum">4</p>
   <h2>CHANGE ONE THING:<br>THE PROMPT</h2>
-  <p class="charc">mechanism</p>
+  <p class="charc">What your words actually do</p>
   <aside class="notes">
     <p><strong>BLOCK 4 OF 9 - THE PROMPT - CHAPTER CARD</strong></p>
     <p>The loop is proven. Now the levers, one at a time. First lever: change nothing but the prompt.</p>
@@ -723,7 +704,7 @@
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="3">
-      The whole bill followed two decisions: the vocabulary and the epochs.
+      The whole bill followed two decisions I made: the vocabulary and the epochs.
       17.8 seconds of bare MUL instructions — a
       floor, not a runtime. <strong>The machine still was not the
       constraint.</strong>
@@ -775,7 +756,7 @@
 <section class="chapter" data-block="5" data-bar="COCO LLM - 5/9 THE SIZE" data-background-color="var(--coco-cyan)" data-timing="10">
   <p class="chnum">5</p>
   <h2>CHANGE ONE THING:<br>THE SIZE</h2>
-  <p class="charc">mechanism</p>
+  <p class="charc">What bigger actually buys</p>
   <aside class="notes">
     <p><strong>BLOCK 5 OF 9 - THE SIZE - CHAPTER CARD</strong></p>
     <p>Second lever: the size. What does a hundred times bigger actually buy?</p>
@@ -818,7 +799,7 @@
     <p class="cap fragment" data-fragment-index="5">
       The rules are three lines: uppercase everything, keep words and
       numbers whole, give six marks tokens of their own.
-      <strong>Same lesson as the first slide: a token is what we
+      <strong>Same lesson as the first slide: a token is what I
       chose.</strong>
     </p>
   </div>
@@ -846,7 +827,7 @@
     <p>POINT AT THE TITLE: MAC TRAINED - COCO PREDICTS. That is the P in GPT, running. 16,193 packed bytes expanded to 32,385 working parameters into the RAM where BASIC's ROM normally sits. The expensive half happened once, somewhere else.</p>
     <p>BEAT ONE, the job: type THE MODEL CAN, press Right Arrow. It ranks SUGGEST, BE, REMEMBER. Accept SUGGEST. This is your phone's keyboard, in 1981, and the room should feel that recognition before any caveat.</p>
     <p>BEAT TWO, the window: press Clear. Type I KNOW THE OLD MODEL CAN and predict — note the top three. Clear. Type WE KNOW THE OLD MODEL CAN — the SAME three. It sees exactly five tokens, so I and WE both fell out the window: for this model those are the same sentence. When a long chat seems to forget how it started, this is why, and they just watched it.</p>
-    <p>BEAT THREE, the stop: Clear. Type RUN THE PROGRAM. with the period, and predict. The top suggestion is the end-of-phrase token — the period seat from the vocabulary slide, doing its job. Then the story: our first interface HID that token, because token zero also meant no suggestion — the model said stop, our product said pick something else, and made the model look foolish. We fixed the interface and retrained nothing. Some apparent AI failures are product-policy failures. Think about that a minute.</p>
+    <p>BEAT THREE, the stop: Clear. Type RUN THE PROGRAM. with the period, and predict. The top suggestion is the end-of-phrase token — the period seat from the vocabulary slide, doing its job. Then the story: our first interface HID that token, because token zero also meant no suggestion — the model said stop, our product said pick something else, and made the model look foolish. I fixed the interface and retrained nothing. Some apparent AI failures are product-policy failures. Think about that a minute.</p>
     <p>THE CONTEXT TIE, one breath: everything typed into that editor is context. The ranking moves with it; nothing retrains. System prompts, retrieval, memory features — all of them are ways of putting things into context, and training changed the weights exactly once, on the Mac.</p>
     <p>Then advance to the size slide and land the block's claim.</p>
   </aside>
@@ -863,8 +844,8 @@
   <div class="fig changed">
     <div class="deltas"><div class="ba hdr"><span class="balab"></span><span class="bfrom">the marketing model</span><span class="barrow"></span><span class="bto">this one</span></div><div class="ba fragment" data-fragment-index="1"><span class="balab">parameters</span><span class="bfrom">380</span><span class="barrow">&rarr;</span><span class="bto">32,385</span></div><div class="ba fragment" data-fragment-index="2"><span class="balab">vocabulary</span><span class="bfrom">38 tokens</span><span class="barrow">&rarr;</span><span class="bto">255</span></div><div class="ba fragment" data-fragment-index="3"><span class="balab">context window</span><span class="bfrom">2 tokens</span><span class="barrow">&rarr;</span><span class="bto">5</span></div><div class="ba fragment" data-fragment-index="4"><span class="balab">training</span><span class="bfrom">this machine</span><span class="barrow">&rarr;</span><span class="bto">the Mac, once</span></div></div>
     <p class="cap fragment" data-fragment-index="5">
-      So is bigger better? We measured exactly that, as a controlled pair:
-      an 8 KiB completer we built first, against this 32 KiB one &mdash;
+      So is bigger better? I measured exactly that, as a controlled pair:
+      an 8 KiB completer I built first, against this 32 KiB one &mdash;
       same task, same held-out sentences. The right word reached the
       top-three popover <strong>59.3% then 60.0%</strong> of the time.
       Typing saved by accepting fell from <strong>58.8% to 51.7%</strong>.
@@ -879,7 +860,7 @@
   <aside class="notes">
     <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 3/3</strong></p>
     <p>THE ADVANCEMENT, told in the talk's own flow: the last model the room met was the 380-parameter marketing one. This is what growing it eighty-five times looks like. Step the rows: parameters, vocabulary, window — and the fourth row is the quiet revolution: training moved off this machine entirely. The Mac paid once; the CoCo only predicts.</p>
-    <p>THEN THE QUESTION EVERYONE IS ALREADY ASKING: is bigger better? Fragment five is the answer, and it is a measured one. We built the completer twice — an 8 KiB model first (it runs at the table all day), then this 32 KiB one, four times its size, same task, same held-out test. Hundreds of sentences neither model ever saw.</p>
+    <p>THEN THE QUESTION EVERYONE IS ALREADY ASKING: is bigger better? Fragment five is the answer, and it is a measured one. I built this completer twice — an 8 KiB model first (it runs at the table all day), then this 32 KiB one, four times its size, same task, same held-out test. Hundreds of sentences neither model ever saw.</p>
     <p>Read the two scores in the demo's own terms. Right word in the top-three popover: 59.3% became 60.0% — four times the parameters, seven tenths of a point. Typing saved by accepting suggestions: 58.8% DOWN to 51.7%. Let that land in silence for a beat.</p>
     <p>BOTH CALLED SHOTS MISSED, and say so with some pride: the 8 KiB model called 70% top-three and got 59.3. This one called a 60% typing-saved gate and got 51.7. Failed hypotheses, useful bounded prototypes — both can be true, and that is what honest measurement looks like.</p>
     <p>SAY THE LABEL: offline simulations on held-out text. Nobody has measured the physical keyboard.</p>
@@ -891,7 +872,7 @@
 <section class="chapter" data-block="6" data-bar="COCO LLM - 6/9 NEVER EXISTED" data-background-color="var(--coco-magenta)" data-timing="10">
   <p class="chnum">6</p>
   <h2>THINGS THAT<br>NEVER EXISTED</h2>
-  <p class="charc">delight</p>
+  <p class="charc">Sixteen titles nobody wrote</p>
   <aside class="notes">
     <p><strong>BLOCK 6 OF 9 - NEVER EXISTED - CHAPTER CARD</strong></p>
     <p>A breath before the hard one. Sixteen things that never existed.</p>
@@ -951,7 +932,7 @@
 <section class="chapter" data-block="7" data-bar="COCO LLM - 7/9 THE UPBRINGING" data-background-color="var(--coco-loss)" data-timing="10">
   <p class="chnum">7</p>
   <h2>CHANGE ONE THING:<br>THE UPBRINGING</h2>
-  <p class="charc">limitation</p>
+  <p class="charc">Where bias actually comes from</p>
   <aside class="notes">
     <p><strong>BLOCK 7 OF 9 - THE UPBRINGING - CHAPTER CARD</strong></p>
     <p>Third lever, and the sobering one: what it read growing up.</p>
@@ -995,7 +976,7 @@
 <section class="chapter" data-block="8" data-bar="COCO LLM - 8/9 YOU PLAY IT" data-background-color="var(--coco-c53)" data-timing="10">
   <p class="chnum">8</p>
   <h2>NOW YOU PLAY IT</h2>
-  <p class="charc">agency</p>
+  <p class="charc">Your turn at the keyboard</p>
   <aside class="notes">
     <p><strong>BLOCK 8 OF 9 - YOU PLAY IT - CHAPTER CARD</strong></p>
     <p>Enough watching. Someone here is going to play it.</p>
@@ -1050,7 +1031,7 @@
     <p><strong>BLOCK 8 OF 9 - YOU PLAY IT - SLIDE 2/2</strong></p>
     <p>THE EXPLAINER, and the honest ending. 80% against six synthetic players with habits. 52.8% against a recorded 200-round session with a person who was trying. Better than chance at three sigma, nowhere near enough to win. That gap is the talk in one number.</p>
     <p>Five of six synthetic players had a habit and one did not. A person plays like the one that did not. The test set encoded an assumption about people, and reporting its average hid it. Ask the room what their benchmarks are quietly assuming.</p>
-    <p>100 bytes. No neural network. A tiny table beat every model we tried, which is why there is no model in there at all.</p>
+    <p>100 bytes. No neural network. A tiny table beat every model I tried, which is why there is no model in there at all.</p>
     <p>Invite whoever played to the table.</p>
   </aside>
 </section>
@@ -1058,8 +1039,8 @@
 <!-- ============ 9. Who decided · 2 min · slide ============ -->
 <section class="chapter" data-block="9" data-bar="COCO LLM - 9/9 WHO DECIDED" data-background-color="var(--coco-win)" data-timing="10">
   <p class="chnum">9</p>
-  <h2>WHO DECIDED</h2>
-  <p class="charc">agency</p>
+  <h2>WHO DECIDED?</h2>
+  <p class="charc">Tracing every behaviour to a person</p>
   <aside class="notes">
     <p><strong>BLOCK 9 OF 9 - WHO DECIDED - CHAPTER CARD</strong></p>
     <p>Every behaviour tonight traced back to a decision somebody made. So: who decided?</p>
@@ -1067,7 +1048,7 @@
 </section>
 
 <section data-timing="120" data-block="9" data-bar="COCO LLM - 9/9 WHO DECIDED">
-  <h2>Who decided</h2>
+  <h2>Who decided?</h2>
   <p class="prose">Task. Data. Budget. Success criterion. What counts as good
   enough.</p>
   <aside class="notes">
