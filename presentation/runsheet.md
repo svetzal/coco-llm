@@ -97,13 +97,15 @@ These are seconds, not minutes, and that is the measurement talking. Eight
 figures that each carry one idea go faster than they look on paper. If the room
 asks questions the block stretches, and that is what it is for.
 
-Blocks 4, 5 and 7 repeat one sentence deliberately: *we changed exactly one
-thing*. That repetition is the spine of the talk. The prompt, the size, and
-the training data are three different levers, each held while the others
-move, and each one traces to a person who set it. The store separation the
-spine used to carry — context is not weights — now lives in block 4's
-held-fixed line and block 5's context tie, and EXP-011, the context-editing
-attention head, demonstrates it one-on-one at the table.
+Blocks 4 and 7 repeat one sentence deliberately: *we changed exactly one
+thing*. That repetition is the spine of the talk, and block 5 carries the
+sentence inside its evidence: the is-bigger-better question is answered by
+a controlled pair where only the size moved. The prompt, the size, and the
+training data are three different levers, and each one traces to a person
+who set it. The store separation the spine used to carry — context is not
+weights — now lives in block 4's held-fixed line and block 5's context
+tie, and EXP-011, the context-editing attention head, demonstrates it
+one-on-one at the table.
 
 ### Cut order
 
@@ -467,15 +469,19 @@ Three beats at the machine, rehearsed tight:
    look foolish. The interface was fixed; nothing retrained. Some apparent
    AI failures are product-policy failures.
 
-Then the slide: **we changed exactly one thing — the size.** Held: the
-task, the training recipe, the machine. Changed: 8,188 parameters to
-32,385. Top-three accuracy 59.3% to 60.0%; keystroke savings 58.8% down to
-51.7%. Four times the parameters bought vocabulary, context, and
-punctuation — capability, not quality. Both called shots missed (70%
-top-three called, 59.3 got; 60% keystroke gate called, 51.7 got), and both
-misses stay on the record. Both scores are offline simulations; the
-physical keyboard is unmeasured, and the runsheet says so wherever the
-numbers appear.
+Then the slide, "Eighty-five times bigger", anchored to the talk's own
+flow: the last model the room met was block 4's 380-parameter marketing
+model, and the rows step the advancement from it — parameters 380 to
+32,385, vocabulary 38 to 255, window 2 tokens to 5, and training moved
+off the machine entirely. Then the question the rows plant: is bigger
+better? The answer is measured, cited as a controlled pair — an 8 KiB
+completer built first against this 32 KiB one, same task, same held-out
+sentences. Right word in the top three, 59.3% then 60.0%; typing saved,
+58.8% down to 51.7%. Both called shots missed (70% top-three called,
+59.3 got; a 60% typing-saved gate called, 51.7 got), and both misses
+stay on the record. Both scores are offline simulations; the physical
+keyboard is unmeasured, and the notes say so wherever the numbers
+appear.
 
 The context tie survives from the old block in one breath: everything
 typed into the editor is context, the ranking moves with it, and nothing
