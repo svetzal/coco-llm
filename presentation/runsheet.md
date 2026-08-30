@@ -58,7 +58,7 @@ is there for questions.
 | 1 | It already works | 1 | 1 | 1 | Slide + EXP-004 launched live | Mystery |
 | 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
 | 3 | How it works, on the machine | 7 | 9 | 14 | EXP-004 live training | Mechanism |
-| 4 | Change one thing: the prompt | 2 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
+| 4 | Change one thing: the prompt | 3 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
 | 5 | Change one thing: the context | 1 | 5 | 22 | CoCo, EXP-011 attention head | Mechanism |
 | 6 | A screen of things that never existed | 2 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the upbringing | 1 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
@@ -384,8 +384,16 @@ in this one, an alphabetical accident both times. The numbers line carries
 the rest: 29 tokens to 38, 290 parameters to 380, 58 examples to 53, 20
 epochs to 80. The machinery did not change. The reading material did.
 
-The last fragment names the elephant: eighty epochs on eight lines is
-overfitting, and it is the assignment. Five of the six prompted
+Then "The same arithmetic, again": the parameter count and the training
+bill, redone at 38 tokens in the exact shape of block 2's What a parameter
+is and What it cost. The second exposure is the point — the room can now
+do the arithmetic themselves, 2 x 38 x 3 plus 38 x 3 plus 38, and watch
+the whole bill (1,450,080 multiplies, 4.8 times the first run; 760 bytes
+of weights, up from 580) follow from exactly two decisions: the vocabulary
+and the epochs. The 17.8 seconds is a MUL floor and is labelled one.
+
+The vocabulary slide's last fragment names the elephant: eighty epochs on
+eight lines is overfitting, and it is the assignment. Five of the six prompted
 completions are corpus lines verbatim, exactly as EXP-005, the prompted
 marketing completions, called its shot — five recognizable continuations,
 at least one blend. Recitation was block 2's failure mode because that
@@ -625,7 +633,7 @@ missing figures, and the physical-world items.
 
 ## Deck state
 
-Twenty-five slides, 36 minutes of content. The demo blocks follow one
+Twenty-six slides, 36 minutes of content. The demo blocks follow one
 shape: the cue slide states **the call** — the block's falsifiable
 hypothesis — the machine takes the shot, and blocks 6 and 8 close on an
 explainer slide (the byte split; the honest number) so the lesson lands on

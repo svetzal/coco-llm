@@ -800,6 +800,74 @@ def figure_second_model(prompts: dict, first: dict, first_epochs: int) -> str:
   </div>"""
 
 
+def figure_second_costs(prompts: dict, first_budget: dict) -> str:
+    """The parameter count and the training bill, redone at this model's
+    numbers. Deliberately the same two figures the room has already read
+    once, so this time they can do the arithmetic themselves."""
+    v = len(prompts["tokens"])
+    ctx, emb = prompts["context"], prompts["embedding"]
+    table_rows = (
+        ([(str(ctx), "context window"), (str(v), "tokens"), (str(emb), "numbers")],
+         ctx * v * emb, "a row for every window position and token"),
+        ([(str(v), "tokens"), (str(emb), "numbers")],
+         v * emb, "a row for every token it can predict"),
+        ([(str(v), "tokens")], v, "one starting nudge per token"),
+    )
+    if sum(count for _, count, _ in table_rows) != prompts["parameters"]:
+        raise SystemExit("second model's parameter rows drifted")
+    prows = ""
+    for terms, count, what in table_rows:
+        spans = '<span class="op">&times;</span>'.join(
+            f'<span class="term"><span class="tn">{n}</span>'
+            f'<span class="tl">{label}</span></span>'
+            for n, label in terms
+        )
+        prows += (
+            f'<div class="prow"><span class="terms">{spans}</span>'
+            f'<span class="op eq">=</span><span class="pcount">{count}</span>'
+            f'<span class="pwhat">{what}</span></div>'
+        )
+    budget = prompts["budget"]
+    ratio = budget["multiplies"] / first_budget["multiplies"]
+    return f"""
+  <div class="fig params">
+    <div class="ptable">
+    {prows}
+    <div class="prow total">
+      <span class="terms"></span>
+      <span class="op eq"></span>
+      <span class="pcount">{prompts["parameters"]}</span>
+      <span class="pwhat">parameters</span>
+    </div>
+    </div>
+    <div class="budget">
+      <div class="brow fragment" data-fragment-index="1">
+        <span class="bkind">time</span>
+        <span class="bsum">{prompts["epochs"]} epochs
+          <span class="op">&times;</span> {prompts["examples"]} examples
+          <span class="op">&times;</span> {budget["per_example"]} multiplies</span>
+        <span class="bval">{budget["multiplies"]:,}</span>
+        <span class="bnote">multiplies, {ratio:.1f} times the first
+          run</span>
+      </div>
+      <div class="brow fragment" data-fragment-index="2">
+        <span class="bkind">space</span>
+        <span class="bsum">{prompts["parameters"]} parameters
+          <span class="op">&times;</span> {first_budget["bytes_each"]} bytes</span>
+        <span class="bval">{budget["weight_bytes"]}</span>
+        <span class="bnote">bytes of weights, up from
+          {first_budget["bytes"]}</span>
+      </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="3">
+      The whole bill followed two decisions: the vocabulary and the epochs.
+      {budget["floor_seconds"]:.1f} seconds of bare MUL instructions — a
+      floor, not a runtime. <strong>The machine still was not the
+      constraint.</strong>
+    </p>
+  </div>"""
+
+
 # One colour per maker, so the same maker is the same colour in every bar.
 MAKER_CLASS = {"APPLE": "mk-a", "COMMODORE": "mk-c", "TANDY": "mk-t"}
 
@@ -951,6 +1019,7 @@ def main() -> None:
     deck = splice(deck, "bias", figure_bias(bias))
     deck = splice(deck, "vocab5", figure_second_model(
         prompts, traces["vocabulary"], traces["budget"]["epochs"]))
+    deck = splice(deck, "params5", figure_second_costs(prompts, traces["budget"]))
     deck = splice(deck, "promptchange", figure_changed(prompt_change))
     deck = splice(deck, "contextchange", figure_changed(context_change))
     shift = json.loads((TRACES.parent / "shift.json").read_text())

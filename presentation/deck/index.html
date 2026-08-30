@@ -617,7 +617,7 @@
 </section>
 
 <!-- ============ 4. Change one thing: the prompt · 3 min · EXP-005 ============ -->
-<section data-timing="60">
+<section data-timing="50">
   <h2>A second model</h2>
   <p class="lead">Same architecture, same training loop, same machine &mdash;
   retrained on eight lines of 1980s advertising.</p>
@@ -649,7 +649,7 @@
   </div>
   <!-- /FIGURE:vocab5 -->
   <aside class="notes">
-    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 1/2</strong></p>
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 1/3</strong></p>
     <p>THE SETUP SLIDE, so the next one's claim is airtight. Say it plainly: this is a NEW model. Same architecture, same training loop, same machine, retrained on eight lines of 1980s advertising. Anyone quietly assuming it is the names model gets corrected here, before the experiment, not after.</p>
     <p>The grid is its whole vocabulary, and the highlighted tokens are the only survivors from the first model: 64, COLOR, COMMODORE, COMPUTER, and the boundary. Different reading material, almost entirely different words.</p>
     <p>THE CALLBACK, fragment one: COMMODORE was 13 in the first model. Here it is 9. Alphabetical accident, both times. The identifier is still just a name, and nothing carried over — same word, different number, different rows, learned from scratch.</p>
@@ -660,7 +660,55 @@
   </aside>
 </section>
 
-<section class="cue" data-timing="120">
+<section data-timing="40">
+  <h2>The same arithmetic, again</h2>
+  <!-- FIGURE:params5 -->
+  <div class="fig params">
+    <div class="ptable">
+    <div class="prow"><span class="terms"><span class="term"><span class="tn">2</span><span class="tl">context window</span></span><span class="op">&times;</span><span class="term"><span class="tn">38</span><span class="tl">tokens</span></span><span class="op">&times;</span><span class="term"><span class="tn">3</span><span class="tl">numbers</span></span></span><span class="op eq">=</span><span class="pcount">228</span><span class="pwhat">a row for every window position and token</span></div><div class="prow"><span class="terms"><span class="term"><span class="tn">38</span><span class="tl">tokens</span></span><span class="op">&times;</span><span class="term"><span class="tn">3</span><span class="tl">numbers</span></span></span><span class="op eq">=</span><span class="pcount">114</span><span class="pwhat">a row for every token it can predict</span></div><div class="prow"><span class="terms"><span class="term"><span class="tn">38</span><span class="tl">tokens</span></span></span><span class="op eq">=</span><span class="pcount">38</span><span class="pwhat">one starting nudge per token</span></div>
+    <div class="prow total">
+      <span class="terms"></span>
+      <span class="op eq"></span>
+      <span class="pcount">380</span>
+      <span class="pwhat">parameters</span>
+    </div>
+    </div>
+    <div class="budget">
+      <div class="brow fragment" data-fragment-index="1">
+        <span class="bkind">time</span>
+        <span class="bsum">80 epochs
+          <span class="op">&times;</span> 53 examples
+          <span class="op">&times;</span> 342 multiplies</span>
+        <span class="bval">1,450,080</span>
+        <span class="bnote">multiplies, 4.8 times the first
+          run</span>
+      </div>
+      <div class="brow fragment" data-fragment-index="2">
+        <span class="bkind">space</span>
+        <span class="bsum">380 parameters
+          <span class="op">&times;</span> 2 bytes</span>
+        <span class="bval">760</span>
+        <span class="bnote">bytes of weights, up from
+          580</span>
+      </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="3">
+      The whole bill followed two decisions: the vocabulary and the epochs.
+      17.8 seconds of bare MUL instructions — a
+      floor, not a runtime. <strong>The machine still was not the
+      constraint.</strong>
+    </p>
+  </div>
+  <!-- /FIGURE:params5 -->
+  <aside class="notes">
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 2/3</strong></p>
+    <p>THE SECOND EXPOSURE, and it is deliberately the same two figures they have already read once. Let the room get ahead of you: 2 by 38 by 3, plus 38 by 3, plus 38. If What a parameter is landed, they can now count any model this shape — that is the point of showing it twice.</p>
+    <p>Then the bill, fragment one: 342 multiplies per example, 53 examples, 80 epochs. 1,450,080 — 4.8 times the first model's. SAY FLOOR OUT LOUD: 17.8 seconds of bare MUL instructions is a floor, not a runtime, same as every floor in this deck.</p>
+    <p>Fragment two: 760 bytes of weights against 580. Everything on this slide scaled from exactly two decisions — the vocabulary and the epochs. Nothing else changed, and the room just watched both decisions get made on the last slide.</p>
+  </aside>
+</section>
+
+<section class="cue" data-timing="90">
   <p class="changed">We changed exactly one thing:<br><span class="one">the prompt</span></p>
   <!-- FIGURE:promptchange -->
   <div class="fig changed">
@@ -671,7 +719,7 @@
   </div>
   <!-- /FIGURE:promptchange -->
   <aside class="notes">
-    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 2/2</strong></p>
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 3/3</strong></p>
     <p>THE SLIDE DOES THE TEACHING NOW, so use it before you touch the machine.</p>
     <p>Read the held-fixed line out. All 380 numbers, same checksum before and after, same seed, same greedy decoding. Nothing about the model differs between these four answers.</p>
     <p>Then step the four, and NAME THE COMPANY behind each — the room's age will divide on which ones land, and the names are the fun:</p>

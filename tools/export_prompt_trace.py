@@ -53,11 +53,27 @@ def main() -> None:
     # The block 4 intro slide shows this vocabulary against the first model's,
     # so both lists are exported the same way the models build them.
     first_vocabulary, _ = build_vocabulary(load_names(FIRST_CORPUS))
+
+    # The same MUL-floor arithmetic the deck's Why three? figure uses, at
+    # this model's vocabulary and epoch count. A floor, not a runtime.
+    mul_cycles = 11
+    clock_hz = 894_886
+    per_example = 3 * len(vocabulary) * config.embedding
+    total_multiplies = per_example * len(targets) * EPOCHS
+    budget = {
+        "per_example": per_example,
+        "multiplies": total_multiplies,
+        "floor_seconds": round(total_multiplies * mul_cycles / clock_hz, 1),
+        "weight_bytes": model.parameter_count * 2,
+    }
     payload = {
         "parameters": model.parameter_count,
         "vocabulary": len(vocabulary),
         "epochs": EPOCHS,
         "examples": len(targets),
+        "context": config.context,
+        "embedding": config.embedding,
+        "budget": budget,
         "tokens": list(vocabulary),
         "first_model_tokens": list(first_vocabulary),
         "final_loss": round(losses[-1], 3),
