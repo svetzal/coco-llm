@@ -987,24 +987,9 @@ def main() -> None:
         "tokens of the answer, handed over before the machine starts.</strong>",
     }
 
-    # Block 5. Values are the ones the EXP-011 build puts on screen; the
-    # locked-model line is verbatim from attention_ui.asm.
-    context_change = {
-        "held": [
-            "model 751B, weights locked",
-            "the question, asked again word for word",
-            "all eight context records but one",
-        ],
-        "pairs": [
-            ("context says", "LISA = CODE 2", "LISA = CODE 6"),
-            ("we asked", "LISA?", "LISA?"),
-            ("it answered", "CODE 2", "CODE 6"),
-        ],
-        "note": "A person typed one digit into context RAM and the answer "
-        "changed. <strong>MODEL 751B DID NOT CHANGE.</strong> Training "
-        "changes weights; prompting changes context; attention uses context "
-        "to produce this answer.",
-    }
+    # Block 5 moved to EXP-007, the all-RAM sentence completer, whose size
+    # comparison is hand-authored in the deck from recorded results. EXP-011,
+    # the context-editing attention head, now demonstrates at the table.
     vocabulary = traces["vocabulary"]["vocabulary"]
 
     deck = DECK.read_text()
@@ -1021,7 +1006,6 @@ def main() -> None:
         prompts, traces["vocabulary"], traces["budget"]["epochs"]))
     deck = splice(deck, "params5", figure_second_costs(prompts, traces["budget"]))
     deck = splice(deck, "promptchange", figure_changed(prompt_change))
-    deck = splice(deck, "contextchange", figure_changed(context_change))
     shift = json.loads((TRACES.parent / "shift.json").read_text())
     captured = shift["source"]
     deck = splice(deck, "twomuls", figure_code(

@@ -59,7 +59,7 @@ is there for questions.
 | 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
 | 3 | How it works, on the machine | 7 | 9 | 14 | EXP-004 live training | Mechanism |
 | 4 | Change one thing: the prompt | 3 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
-| 5 | Change one thing: the context | 1 | 5 | 22 | CoCo, EXP-011 attention head | Mechanism |
+| 5 | Change one thing: the size | 2 | 5 | 22 | CoCo, EXP-007 all-RAM completion | Mechanism |
 | 6 | A screen of things that never existed | 2 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the upbringing | 1 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
 | 8 | Now you play it | 2 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
@@ -98,9 +98,12 @@ figures that each carry one idea go faster than they look on paper. If the room
 asks questions the block stretches, and that is what it is for.
 
 Blocks 4, 5 and 7 repeat one sentence deliberately: *we changed exactly one
-thing*. That repetition is the spine of the talk. Prompt, context, and training
-data are three different stores, they change three different things, and
-confusing them is most of what makes these systems feel like magic.
+thing*. That repetition is the spine of the talk. The prompt, the size, and
+the training data are three different levers, each held while the others
+move, and each one traces to a person who set it. The store separation the
+spine used to carry — context is not weights — now lives in block 4's
+held-fixed line and block 5's context tie, and EXP-011, the context-editing
+attention head, demonstrates it one-on-one at the table.
 
 ### Cut order
 
@@ -114,8 +117,10 @@ Announced here so it is a decision, not a panic.
    have their evidence written up in EXP-002 for anyone who asks at the table.
    **Never drop "Do it again. And again."** It is where the talk's central
    claim is measured.
-2. **Block 4** goes second. Block 5 already carries "the model did not change,"
-   and the abstract's marketing-language promise survives on the table.
+2. **Block 5's demo shortens to its slide** second. The size comparison is
+   the lesson and it survives as one held-and-changed figure; the typing
+   demo is the part that costs minutes, and EXP-007 runs all day at the
+   table for anyone who wants their sentences finished.
 3. **Block 3 shortens, it does not go.** The run already happened, launched
    at block 1 and trained behind block 2; what shortens is the code walk,
    starting with the sign correction. The comparison is the promise and it
@@ -139,7 +144,7 @@ instances, so each changeover is a window switch and not a `make` invocation
 on the projector:
 
 - EXP-005, block 4 — trains itself on load and parks at `PRESS ANY KEY`.
-- EXP-011, block 5 — parks at the context table.
+- EXP-007, block 5 — parks at the completion editor, in the 64K all-RAM map.
 - EXP-012, block 6 — parks showing titles.
 - EXP-013, block 8 — parks at the RPSLS keys. Press `R` if anyone played it
   during setup.
@@ -426,34 +431,48 @@ If temperature comes up: greedy decoding is temperature zero, which is why a
 repeated prompt repeats its answer. The d20 at the exhibit table is the
 temperature dial, made of plastic.
 
-### 5. Change one thing: the context
+### 5. Change one thing: the size
 
-**On screen:** the same held-and-changed shape, then EXP-011 in XRoar.
+**On screen:** the call, then EXP-007 in XRoar, then the held-and-changed
+size comparison.
 
-Held: model 751B with its weights locked, the same question asked again word
-for word, seven of the eight context records untouched. Changed: one record,
-`LISA = CODE 2` to `LISA = CODE 6`. The answer moves with it.
+The block promotes the practical branch to the stage. The call: a model
+over a hundred times the size of the one that trained live will rank your
+next word before you type it, on the same machine. The title on screen does
+the framing: `MAC TRAINED - COCO PREDICTS` — the P in GPT, running. 16,193
+packed bytes expand to 32,385 parameters into the RAM where BASIC's ROM
+normally sits.
 
-Say what that means against the previous block. There we changed the prompt
-and the model stayed put; here we changed a stored fact and the model stayed
-put. **Two different things a person can change, and neither of them is the
-weights.**
+Three beats at the machine, rehearsed tight:
 
-Then the machine, so the room watches a person type the digit rather than
-reading that someone did. `BEFORE`, `AFTER`, and `MODEL 751B DID NOT CHANGE`
-are on the CoCo's own screen.
+1. **The job.** Type `THE MODEL CAN`, predict, and it ranks `SUGGEST`,
+   `BE`, `REMEMBER`. Accept one. This is the room's phone keyboard, in
+   1981.
+2. **The window.** `I KNOW THE OLD MODEL CAN` and `WE KNOW THE OLD MODEL
+   CAN` produce the same suggestions, because the model sees exactly five
+   tokens and the first word fell out of the window. When a long chat
+   forgets its start, this is why, watched live.
+3. **The stop.** `RUN THE PROGRAM.` predicts the end-of-phrase token — and
+   the first interface hid it, showed the runner-up, and made the model
+   look foolish. The interface was fixed; nothing retrained. Some apparent
+   AI failures are product-policy failures.
 
-The line to land:
+Then the slide: **we changed exactly one thing — the size.** Held: the
+task, the training recipe, the machine. Changed: 8,188 parameters to
+32,385. Top-three accuracy 59.3% to 60.0%; keystroke savings 58.8% down to
+51.7%. Four times the parameters bought vocabulary, context, and
+punctuation — capability, not quality. Both called shots missed (70%
+top-three called, 59.3 got; 60% keystroke gate called, 51.7 got), and both
+misses stay on the record. Both scores are offline simulations; the
+physical keyboard is unmeasured, and the runsheet says so wherever the
+numbers appear.
 
-> Training changes the weights. Prompting changes the context. Attention uses
-> the context to produce this answer.
-
-Then name the omission: this is key-value attention, not a transformer. We
-isolated one mechanism so it could be watched. Worth one breath after it:
-system prompts, retrieval (RAG), and memory features are all this same move —
-a fact placed in context, weights untouched — and attention will use a wrong
-fact just as faithfully. The score replay (`V`) is optional depth and is not
-in the budget.
+The context tie survives from the old block in one breath: everything
+typed into the editor is context, the ranking moves with it, and nothing
+retrains — system prompts, retrieval, and memory features are the same
+move at scale. EXP-011, the context-editing attention head, demonstrates
+that mechanism one-on-one at the table, where a patient visitor can watch
+a fact change while the weights stay locked.
 
 ### 6. A screen of things that never existed
 
@@ -569,7 +588,8 @@ badly.
 | --- | --- |
 | The physical CoCo 1 | The claim the whole talk rests on. Powered on, all day, touchable. |
 | EXP-006, the 8 KiB completion workbench | One person types for two minutes. Unwatchable from row 12. |
-| EXP-007, the all-RAM sentence completer | Same, plus the `<END>` interface-failure story needs a conversation. |
+| EXP-007, the all-RAM sentence completer | Also on stage, rehearsed tight. On the table a visitor explores at their own pace, and the `<END>` interface-failure story gets a conversation. |
+| EXP-011, the context-editing attention head | Needs a keyboard, a patient visitor, and more than ninety seconds — the table's own criterion. The fact-edit lands one-on-one. |
 | EXP-013, the playable game opponent | Also on stage. On the table people play until it beats them. |
 | EXP-012, the fake title generator | Runs unattended in a loop. Good attractor. |
 | The four table exercises | Already designed against a 10-second to 15-minute ladder. |
@@ -633,7 +653,7 @@ missing figures, and the physical-world items.
 
 ## Deck state
 
-Twenty-six slides, 36 minutes of content. The demo blocks follow one
+Twenty-seven slides, 36 minutes of content. The demo blocks follow one
 shape: the cue slide states **the call** — the block's falsifiable
 hypothesis — the machine takes the shot, and blocks 6 and 8 close on an
 explainer slide (the byte split; the honest number) so the lesson lands on

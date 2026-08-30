@@ -34,7 +34,7 @@ Supporting presentation material includes:
 - [`card-concepts/`](card-concepts/) — exploratory visual directions for that
   exercise, not final print artwork.
 
-The deck is built: twenty-six slides across the runsheet's nine blocks.
+The deck is built: twenty-seven slides across the runsheet's nine blocks.
 `learning-journey.md` holds the argument and the evidence; `runsheet.md`
 holds what happens on the day.
 
@@ -53,7 +53,10 @@ The presentation has five connected teaching threads:
    criteria, verification, and acceptable consequences.
 5. **Context and attention:** training teaches a matching operation, a prompt
    supplies temporary facts, and attention selects a relevant record without
-   adding that fact to the model's weights.
+   adding that fact to the model's weights. EXP-011, the context-editing
+   attention head, demonstrates this at the exhibit table; on stage the
+   context lesson rides block 4's held-fixed line and block 5's completion
+   editor.
 
 The experiment-wide [`lesson-design audit`](../experiments/lesson-design-audit.md)
 checks that those claims are visible in the artifacts themselves: learner

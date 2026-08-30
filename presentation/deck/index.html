@@ -37,7 +37,7 @@
   <aside class="notes">
     <p><strong>BLOCK 1 OF 9 - IT ALREADY WORKS</strong></p>
     <p>PRE-FLIGHT, before you walk on. Run: <strong>make stage</strong>. It launches the four parked XRoar windows:</p>
-    <ul><li>EXP-005, block 4 (trains itself, parks at PRESS ANY KEY)</li><li>EXP-011, block 5 (parks at the context table)</li><li>EXP-012, block 6 (parks showing sixteen fake titles)</li><li>EXP-013, block 8 (parks at the RPSLS keys. Press R if anyone played it)</li></ul>
+    <ul><li>EXP-005, block 4 (trains itself, parks at PRESS ANY KEY)</li><li>EXP-007, block 5 (parks at the completion editor)</li><li>EXP-012, block 6 (parks showing sixteen fake titles)</li><li>EXP-013, block 8 (parks at the RPSLS keys. Press R if anyone played it)</li></ul>
     <p>The windows look identical. Arrange them in block order. EXP-004 is NOT parked in advance: it starts training the moment it loads, and block 1 launches it in front of the room. Every block has a command — make block1 through block9 — and each demo block's target relaunches its window if a parked one dies.</p>
     <p>LAUNCH: make block1, as the talk opens, with the room watching. EXP-004 resets to random weights and starts training right there. CALL THE SHOT OUT LOUD: seed 6809 draws nonsense from these random weights right now — after 1,160 corrections, the same seed will draw names. Then leave it running and go to the slides: block 2 explains exactly what it is doing while it does it. It parks at PRESS ANY KEY when done.</p>
     <p>Photograph of the physical CoCo 1 showing a real trained run. Full screen, no explanation.</p>
@@ -732,33 +732,55 @@
     <p>Title on the machine reads SAME MODEL - CHANGE THE PROMPT. Ask what stayed fixed.</p>
     <p>Take ARE YOU and have the room call the completion before revealing KEEPING UP IN LITTLE COMPUTERS. It blended two campaigns without understanding either.</p>
     <p>IF SOMEONE ASKS ABOUT TEMPERATURE: greedy decoding is temperature zero — always take the top-scoring token, which is why the same prompt gives the same answer every time here. Turning temperature up means sampling lower scorers sometimes. The d20 on the exhibit table is that dial, made of plastic.</p>
-    <p>SECOND TO CUT if running long.</p>
+    <p>If running long: block 6 goes first, then block 5's demo shortens to its slide. This block stays.</p>
   </aside>
 </section>
 
-<!-- ============ 5. Change one thing: the context · 5 min · EXP-011 ============ -->
-<section class="cue" data-timing="300">
-  <p class="changed">We changed exactly one thing:<br><span class="one">the context</span></p>
-  <!-- FIGURE:contextchange -->
-  <div class="fig changed">
-    <p class="held"><span class="hlead">held fixed</span><span>model 751B, weights locked</span><span class="hsep">&middot;</span><span>the question, asked again word for word</span><span class="hsep">&middot;</span><span>all eight context records but one</span></p>
-    <div class="deltas"><div class="ba fragment" data-fragment-index="1"><span class="balab">context says</span><span class="bfrom">LISA = CODE 2</span><span class="barrow">&rarr;</span><span class="bto">LISA = CODE 6</span></div><div class="ba fragment" data-fragment-index="2"><span class="balab">we asked</span><span class="bfrom">LISA?</span><span class="barrow">&rarr;</span><span class="bto">LISA?</span></div><div class="ba fragment" data-fragment-index="3"><span class="balab">it answered</span><span class="bfrom">CODE 2</span><span class="barrow">&rarr;</span><span class="bto">CODE 6</span></div></div>
-    <p class="cap fragment" data-fragment-index="4">
-      A person typed one digit into context RAM and the answer changed. <strong>MODEL 751B DID NOT CHANGE.</strong> Training changes weights; prompting changes context; attention uses context to produce this answer.</p>
-  </div>
-  <!-- /FIGURE:contextchange -->
+<!-- ============ 5. Change one thing: the size · 5 min · EXP-007 ============ -->
+<section class="cue" data-timing="180">
+  <h2>It finishes your sentences</h2>
+  <p class="what">EXP-007 &middot; the all-RAM sentence completer</p>
+  <p class="call"><span class="k">The call:</span> a model over a hundred
+  times the size of the one that trained live on stage will rank your next
+  word before you type it &mdash; on the same machine. The Mac trained it;
+  the CoCo only predicts.</p>
   <aside class="notes">
-    <p><strong>BLOCK 5 OF 9 - THE CONTEXT</strong></p>
-    <p>Most direct bearing on what people already use. Protect its time.</p>
-    <p>THE SLIDE FIRST. Held fixed: model 751B with its weights locked, the same question asked again word for word, and seven of the eight context records untouched. One record changed: LISA = CODE 2 became LISA = CODE 6. The answer changed with it.</p>
-    <p>Note what that means against the previous slide. There, we changed the prompt and the model stayed put. Here, we changed a stored fact and the model stayed put. Two different things a person can change, neither of them the weights.</p>
-    <p>THEN the machine: SWITCH to the parked EXP-011 XRoar window, sitting at the context table. Enter asks. E opens the editor. Clear backs out. They watch a person do it rather than read that someone did.</p>
-    <p>Retrieve LISA = CODE 2. Open the editor, type 6, show BEFORE, AFTER, and MODEL 751B DID NOT CHANGE. Ask the same question, get the new answer.</p>
-    <p>LAND THIS LINE: Training changes the weights. Prompting changes the context. Attention uses the context to produce this answer.</p>
-    <p>Then name the omission: key-value attention, not a transformer. We isolated one mechanism so it could be watched.</p>
-    <p>THE TIE TO WHAT THEY USE, worth one breath: every bolt-on the industry sells for making a model seem to know things — system prompts, retrieval (the RAG in every vendor deck), memory features — is this same move. Put a fact into context; leave the weights alone. And the caution transfers whole: attention uses what is in context faithfully, wrong or right. Type a wrong code and it will retrieve the wrong code with total confidence.</p>
-    <p>If a lab-brag comes up: the needle-in-a-haystack scores in model announcements are this exact game — find the one relevant record in the pile of context. Ours is eight records; theirs is a phone book.</p>
-    <p>V replay is optional depth and is NOT in the budget.</p>
+    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 1/2</strong></p>
+    <p>SWITCH to the parked EXP-007 XRoar window, sitting at the completion editor. Read the call first, then the machine.</p>
+    <ul><li>Right Arrow, popover closed: predict. Popover open: accept.</li><li>Up and Down: choose. Enter also accepts.</li><li>Left: erase. Clear: reset the editor.</li></ul>
+    <p>POINT AT THE TITLE: MAC TRAINED - COCO PREDICTS. That is the P in GPT, running. 16,193 packed bytes expanded to 32,385 working parameters into the RAM where BASIC's ROM normally sits. The expensive half happened once, somewhere else.</p>
+    <p>BEAT ONE, the job: type THE MODEL CAN, press Right Arrow. It ranks SUGGEST, BE, REMEMBER. Accept SUGGEST. This is your phone's keyboard, in 1981, and the room should feel that recognition before any caveat.</p>
+    <p>BEAT TWO, the window: press Clear. Type I KNOW THE OLD MODEL CAN and predict — note the top three. Clear. Type WE KNOW THE OLD MODEL CAN — the SAME three. It sees exactly five tokens, so I and WE both fell out the window: for this model those are the same sentence. When a long chat seems to forget how it started, this is why, and they just watched it.</p>
+    <p>BEAT THREE, the stop: Clear. Type RUN THE PROGRAM. with the period, and predict. The top suggestion is the end-of-phrase token. Then the story: our first interface HID that token, because token zero also meant no suggestion — the model said stop, our product said pick something else, and made the model look foolish. We fixed the interface and retrained nothing. Some apparent AI failures are product-policy failures. Think about that a minute.</p>
+    <p>THE CONTEXT TIE, one breath: everything typed into that editor is context. The ranking moves with it; nothing retrains. System prompts, retrieval, memory features — all of them are ways of putting things into context, and training changed the weights exactly once, on the Mac.</p>
+    <p>Then advance to the size slide and land the block's claim.</p>
+  </aside>
+</section>
+
+<!-- Both models' shapes are from their build manifests; EXP-006's holdout
+     scores (59.3% top-three, 58.8% keystrokes) are recorded in EXP-006, the
+     8 KiB completion workbench's write-up, and EXP-007's (60.0%, 51.7%) in
+     its manifest and write-up. Offline simulations, labelled as such. -->
+<section data-timing="120">
+  <p class="changed">We changed exactly one thing:<br><span class="one">the size</span></p>
+  <div class="fig changed">
+    <p class="held"><span class="hlead">held fixed</span><span>the task: rank the next word</span><span class="hsep">&middot;</span><span>the training recipe, on the Mac</span><span class="hsep">&middot;</span><span>the machine and its editor</span></p>
+    <div class="deltas"><div class="ba fragment" data-fragment-index="1"><span class="balab">parameters</span><span class="bfrom">8,188</span><span class="barrow">&rarr;</span><span class="bto">32,385</span></div><div class="ba fragment" data-fragment-index="2"><span class="balab">top-three accuracy</span><span class="bfrom">59.3%</span><span class="barrow">&rarr;</span><span class="bto">60.0%</span></div><div class="ba fragment" data-fragment-index="3"><span class="balab">keystrokes saved</span><span class="bfrom">58.8%</span><span class="barrow">&rarr;</span><span class="bto">51.7%</span></div></div>
+    <p class="cap fragment" data-fragment-index="4">
+      Four times the parameters bought a 255-token vocabulary, a fifth
+      context token, and punctuation &mdash; capability, not quality.
+      <strong>Bigger can mean able to attempt more, not reliably better at
+      what it already did.</strong>
+    </p>
+  </div>
+  <aside class="notes">
+    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 2/2</strong></p>
+    <p>THE EXPLAINER, and the block's reason to exist. Ask the question before the fragments: we made it four times bigger — what did that buy?</p>
+    <p>Step the rows. Parameters: 8,188 to 32,385. Top-three accuracy: up seven tenths of a point. Keystrokes saved: DOWN seven points. Let the third row land in silence for a beat.</p>
+    <p>What the memory actually bought: all 255 token identifiers, a fifth context token, real punctuation — a more expressive task, attempted. Not a general quality improvement on the task it already had.</p>
+    <p>BOTH CALLED SHOTS MISSED, and say so with some pride: EXP-006 called 70% top-three and got 59.3. EXP-007 called a 60% keystroke gate and got 51.7. Failed hypotheses, useful bounded prototypes — both can be true, and that is what honest measurement looks like.</p>
+    <p>SAY THE LABEL: both scores are offline keystroke simulations on held-out text. Nobody has measured the physical keyboard.</p>
+    <p>The landing: bigger is a decision with a bill, and the bill does not buy what people assume. Same lesson at every scale, and hold it for the last slide.</p>
   </aside>
 </section>
 

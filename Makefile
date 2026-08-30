@@ -46,10 +46,10 @@ present:
 # training the moment it loads, so block 3 launches it live with
 # `make present EXP=4`. Arrange the four windows in block order once they
 # are up; XRoar windows are otherwise indistinguishable.
-STAGE_BINARIES := build/coco-llm-exp5.bin build/coco-attention.bin \
+STAGE_BINARIES := build/coco-llm-exp5.bin \
 	build/coco-titles.bin build/coco-rpsls.bin
 
-stage: $(STAGE_BINARIES) build/roms/.coco1-roms
+stage: $(STAGE_BINARIES) build/coco-llm-exp7.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
 	@for binary in $(STAGE_BINARIES); do \
@@ -57,7 +57,10 @@ stage: $(STAGE_BINARIES) build/roms/.coco1-roms
 			-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
 			-ratelimit -run $$binary >/dev/null 2>&1 & \
 	done
-	@echo "Parked: EXP-005 (block 4), EXP-011 (block 5)," \
+	@nohup $(XROAR) -machine cocous -ram 64 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-llm-exp7.bin >/dev/null 2>&1 &
+	@echo "Parked: EXP-005 (block 4), EXP-007 (block 5)," \
 		"EXP-012 (block 6), EXP-013 (block 8)."
 	@echo "The windows detach from this terminal; quit them from XRoar itself."
 	@echo "Block 3 launches live: make block3"
@@ -107,14 +110,14 @@ block4: build/coco-llm-exp5.bin build/roms/.coco1-roms
 		-ratelimit -run build/coco-llm-exp5.bin >/dev/null 2>&1 &
 	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
-block5: build/coco-attention.bin build/roms/.coco1-roms
+block5: build/coco-llm-exp7.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
-	@echo "BLOCK 5 - THE CONTEXT - EXP-011 parks at the context table."
-	@echo "Enter asks, E edits, Clear backs out, V is optional depth."
-	@nohup $(XROAR) -machine cocous -ram 32 \
+	@echo "BLOCK 5 - THE SIZE - EXP-007 parks at the completion editor."
+	@echo "Right Arrow predicts and accepts, Up/Down choose, Clear resets."
+	@nohup $(XROAR) -machine cocous -ram 64 \
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
-		-ratelimit -run build/coco-attention.bin >/dev/null 2>&1 &
+		-ratelimit -run build/coco-llm-exp7.bin >/dev/null 2>&1 &
 	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
 block6: build/coco-titles.bin build/roms/.coco1-roms

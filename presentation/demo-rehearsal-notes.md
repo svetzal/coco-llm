@@ -236,6 +236,14 @@ division of work: modern training, vintage inference, bounded human utility.
 
 ## EXP-007: all-RAM sentence completion
 
+On stage this is block 5, rehearsed to three tight beats: the job (`THE
+MODEL CAN`), the window, and the stop (`RUN THE PROGRAM.`), then the size
+slide. The window beat uses a verified pair: `I KNOW THE OLD MODEL CAN` and
+`WE KNOW THE OLD MODEL CAN` share their last five tokens, so the model —
+which sees exactly five — must rank the same suggestions for both. Every
+word in the pair is in the 255-token vocabulary. At the table, the fuller
+exploration below applies.
+
 ### EXP-007 question
 
 What does four times the model memory buy us—and what does it not buy us?
@@ -330,6 +338,11 @@ quality metrics, and product policy are three different things.
 > weights?
 
 ## EXP-011: edit context without training
+
+This is a table demonstration now, not a stage block: it needs a keyboard,
+a patient visitor, and more than ninety seconds, and the fact-edit lands
+one-on-one in a way it never did from row 12. The beats below assume a
+visitor at the machine with you beside them.
 
 ### EXP-011 question
 
@@ -453,7 +466,7 @@ to systems whose scale normally hides them.
 
 ## EXP-012: fake episode titles
 
-On stage this is block 6, the delight beat after the context edit. It is also
+On stage this is block 6, the delight beat after the size lesson. It is also
 the first block to cut, so rehearse it tight: in and out in three minutes. At
 the table it runs unattended in a loop all day.
 
