@@ -705,7 +705,7 @@
   <!-- FIGURE:twomuls -->
   <p class="lead">one signed multiply, from two unsigned ones</p>
   <div class="fig code regs">
-    <pre class="asm"><div class="cline"><span class="ct">multiply_s8_s16</span><span class="reg">A = 26, [X] = -244</span></div><div class="cline"><span class="ct">        sta     multiply_factor</span><span class="reg">factor = 26</span></div><div class="cline"><span class="ct">        ldb     1,x</span><span class="reg">B = 12, -244&#x27;s low byte</span></div><div class="cline hot"><span class="ct">        mul</span><span class="reg">D = 26 x 12 = 312</span></div><div class="cline"><span class="ct">        std     multiply_product</span><span class="reg">product = 312</span></div><div class="cline"><span class="ct">        lda     multiply_factor</span><span class="reg">A = 26 again</span></div><div class="cline"><span class="ct">        ldb     ,x</span><span class="reg">B = 255, -244&#x27;s high byte</span></div><div class="cline hot"><span class="ct">        mul</span><span class="reg">D = 26 x 255 = 6630</span></div><div class="cline"><span class="ct">        addb    multiply_product</span><span class="reg">B = 230 + 1 = 231</span></div><div class="cline"><span class="ct">        stb     multiply_product</span><span class="reg">product = -6344</span></div></pre>
+    <pre class="asm"><div class="cline"><span class="ct">multiply_s8_s16</span><span class="reg">A = 26, [X] = -244</span></div><div class="cline"><span class="ct">        sta     multiply_factor</span><span class="reg">factor = 26</span></div><div class="cline"><span class="ct">        ldb     1,x</span><span class="reg">B = 12, -244&#x27;s low byte</span></div><div class="cline hot"><span class="ct">        mul</span><span class="reg">D = 26 x 12 = 312 = A 1 : B 56</span></div><div class="cline"><span class="ct">        std     multiply_product</span><span class="reg">product = bytes 1 and 56</span></div><div class="cline"><span class="ct">        lda     multiply_factor</span><span class="reg">A = 26 again</span></div><div class="cline"><span class="ct">        ldb     ,x</span><span class="reg">B = 255, -244&#x27;s high byte</span></div><div class="cline hot"><span class="ct">        mul</span><span class="reg">D = 26 x 255 = 6630 = A 25 : B 230</span></div><div class="cline"><span class="ct">        addb    multiply_product</span><span class="reg">B = 230 + the stored 1 = 231</span></div><div class="cline"><span class="ct">        stb     multiply_product</span><span class="reg">product = 231 : 56 = -6344</span></div></pre>
     <p class="cap">The 6809 multiplies two unsigned bytes. This makes a signed multiply out of two of them, and it is running right now. The register column is one captured training step: SINCLAIR's weight at epoch 5, context 26 times error -244. <span class="src">src/6809/model_forward.asm - multiply_s8_s16</span></p>
   </div>
   <!-- /FIGURE:twomuls -->
@@ -721,12 +721,15 @@
     one output changed.
 
     THE REGISTER COLUMN is a captured training step, not an invention:
-    SINCLAIR's weight update at epoch 5, context 26 times error -244. Two
-    things to point at. B holds 12 and then 255 — those are -244's two bytes
-    taken unsigned, because MUL never sees a sign. And the second MUL's high
-    half, 25, is never stored: the low sixteen bits are the whole answer.
-    The product this walk ends on, -6344, is the exact gradient the shift
-    slides are about to divide by sixteen. One update, traced end to end.
+    SINCLAIR's weight update at epoch 5, context 26 times error -244. The
+    MUL rows split D into A : B, so both of addb's operands are on screen
+    before it runs: the 230 is the second MUL's B, and the stored 1 is the
+    first product's high byte, two rows up. Two things to point at. B holds
+    12 and then 255 — those are -244's two bytes taken unsigned, because MUL
+    never sees a sign. And the second MUL's A half, 25, is never stored: the
+    low sixteen bits are the whole answer. The product this walk ends on,
+    -6344, is the exact gradient the shift slides are about to divide by
+    sixteen. One update, traced end to end.
 
     THE POINT, and it is a human one: the learning algorithm did not change.
     Somebody understood both the mathematics and the machine, and that is what

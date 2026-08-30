@@ -666,13 +666,13 @@ def annotate_two_muls(excerpt: dict, context_value: int, error: int) -> list[str
         ("multiply_s8_s16", f"A = {context_value}, [X] = {error}"),
         ("sta", f"factor = {context_value}"),
         ("ldb", f"B = {low}, {error}'s low byte"),
-        ("mul", f"D = {context_value} x {low} = {first}"),
-        ("std", f"product = {first}"),
+        ("mul", f"D = {context_value} x {low} = {first} = A {first >> 8} : B {first & 0xFF}"),
+        ("std", f"product = bytes {first >> 8} and {first & 0xFF}"),
         ("lda", f"A = {context_value} again"),
         ("ldb", f"B = {high}, {error}'s high byte"),
-        ("mul", f"D = {context_value} x {high} = {second}"),
-        ("addb", f"B = {second & 0xFF} + {first >> 8} = {b_after_add}"),
-        ("stb", f"product = {signed}"),
+        ("mul", f"D = {context_value} x {high} = {second} = A {second >> 8} : B {second & 0xFF}"),
+        ("addb", f"B = {second & 0xFF} + the stored {first >> 8} = {b_after_add}"),
+        ("stb", f"product = {b_after_add} : {first & 0xFF} = {signed}"),
     ])
 
 
