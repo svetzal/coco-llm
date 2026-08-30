@@ -33,9 +33,11 @@ start
         ldd     #$1a2b
         std     rng_state
 
-        lbsr    reset_level_names
+; The interactive build shows the evidence surface: a screenful of titles,
+; redealt on any key. The game surface, level_name, stays for the game and
+; for its parity test; it is just not the demo.
 titles_again
-        lbsr    level_name
+        lbsr    fill_screen
         ifdef   DIRECT_TEST
         swi
         else
