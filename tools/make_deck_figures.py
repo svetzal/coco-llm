@@ -561,6 +561,14 @@ def figure_shift(shift: dict) -> str:
       <span class="bfell">out</span>
       <span class="bdec"></span>
     </div>
+    <div class="brow2 signrow">
+      <span class="blab2"></span>
+      <span class="bits">{"".join(
+        f'<span class="bit">{"&minus;" if i == 0 else ""}</span>'
+        for i in range(len(shift["steps"][0]["bits"])))}</span>
+      <span class="bfell"></span>
+      <span class="bdec"></span>
+    </div>
     {"".join(rows)}
     <p class="cap fragment" data-fragment-index="{len(shift["steps"])}">
       Two's complement: <strong>a leading 1 means negative.</strong> These

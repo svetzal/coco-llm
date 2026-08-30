@@ -240,7 +240,7 @@
   line-height: 1.4;
   color: var(--deck-quiet);
   margin: 0.65em auto 0;
-  max-width: 46em;
+  max-width: 50em;
 }
 .reveal .fig .cap strong { color: var(--deck-mark); }
 
@@ -674,3 +674,9 @@
 
 /* The sign bit. It is the one to watch on this figure, so it is marked. */
 .reveal .bit.sign { box-shadow: inset 0 0 0 1px var(--deck-mark); }
+/* The column marker over the sign bit: same cells as a bit row so the
+ * minus lands exactly over bit fifteen, with the row's chrome removed. */
+.reveal .signrow { margin-bottom: 2px; }
+.reveal .signrow .bit {
+  background: none; color: var(--deck-mark); line-height: 1;
+}
