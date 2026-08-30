@@ -639,6 +639,7 @@
   display: grid; grid-template-columns: 8em 20em 2em 3.5em 5em;
   gap: 0 0.8em; align-items: center; margin: 0.3em 0;
 }
+.reveal .bithead { margin-bottom: 0; }
 .reveal .bithead .steplab, .reveal .bithead .carryout,
 .reveal .bithead .decimal, .reveal .bitrow .steplab {
   font-family: var(--deck-prose); text-transform: uppercase;
@@ -670,7 +671,9 @@
   font-family: var(--deck-prose); text-transform: uppercase;
   font-size: 0.6em; letter-spacing: 0.08em; color: var(--deck-quiet);
   width: 5.67em; /* 3.4em at row size, restated at this font size */
+  white-space: nowrap;
 }
+.reveal .bithead .carryout { white-space: nowrap; }
 .reveal .carryout { text-align: center; }
 .reveal .dropped {
   color: var(--coco-c00); background: var(--coco-amber);
@@ -697,7 +700,11 @@
 .reveal .bit.sign { box-shadow: inset 0 0 0 1px var(--deck-mark); }
 /* The column marker over the sign bit: same cells as a bit row so the
  * minus lands exactly over bit fifteen, with the row's chrome removed. */
-.reveal .signrow { margin-bottom: 0; }
+/* The sign marker shares the header's line: it is a different kind of
+ * annotation (a column marker, not a byte label), but the far-left minus
+ * and the centred byte labels never collide, and stacking them costs a
+ * whole row of distance between the header and the table. */
+.reveal .signrow { margin: -1.15em 0 0.05em; }
 .reveal .signrow .bit {
   background: none; color: var(--deck-mark); line-height: 1;
 }
