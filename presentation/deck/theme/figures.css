@@ -688,6 +688,8 @@
 }
 .reveal .bitrow .decimal { color: var(--deck-quiet); text-align: right; }
 .reveal .fig.shifts .cap { max-width: 54em; margin-top: 0.5em; }
+/* Air between the walk and its captions; the table ends, then the words. */
+.reveal .fig.shifts .bitrow.last { margin-bottom: 1.3em; }
 .reveal .fig.shifts .cap code {
   font-family: var(--coco-type); color: var(--deck-ink); font-size: 1em;
 }
