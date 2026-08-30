@@ -296,7 +296,7 @@ and nobody had to.
 | And the correction that makes it signed | 60 | Optional depth, first to drop |
 | Why one subtraction is enough | 50 | The unsigned error, and where it lives |
 | The learning rate, in eight instructions | 40 | Callback: the 1/16 from block 2, physically |
-| Divide by two, four times over | 50 | The same eight instructions, acting on the bits |
+| Divide by two, four times over | 50 | The bits, then the landing: four halvings is the 0.0625 from One step |
 | Back to the machine | 180 | The pause, the audience's choice, the comparison |
 
 The three code slides are the deck's only assembly, and they are extracted

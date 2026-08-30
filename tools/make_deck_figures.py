@@ -573,6 +573,15 @@ def figure_shift(shift: dict) -> str:
       left edge: <strong>the 1 copies itself downward, which is how the value
       stays negative while it halves.</strong>
     </p>
+    <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 2}">
+      And the landing: four halvings is one multiplication by
+      <strong>{1 / 2 ** (len(shift["steps"]) - 1)}</strong> &mdash; the
+      nudge rate from One step, the rate I chose. {first["value"]} times
+      {1 / 2 ** (len(shift["steps"]) - 1)} is exactly
+      {first["value"] / 2 ** (len(shift["steps"]) - 1)}; the shifts land on
+      {shift["steps"][-1]["value"]}, the dropped bits paying the difference.
+      <strong>The hyperparameter is these eight instructions.</strong>
+    </p>
     <p class="cap rubric">
       A real update: {esc(where["weight_of"])}'s third weight at epoch
       {where["epoch"]}, error {where["error"]} times context

@@ -311,7 +311,7 @@
     <p>PAUSE ON FRAGMENT 4: COMMODORE in position 1 has a different row than in position 2. That is all "positional" means, and why COMMODORE AMIGA and AMIGA COMMODORE differ. Word-order questions land here.</p>
     <p>Score all 29: AMIGA gets 3.5%, barely beats 1-in-29. Nudge: AMIGA moves to 3.7%. Barely anything — the honest scale of one step, and there are 1,160 in a run.</p>
     <p>WHAT SETS THE SIZE — everyone's question — three things multiplied:</p>
-    <ul><li>Learning rate 1/16: a number I chose. Four shift instructions on the CoCo, which is why it is a sixteenth and not something tidier.</li><li>How wrong it was, 0.9655: one minus the right answer's score. Self-correcting — the nudges shrink as it improves, nobody turns them down. Why it settles instead of oscillating.</li><li>The incoming number: how much this weight is to blame. Fed by a big number, it moved more.</li></ul>
+    <ul><li>Learning rate 1/16: a number I chose. Four shift instructions on the CoCo, which is why it is a sixteenth and not something tidier — hold the number, because in block 3 they watch those shifts run.</li><li>How wrong it was, 0.9655: one minus the right answer's score. Self-correcting — the nudges shrink as it improves, nobody turns them down. Why it settles instead of oscillating.</li><li>The incoming number: how much this weight is to blame. Fed by a big number, it moved more.</li></ul>
     <p>THAT IS THE WHOLE ALGORITHM. The rest is 58 examples, 20 epochs, on a machine from 1981.</p>
   </aside>
 </section>
@@ -579,6 +579,15 @@
       left edge: <strong>the 1 copies itself downward, which is how the value
       stays negative while it halves.</strong>
     </p>
+    <p class="cap fragment" data-fragment-index="7">
+      And the landing: four halvings is one multiplication by
+      <strong>0.0625</strong> &mdash; the
+      nudge rate from One step, the rate I chose. -6344 times
+      0.0625 is exactly
+      -396.5; the shifts land on
+      -397, the dropped bits paying the difference.
+      <strong>The hyperparameter is these eight instructions.</strong>
+    </p>
     <p class="cap rubric">
       A real update: SINCLAIR's third weight at epoch
       5, error -244 times context
@@ -596,7 +605,8 @@
     <p>POINT AT THE LEFT EDGE and step the rows. The sign bit stays 1 and copies itself downward, one more each time. That is what "arithmetic" shift means, and it is why -6344 halves to -3172 instead of turning into some large positive number. LSRA, the logical shift, would put a 0 there and -6344 would become 29,596.</p>
     <p>THEN POINT AT THE MIDDLE. Watch bits cross the gap: what falls out of A arrives at the top of B. That is the whole reason there are two different instructions instead of two ASRs.</p>
     <p>-6344, -3172, -1586, -793, -397. The weight goes from 683 to 1080.</p>
-    <p>The bits falling off the right in red are thrown away: 0, 0, 0, 1. That is the rounding error of a learning rate. It accumulates over 1,160 updates, and it is also why the whole thing fits and runs.</p>
+    <p>The bits falling off the right are thrown away: 0, 0, 0, 1. That is the rounding error of a learning rate. It accumulates over 1,160 updates, and it is also why the whole thing fits and runs.</p>
+    <p>THE LANDING, last fragment, and say it slowly: everything they just watched is one multiplication by 0.0625 — the nudge rate from One step, the rate I chose. -6344 times 0.0625 is exactly -396.5; the shifts land on -397; the dropped bits paid the difference. Close it: THE HYPERPARAMETER IS THESE EIGHT INSTRUCTIONS.</p>
     <p>IF ASKED WHY NOT ASRA AND ASRB, which an assembly-literate room will: ASRB sign-extends B instead of taking the carry, so the bit that fell out of A is thrown away and B's own top bit is duplicated. You get two independent 8-bit shifts. Verified on the direct simulator: halving $0175 gives 186 with asra/rorb and 58 with asra/asrb.</p>
     <p>Nasty detail worth having: on some values the two agree, whenever A's dropped bit happens to equal B's top bit. That is a bug that survives casual testing.</p>
   </aside>
