@@ -333,8 +333,9 @@ def figure_why_three(trace: dict) -> str:
       rejected it.
     </p>
     <p class="cap fragment" data-fragment-index="2">
-      So six would have fit here too.
-      <strong>I tried three first, and it worked.</strong>
+      Choosing how wide to make this, 6 would have fit our
+      {trace["budget_seconds"]} second budget too, but I chose 3 to see how
+      that would go. How small I could make it, and still be useful.
     </p>
   </div>"""
 
@@ -370,8 +371,8 @@ def figure_parameters(trace: dict) -> str:
     <p class="cap fragment" data-fragment-index="5">
       A parameter is one number that training is allowed to change.
       This model has {trace["total"]}.
-      <strong>GPT-3 had {trace["gpt3"]:,}.</strong>
-      Same word, same meaning.
+      <strong>GPT-3 (2020) had 175B. DeepSeek-V3/R1 (2024) had
+      671B.</strong>
     </p>
   </div>"""
 

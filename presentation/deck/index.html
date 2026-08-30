@@ -181,8 +181,9 @@
       rejected it.
     </p>
     <p class="cap fragment" data-fragment-index="2">
-      So six would have fit here too.
-      <strong>I tried three first, and it worked.</strong>
+      Choosing how wide to make this, 6 would have fit our
+      180 second budget too, but I chose 3 to see how
+      that would go. How small I could make it, and still be useful.
     </p>
   </div>
   <!-- /FIGURE:why -->
@@ -215,8 +216,8 @@
     <p class="cap fragment" data-fragment-index="5">
       A parameter is one number that training is allowed to change.
       This model has 290.
-      <strong>GPT-3 had 175,000,000,000.</strong>
-      Same word, same meaning.
+      <strong>GPT-3 (2020) had 175B. DeepSeek-V3/R1 (2024) had
+      671B.</strong>
     </p>
   </div>
   <!-- /FIGURE:params -->
@@ -227,13 +228,14 @@
     <p>The 2 in the first line is the context window. Every term in these sums is a decision somebody made: how wide the window is, how many tokens exist, how many numbers describe each one.</p>
     <p>174 is the two embedding tables from Where the numbers live. 87 is a second table, one row per word it can predict. 29 is a starting nudge per word. 290 in total, and every one accounted for.</p>
     <p>THE DEFINITION, say it plainly: a parameter is one number that training is allowed to change. That is all it has ever meant.</p>
-    <p>Then the scale line. 290 against GPT-3's 175 billion. Do not editorialise; let them sit with it. Same word, same meaning, six hundred million times as many.</p>
+    <p>Then the scale line. 290 against GPT-3's 175 billion (2020) and DeepSeek's 671 billion (2024). Do not editorialise; let them sit with it. Same word, same meaning.</p>
+    <p>IF ASKED ABOUT DEEPSEEK'S NUMBER: 671B is the stored total; it is mixture-of-experts, so about 37B are active for any one token. Both are parameters in exactly this slide's sense — numbers training was allowed to change. And GPT-3 was roughly the last frontier model whose count was published; the reliable numbers since are the open-weights models you can download and count.</p>
     <p>Note that vocabulary and numbers-per-token both appear in every line. That is why the choice on the last slide mattered.</p>
   </aside>
 </section>
 
 <section data-timing="40" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
-  <h2>One step</h2>
+  <h2>Training Weights One Step at a Time</h2>
   <!-- FIGURE:step -->
   <div class="fig step">
     <p class="half">predict</p>
