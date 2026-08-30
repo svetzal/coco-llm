@@ -18,7 +18,10 @@ than goes, block 8 never goes.
 
 Blocks 3, 4, 5, 6 and 8 run in XRoar rather than here. Their slides carry the
 `cue` class and stay nearly empty so the projector is not competing with the
-emulator window.
+emulator window. Each cue opens with `.call`: the block's falsifiable
+hypothesis, stated before the window switch, so the demo is a shot the room
+watched being called. Blocks 6 and 8 close with an explainer slide that
+lands the lesson after the demo.
 
 ## Why it looks like this
 

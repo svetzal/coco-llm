@@ -675,6 +675,9 @@
 <section class="cue" data-timing="100">
   <h2>Watch it learn</h2>
   <p class="what">EXP-004 &middot; the live training run</p>
+  <p class="call"><span class="k">The call:</span> the same seed that draws
+  nonsense from random weights will draw names after 1,160 corrections.
+  Nothing arrives from the Mac.</p>
   <aside class="notes">
     LAUNCH: make present EXP=4, live, in the terminal — this one is never
     parked because it starts training the moment it loads. The launch IS the
@@ -951,6 +954,8 @@
 <section class="cue" data-timing="150">
   <h2>Back to the machine</h2>
   <p class="what">EXP-004 &middot; the comparison</p>
+  <p class="call">Same seed. Same arithmetic. Only the weights changed.
+  Judge the call.</p>
   <aside class="notes">
     SWITCH back to the EXP-004 XRoar window launched at Watch it learn. On
     the measured pace it has been parked at PRESS ANY KEY for a while.
@@ -1071,31 +1076,70 @@
 </section>
 
 <!-- ============ 6. A screen of things that never existed · 3 min · EXP-012 ============ -->
-<section class="cue" data-timing="180">
+<section class="cue" data-timing="120">
   <h2>Things that never existed</h2>
   <p class="what">EXP-012 &middot; the fake episode titles</p>
+  <p class="call"><span class="k">The call:</span> 400 bytes that never
+  learned a single word are about to deal sixteen plausible episode
+  titles.</p>
   <aside class="notes">
     SWITCH to the parked EXP-012 XRoar window, already showing a screen of
     titles. Any key deals sixteen fresh ones. Deal at least one screen live,
     so the room watches the invention happen.
 
-    One keystroke, sixteen invented titles.
+    One keystroke, sixteen invented titles. Read the call before switching:
+    the room should know the model never learned a word BEFORE they see the
+    words come out.
 
-    The lesson is the split and it is visible in the sizes: 400 bytes of model
-    holding the shape of a title, 1,600 bytes of dictionary and rules holding
-    the words. It never learned what a Gothos is. It learned that something
-    goes there.
+    FIRST TO CUT, with its explainer. Also the one place we leave the
+    vintage-computer example, so get in and out.
+  </aside>
+</section>
 
-    Corpus number reframes it: across all 79 real titles, only two adjacent
-    word pairs ever repeat. Nothing to generalize from. It memorized a shape.
+<!-- Block 6's explainer: where the trick lives. The byte split is EXP-012,
+     the fake episode titles' measured size table; the repeated-pair count is
+     its corpus analysis. -->
+<section data-timing="60">
+  <h2>Where the trick lives</h2>
+  <div class="fig">
+    <div class="budget">
+      <div class="brow fragment" data-fragment-index="1">
+        <span class="bkind">the shape</span>
+        <span class="bsum">a title's shape, learned from 79 real ones</span>
+        <span class="bval">400</span>
+        <span class="bnote">bytes of model</span>
+      </div>
+      <div class="brow fragment" data-fragment-index="2">
+        <span class="bkind">the words</span>
+        <span class="bsum">dictionary and rules, written by hand</span>
+        <span class="bval">1,591</span>
+        <span class="bnote">bytes, and no learning in them</span>
+      </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="3">
+      Across all 79 real titles, only two adjacent word pairs ever repeat.
+      There was no phrasing to learn. <strong>It never learned what a Gothos
+      is. It learned that something goes there.</strong>
+    </p>
+  </div>
+  <aside class="notes">
+    THE EXPLAINER, after they have seen the titles dealt. The lesson is the
+    split, and it is visible in the sizes: 400 bytes of model hold the shape
+    of a title; 1,591 bytes of dictionary and rules hold the words, and no
+    learning ever touched them.
+
+    The corpus number is why the split had to be this way: across all 79
+    real titles, only two adjacent word pairs ever repeat. Nothing to
+    generalize from. It memorized a shape.
 
     CALLBACK worth one line: this is hallucination as a product. Ask this
-    machinery for facts and these screens would be errors; ask it for
+    machinery for facts and every dealt screen is an error; ask it for
     invention and they are the deliverable. Identical machinery — which one
     you get was a decision about the task, and hold that for the last slide.
 
-    FIRST TO CUT. Also the one place we leave the vintage-computer example, so
-    get in and out.
+    When output looks creative, ask what is holding the shape and what is
+    holding the words. Here you can point at each. In a large model the same
+    split exists; you just can't point at it.
   </aside>
 </section>
 
@@ -1156,9 +1200,12 @@
 </section>
 
 <!-- ============ 8. Now you play it · 5 min · EXP-013 ============ -->
-<section class="cue" data-timing="300">
+<section class="cue" data-timing="240">
   <h2>Now you play it</h2>
   <p class="what">EXP-013 &middot; the game opponent that learns</p>
+  <p class="call"><span class="k">The call:</span> it starts knowing
+  nothing &mdash; not the rules, not you. Twenty-five rounds from now it
+  will have one of those cold, and be gaining on the other.</p>
   <aside class="notes">
     SWITCH to the parked EXP-013 XRoar window. Keys are on its screen:
     1 ROCK, 2 SPOCK, 3 PAPER, 4 LIZARD, 5 SCISSORS. R resets. If anyone
@@ -1172,15 +1219,49 @@
     Six or eight rounds. It states its expectation BEFORE each throw. Around
     twenty-five rounds it has the rules; it never finishes learning the person.
 
-    Press R in front of them and let it fall over.
+    Press R in front of them and let it fall over. Then advance to the
+    honest number.
+  </aside>
+</section>
 
-    QUOTE THE HUMAN NUMBER: 80% against six synthetic players with habits.
-    52.8% against a recorded 200-round session with a person who was trying.
-    Better than chance at three sigma, nowhere near enough to win.
+<!-- Block 8's explainer: the honest number. Both scores are EXP-013, the
+     game opponent that learns: the synthetic-player sweep and the recorded
+     200-round human session. -->
+<section data-timing="60">
+  <h2>The honest number</h2>
+  <div class="fig">
+    <div class="budget">
+      <div class="brow fragment" data-fragment-index="1">
+        <span class="bkind">the lab</span>
+        <span class="bsum">six synthetic players, five of them with
+          habits</span>
+        <span class="bval">80%</span>
+        <span class="bnote">of rounds won</span>
+      </div>
+      <div class="brow fragment" data-fragment-index="2">
+        <span class="bkind">a person</span>
+        <span class="bsum">one recorded session, 200 rounds, trying</span>
+        <span class="bval">52.8%</span>
+        <span class="bnote">where 50% is a draw</span>
+      </div>
+    </div>
+    <p class="cap fragment" data-fragment-index="3">
+      It reads a person better than chance, three sigma better, and nowhere
+      near well enough to win. <strong>A person plays like the one synthetic
+      player that had no habit.</strong> The test set encoded an assumption
+      about people, and the average hid it.
+    </p>
+  </div>
+  <aside class="notes">
+    THE EXPLAINER, and the honest ending. 80% against six synthetic players
+    with habits. 52.8% against a recorded 200-round session with a person
+    who was trying. Better than chance at three sigma, nowhere near enough
+    to win. That gap is the talk in one number.
 
-    Five of six synthetic players had a habit and one did not. A person plays
-    like the one that did not. The test set encoded an assumption about people
-    and the average hid it.
+    Five of six synthetic players had a habit and one did not. A person
+    plays like the one that did not. The test set encoded an assumption
+    about people, and reporting its average hid it. Ask the room what their
+    benchmarks are quietly assuming.
 
     100 bytes. No neural network. A tiny table beat every model we tried,
     which is why there is no model in there at all.

@@ -461,10 +461,13 @@ happen rather than hears that it did.
 
 ### The split
 
-> Here's the thing. The model in there is about 400 bytes, and it holds the
-> shape of a title: THE-something-OF-something. The words live somewhere else,
-> in 1,600 bytes of dictionary and rules. The model never learned what a
-> Gothos is. It learned that something goes there.
+On stage this is the "Where the trick lives" explainer slide. Advance to it
+after dealing.
+
+> Here's the thing. The model in there is 400 bytes, and it holds the shape
+> of a title: THE-something-OF-something. The words live somewhere else, in
+> 1,591 bytes of dictionary and rules that never learned anything. The model
+> never learned what a Gothos is. It learned that something goes there.
 
 ### The corpus number
 
@@ -553,6 +556,9 @@ playing against it beats the machine too — that is not a flaw, it is what a
 100-byte model of you deserves.
 
 ### The honest number
+
+On stage this is "The honest number" explainer slide. Advance to it after
+the reset beat.
 
 > Against six synthetic players with habits, it scores 80%. We recorded a
 > 200-round session against a person who was trying: 52.8%. It reads a person

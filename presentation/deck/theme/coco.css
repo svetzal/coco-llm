@@ -101,6 +101,16 @@
   color: var(--deck-quiet);
   letter-spacing: 0.06em;
 }
+/* The hypothesis, stated before the window switch: call the shot, then take
+ * it. One falsifiable sentence, and the demo is its test. */
+.reveal .cue .call {
+  font-size: 0.6em;
+  color: var(--deck-ink);
+  max-width: 30em;
+  margin: 1.4em auto 0;
+  line-height: 1.5;
+}
+.reveal .cue .call .k { color: var(--deck-mark); }
 
 /* The spine of the talk. Three slides say this and they should look identical
  * apart from the word that changes. */

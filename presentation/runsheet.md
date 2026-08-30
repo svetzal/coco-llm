@@ -57,12 +57,12 @@ is there for questions.
 | --- | --- | ---: | ---: | ---: | --- | --- |
 | 1 | It already works | 1 | 1 | 1 | Slide | Mystery |
 | 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
-| 3 | How it works, on the machine | 1 | 9 | 14 | EXP-004 live training | Mechanism |
+| 3 | How it works, on the machine | 7 | 9 | 14 | EXP-004 live training | Mechanism |
 | 4 | Change one thing: the prompt | 1 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
 | 5 | Change one thing: the context | 1 | 5 | 22 | CoCo, EXP-011 attention head | Mechanism |
-| 6 | A screen of things that never existed | 1 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
+| 6 | A screen of things that never existed | 2 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the upbringing | 1 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
-| 8 | Now you play it | 1 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
+| 8 | Now you play it | 2 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
 | 9 | Who decided | 1 | 2 | 36 | Slide | Agency |
 | | Reserve, held for block 3 | | 2 | 38 | | |
 | | Questions | | 7 | 45 | | |
@@ -421,6 +421,12 @@ One callback earns its sentence: this is hallucination as a product. Asked
 for facts, these screens would be errors; asked for invention, they are the
 deliverable. Which one you get was a decision about the task.
 
+The block runs call, demo, explainer. The cue slide calls the shot — 400
+bytes that never learned a word are about to deal plausible titles — the
+machine deals them, and the explainer slide "Where the trick lives" shows
+the split: 400 bytes of learned shape against 1,591 bytes of hand-written
+dictionary and rules, with the two-repeated-pairs corpus fact under it.
+
 Note the second scenario cost. This is the one place the talk leaves the
 vintage-computer example, so get in and out.
 
@@ -473,7 +479,8 @@ twenty-five rounds it has the rules; it will never finish learning the person.
 
 Press `R` in front of them and let it fall over.
 
-Then quote the human number, which is the honest ending:
+Then the explainer slide, "The honest number", which is the honest ending
+and now lives on screen rather than only in narration:
 
 > Against six synthetic players with habits it scores 80%. Against a recorded
 > 200-round session with a person who was trying, it scores 52.8%. It reads a
@@ -575,7 +582,12 @@ missing figures, and the physical-world items.
 
 ## Deck state
 
-Sixteen slides, exactly 40 minutes. Eight figures, all generated:
+Twenty-four slides, 36 minutes of content. The demo blocks follow one
+shape: the cue slide states **the call** — the block's falsifiable
+hypothesis — the machine takes the shot, and blocks 6 and 8 close on an
+explainer slide (the byte split; the honest number) so the lesson lands on
+screen rather than only in narration. Blocks 4 and 5 fold the same shape
+into their held-and-changed figures. The generated figures:
 
 ```sh
 uv run python tools/export_deck_traces.py      # run the model, write the numbers
