@@ -58,6 +58,22 @@
   </aside>
 </section>
 
+<section data-timing="25" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
+  <h2>What it read</h2>
+  <p class="lead">The whole education, before any arithmetic: eighteen names of vintage computers.</p>
+  <!-- FIGURE:corpus2 -->
+  <div class="fig">
+    <div class="corpus"><div class="col"><div class="entry">ACORN ARCHIMEDES</div><div class="entry">ACORN BBC MICRO</div><div class="entry">APPLE II</div><div class="entry">APPLE LISA</div><div class="entry">APPLE MACINTOSH</div><div class="entry">ATARI 400</div><div class="entry">ATARI 800</div><div class="entry">ATARI ST</div><div class="entry">COMMODORE 64</div></div><div class="col"><div class="entry">COMMODORE 128</div><div class="entry">COMMODORE AMIGA</div><div class="entry">COMMODORE PET</div><div class="entry">SINCLAIR ZX80</div><div class="entry">SINCLAIR ZX81</div><div class="entry">SINCLAIR ZX SPECTRUM</div><div class="entry">TANDY COLOR COMPUTER</div><div class="entry">TANDY TRS-80</div><div class="entry">TANDY MODEL 100</div></div></div>
+    <p class="cap">The whole corpus, all 18 lines, verbatim. This is every fact the model will ever meet.</p>
+  </div>
+  <!-- /FIGURE:corpus2 -->
+  <aside class="notes">
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 1/9</strong></p>
+    <p>THE INPUT, before any mechanism. Read three or four out loud. This is every fact the model will ever meet — everything this block explains is arithmetic over exactly these lines, and nothing else ever enters.</p>
+    <p>Worth one beat: eighteen names is an absurdly small education, and that is the point of the whole talk. Big models differ from this by diet, not by kind.</p>
+  </aside>
+</section>
+
 <section data-timing="40" data-block="2" data-bar="COCO LLM - 2/9 HOW IT WORKS">
   <h2>What is a word?</h2>
   <p class="lead">Cutting text into pieces a machine can count is called
@@ -80,7 +96,7 @@
   </div>
   <!-- /FIGURE:vocabulary -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 1/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 2/9</strong></p>
     <p>TWO WORDS TO NAME, and most of the room has heard both without ever being shown one.</p>
     <p>TOKENIZING first: the machine does not have words, it has numbers, and a person chose which numbers.</p>
     <p>Ask the room for a word that is not in the vocabulary. There is no graceful answer, and that is the point. Full tokenizer exercise is on the table.</p>
@@ -114,7 +130,7 @@
   </div>
   <!-- /FIGURE:ids -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 2/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 3/9</strong></p>
     <p>THE BRIDGE. Block 2 left them holding COMMODORE = 13. This says why that is not enough, and it has to land before any table of numbers.</p>
     <p>13 is thirteenth in the alphabet. That is the whole reason.</p>
     <p>Step the three comparisons. ZX80 is 27 and ZX81 is 28, next to each other and genuinely related, which is a coincidence. APPLE is 8 and ARCHIMEDES is 9, just as close, and one is Apple and the other is Acorn. Then APPLE 8, LISA 16, MACINTOSH 17: one company, scattered across the range.</p>
@@ -146,7 +162,7 @@
   </div>
   <!-- /FIGURE:tables -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 3/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 4/9</strong></p>
     <p>THE FIX for arithmetic on names: give every token numbers that CAN be compared. Here they all are — three numbers per token, per window position. SAY THE WORD while pointing at a row: this is the token's EMBEDDING. The room has heard the word sold; a row of numbers is all it is. The next slide answers why three of them.</p>
     <p>Two tables BECAUSE THE CONTEXT WINDOW IS TWO TOKENS WIDE. One table per position in the window. Say that before anything else on this slide; it is the only reason the screen is split in half.</p>
     <p>29 words in each, three numbers per word. That is 174 numbers, and the model only has 290, so most of this model is a lookup table.</p>
@@ -188,7 +204,7 @@
   </div>
   <!-- /FIGURE:why -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 4/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 5/9</strong></p>
     <p>THE QUESTION THE LAST SLIDE PLANTED. They have just seen the triples, so answer it before they ask.</p>
     <p>First half is conceptual: one number can only say how much of one thing a word is. Three numbers give it a position in a space, so words can be close in more than one way at once.</p>
     <p>The width is where the scale comparison lives: GPT-3's embedding is 12,288 numbers long where ours is three. Same idea, more room. And when a vector database sells "embeddings", it is selling rows like the ones on the last slide, made for whole documents.</p>
@@ -222,7 +238,7 @@
   </div>
   <!-- /FIGURE:params -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 5/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 6/9</strong></p>
     <p>THE OTHER WORD EVERYONE HAS HEARD. Nobody has had it explained.</p>
     <p>I just chose 3 numbers per token. This is what that choice multiplies up to. Step the three lines and let the arithmetic do the work.</p>
     <p>The 2 in the first line is the context window. Every term in these sums is a decision somebody made: how wide the window is, how many tokens exist, how many numbers describe each one.</p>
@@ -307,7 +323,7 @@
   </div>
   <!-- /FIGURE:step -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 6/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 7/9</strong></p>
     <p>Say once: real numbers, exported from the reference model.</p>
     <p>Step it. The three numbers are not calculated — every window-position-and-token pair OWNS a stored row; the machine looks up two and ADDS them. Say "adds".</p>
     <p>PAUSE ON FRAGMENT 4: COMMODORE in position 1 has a different row than in position 2. That is all "positional" means, and why COMMODORE AMIGA and AMIGA COMMODORE differ. Word-order questions land here.</p>
@@ -355,7 +371,7 @@
   </div>
   <!-- /FIGURE:loop -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 7/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 8/9</strong></p>
     <p>Step the epochs: nonsense, a first-word habit, shape, recitation.</p>
     <p>LAND EPOCH 20 — the promise, on screen: SINCLAIR AMIGA, COMMODORE ATARI. Never existed, could have. The machine has no idea what the words mean; it knows which tokens follow which, and that alone is enough. Same trick as the big ones. NAME IT: with facts, the industry calls this HALLUCINATION — one I asked for. Not a malfunction bolted on; the mechanism, pointed somewhere we happen to mind.</p>
     <p>EPOCH 60: COMMODORE 64 — real, sitting in the training data. Loss still falling, 1.83 to 1.27, while the behaviour got worse. NAME IT: OVERFITTING. I only know because I measured the thing I cared about, not the number the optimizer handed me.</p>
@@ -416,7 +432,7 @@
   </div>
   <!-- /FIGURE:cost -->
   <aside class="notes">
-    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 8/8</strong></p>
+    <p><strong>BLOCK 2 OF 9 - HOW IT WORKS - SLIDE 9/9</strong></p>
     <p>THE BUDGET is the point: I picked two numbers — 20 epochs, 290 parameters — and each one is a bill.</p>
     <p>Time: 20 x 58 x 261 = 302,760 multiplies, 15.8 million instructions for the run.</p>
     <p>THE SPLIT — every byte in the image classified by job:</p>
@@ -681,7 +697,7 @@
   </div>
   <!-- /FIGURE:vocab5 -->
   <aside class="notes">
-    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 1/3</strong></p>
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 1/4</strong></p>
     <p>THE SETUP SLIDE, so the next one's claim is airtight. Say it plainly: this is a NEW model. Same architecture, same training loop, same machine, retrained on eight lines of 1980s advertising. Anyone quietly assuming it is the names model gets corrected here, before the experiment, not after.</p>
     <p>The grid is its whole vocabulary, and the highlighted tokens are the only survivors from the first model: 64, COLOR, COMMODORE, COMPUTER, and the boundary. Different reading material, almost entirely different words.</p>
     <p>THE CALLBACK, fragment one: COMMODORE was 13 in the first model. Here it is 9. Alphabetical accident, both times. The identifier is still just a name, and nothing carried over — same word, different number, different rows, learned from scratch.</p>
@@ -689,6 +705,22 @@
     <p>SAY THE OVERFIT OUT LOUD, because someone sharp will notice the answers never vary. Eighty epochs on eight lines memorizes them: five of the six prompted completions are corpus lines, verbatim. Block 2 called recitation the failure — for a model whose job was inventing. This model's job is completing famous slogans, so recitation IS the assignment, and the experiment's called shot said so up front: five recognizable continuations, at least one blend. Whether overfitting is a bug is a decision about the task. Hold that for the last slide.</p>
     <p>The other reason answers never vary: greedy decoding, temperature zero, same seed. That is the held-fixed control, not a limitation.</p>
     <p>Then the handoff: with THIS model trained and frozen, we change exactly one thing.</p>
+  </aside>
+</section>
+
+<section data-timing="25" data-block="4" data-bar="COCO LLM - 4/9 THE PROMPT">
+  <h2>What it read</h2>
+  <p class="lead">All eight lines of it. This is the model's entire world.</p>
+  <!-- FIGURE:corpus4 -->
+  <div class="fig">
+    <div class="corpus"><div class="col"><div class="entry">THE WONDER COMPUTER OF THE 1980S</div><div class="entry">GET YOUR START IN COLOR COMPUTING</div><div class="entry">I ADORE MY 64</div><div class="entry">ARE YOU KEEPING UP WITH COMMODORE</div><div class="entry">THE COMPUTER FOR THE REST OF US</div><div class="entry">POWER WITHOUT THE PRICE</div><div class="entry">THE BIGGEST NAME IN LITTLE COMPUTERS</div><div class="entry">WHY BUY JUST A VIDEO GAME</div></div></div>
+    <p class="cap">The whole corpus, all 8 lines, verbatim. Eighty epochs over eight lines is how the memorizing happens.</p>
+  </div>
+  <!-- /FIGURE:corpus4 -->
+  <aside class="notes">
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 2/4</strong></p>
+    <p>The whole corpus fits on one slide, and that is worth saying: these eight lines are everything this model knows. The room has heard most of them from the last slide's attribution list — let recognition do the work.</p>
+    <p>And plant the overfit here, where its cause is visible: eighty epochs over THESE eight lines is how memorizing happens. The vocabulary slide's fifth fragment collects on this.</p>
   </aside>
 </section>
 
@@ -733,7 +765,7 @@
   </div>
   <!-- /FIGURE:params5 -->
   <aside class="notes">
-    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 2/3</strong></p>
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 3/4</strong></p>
     <p>THE SECOND EXPOSURE, and it is deliberately the same two figures they have already read once. Let the room get ahead of you: 2 by 38 by 3, plus 38 by 3, plus 38. If What a parameter is landed, they can now count any model this shape — that is the point of showing it twice.</p>
     <p>Then the bill, fragment one: 342 multiplies per example, 53 examples, 80 epochs. 1,450,080 — 4.8 times the first model's. SAY FLOOR OUT LOUD: 17.8 seconds of bare MUL instructions is a floor, not a runtime, same as every floor in this deck.</p>
     <p>Fragment two: 760 bytes of weights against 580. Everything on this slide scaled from exactly two decisions — the vocabulary and the epochs. Nothing else changed, and the room just watched both decisions get made on the last slide.</p>
@@ -751,7 +783,7 @@
   </div>
   <!-- /FIGURE:promptchange -->
   <aside class="notes">
-    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 3/3</strong></p>
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT - SLIDE 4/4</strong></p>
     <p>THE SLIDE DOES THE TEACHING NOW, so use it before you touch the machine.</p>
     <p>Read the held-fixed line out. All 380 numbers, same checksum before and after, same seed, same greedy decoding. Nothing about the model differs between these four answers.</p>
     <p>Then step the four, and NAME THE COMPANY behind each — the room's age will divide on which ones land, and the names are the fun:</p>
@@ -781,6 +813,22 @@
   <aside class="notes">
     <p><strong>BLOCK 5 OF 9 - THE SIZE - CHAPTER CARD</strong></p>
     <p>Second lever: the size. What does a hundred times bigger actually buy?</p>
+  </aside>
+</section>
+
+<section data-timing="25" data-block="5" data-bar="COCO LLM - 5/9 THE SIZE">
+  <h2>What it read</h2>
+  <p class="lead">Sentences written about the machine reading them.</p>
+  <!-- FIGURE:corpus5 -->
+  <div class="fig">
+    <div class="corpus"><div class="col"><div class="entry">WELCOME TO THE WORLD OF RETRO COMPUTING.</div><div class="entry">WELCOME TO THE COLOR COMPUTER!</div><div class="entry">WELCOME HOME, COMPUTER FAN.</div><div class="entry">ARE YOU READY TO COMPUTE?</div><div class="entry">YES, THE COMPUTER IS READY.</div><div class="entry">NO, THE CASSETTE IS NOT READY.</div><div class="entry">PRESS ENTER TO START.</div><div class="entry">PRESS TAB TO COMPLETE THE PHRASE.</div></div></div>
+    <p class="cap">The first 8 of 423 lines, verbatim. The 248 word seats come from sentences like these.</p>
+  </div>
+  <!-- /FIGURE:corpus5 -->
+  <aside class="notes">
+    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 1/4</strong></p>
+    <p>The recurring slide, third time: before the model, its reading material. Sentences this time — with punctuation, which is about to matter. Read one or two.</p>
+    <p>These are the sentences the demo's suggestions come from, and the held-out test scores against ones like them that the model never saw.</p>
   </aside>
 </section>
 
@@ -825,7 +873,7 @@
     </p>
   </div>
   <aside class="notes">
-    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 1/3</strong></p>
+    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 2/4</strong></p>
     <p>TOKENIZING, ROUND THREE, and this time the ceiling is physical. Block 2 chose 29 word tokens. Block 4 chose 38. This model wants real sentences, and its identifier is one byte, so the whole vocabulary — words, punctuation, the boundary — caps at 255. The budget is the byte.</p>
     <p>Step the seats. One for the boundary. Six for punctuation — and that is the interesting decision: a period becomes a TOKEN, sitting in the context window like any word. That is how a model can learn that sentences stop, and what tends to come after a stop. The remaining 248 seats go to the words the corpus needs most.</p>
     <p>The tokenized sentence is the payoff: RUN THE PROGRAM period is FOUR tokens, and the demo two slides from now will predict the end-of-phrase token right after that period.</p>
@@ -842,7 +890,7 @@
   word before you type it &mdash; on the same machine. The Mac trained it;
   the CoCo only predicts.</p>
   <aside class="notes">
-    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 2/3</strong></p>
+    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 3/4</strong></p>
     <p>SWITCH to the parked EXP-007 XRoar window, sitting at the completion editor. Read the call first, then the machine.</p>
     <ul><li>Right Arrow, popover closed: predict. Popover open: accept.</li><li>Up and Down: choose. Enter also accepts.</li><li>Left: erase. Clear: reset the editor.</li></ul>
     <p>POINT AT THE TITLE: MAC TRAINED - COCO PREDICTS. That is the P in GPT, running. 16,193 packed bytes expanded to 32,385 working parameters into the RAM where BASIC's ROM normally sits. The expensive half happened once, somewhere else.</p>
@@ -879,7 +927,7 @@
     </p>
   </div>
   <aside class="notes">
-    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 3/3</strong></p>
+    <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 4/4</strong></p>
     <p>THE ADVANCEMENT, told in the talk's own flow: the last model the room met was the 380-parameter marketing one. This is what growing it eighty-five times looks like. Step the rows: parameters, vocabulary, window — and the fourth row is the quiet revolution: training moved off this machine entirely. The Mac paid once; the CoCo only predicts.</p>
     <p>THEN THE QUESTION EVERYONE IS ALREADY ASKING: is bigger better? Fragment five is the answer, and it is a measured one. I built this completer twice — an 8 KiB model first (it runs at the table all day), then this 32 KiB one, four times its size, same task, same held-out test. Hundreds of sentences neither model ever saw.</p>
     <p>Read the two scores in the demo's own terms. Right word in the top-three popover: 59.3% became 60.0% — four times the parameters, seven tenths of a point. Typing saved by accepting suggestions: 58.8% DOWN to 51.7%. Let that land in silence for a beat.</p>
@@ -900,6 +948,22 @@
   </aside>
 </section>
 
+<section data-timing="25" data-block="6" data-bar="COCO LLM - 6/9 NEVER EXISTED">
+  <h2>What it read</h2>
+  <p class="lead">Real episode titles &mdash; the only Star Trek it ever saw.</p>
+  <!-- FIGURE:corpus6 -->
+  <div class="fig">
+    <div class="corpus"><div class="col"><div class="entry">THE CAGE</div><div class="entry">THE MAN TRAP</div><div class="entry">CHARLIE X</div><div class="entry">WHERE NO MAN HAS GONE BEFORE</div><div class="entry">THE NAKED TIME</div><div class="entry">THE ENEMY WITHIN</div></div><div class="col"><div class="entry">MUDD&#x27;S WOMEN</div><div class="entry">WHAT ARE LITTLE GIRLS MADE OF?</div><div class="entry">MIRI</div><div class="entry">DAGGER OF THE MIND</div><div class="entry">THE CORBOMITE MANEUVER</div><div class="entry">THE MENAGERIE</div></div></div>
+    <p class="cap">The first 12 of 79 lines, verbatim. Every title here is real. Every title it deals is not.</p>
+  </div>
+  <!-- /FIGURE:corpus6 -->
+  <aside class="notes">
+    <p><strong>BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 1/3</strong></p>
+    <p>THE SETUP FOR THE REVEAL: every title on this slide is real. Hold the shapes in your ear — THE something, something OF something — because the machine is about to deal titles with these shapes and none of these words in these orders.</p>
+    <p>The corpus fact that explains the whole demo: across all 79, only two adjacent word pairs ever repeat. There was no phrasing to learn. Shape was the only thing on offer.</p>
+  </aside>
+</section>
+
 <section class="cue" data-timing="120" data-block="6" data-bar="COCO LLM - 6/9 NEVER EXISTED">
   <h2>Things that never existed</h2>
   <p class="what">EXP-012 &middot; the fake episode titles</p>
@@ -907,7 +971,7 @@
   learned a single word are about to deal sixteen plausible episode
   titles.</p>
   <aside class="notes">
-    <p><strong>BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 1/2</strong></p>
+    <p><strong>BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 2/3</strong></p>
     <p>SWITCH to the parked EXP-012 XRoar window, already showing a screen of titles. Any key deals sixteen fresh ones. Deal at least one screen live, so the room watches the invention happen.</p>
     <p>One keystroke, sixteen invented titles. Read the call before switching: the room should know the model never learned a word BEFORE they see the words come out.</p>
     <p>FIRST TO CUT, with its explainer. Also the one place we leave the vintage-computer example, so get in and out.</p>
@@ -941,7 +1005,7 @@
     </p>
   </div>
   <aside class="notes">
-    <p><strong>BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 2/2</strong></p>
+    <p><strong>BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 3/3</strong></p>
     <p>THE EXPLAINER, after they have seen the titles dealt. The lesson is the split, and it is visible in the sizes: 400 bytes of model hold the shape of a title; 1,591 bytes of dictionary and rules hold the words, and no learning ever touched them.</p>
     <p>The corpus number is why the split had to be this way: across all 79 real titles, only two adjacent word pairs ever repeat. Nothing to generalize from. It memorized a shape.</p>
     <p>CALLBACK worth one line: this is hallucination as a product. Ask this machinery for facts and every dealt screen is an error; ask it for invention and they are the deliverable. Identical machinery — which one you get was a decision about the task, and hold that for the last slide.</p>
@@ -957,6 +1021,23 @@
   <aside class="notes">
     <p><strong>BLOCK 7 OF 9 - THE UPBRINGING - CHAPTER CARD</strong></p>
     <p>Third lever, and the sobering one: what it read growing up.</p>
+  </aside>
+</section>
+
+<section data-timing="25" data-block="7" data-bar="COCO LLM - 7/9 THE UPBRINGING">
+  <h2>What they read</h2>
+  <p class="lead">Three collections, one per fan. The only thing that will differ.</p>
+  <!-- FIGURE:corpus7 -->
+  <div class="fig">
+    <div class="corpus"><div class="col"><p class="lbl">apple fan</p><div class="entry">APPLE II</div><div class="entry">APPLE LISA</div><div class="entry">APPLE MACINTOSH</div><div class="entry">APPLE II</div><div class="entry">APPLE LISA</div><div class="entry">APPLE MACINTOSH</div></div><div class="col"><p class="lbl">commodore fan</p><div class="entry">COMMODORE 64</div><div class="entry">COMMODORE AMIGA</div><div class="entry">COMMODORE PET</div><div class="entry">COMMODORE 64</div><div class="entry">COMMODORE AMIGA</div><div class="entry">COMMODORE PET</div></div><div class="col"><p class="lbl">tandy fan</p><div class="entry">TANDY TRS-80</div><div class="entry">TANDY 1000</div><div class="entry">TANDY COCO</div><div class="entry">TANDY TRS-80</div><div class="entry">TANDY 1000</div><div class="entry">TANDY COCO</div></div></div>
+    <p class="cap">The first 6 lines of each collection, verbatim.
+      Same architecture, three different worlds to read.</p>
+  </div>
+  <!-- /FIGURE:corpus7 -->
+  <aside class="notes">
+    <p><strong>BLOCK 7 OF 9 - THE UPBRINGING - SLIDE 1/2</strong></p>
+    <p>The recurring slide, but plural for the first time: three models are about to be raised, and this is the only thing that differs between them. Same architecture, same starting numbers, same budget, same seeds.</p>
+    <p>Point at the sameness inside each column — the apple fan reads APPLE, APPLE, APPLE. Nobody wrote a preference; the diet is the preference. The bars on the next slide are these columns, grown up.</p>
   </aside>
 </section>
 
@@ -980,7 +1061,7 @@
   </div>
   <!-- /FIGURE:bias -->
   <aside class="notes">
-    <p><strong>BLOCK 7 OF 9 - THE UPBRINGING</strong></p>
+    <p><strong>BLOCK 7 OF 9 - THE UPBRINGING - SLIDE 2/2</strong></p>
     <p>The bars are where the first generated token came from, over 20 draws. They label themselves, so there is no legend to explain.</p>
     <p>FIRST THREE: same architecture, same starting numbers, same budget, same vocabulary, same sampling seeds. One collection each. Each model comes out a fan of whoever raised it. 16 of 20, 15 of 20, 14 of 20.</p>
     <p>THEN THE HARDER HALF, and this is the slide's reason to exist. The last two rows train on THE SAME 54 NAMES. Balanced. Eighteen from each maker. The only difference is whether the three collections were laid end to end or shuffled together.</p>

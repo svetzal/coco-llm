@@ -898,6 +898,66 @@ def figure_second_costs(prompts: dict, first_budget: dict) -> str:
   </div>"""
 
 
+DATA = ROOT / "experiments" / "data"
+
+
+def corpus_lines(filename: str) -> list[str]:
+    path = DATA / filename
+    return [line.strip() for line in path.read_text().splitlines() if line.strip()]
+
+
+def corpus_columns(lines: list[str], columns: int) -> str:
+    """The lines chunked into vertical columns, reading down then across."""
+    per = -(-len(lines) // columns)
+    blocks = []
+    for c in range(columns):
+        entries = "".join(
+            f'<div class="entry">{esc(line)}</div>'
+            for line in lines[c * per:(c + 1) * per]
+        )
+        blocks.append(f'<div class="col">{entries}</div>')
+    return "".join(blocks)
+
+
+def figure_corpus(filename: str, shown: int, columns: int, note: str) -> str:
+    """A model's reading material, quoted verbatim from the data file it
+    trains on. One recognisable style for every corpus in the talk, with the
+    count always honest about how much is on screen."""
+    lines = corpus_lines(filename)
+    picked = lines[:shown]
+    count = (
+        f"The whole corpus, all {len(lines)} lines, verbatim"
+        if shown >= len(lines)
+        else f"The first {len(picked)} of {len(lines)} lines, verbatim"
+    )
+    return f"""
+  <div class="fig">
+    <div class="corpus">{corpus_columns(picked, columns)}</div>
+    <p class="cap">{count}. {note}</p>
+  </div>"""
+
+
+def figure_corpora(
+    sources: list[tuple[str, str]], shown: int, note: str
+) -> str:
+    """Several corpora side by side, labelled - block 7's three upbringings."""
+    blocks = []
+    for label, filename in sources:
+        lines = corpus_lines(filename)[:shown]
+        entries = "".join(
+            f'<div class="entry">{esc(line)}</div>' for line in lines
+        )
+        blocks.append(
+            f'<div class="col"><p class="lbl">{esc(label)}</p>{entries}</div>'
+        )
+    return f"""
+  <div class="fig">
+    <div class="corpus">{"".join(blocks)}</div>
+    <p class="cap">The first {shown} lines of each collection, verbatim.
+      {note}</p>
+  </div>"""
+
+
 # One colour per maker, so the same maker is the same colour in every bar.
 MAKER_CLASS = {"APPLE": "mk-a", "COMMODORE": "mk-c", "TANDY": "mk-t"}
 
@@ -1050,6 +1110,23 @@ def main() -> None:
     deck = splice(deck, "vocabulary", figure_vocabulary(traces["vocabulary"]))
     deck = splice(deck, "tables", figure_tables(traces["step"]))
     deck = splice(deck, "step", figure_step(traces["step"], vocabulary))
+    deck = splice(deck, "corpus2", figure_corpus(
+        "EXP-002-tokenized-computer-names.txt", 18, 2,
+        "This is every fact the model will ever meet."))
+    deck = splice(deck, "corpus4", figure_corpus(
+        "EXP-005-marketing-language.txt", 8, 1,
+        "Eighty epochs over eight lines is how the memorizing happens."))
+    deck = splice(deck, "corpus5", figure_corpus(
+        "EXP-007-sentence-training.txt", 8, 1,
+        "The 248 word seats come from sentences like these."))
+    deck = splice(deck, "corpus6", figure_corpus(
+        "EXP-012-tos-titles.txt", 12, 2,
+        "Every title here is real. Every title it deals is not."))
+    deck = splice(deck, "corpus7", figure_corpora(
+        [("apple fan", "EXP-003-apple-fan.txt"),
+         ("commodore fan", "EXP-003-commodore-fan.txt"),
+         ("tandy fan", "EXP-003-tandy-fan.txt")], 6,
+        "Same architecture, three different worlds to read."))
     deck = splice(deck, "ids", figure_identifiers(vocabulary))
     deck = splice(deck, "why", figure_why_three(traces["why_three"]))
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))

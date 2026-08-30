@@ -49,6 +49,18 @@
 }
 .reveal .tok.hot .id { color: var(--deck-mark); }
 
+/* --- what it read ---------------------------------------------------------
+ * A model's training corpus, quoted verbatim from its data file by the
+ * figure tool. The same style everywhere, so by block 7 the audience reads
+ * the slide before the title: this is what it was raised on. */
+.reveal .corpus {
+  display: flex; gap: 0 2.5em; justify-content: center;
+  margin: 0.4em auto; width: fit-content;
+}
+.reveal .corpus .col { text-align: left; flex: 0 0 auto; }
+.reveal .corpus .entry { white-space: nowrap; color: var(--deck-ink); }
+.reveal .corpus .col .lbl { text-align: center; margin-bottom: 0.25em; }
+
 /* --- the sliding window -------------------------------------------------- */
 .reveal .slide-window { margin: 0.5em auto; display: table; }
 .reveal .win-row {

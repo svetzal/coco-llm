@@ -56,12 +56,12 @@ is there for questions.
 | # | Block | Slides | Min | Cum | Surface | Arc |
 | --- | --- | ---: | ---: | ---: | --- | --- |
 | 1 | Watch it work | 1 | 1 | 1 | Slide + EXP-004 launched live | Mystery |
-| 2 | How it works, on slides | 8 | 4 | 5 | Slides | Mechanism |
+| 2 | How it works, on slides | 9 | 4 | 5 | Slides | Mechanism |
 | 3 | A little 6809 assembly | 7 | 9 | 14 | EXP-004 live training | Mechanism |
-| 4 | Change one thing: the prompt | 3 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
-| 5 | Change one thing: the size | 3 | 5 | 22 | CoCo, EXP-007 all-RAM completion | Mechanism |
-| 6 | A screen of things that never existed | 2 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
-| 7 | Change one thing: the upbringing | 1 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
+| 4 | Change one thing: the prompt | 4 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
+| 5 | Change one thing: the size | 4 | 5 | 22 | CoCo, EXP-007 all-RAM completion | Mechanism |
+| 6 | A screen of things that never existed | 3 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
+| 7 | Change one thing: the upbringing | 2 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
 | 8 | Now you play it | 2 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
 | 9 | Who decided? | 1 | 2 | 36 | Slide | Agency |
 | | Reserve, held for block 3 | | 2 | 38 | | |
@@ -669,8 +669,14 @@ missing figures, and the physical-world items.
 
 ## Deck state
 
-Twenty-eight content slides plus eight chapter cards, 36 minutes of
-content. A card in the block's palette colour opens every block after the
+Thirty-three content slides plus eight chapter cards, 36 minutes of
+content. Five of them are one recurring slide, "What it read": each
+model's training corpus quoted verbatim from its data file by the figure
+tool, in one shared style — the 18 names, the 8 advertising lines, the
+EXP-007 sentences, the real episode titles, and, plural for the first
+time, block 7's three fan collections, where the motif pays off: by then
+the room reads the slide before the title. Block 8 pointedly has none —
+no corpus, no model, and that is its lesson. A card in the block's palette colour opens every block after the
 first — number, title, arc word, ten seconds each — and its speaker notes
 carry the spoken segue, so a section change is a hard colour cut rather
 than another wall of text. The cards' eighty seconds ride the changeover
