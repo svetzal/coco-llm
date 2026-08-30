@@ -60,8 +60,9 @@
   position: fixed; top: 5.4vh; left: 0; right: 0; z-index: 40;
   height: 1vh;
 }
-/* Clearance so a tall slide's content starts below the chrome. */
-.reveal .slides section[data-bar] { padding-top: 60px; }
+/* Clearance so a tall slide's content starts below the chrome (the bar
+ * and band come to ~46px on a 16:9 screen). */
+.reveal .slides section[data-bar] { padding-top: 48px; }
 
 /* A chapter card: full-bleed block colour (set with data-background-color on
  * the section), a number the back row can read, and nothing else. The segue
@@ -103,7 +104,7 @@
   font-weight: normal;
   letter-spacing: 0.02em;
   line-height: 1.15;
-  margin: 0 0 0.6em;
+  margin: 0 0 0.45em;
   text-shadow: none;
 }
 .reveal h1 { font-size: 1.9em; }

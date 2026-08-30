@@ -10,7 +10,7 @@
  * presenter going backwards, which a scripted animation usually does not.
  */
 
-.reveal .fig { font-size: 0.62em; line-height: 1.25; }
+.reveal .fig { font-size: 0.62em; line-height: 1.22; }
 /* Scoped to .fig on purpose: outside it there is no size context and a
  * caption renders at full heading size. Keep captions inside the figure. */
 .reveal .fig .lbl {
@@ -86,7 +86,7 @@
 .reveal .step { margin-top: 0.5em; }
 .reveal .step-row {
   display: flex; gap: 1.3em; align-items: flex-start; justify-content: center;
-  margin-bottom: 0.6em;
+  margin-bottom: 0.45em;
 }
 .reveal .stage { text-align: center; flex: 0 0 auto; }
 .reveal .vec {
@@ -100,7 +100,7 @@
 
 /* Probabilities. 29 bars, height straight off the model. */
 .reveal .bars {
-  display: flex; align-items: flex-end; gap: 2px; height: 150px;
+  display: flex; align-items: flex-end; gap: 2px; height: 138px;
   margin-top: 6px; margin-bottom: 1.6em; position: relative;
 }
 .reveal .bars > .bar { flex: 0 0 auto; }
@@ -119,7 +119,7 @@
 
 /* --- the loop ------------------------------------------------------------ */
 .reveal .epochs {
-  display: flex; flex-direction: column; gap: 0.55em;
+  display: flex; flex-direction: column; gap: 0.38em;
   width: fit-content; margin: 0 auto;
 }
 /* The two samples stack rather than sitting side by side: an untrained model
@@ -207,7 +207,7 @@
  */
 /* 29 rows plus the pull-out plus a caption has to clear 720px under the
  * title, so the rows are tight on purpose. */
-.reveal .fig.tables { font-size: 0.4em; line-height: 1.05; }
+.reveal .fig.tables { font-size: 0.38em; line-height: 1.0; }
 .reveal .tcols { display: flex; gap: 2.2em; justify-content: center; }
 .reveal .tcol { flex: 0 0 auto; }
 .reveal .trow {
@@ -224,8 +224,8 @@
 
 /* The two fetched rows, lifted out and added. */
 .reveal .pull {
-  margin-top: 0.7em; display: flex; flex-direction: column;
-  align-items: center; font-size: 1.25em;
+  margin-top: 0.45em; display: flex; flex-direction: column;
+  align-items: center; font-size: 1.15em;
 }
 
 /* A figure caption. Sized in px, not em, because a figure may scale itself
@@ -239,7 +239,7 @@
   font-size: 15px;
   line-height: 1.4;
   color: var(--deck-quiet);
-  margin: 0.9em auto 0;
+  margin: 0.65em auto 0;
   max-width: 46em;
 }
 .reveal .fig .cap strong { color: var(--deck-mark); }
