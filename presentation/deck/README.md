@@ -16,6 +16,13 @@ Every slide's notes open with a block marker — `BLOCK 3 OF 9 - ON THE
 MACHINE - SLIDE 2/7` — and every block has a matching command, `make block1`
 through `make block9`, which prints the block's cues and launches its
 emulator where one is involved.
+
+Notes are HTML, because the speaker view renders the aside's markup and
+plain text collapses into a wall. The conventions: one `<p>` per thought,
+its text on one source line so the view wraps it naturally; `<ul><li>` for
+key maps and launch lists; the block marker's `<p>` wrapped in `<strong>`;
+and a literal `<` in note text written as `&lt;` — a bare `<END>` parses as
+a tag and silently vanishes from the speaker window.
 If the speaker view says you are behind, that is the runsheet's cut order
 becoming relevant: block 6 goes first, then block 4, block 3 shortens rather
 than goes, block 8 never goes.

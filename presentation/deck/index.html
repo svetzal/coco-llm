@@ -35,38 +35,15 @@
   <h1>Coco LLM</h1>
   <p class="sub">A 45-year-old computer, starting from random numbers</p>
   <aside class="notes">
-    BLOCK 1 OF 9 - IT ALREADY WORKS
-
-    PRE-FLIGHT, before you walk on. Run: make stage
-    It launches the four parked XRoar windows:
-    - EXP-005, block 4 (trains itself, parks at PRESS ANY KEY)
-    - EXP-011, block 5 (parks at the context table)
-    - EXP-012, block 6 (parks showing sixteen fake titles)
-    - EXP-013, block 8 (parks at the RPSLS keys. Press R if anyone played it)
-    The windows look identical. Arrange them in block order. EXP-004 is NOT
-    parked in advance: it starts training the moment it loads, and block 1
-    launches it in front of the room. Every block has a command — make
-    block1 through block9 — and each demo block's target relaunches its
-    window if a parked one dies.
-
-    LAUNCH: make block1, as the talk opens, with the room watching. EXP-004
-    resets to random weights and starts training right there. CALL THE SHOT
-    OUT LOUD: seed 6809 draws nonsense from these random weights right now —
-    after 1,160 corrections, the same seed will draw names. Then leave it
-    running and go to the slides: block 2 explains exactly what it is doing
-    while it does it. It parks at PRESS ANY KEY when done.
-
-    Photograph of the physical CoCo 1 showing a real trained run. Full screen,
-    no explanation.
-
-    Say the names. Say none were ever made. Say the machine is from 1981, has
-    32K, and started from random numbers about three minutes before the photo.
-
-    The promise: by the end you will know exactly how it did that, and be
-    unimpressed by it in precisely the right way.
-
-    Then the disclosure, once, and never again: that machine is at table N,
-    what I project is its emulator at its clock speed, nothing is sped up.
+    <p><strong>BLOCK 1 OF 9 - IT ALREADY WORKS</strong></p>
+    <p>PRE-FLIGHT, before you walk on. Run: <strong>make stage</strong>. It launches the four parked XRoar windows:</p>
+    <ul><li>EXP-005, block 4 (trains itself, parks at PRESS ANY KEY)</li><li>EXP-011, block 5 (parks at the context table)</li><li>EXP-012, block 6 (parks showing sixteen fake titles)</li><li>EXP-013, block 8 (parks at the RPSLS keys. Press R if anyone played it)</li></ul>
+    <p>The windows look identical. Arrange them in block order. EXP-004 is NOT parked in advance: it starts training the moment it loads, and block 1 launches it in front of the room. Every block has a command — make block1 through block9 — and each demo block's target relaunches its window if a parked one dies.</p>
+    <p>LAUNCH: make block1, as the talk opens, with the room watching. EXP-004 resets to random weights and starts training right there. CALL THE SHOT OUT LOUD: seed 6809 draws nonsense from these random weights right now — after 1,160 corrections, the same seed will draw names. Then leave it running and go to the slides: block 2 explains exactly what it is doing while it does it. It parks at PRESS ANY KEY when done.</p>
+    <p>Photograph of the physical CoCo 1 showing a real trained run. Full screen, no explanation.</p>
+    <p>Say the names. Say none were ever made. Say the machine is from 1981, has 32K, and started from random numbers about three minutes before the photo.</p>
+    <p>The promise: by the end you will know exactly how it did that, and be unimpressed by it in precisely the right way.</p>
+    <p>Then the disclosure, once, and never again: that machine is at table N, what I project is its emulator at its clock speed, nothing is sped up.</p>
   </aside>
 </section>
 
@@ -93,32 +70,14 @@
   </div>
   <!-- /FIGURE:vocabulary -->
   <aside class="notes">
-    BLOCK 2 OF 9 - ON SLIDES - SLIDE 1/8
-
-    TWO WORDS TO NAME, and most of the room has heard both without ever
-    being shown one.
-
-    TOKENIZING first: the machine does not have words, it has numbers, and a
-    person chose which numbers.
-
-    Ask the room for a word that is not in the vocabulary. There is no graceful
-    answer, and that is the point. Full tokenizer exercise is on the table.
-
-    CONTEXT WINDOW second, on the sliding rows. Those two boxes on the left
-    are the context window. Point at them sliding: the window moves along and
-    everything behind it is gone. This model's window is two tokens wide.
-
-    Worth saying once, plainly: when people talk about a model with a 200,000
-    token context window, that is this, wider. Same word, same meaning. Do not
-    labour it.
-
-    One experience to hang on the sliding: anyone who has had a long chat
-    where the model seems to forget how the conversation started has watched
-    this happen. The window slid, and the beginning fell out. Not moodiness,
-    not fading interest — arithmetic. This is the cheapest "so THAT'S why" in
-    the talk; spend one sentence on it.
-
-    The window width is also why the next tables come in pairs.
+    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 1/8</strong></p>
+    <p>TWO WORDS TO NAME, and most of the room has heard both without ever being shown one.</p>
+    <p>TOKENIZING first: the machine does not have words, it has numbers, and a person chose which numbers.</p>
+    <p>Ask the room for a word that is not in the vocabulary. There is no graceful answer, and that is the point. Full tokenizer exercise is on the table.</p>
+    <p>CONTEXT WINDOW second, on the sliding rows. Those two boxes on the left are the context window. Point at them sliding: the window moves along and everything behind it is gone. This model's window is two tokens wide.</p>
+    <p>Worth saying once, plainly: when people talk about a model with a 200,000 token context window, that is this, wider. Same word, same meaning. Do not labour it.</p>
+    <p>One experience to hang on the sliding: anyone who has had a long chat where the model seems to forget how the conversation started has watched this happen. The window slid, and the beginning fell out. Not moodiness, not fading interest — arithmetic. This is the cheapest "so THAT'S why" in the talk; spend one sentence on it.</p>
+    <p>The window width is also why the next tables come in pairs.</p>
   </aside>
 </section>
 
@@ -145,23 +104,12 @@
   </div>
   <!-- /FIGURE:ids -->
   <aside class="notes">
-    BLOCK 2 OF 9 - ON SLIDES - SLIDE 2/8
-
-    THE BRIDGE. Block 2 left them holding COMMODORE = 13. This says why that
-    is not enough, and it has to land before any table of numbers.
-
-    13 is thirteenth in the alphabet. That is the whole reason.
-
-    Step the three comparisons. ZX80 is 27 and ZX81 is 28, next to each other
-    and genuinely related, which is a coincidence. APPLE is 8 and ARCHIMEDES
-    is 9, just as close, and one is Apple and the other is Acorn. Then APPLE
-    8, LISA 16, MACINTOSH 17: one company, scattered across the range.
-
-    So the identifier is a name. Ask: what would it mean to add two of them?
-    Nothing. There is nothing to learn from arithmetic on a name.
-
-    That is the problem the next slide solves. Give every word some numbers
-    that CAN be compared.
+    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 2/8</strong></p>
+    <p>THE BRIDGE. Block 2 left them holding COMMODORE = 13. This says why that is not enough, and it has to land before any table of numbers.</p>
+    <p>13 is thirteenth in the alphabet. That is the whole reason.</p>
+    <p>Step the three comparisons. ZX80 is 27 and ZX81 is 28, next to each other and genuinely related, which is a coincidence. APPLE is 8 and ARCHIMEDES is 9, just as close, and one is Apple and the other is Acorn. Then APPLE 8, LISA 16, MACINTOSH 17: one company, scattered across the range.</p>
+    <p>So the identifier is a name. Ask: what would it mean to add two of them? Nothing. There is nothing to learn from arithmetic on a name.</p>
+    <p>That is the problem the next slide solves. Give every word some numbers that CAN be compared.</p>
   </aside>
 </section>
 
@@ -188,32 +136,13 @@
   </div>
   <!-- /FIGURE:tables -->
   <aside class="notes">
-    BLOCK 2 OF 9 - ON SLIDES - SLIDE 3/8
-
-    THE FIX for arithmetic on names: give every token numbers that CAN be
-    compared. Here they all are — three numbers per token, per window
-    position. SAY THE WORD while pointing at a row: this is the token's
-    EMBEDDING. The room has heard the word sold; a row of numbers is all it
-    is. The next slide answers why three of them.
-
-    Two tables BECAUSE THE CONTEXT WINDOW IS TWO TOKENS WIDE. One table per
-    position in the window. Say that before anything else on this slide; it
-    is the only reason the screen is split in half.
-
-    29 words in each, three numbers per word. That is 174 numbers, and the model only has 290,
-    so most of this model is a lookup table.
-
-    Point at COMMODORE in both columns. Same word, two different rows. THAT is
-    what "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE
-    are not the same thing to the machine. If anyone asks how it knows about
-    word order, this slide is the answer.
-
-    The context is <END> then COMMODORE, so it fetches the top row of the left
-    table and the COMMODORE row of the right one, and adds them. No
-    arithmetic beyond the addition.
-
-    These numbers are random right now. Training is what makes them mean
-    something.
+    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 3/8</strong></p>
+    <p>THE FIX for arithmetic on names: give every token numbers that CAN be compared. Here they all are — three numbers per token, per window position. SAY THE WORD while pointing at a row: this is the token's EMBEDDING. The room has heard the word sold; a row of numbers is all it is. The next slide answers why three of them.</p>
+    <p>Two tables BECAUSE THE CONTEXT WINDOW IS TWO TOKENS WIDE. One table per position in the window. Say that before anything else on this slide; it is the only reason the screen is split in half.</p>
+    <p>29 words in each, three numbers per word. That is 174 numbers, and the model only has 290, so most of this model is a lookup table.</p>
+    <p>Point at COMMODORE in both columns. Same word, two different rows. THAT is what "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE are not the same thing to the machine. If anyone asks how it knows about word order, this slide is the answer.</p>
+    <p>The context is &lt;END&gt; then COMMODORE, so it fetches the top row of the left table and the COMMODORE row of the right one, and adds them. No arithmetic beyond the addition.</p>
+    <p>These numbers are random right now. Training is what makes them mean something.</p>
   </aside>
 </section>
 
@@ -248,42 +177,15 @@
   </div>
   <!-- /FIGURE:why -->
   <aside class="notes">
-    BLOCK 2 OF 9 - ON SLIDES - SLIDE 4/8
-
-    THE QUESTION THE LAST SLIDE PLANTED. They have just seen the triples, so
-    answer it before they ask.
-
-    First half is conceptual: one number can only say how much of one thing a
-    word is. Three numbers give it a position in a space, so words can be
-    close in more than one way at once.
-
-    The width is where the scale comparison lives: GPT-3's embedding is
-    12,288 numbers long where ours is three. Same idea, more room. And when
-    a vector database sells "embeddings", it is selling rows like the ones
-    on the last slide, made for whole documents.
-
-    Second half is the machine. Every extra number is another 29 by 3
-    multiplies per example, and a MUL costs 11 cycles at 0.89 MHz.
-
-    FRAGMENT 1 IS A CALLBACK to the first slide: a token is a whole word
-    because we chose that. Here is the other choice, priced. Make each token
-    a character and the model has to predict every letter: 12.8 million
-    multiplies, 158 seconds of bare MUL against a 180-second budget. We
-    built that one first, and rejected it. Words over letters is a 42-fold
-    reduction — the biggest single decision in the model, and it is a
-    tokenization decision, not an arithmetic one.
-
-    THEN THE HONEST BIT, and do not skip it: six would have fit. The multiply
-    floor at three is under four seconds. The machine was not the constraint
-    here.
-
-    Three is the smallest we tried and it worked, and the rule was expand only
-    when the evidence says quality is insufficient. It never said that. So the
-    width is a decision somebody made, not a limit the hardware imposed. Hold
-    that thought for the last slide.
-
-    SAY "FLOOR" OUT LOUD. These are multiply instructions only. Nothing here
-    is a measured runtime.
+    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 4/8</strong></p>
+    <p>THE QUESTION THE LAST SLIDE PLANTED. They have just seen the triples, so answer it before they ask.</p>
+    <p>First half is conceptual: one number can only say how much of one thing a word is. Three numbers give it a position in a space, so words can be close in more than one way at once.</p>
+    <p>The width is where the scale comparison lives: GPT-3's embedding is 12,288 numbers long where ours is three. Same idea, more room. And when a vector database sells "embeddings", it is selling rows like the ones on the last slide, made for whole documents.</p>
+    <p>Second half is the machine. Every extra number is another 29 by 3 multiplies per example, and a MUL costs 11 cycles at 0.89 MHz.</p>
+    <p>FRAGMENT 1 IS A CALLBACK to the first slide: a token is a whole word because we chose that. Here is the other choice, priced. Make each token a character and the model has to predict every letter: 12.8 million multiplies, 158 seconds of bare MUL against a 180-second budget. We built that one first, and rejected it. Words over letters is a 42-fold reduction — the biggest single decision in the model, and it is a tokenization decision, not an arithmetic one.</p>
+    <p>THEN THE HONEST BIT, and do not skip it: six would have fit. The multiply floor at three is under four seconds. The machine was not the constraint here.</p>
+    <p>Three is the smallest we tried and it worked, and the rule was expand only when the evidence says quality is insufficient. It never said that. So the width is a decision somebody made, not a limit the hardware imposed. Hold that thought for the last slide.</p>
+    <p>SAY "FLOOR" OUT LOUD. These are multiply instructions only. Nothing here is a measured runtime.</p>
   </aside>
 </section>
 
@@ -309,30 +211,14 @@
   </div>
   <!-- /FIGURE:params -->
   <aside class="notes">
-    BLOCK 2 OF 9 - ON SLIDES - SLIDE 5/8
-
-    THE OTHER WORD EVERYONE HAS HEARD. Nobody has had it explained.
-
-    We just chose 3 numbers per token. This is what that choice multiplies up
-    to. Step the three lines and let the arithmetic do the work.
-
-    The 2 in the first line is the context window. Every term in these sums
-    is a decision somebody made: how wide the window is, how many tokens
-    exist, how many numbers describe each one.
-
-    174 is the two embedding tables from Where the numbers live. 87 is a
-    second table, one row per word it can predict. 29 is a starting nudge per
-    word. 290 in total, and every one accounted for.
-
-    THE DEFINITION, say it plainly: a parameter is one number that training is
-    allowed to change. That is all it has ever meant.
-
-    Then the scale line. 290 against GPT-3's 175 billion. Do not editorialise;
-    let them sit with it. Same word, same meaning, six hundred million times
-    as many.
-
-    Note that vocabulary and numbers-per-token both appear in every line. That
-    is why the choice on the last slide mattered.
+    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 5/8</strong></p>
+    <p>THE OTHER WORD EVERYONE HAS HEARD. Nobody has had it explained.</p>
+    <p>We just chose 3 numbers per token. This is what that choice multiplies up to. Step the three lines and let the arithmetic do the work.</p>
+    <p>The 2 in the first line is the context window. Every term in these sums is a decision somebody made: how wide the window is, how many tokens exist, how many numbers describe each one.</p>
+    <p>174 is the two embedding tables from Where the numbers live. 87 is a second table, one row per word it can predict. 29 is a starting nudge per word. 290 in total, and every one accounted for.</p>
+    <p>THE DEFINITION, say it plainly: a parameter is one number that training is allowed to change. That is all it has ever meant.</p>
+    <p>Then the scale line. 290 against GPT-3's 175 billion. Do not editorialise; let them sit with it. Same word, same meaning, six hundred million times as many.</p>
+    <p>Note that vocabulary and numbers-per-token both appear in every line. That is why the choice on the last slide mattered.</p>
   </aside>
 </section>
 
@@ -409,46 +295,17 @@
   </div>
   <!-- /FIGURE:step -->
   <aside class="notes">
-    BLOCK 2 OF 9 - ON SLIDES - SLIDE 6/8
-
-    Real numbers, exported from the reference model. Say that out loud once.
-
-    Step through. The context is two tokens, and the three numbers are not
-    calculated from them: every slot-and-word pair OWNS a stored row, and the
-    machine looks up two rows and adds them. Say "adds" out loud. That is the
-    arithmetic.
-
-    Fragment 4 is the one worth pausing on: COMMODORE in slot 1 has a
-    different row from COMMODORE in slot 2. That is the whole of what
-    "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE are
-    not the same context. If someone asks how it knows about word order, this
-    is the answer and it is on the screen.
-
-    Those three numbers then give a score to all 29 tokens. The right answer
-    is AMIGA and it gave AMIGA 3.5%, barely better than guessing at 1 in 29.
-
-    So nudge the weights that produced that score. Three numbers move, and
-    AMIGA goes from 3.5% to 3.7%. Barely anything. That is the honest scale of
-    one step, and there are 1,160 of them in a run.
-
-    WHAT SETS THE SIZE, which is the question everyone has: three things
-    multiplied.
-
-    The learning rate, 1/16, is a number we chose. On the CoCo it is four
-    shift instructions, which is why it is a sixteenth and not something
-    tidier.
-
-    How wrong it was, 0.9655, is one minus what it gave the right answer.
-    That term is the self-correcting one: as the model improves it shrinks,
-    so the nudges shrink themselves. Nobody turns that down. It is why the
-    thing settles instead of oscillating.
-
-    The incoming number decides how much each weight is to blame. A weight
-    fed by a big number contributed more to the wrong score, so it moves
-    more.
-
-    THAT IS THE WHOLE ALGORITHM. Everything after this is doing it 58 times an
-    epoch, 60 epochs, on a machine from 1981.
+    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 6/8</strong></p>
+    <p>Real numbers, exported from the reference model. Say that out loud once.</p>
+    <p>Step through. The context is two tokens, and the three numbers are not calculated from them: every slot-and-word pair OWNS a stored row, and the machine looks up two rows and adds them. Say "adds" out loud. That is the arithmetic.</p>
+    <p>Fragment 4 is the one worth pausing on: COMMODORE in slot 1 has a different row from COMMODORE in slot 2. That is the whole of what "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE are not the same context. If someone asks how it knows about word order, this is the answer and it is on the screen.</p>
+    <p>Those three numbers then give a score to all 29 tokens. The right answer is AMIGA and it gave AMIGA 3.5%, barely better than guessing at 1 in 29.</p>
+    <p>So nudge the weights that produced that score. Three numbers move, and AMIGA goes from 3.5% to 3.7%. Barely anything. That is the honest scale of one step, and there are 1,160 of them in a run.</p>
+    <p>WHAT SETS THE SIZE, which is the question everyone has: three things multiplied.</p>
+    <p>The learning rate, 1/16, is a number we chose. On the CoCo it is four shift instructions, which is why it is a sixteenth and not something tidier.</p>
+    <p>How wrong it was, 0.9655, is one minus what it gave the right answer. That term is the self-correcting one: as the model improves it shrinks, so the nudges shrink themselves. Nobody turns that down. It is why the thing settles instead of oscillating.</p>
+    <p>The incoming number decides how much each weight is to blame. A weight fed by a big number contributed more to the wrong score, so it moves more.</p>
+    <p>THAT IS THE WHOLE ALGORITHM. Everything after this is doing it 58 times an epoch, 60 epochs, on a machine from 1981.</p>
   </aside>
 </section>
 
@@ -489,92 +346,25 @@
   </div>
   <!-- /FIGURE:loop -->
   <aside class="notes">
-    BLOCK 2 OF 9 - ON SLIDES - SLIDE 7/8
-
-    Step through the epochs. Nonsense, then a first-word habit, then shape,
-    then TANDY MODEL 100 four times out of four.
-
-    DO NOT SKIP THE LAST ONE. At epoch 20 it makes SINCLAIR AMIGA and
-    COMMODORE ATARI: machines that never existed and could have. That is the
-    promise of the talk, on screen.
-
-    At epoch 60 it makes COMMODORE 64, and that is a real computer sitting in
-    the training data. The loss is still falling, 1.83 down to 1.27, and the
-    model has quietly stopped inventing and started reciting.
-
-    Say it plainly: more training made the number better and the behaviour
-    worse. The industry's word for epoch 60 is OVERFITTING — the model has
-    stopped learning the shape of the data and started memorizing the data.
-    Same lesson as the epoch sweep in EXP-007, and we only know it because we
-    measured the thing we cared about instead of the number the optimizer
-    handed us.
-
-    IF ASKED WHAT "RIGHT SHAPE" MEANS, it is on the slide and it is two
-    checks and nothing else: two to four tokens, and the first token is one of
-    the six makers that start a real name in the corpus. ACORN, APPLE, ATARI,
-    COMMODORE, SINCLAIR, TANDY.
-
-    Be honest about how crude that is. TANDY TANDY TANDY passes it. So does
-    APPLE 400 400. It measures structure, not quality, and nothing in this
-    talk knows whether SINCLAIR AMIGA is a GOOD name.
-
-    It is still worth having, for two reasons. The rubric was written in
-    EXP-002 before a single sample was generated, so it could not be bent to
-    fit the result. And at epoch 20 only 3 of the 197 passes repeat a token,
-    so it is not inflated much where it matters.
-
-    WATCH THE COLOURS DOWN THE SAMPLES, because they are three different
-    failures and they go away in order.
-
-    Orange is repeating a token. At epoch 0, 41% of draws say the same word
-    twice; by epoch 5, 9%; by 20, 1%. That is the model learning that a name
-    does not repeat itself, and it learns it before anything else.
-
-    What is left at epoch 20 is the interesting thing, and it is what the
-    whole talk is about: DIFFERENT tokens that sit together plausibly.
-    SINCLAIR AMIGA. COMMODORE ATARI. Nobody made those. They read as though
-    somebody could have.
-
-    Say the hard part out loud: the machine has no idea what any of those
-    words mean. It knows which tokens tend to follow which, and that alone is
-    enough to produce something a person will read as plausible. That is not
-    a trick this model plays and the big ones do not. It is the same trick.
-
-    AND NAME IT, because the room has heard the word: when a big model does
-    this with facts, the industry calls it HALLUCINATION. Different tokens
-    that sit together plausibly. SINCLAIR AMIGA is a hallucination we asked
-    for. It is not a malfunction bolted onto the mechanism; it IS the
-    mechanism, pointed somewhere we happen to mind.
-
-    Red is the third failure, and it only shows up later.
-
-    THE NEW COLUMN IS THE ARGUMENT. It is measured over 200 draws, not the two
-    on screen. 91% new at epoch 20. 28% at epoch 60. The same 290 numbers,
-    the same arithmetic, the same machine: the only thing that changed is how
-    long we trained it, and it slid from making things up to handing back what
-    it was given.
-
-    THEN THE TRAP, and do not skip it, because someone will otherwise leave
-    thinking novelty is the goal. Epoch 0 scores 100% new and 0% a name. New
-    is easy. New AND shaped like the thing is the hard part, and only the
-    last column measures it.
-
-    IF SOMEONE ASKS WHY NOT TRAIN LONGER for more recognizable names, the
-    answer is on the screen: like-a-name is already 98% at epoch 20 and
-    saturates at 13. It cannot go up. What longer training buys is recitation,
-    and by epoch 60 that column reads 99% only because the model is handing
-    back real names.
-
-    The full sweep is in EXP-002. The useful band is roughly 13 to 25 epochs,
-    peaking at 15 with 93%. Twenty scores 90%, sits inside the band, and is
-    what the 6809 build has baked in, so the deck and the machine agree. If
-    pressed: yes, 15 is very slightly better, and no, we did not tune the demo
-    to flatter it.
-
-    If someone asks whether these systems copy or create: they do both, it is
-    the same machinery either way, and where a model lands between them is a
-    training decision somebody made.
-
+    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 7/8</strong></p>
+    <p>Step through the epochs. Nonsense, then a first-word habit, then shape, then TANDY MODEL 100 four times out of four.</p>
+    <p>DO NOT SKIP THE LAST ONE. At epoch 20 it makes SINCLAIR AMIGA and COMMODORE ATARI: machines that never existed and could have. That is the promise of the talk, on screen.</p>
+    <p>At epoch 60 it makes COMMODORE 64, and that is a real computer sitting in the training data. The loss is still falling, 1.83 down to 1.27, and the model has quietly stopped inventing and started reciting.</p>
+    <p>Say it plainly: more training made the number better and the behaviour worse. The industry's word for epoch 60 is OVERFITTING — the model has stopped learning the shape of the data and started memorizing the data. Same lesson as the epoch sweep in EXP-007, and we only know it because we measured the thing we cared about instead of the number the optimizer handed us.</p>
+    <p>IF ASKED WHAT "RIGHT SHAPE" MEANS, it is on the slide and it is two checks and nothing else: two to four tokens, and the first token is one of the six makers that start a real name in the corpus. ACORN, APPLE, ATARI, COMMODORE, SINCLAIR, TANDY.</p>
+    <p>Be honest about how crude that is. TANDY TANDY TANDY passes it. So does APPLE 400 400. It measures structure, not quality, and nothing in this talk knows whether SINCLAIR AMIGA is a GOOD name.</p>
+    <p>It is still worth having, for two reasons. The rubric was written in EXP-002 before a single sample was generated, so it could not be bent to fit the result. And at epoch 20 only 3 of the 197 passes repeat a token, so it is not inflated much where it matters.</p>
+    <p>WATCH THE COLOURS DOWN THE SAMPLES, because they are three different failures and they go away in order.</p>
+    <p>Orange is repeating a token. At epoch 0, 41% of draws say the same word twice; by epoch 5, 9%; by 20, 1%. That is the model learning that a name does not repeat itself, and it learns it before anything else.</p>
+    <p>What is left at epoch 20 is the interesting thing, and it is what the whole talk is about: DIFFERENT tokens that sit together plausibly. SINCLAIR AMIGA. COMMODORE ATARI. Nobody made those. They read as though somebody could have.</p>
+    <p>Say the hard part out loud: the machine has no idea what any of those words mean. It knows which tokens tend to follow which, and that alone is enough to produce something a person will read as plausible. That is not a trick this model plays and the big ones do not. It is the same trick.</p>
+    <p>AND NAME IT, because the room has heard the word: when a big model does this with facts, the industry calls it HALLUCINATION. Different tokens that sit together plausibly. SINCLAIR AMIGA is a hallucination we asked for. It is not a malfunction bolted onto the mechanism; it IS the mechanism, pointed somewhere we happen to mind.</p>
+    <p>Red is the third failure, and it only shows up later.</p>
+    <p>THE NEW COLUMN IS THE ARGUMENT. It is measured over 200 draws, not the two on screen. 91% new at epoch 20. 28% at epoch 60. The same 290 numbers, the same arithmetic, the same machine: the only thing that changed is how long we trained it, and it slid from making things up to handing back what it was given.</p>
+    <p>THEN THE TRAP, and do not skip it, because someone will otherwise leave thinking novelty is the goal. Epoch 0 scores 100% new and 0% a name. New is easy. New AND shaped like the thing is the hard part, and only the last column measures it.</p>
+    <p>IF SOMEONE ASKS WHY NOT TRAIN LONGER for more recognizable names, the answer is on the screen: like-a-name is already 98% at epoch 20 and saturates at 13. It cannot go up. What longer training buys is recitation, and by epoch 60 that column reads 99% only because the model is handing back real names.</p>
+    <p>The full sweep is in EXP-002. The useful band is roughly 13 to 25 epochs, peaking at 15 with 93%. Twenty scores 90%, sits inside the band, and is what the 6809 build has baked in, so the deck and the machine agree. If pressed: yes, 15 is very slightly better, and no, we did not tune the demo to flatter it.</p>
+    <p>If someone asks whether these systems copy or create: they do both, it is the same machinery either way, and where a model lands between them is a training decision somebody made.</p>
   </aside>
 </section>
 
@@ -627,75 +417,23 @@
   </div>
   <!-- /FIGURE:cost -->
   <aside class="notes">
-    BLOCK 2 OF 9 - ON SLIDES - SLIDE 8/8
-
-    THEN THE BUDGET, and this is the point of the slide. Two numbers were
-    chosen along the way, 20 epochs and 290 parameters, and each one is a bill
-    that had to be paid.
-
-    Epochs buy time. 20 by 58 by 261 is 302,760 multiplies, and 15.8 million
-    instructions for the whole run.
-
-    Then the split, and this is the one worth pausing on. Every byte in the
-    image was classified by what job it does.
-
-    TO USE the finished model: 850 bytes of inference, 1,086 shared with
-    training (the forward pass, the softmax table, the arithmetic), and the
-    580 bytes of weights. 2,516 in total. INFERENCE is the industry's word
-    for this half — when a provider bills you per token, this is the half
-    being billed. And when a lab ships an "open-weights" model, the weights
-    file is the thing it ships: 580 bytes here, gigabytes there, same file.
-
-    TO LEARN it in the first place: 730 bytes more. The epoch and example
-    loops, the gradient updates, the 58 training examples, and the display
-    that shows the progress. Every one of those bytes is dead weight the
-    moment training finishes.
-
-    THE POINT: learning and using are different jobs with different costs, and
-    the machine only needs the learning half once. That is why EXP-006 and
-    EXP-007 can put a much bigger model on this machine by training it on the
-    Mac. Same idea as every model you have used: somebody paid for the
-    training, once, somewhere else. That is the P in GPT — Pre-trained — and
-    now the room can unpack a third of the acronym for themselves.
-
-    Two more numbers if pressed. 234 bytes of working space. And 689 for the
-    self-check, the reference model's final weights and checksum so the CoCo
-    can prove it trained to the same numbers the Mac did. Integrity machinery
-    for this talk, not something the model needs, which is why it is counted
-    apart.
-
-    DO NOT QUOTE A RUNTIME. The target was three minutes and we have a cycle
-    projection, not a measurement. Say that out loud; it is on the slide.
-
-    Land it: neither number is magic. Somebody picked each one so the whole
-    thing would run in a reasonable time and fit in a reasonable amount of
-    memory. That is what designing a model IS, and it is the same decision
-    being made today at a different scale.
-
-    The 60-epoch row is evidence that 20 was enough. It is not a rival choice.
-
-    If asked how long it takes: one to two minutes under the emulator at
-    stock rate, and it has not been timed on hardware — say both halves. No
-    runtime goes on a slide until the hardware number exists.
-
-    LAST FRAGMENT, and it is the one to end on. The Color Computer was
-    announced on 31 July 1980 and went on sale that September. The cheapest
-    model, catalogue 26-3001, US$399, had 4,096 bytes of RAM.
-
-    This needs 3,480 to run. It would have fitted the cheapest machine they
-    sold, with 616 bytes to spare.
-
-    THE CAVEAT IS PART OF THE CLAIM, so say it: that is the whole of the
-    machine's memory, and a real 4K CoCo still owes room to the 512-byte
-    screen and to BASIC's own workspace. It fits the chip. Whether it fits
-    alongside everything else is a different question and we have not tried.
-
-    Do not let this become "it would have run in 1977". The Color Computer did
-    not exist then.
-
-    And keep the proportions in view: the MODEL is 580 bytes. The program that
-    trains it is four times larger. Learning is expensive; the thing you learn
-    is small.
+    <p><strong>BLOCK 2 OF 9 - ON SLIDES - SLIDE 8/8</strong></p>
+    <p>THEN THE BUDGET, and this is the point of the slide. Two numbers were chosen along the way, 20 epochs and 290 parameters, and each one is a bill that had to be paid.</p>
+    <p>Epochs buy time. 20 by 58 by 261 is 302,760 multiplies, and 15.8 million instructions for the whole run.</p>
+    <p>Then the split, and this is the one worth pausing on. Every byte in the image was classified by what job it does.</p>
+    <p>TO USE the finished model: 850 bytes of inference, 1,086 shared with training (the forward pass, the softmax table, the arithmetic), and the 580 bytes of weights. 2,516 in total. INFERENCE is the industry's word for this half — when a provider bills you per token, this is the half being billed. And when a lab ships an "open-weights" model, the weights file is the thing it ships: 580 bytes here, gigabytes there, same file.</p>
+    <p>TO LEARN it in the first place: 730 bytes more. The epoch and example loops, the gradient updates, the 58 training examples, and the display that shows the progress. Every one of those bytes is dead weight the moment training finishes.</p>
+    <p>THE POINT: learning and using are different jobs with different costs, and the machine only needs the learning half once. That is why EXP-006 and EXP-007 can put a much bigger model on this machine by training it on the Mac. Same idea as every model you have used: somebody paid for the training, once, somewhere else. That is the P in GPT — Pre-trained — and now the room can unpack a third of the acronym for themselves.</p>
+    <p>Two more numbers if pressed. 234 bytes of working space. And 689 for the self-check, the reference model's final weights and checksum so the CoCo can prove it trained to the same numbers the Mac did. Integrity machinery for this talk, not something the model needs, which is why it is counted apart.</p>
+    <p>DO NOT QUOTE A RUNTIME. The target was three minutes and we have a cycle projection, not a measurement. Say that out loud; it is on the slide.</p>
+    <p>Land it: neither number is magic. Somebody picked each one so the whole thing would run in a reasonable time and fit in a reasonable amount of memory. That is what designing a model IS, and it is the same decision being made today at a different scale.</p>
+    <p>The 60-epoch row is evidence that 20 was enough. It is not a rival choice.</p>
+    <p>If asked how long it takes: one to two minutes under the emulator at stock rate, and it has not been timed on hardware — say both halves. No runtime goes on a slide until the hardware number exists.</p>
+    <p>LAST FRAGMENT, and it is the one to end on. The Color Computer was announced on 31 July 1980 and went on sale that September. The cheapest model, catalogue 26-3001, US$399, had 4,096 bytes of RAM.</p>
+    <p>This needs 3,480 to run. It would have fitted the cheapest machine they sold, with 616 bytes to spare.</p>
+    <p>THE CAVEAT IS PART OF THE CLAIM, so say it: that is the whole of the machine's memory, and a real 4K CoCo still owes room to the 512-byte screen and to BASIC's own workspace. It fits the chip. Whether it fits alongside everything else is a different question and we have not tried.</p>
+    <p>Do not let this become "it would have run in 1977". The Color Computer did not exist then.</p>
+    <p>And keep the proportions in view: the MODEL is 580 bytes. The program that trains it is four times larger. Learning is expensive; the thing you learn is small.</p>
   </aside>
 </section>
 
@@ -706,23 +444,10 @@
   seed that drew nonsense from random weights will draw names after 1,160
   corrections. Nothing arrived from the Mac.</p>
   <aside class="notes">
-    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 1/7
-
-    SWITCH to the EXP-004 window that block 1 launched. It has been training
-    since the talk opened — measured at one to two minutes, so it is parked
-    at PRESS ANY KEY by now. (Recovery: make block3 launches a fresh run if
-    that window died. The launch is the reset.)
-
-    THE CENTREPIECE and the reason the talk exists. The room watched this
-    start from random weights before they knew what training was. Block 2
-    just explained it. Now show what ran: 58 examples, 20 epochs, 1,160
-    corrections, each one the nudge from the One Step slide. The machine
-    seeded 6809 and generated once from the random weights on load — that
-    nonsense comes back labelled RANDOM WEIGHTS on the comparison screen,
-    which is where to read it out.
-
-    Do not touch the keyboard yet. The pause is the audience's, and the code
-    comes first: cut to the assembly that just did the work.
+    <p><strong>BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 1/7</strong></p>
+    <p>SWITCH to the EXP-004 window that block 1 launched. It has been training since the talk opened — measured at one to two minutes, so it is parked at PRESS ANY KEY by now. (Recovery: make block3 launches a fresh run if that window died. The launch is the reset.)</p>
+    <p>THE CENTREPIECE and the reason the talk exists. The room watched this start from random weights before they knew what training was. Block 2 just explained it. Now show what ran: 58 examples, 20 epochs, 1,160 corrections, each one the nudge from the One Step slide. The machine seeded 6809 and generated once from the random weights on load — that nonsense comes back labelled RANDOM WEIGHTS on the comparison screen, which is where to read it out.</p>
+    <p>Do not touch the keyboard yet. The pause is the audience's, and the code comes first: cut to the assembly that just did the work.</p>
   </aside>
 </section>
 
@@ -735,36 +460,13 @@
   </div>
   <!-- /FIGURE:twomuls -->
   <aside class="notes">
-    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 2/7
-
-    FIRST CODE IN THE TALK. This is what was running behind block 2's
-    slides, and it has just finished.
-
-    The 6809 has a MUL instruction and it multiplies two UNSIGNED bytes. The
-    model needs signed multiplication. The first version did it a bit at a
-    time: correct, easy to explain, and 38.6 million instructions for the run.
-
-    This is what replaced it. Split the 16-bit operand, two MULs, add the
-    halves. 15.8 million instructions. The model is bit-for-bit identical: not
-    one output changed.
-
-    THE REGISTER COLUMN is a captured training step, not an invention:
-    SINCLAIR's weight update at epoch 5, context 26 times error -244. The
-    MUL rows split D into A : B, so both of addb's operands are on screen
-    before it runs: the 230 is the second MUL's B, and the stored 1 is the
-    first product's high byte, two rows up. Two things to point at. B holds
-    12 and then 255 — those are -244's two bytes taken unsigned, because MUL
-    never sees a sign. And the second MUL's A half, 25, is never stored: the
-    low sixteen bits are the whole answer. The product this walk ends on,
-    -6344, is the exact gradient the shift slides are about to divide by
-    sixteen. One update, traced end to end.
-
-    THE POINT, and it is a human one: the learning algorithm did not change.
-    Somebody understood both the mathematics and the machine, and that is what
-    turned a correct experiment into something you can watch happen.
-
-    The tests are what made that safe. You cannot optimise aggressively
-    without them; you can only hope.
+    <p><strong>BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 2/7</strong></p>
+    <p>FIRST CODE IN THE TALK. This is what was running behind block 2's slides, and it has just finished.</p>
+    <p>The 6809 has a MUL instruction and it multiplies two UNSIGNED bytes. The model needs signed multiplication. The first version did it a bit at a time: correct, easy to explain, and 38.6 million instructions for the run.</p>
+    <p>This is what replaced it. Split the 16-bit operand, two MULs, add the halves. 15.8 million instructions. The model is bit-for-bit identical: not one output changed.</p>
+    <p>THE REGISTER COLUMN is a captured training step, not an invention: SINCLAIR's weight update at epoch 5, context 26 times error -244. The MUL rows split D into A : B, so both of addb's operands are on screen before it runs: the 230 is the second MUL's B, and the stored 1 is the first product's high byte, two rows up. Two things to point at. B holds 12 and then 255 — those are -244's two bytes taken unsigned, because MUL never sees a sign. And the second MUL's A half, 25, is never stored: the low sixteen bits are the whole answer. The product this walk ends on, -6344, is the exact gradient the shift slides are about to divide by sixteen. One update, traced end to end.</p>
+    <p>THE POINT, and it is a human one: the learning algorithm did not change. Somebody understood both the mathematics and the machine, and that is what turned a correct experiment into something you can watch happen.</p>
+    <p>The tests are what made that safe. You cannot optimise aggressively without them; you can only hope.</p>
   </aside>
 </section>
 
@@ -777,31 +479,13 @@
   </div>
   <!-- /FIGURE:signfix -->
   <aside class="notes">
-    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 3/7
-
-    OPTIONAL DEPTH. Drop this first if the run finishes early.
-
-    MUL is unsigned, so if the factor was negative its unsigned form is 256
-    too large. Subtract the multiplier's low byte from the high byte of the
-    result and it is correct again.
-
-    Worth showing because it is the kind of detail that decides whether a
-    thing is possible on this machine at all, and because it is five
-    instructions.
-
-    The register column runs the same worked numbers as the next slide, so
-    the bit rows there are these registers drawn in binary. The dots row
-    says what the elided code left behind: this example's own two MULs made
-    135 x 60 = 8100, bytes 31 and 164 — that is where lda's 31 comes from.
-
-    WHERE THE 60 COMES FROM: suba 1,x reaches back to the multiplier, still
-    sitting at X — the same 1,x the MULs loaded from. Nothing new arrives
-    for the fix; it reuses an input it already had. And 164 survives to the
-    last line untouched: the correction only ever edits the high byte.
-
-    Note the factor here is negative where the captured step's was not —
-    that is exactly why the captured step skipped this correction and this
-    example needs it.
+    <p><strong>BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 3/7</strong></p>
+    <p>OPTIONAL DEPTH. Drop this first if the run finishes early.</p>
+    <p>MUL is unsigned, so if the factor was negative its unsigned form is 256 too large. Subtract the multiplier's low byte from the high byte of the result and it is correct again.</p>
+    <p>Worth showing because it is the kind of detail that decides whether a thing is possible on this machine at all, and because it is five instructions.</p>
+    <p>The register column runs the same worked numbers as the next slide, so the bit rows there are these registers drawn in binary. The dots row says what the elided code left behind: this example's own two MULs made 135 x 60 = 8100, bytes 31 and 164 — that is where lda's 31 comes from.</p>
+    <p>WHERE THE 60 COMES FROM: suba 1,x reaches back to the multiplier, still sitting at X — the same 1,x the MULs loaded from. Nothing new arrives for the fix; it reuses an input it already had. And 164 survives to the last line untouched: the correction only ever edits the high byte.</p>
+    <p>Note the factor here is negative where the captured step's was not — that is exactly why the captured step skipped this correction and this example needs it.</p>
   </aside>
 </section>
 
@@ -843,33 +527,13 @@
   </div>
   <!-- /FIGURE:signbits -->
   <aside class="notes">
-    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 4/7
-
-    Step it. MUL takes two unsigned bytes, so a negative factor cannot be
-    handed to it as it is. -121 arrives as 135, and 135 is exactly 256 more
-    than -121.
-
-    So the product is too big by 256 times the multiplier. Here is the part
-    worth pausing on: in the low sixteen bits, 256 times anything is that
-    thing shifted into the HIGH BYTE. So the entire error is the multiplier's
-    low byte sitting one byte up.
-
-    Which is why the fix is one instruction. suba 1,x subtracts that byte from
-    the high half and the answer is correct: -7260, and -121 times 60 is
-    -7260.
-
-    SAY WHAT THESE NUMBERS ARE. A worked example, not a captured training
-    step, chosen to sit inside the product range EXP-004 actually measured.
-    Do not imply we caught the machine doing this exact multiply.
-
-    POINT AT THE TWO BIT ROWS. The low bytes are identical. Only the high
-    half moved, because that is where the entire error was. That is the proof
-    that one subtraction is enough, and it is on the screen rather than in
-    the explanation.
-
-    THE POINT: five instructions is the difference between this machine being
-    able to train a model and not. That is not a metaphor, it is the
-    arithmetic.
+    <p><strong>BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 4/7</strong></p>
+    <p>Step it. MUL takes two unsigned bytes, so a negative factor cannot be handed to it as it is. -121 arrives as 135, and 135 is exactly 256 more than -121.</p>
+    <p>So the product is too big by 256 times the multiplier. Here is the part worth pausing on: in the low sixteen bits, 256 times anything is that thing shifted into the HIGH BYTE. So the entire error is the multiplier's low byte sitting one byte up.</p>
+    <p>Which is why the fix is one instruction. suba 1,x subtracts that byte from the high half and the answer is correct: -7260, and -121 times 60 is -7260.</p>
+    <p>SAY WHAT THESE NUMBERS ARE. A worked example, not a captured training step, chosen to sit inside the product range EXP-004 actually measured. Do not imply we caught the machine doing this exact multiply.</p>
+    <p>POINT AT THE TWO BIT ROWS. The low bytes are identical. Only the high half moved, because that is where the entire error was. That is the proof that one subtraction is enough, and it is on the screen rather than in the explanation.</p>
+    <p>THE POINT: five instructions is the difference between this machine being able to train a model and not. That is not a metaphor, it is the arithmetic.</p>
   </aside>
 </section>
 
@@ -882,25 +546,12 @@
   </div>
   <!-- /FIGURE:lrcode -->
   <aside class="notes">
-    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 5/7
-
-    CALLBACK to the nudge slide. We said the learning rate is 1/16. Here it
-    is.
-
-    Four asra/rorb pairs shift the 16-bit gradient right by four, which
-    divides it by sixteen. That is the whole of the learning rate.
-
-    The register column starts at -6344 because the multiply slide just made
-    it — same captured update, picked up where that walk ended. And it shows
-    the carry doing the ferrying: each ASRA parks A's low bit in the carry,
-    each RORB collects it into the top of B. That is the gap the next slide
-    draws in bits.
-
-    Say why it is a sixteenth and not 0.1 or 0.03: because a shift is free and
-    a division is not. The hyperparameter everyone tunes is, on this machine,
-    a choice about which instructions exist.
-
-    Ask the room what a learning rate of 1/8 would cost here. One fewer pair.
+    <p><strong>BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 5/7</strong></p>
+    <p>CALLBACK to the nudge slide. We said the learning rate is 1/16. Here it is.</p>
+    <p>Four asra/rorb pairs shift the 16-bit gradient right by four, which divides it by sixteen. That is the whole of the learning rate.</p>
+    <p>The register column starts at -6344 because the multiply slide just made it — same captured update, picked up where that walk ended. And it shows the carry doing the ferrying: each ASRA parks A's low bit in the carry, each RORB collects it into the top of B. That is the gap the next slide draws in bits.</p>
+    <p>Say why it is a sixteenth and not 0.1 or 0.03: because a shift is free and a division is not. The hyperparameter everyone tunes is, on this machine, a choice about which instructions exist.</p>
+    <p>Ask the room what a learning rate of 1/8 would cost here. One fewer pair.</p>
   </aside>
 </section>
 
@@ -936,51 +587,17 @@
   </div>
   <!-- /FIGURE:shiftbits -->
   <aside class="notes">
-    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 6/7
-
-    WHAT THOSE EIGHT INSTRUCTIONS DO, on a real weight update taken out of
-    training: SINCLAIR's third weight at epoch 5, error -244 times context 26.
-
-    D is two registers side by side, A and B, and the gap on screen is that
-    boundary. ASRA shifts A right, KEEPS THE TOP BIT, and drops the bottom one
-    into the carry. RORB rotates that carry into the top of B. Together they
-    move all sixteen bits one place right.
-
-    SAY THE CONVENTION BEFORE RELYING ON IT: two's complement, a leading 1
-    means negative. Do not assume the room knows.
-
-    And make the connection back two slides. These same sixteen bits read as
-    59,192 if you take them as unsigned. Nothing in the bits says which. THE
-    INSTRUCTION YOU CHOOSE DECIDES. That is exactly why MUL needed a
-    correction: MUL reads its input unsigned, so it read -121 as 135. Here
-    ASRA reads signed, so it preserves the top bit. Same bits, two readings,
-    and the programmer picks.
-
-    POINT AT THE LEFT EDGE and step the rows. The sign bit stays 1 and copies
-    itself downward, one more each time. That is what "arithmetic" shift
-    means, and it is why -6344 halves to -3172 instead of turning into some
-    large positive number. LSRA, the logical shift, would put a 0 there and
-    -6344 would become 29,596.
-
-    THEN POINT AT THE MIDDLE. Watch bits cross the gap: what falls out of A
-    arrives at the top of B. That is the whole reason there are two different
-    instructions instead of two ASRs.
-
-    -6344, -3172, -1586, -793, -397. The weight goes from 683 to 1080.
-
-    The bits falling off the right in red are thrown away: 0, 0, 0, 1. That is
-    the rounding error of a learning rate. It accumulates over 1,160 updates,
-    and it is also why the whole thing fits and runs.
-
-    IF ASKED WHY NOT ASRA AND ASRB, which an assembly-literate room will:
-    ASRB sign-extends B instead of taking the carry, so the bit that fell out
-    of A is thrown away and B's own top bit is duplicated. You get two
-    independent 8-bit shifts. Verified on the direct simulator: halving $0175
-    gives 186 with asra/rorb and 58 with asra/asrb.
-
-    Nasty detail worth having: on some values the two agree, whenever A's
-    dropped bit happens to equal B's top bit. That is a bug that survives
-    casual testing.
+    <p><strong>BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 6/7</strong></p>
+    <p>WHAT THOSE EIGHT INSTRUCTIONS DO, on a real weight update taken out of training: SINCLAIR's third weight at epoch 5, error -244 times context 26.</p>
+    <p>D is two registers side by side, A and B, and the gap on screen is that boundary. ASRA shifts A right, KEEPS THE TOP BIT, and drops the bottom one into the carry. RORB rotates that carry into the top of B. Together they move all sixteen bits one place right.</p>
+    <p>SAY THE CONVENTION BEFORE RELYING ON IT: two's complement, a leading 1 means negative. Do not assume the room knows.</p>
+    <p>And make the connection back two slides. These same sixteen bits read as 59,192 if you take them as unsigned. Nothing in the bits says which. THE INSTRUCTION YOU CHOOSE DECIDES. That is exactly why MUL needed a correction: MUL reads its input unsigned, so it read -121 as 135. Here ASRA reads signed, so it preserves the top bit. Same bits, two readings, and the programmer picks.</p>
+    <p>POINT AT THE LEFT EDGE and step the rows. The sign bit stays 1 and copies itself downward, one more each time. That is what "arithmetic" shift means, and it is why -6344 halves to -3172 instead of turning into some large positive number. LSRA, the logical shift, would put a 0 there and -6344 would become 29,596.</p>
+    <p>THEN POINT AT THE MIDDLE. Watch bits cross the gap: what falls out of A arrives at the top of B. That is the whole reason there are two different instructions instead of two ASRs.</p>
+    <p>-6344, -3172, -1586, -793, -397. The weight goes from 683 to 1080.</p>
+    <p>The bits falling off the right in red are thrown away: 0, 0, 0, 1. That is the rounding error of a learning rate. It accumulates over 1,160 updates, and it is also why the whole thing fits and runs.</p>
+    <p>IF ASKED WHY NOT ASRA AND ASRB, which an assembly-literate room will: ASRB sign-extends B instead of taking the carry, so the bit that fell out of A is thrown away and B's own top bit is duplicated. You get two independent 8-bit shifts. Verified on the direct simulator: halving $0175 gives 186 with asra/rorb and 58 with asra/asrb.</p>
+    <p>Nasty detail worth having: on some values the two agree, whenever A's dropped bit happens to equal B's top bit. That is a bug that survives casual testing.</p>
   </aside>
 </section>
 
@@ -990,24 +607,12 @@
   <p class="call">Same seed. Same arithmetic. Only the weights changed.
   Judge the call.</p>
   <aside class="notes">
-    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 7/7
-
-    SWITCH back to the EXP-004 XRoar window launched at block 1, parked at
-    PRESS ANY KEY since somewhere in block 2.
-
-    Pause at PRESS ANY KEY and let SOMEONE IN THE ROOM decide when inference
-    begins. That is the whole reason the pause exists.
-
-    Then the controlled comparison: same generation seed 6809, run again.
-    RANDOM WEIGHTS above the first output, LEARNED WEIGHTS above the second.
-    Architecture, initial weights, budget, vocabulary and sampling seed all
-    held; only training differs.
-
-    Eleven trained samples stay on screen so they see a distribution rather
-    than one lucky output.
-
-    If it did not improve, say so and inspect the evidence together. A
-    recorded run is a labelled comparison, never a substitute.
+    <p><strong>BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 7/7</strong></p>
+    <p>SWITCH back to the EXP-004 XRoar window launched at block 1, parked at PRESS ANY KEY since somewhere in block 2.</p>
+    <p>Pause at PRESS ANY KEY and let SOMEONE IN THE ROOM decide when inference begins. That is the whole reason the pause exists.</p>
+    <p>Then the controlled comparison: same generation seed 6809, run again. RANDOM WEIGHTS above the first output, LEARNED WEIGHTS above the second. Architecture, initial weights, budget, vocabulary and sampling seed all held; only training differs.</p>
+    <p>Eleven trained samples stay on screen so they see a distribution rather than one lucky output.</p>
+    <p>If it did not improve, say so and inspect the evidence together. A recorded run is a labelled comparison, never a substitute.</p>
   </aside>
 </section>
 
@@ -1023,54 +628,19 @@
   </div>
   <!-- /FIGURE:promptchange -->
   <aside class="notes">
-    BLOCK 4 OF 9 - THE PROMPT
-
-    THE SLIDE DOES THE TEACHING NOW, so use it before you touch the machine.
-
-    Read the held-fixed line out. All 380 numbers, same checksum before and
-    after, same seed, same greedy decoding. Nothing about the model differs
-    between these four answers.
-
-    Then step the four, and NAME THE COMPANY behind each — the room's age
-    will divide on which ones land, and the names are the fun:
-    - WHY BUY JUST A VIDEO GAME: Commodore, the VIC-20 ads. The William
-      Shatner ones.
-    - I ADORE MY 64: Commodore again, the C64 jingle.
-    - ARE YOU / KEEPING UP IN LITTLE COMPUTERS: a blend of two companies.
-      It starts inside Commodore's "Are You Keeping Up with the Commodore"
-      and ends inside Radio Shack's "The Biggest Name in Little Computers".
-    - THE COMPUTER FOR THE REST OF US: Apple, the 1984 Macintosh launch.
-    Sources for all of them are cited in EXP-005, the prompted marketing
-    completions.
-
-    If the room explores the other prompts at the machine: POWER WITHOUT
-    THE PRICE is Atari's ST-era slogan, and GET YOUR START IN COLOR
-    COMPUTING sold Radio Shack's MC-10 — the CoCo's little sibling, worth a
-    wink given what is running this talk.
-
-    LAND THE DEFINITION: a prompt is not training. It is the first few tokens
-    of the answer, handed over before the machine starts. People conflate
-    these constantly and this slide is the cheapest place to separate them.
-
-    THEN go to the machine: SWITCH to the parked EXP-005 XRoar window. It
-    trained itself on load and sits at PRESS ANY KEY. Press one key to reach
-    the prompt selector. Up/Down chooses a prompt. Enter generates. Let
-    someone pick a prompt live, so it is not just a table on a slide.
-
-    Title on the machine reads SAME MODEL - CHANGE THE PROMPT. Ask what stayed
-    fixed.
-
-    Take ARE YOU and have the room call the completion before revealing
-    KEEPING UP IN LITTLE COMPUTERS. It blended two campaigns without
-    understanding either.
-
-    IF SOMEONE ASKS ABOUT TEMPERATURE: greedy decoding is temperature zero —
-    always take the top-scoring token, which is why the same prompt gives the
-    same answer every time here. Turning temperature up means sampling lower
-    scorers sometimes. The d20 on the exhibit table is that dial, made of
-    plastic.
-
-    SECOND TO CUT if running long.
+    <p><strong>BLOCK 4 OF 9 - THE PROMPT</strong></p>
+    <p>THE SLIDE DOES THE TEACHING NOW, so use it before you touch the machine.</p>
+    <p>Read the held-fixed line out. All 380 numbers, same checksum before and after, same seed, same greedy decoding. Nothing about the model differs between these four answers.</p>
+    <p>Then step the four, and NAME THE COMPANY behind each — the room's age will divide on which ones land, and the names are the fun:</p>
+    <ul><li>WHY BUY JUST A VIDEO GAME: Commodore, the VIC-20 ads. The William Shatner ones.</li><li>I ADORE MY 64: Commodore again, the C64 jingle.</li><li>ARE YOU / KEEPING UP IN LITTLE COMPUTERS: a blend of two companies. It starts inside Commodore's "Are You Keeping Up with the Commodore" and ends inside Radio Shack's "The Biggest Name in Little Computers".</li><li>THE COMPUTER FOR THE REST OF US: Apple, the 1984 Macintosh launch.</li></ul>
+    <p>Sources for all of them are cited in EXP-005, the prompted marketing completions.</p>
+    <p>If the room explores the other prompts at the machine: POWER WITHOUT THE PRICE is Atari's ST-era slogan, and GET YOUR START IN COLOR COMPUTING sold Radio Shack's MC-10 — the CoCo's little sibling, worth a wink given what is running this talk.</p>
+    <p>LAND THE DEFINITION: a prompt is not training. It is the first few tokens of the answer, handed over before the machine starts. People conflate these constantly and this slide is the cheapest place to separate them.</p>
+    <p>THEN go to the machine: SWITCH to the parked EXP-005 XRoar window. It trained itself on load and sits at PRESS ANY KEY. Press one key to reach the prompt selector. Up/Down chooses a prompt. Enter generates. Let someone pick a prompt live, so it is not just a table on a slide.</p>
+    <p>Title on the machine reads SAME MODEL - CHANGE THE PROMPT. Ask what stayed fixed.</p>
+    <p>Take ARE YOU and have the room call the completion before revealing KEEPING UP IN LITTLE COMPUTERS. It blended two campaigns without understanding either.</p>
+    <p>IF SOMEONE ASKS ABOUT TEMPERATURE: greedy decoding is temperature zero — always take the top-scoring token, which is why the same prompt gives the same answer every time here. Turning temperature up means sampling lower scorers sometimes. The d20 on the exhibit table is that dial, made of plastic.</p>
+    <p>SECOND TO CUT if running long.</p>
   </aside>
 </section>
 
@@ -1086,45 +656,17 @@
   </div>
   <!-- /FIGURE:contextchange -->
   <aside class="notes">
-    BLOCK 5 OF 9 - THE CONTEXT
-
-    Most direct bearing on what people already use. Protect its time.
-
-    THE SLIDE FIRST. Held fixed: model 751B with its weights locked, the same
-    question asked again word for word, and seven of the eight context records
-    untouched. One record changed: LISA = CODE 2 became LISA = CODE 6. The
-    answer changed with it.
-
-    Note what that means against the previous slide. There, we changed the
-    prompt and the model stayed put. Here, we changed a stored fact and the
-    model stayed put. Two different things a person can change, neither of
-    them the weights.
-
-    THEN the machine: SWITCH to the parked EXP-011 XRoar window, sitting at
-    the context table. Enter asks. E opens the editor. Clear backs out. They
-    watch a person do it rather than read that someone did.
-
-    Retrieve LISA = CODE 2. Open the editor, type 6, show BEFORE, AFTER, and
-    MODEL 751B DID NOT CHANGE. Ask the same question, get the new answer.
-
-    LAND THIS LINE: Training changes the weights. Prompting changes the
-    context. Attention uses the context to produce this answer.
-
-    Then name the omission: key-value attention, not a transformer. We isolated
-    one mechanism so it could be watched.
-
-    THE TIE TO WHAT THEY USE, worth one breath: every bolt-on the industry
-    sells for making a model seem to know things — system prompts, retrieval
-    (the RAG in every vendor deck), memory features — is this same move. Put
-    a fact into context; leave the weights alone. And the caution transfers
-    whole: attention uses what is in context faithfully, wrong or right. Type
-    a wrong code and it will retrieve the wrong code with total confidence.
-
-    If a lab-brag comes up: the needle-in-a-haystack scores in model
-    announcements are this exact game — find the one relevant record in the
-    pile of context. Ours is eight records; theirs is a phone book.
-
-    V replay is optional depth and is NOT in the budget.
+    <p><strong>BLOCK 5 OF 9 - THE CONTEXT</strong></p>
+    <p>Most direct bearing on what people already use. Protect its time.</p>
+    <p>THE SLIDE FIRST. Held fixed: model 751B with its weights locked, the same question asked again word for word, and seven of the eight context records untouched. One record changed: LISA = CODE 2 became LISA = CODE 6. The answer changed with it.</p>
+    <p>Note what that means against the previous slide. There, we changed the prompt and the model stayed put. Here, we changed a stored fact and the model stayed put. Two different things a person can change, neither of them the weights.</p>
+    <p>THEN the machine: SWITCH to the parked EXP-011 XRoar window, sitting at the context table. Enter asks. E opens the editor. Clear backs out. They watch a person do it rather than read that someone did.</p>
+    <p>Retrieve LISA = CODE 2. Open the editor, type 6, show BEFORE, AFTER, and MODEL 751B DID NOT CHANGE. Ask the same question, get the new answer.</p>
+    <p>LAND THIS LINE: Training changes the weights. Prompting changes the context. Attention uses the context to produce this answer.</p>
+    <p>Then name the omission: key-value attention, not a transformer. We isolated one mechanism so it could be watched.</p>
+    <p>THE TIE TO WHAT THEY USE, worth one breath: every bolt-on the industry sells for making a model seem to know things — system prompts, retrieval (the RAG in every vendor deck), memory features — is this same move. Put a fact into context; leave the weights alone. And the caution transfers whole: attention uses what is in context faithfully, wrong or right. Type a wrong code and it will retrieve the wrong code with total confidence.</p>
+    <p>If a lab-brag comes up: the needle-in-a-haystack scores in model announcements are this exact game — find the one relevant record in the pile of context. Ours is eight records; theirs is a phone book.</p>
+    <p>V replay is optional depth and is NOT in the budget.</p>
   </aside>
 </section>
 
@@ -1136,18 +678,10 @@
   learned a single word are about to deal sixteen plausible episode
   titles.</p>
   <aside class="notes">
-    BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 1/2
-
-    SWITCH to the parked EXP-012 XRoar window, already showing a screen of
-    titles. Any key deals sixteen fresh ones. Deal at least one screen live,
-    so the room watches the invention happen.
-
-    One keystroke, sixteen invented titles. Read the call before switching:
-    the room should know the model never learned a word BEFORE they see the
-    words come out.
-
-    FIRST TO CUT, with its explainer. Also the one place we leave the
-    vintage-computer example, so get in and out.
+    <p><strong>BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 1/2</strong></p>
+    <p>SWITCH to the parked EXP-012 XRoar window, already showing a screen of titles. Any key deals sixteen fresh ones. Deal at least one screen live, so the room watches the invention happen.</p>
+    <p>One keystroke, sixteen invented titles. Read the call before switching: the room should know the model never learned a word BEFORE they see the words come out.</p>
+    <p>FIRST TO CUT, with its explainer. Also the one place we leave the vintage-computer example, so get in and out.</p>
   </aside>
 </section>
 
@@ -1178,25 +712,11 @@
     </p>
   </div>
   <aside class="notes">
-    BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 2/2
-
-    THE EXPLAINER, after they have seen the titles dealt. The lesson is the
-    split, and it is visible in the sizes: 400 bytes of model hold the shape
-    of a title; 1,591 bytes of dictionary and rules hold the words, and no
-    learning ever touched them.
-
-    The corpus number is why the split had to be this way: across all 79
-    real titles, only two adjacent word pairs ever repeat. Nothing to
-    generalize from. It memorized a shape.
-
-    CALLBACK worth one line: this is hallucination as a product. Ask this
-    machinery for facts and every dealt screen is an error; ask it for
-    invention and they are the deliverable. Identical machinery — which one
-    you get was a decision about the task, and hold that for the last slide.
-
-    When output looks creative, ask what is holding the shape and what is
-    holding the words. Here you can point at each. In a large model the same
-    split exists; you just can't point at it.
+    <p><strong>BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 2/2</strong></p>
+    <p>THE EXPLAINER, after they have seen the titles dealt. The lesson is the split, and it is visible in the sizes: 400 bytes of model hold the shape of a title; 1,591 bytes of dictionary and rules hold the words, and no learning ever touched them.</p>
+    <p>The corpus number is why the split had to be this way: across all 79 real titles, only two adjacent word pairs ever repeat. Nothing to generalize from. It memorized a shape.</p>
+    <p>CALLBACK worth one line: this is hallucination as a product. Ask this machinery for facts and every dealt screen is an error; ask it for invention and they are the deliverable. Identical machinery — which one you get was a decision about the task, and hold that for the last slide.</p>
+    <p>When output looks creative, ask what is holding the shape and what is holding the words. Here you can point at each. In a large model the same split exists; you just can't point at it.</p>
   </aside>
 </section>
 
@@ -1221,40 +741,16 @@
   </div>
   <!-- /FIGURE:bias -->
   <aside class="notes">
-    BLOCK 7 OF 9 - THE UPBRINGING
-
-    The bars are where the first generated token came from, over 20 draws.
-    They label themselves, so there is no legend to explain.
-
-    FIRST THREE: same architecture, same starting numbers, same budget, same
-    vocabulary, same sampling seeds. One collection each. Each model comes out
-    a fan of whoever raised it. 16 of 20, 15 of 20, 14 of 20.
-
-    THEN THE HARDER HALF, and this is the slide's reason to exist. The last
-    two rows train on THE SAME 54 NAMES. Balanced. Eighteen from each maker.
-    The only difference is whether the three collections were laid end to end
-    or shuffled together.
-
-    Concatenated, it comes out a Tandy fan: 14 of 20, indistinguishable from
-    the model that only ever saw Tandy machines. Tandy went last, and last is
-    what stuck.
-
-    Interleaved, the same data spreads: 10, 6, 3.
-
-    LAND IT: nobody chose to make that fourth model a Tandy fan. Nobody wrote
-    a preference into it. Somebody decided how to lay the files out, and that
-    was the decision, and they almost certainly did not know they were making
-    it.
-
-    Also worth a beat: concatenated ends at loss 2.18 and interleaved at 0.88.
-    The bad ordering trained worse as well as more narrowly.
-
-    IF FINE-TUNING COMES UP: fine-tuning is more of exactly this — training
-    that moves the weights, on data somebody chose. A company fine-tuning a
-    model on its own documents is choosing an upbringing, and it inherits
-    every trap on this slide, ordering included.
-
-    Ask which human decision produced each row. DO NOT ANSWER IT.
+    <p><strong>BLOCK 7 OF 9 - THE UPBRINGING</strong></p>
+    <p>The bars are where the first generated token came from, over 20 draws. They label themselves, so there is no legend to explain.</p>
+    <p>FIRST THREE: same architecture, same starting numbers, same budget, same vocabulary, same sampling seeds. One collection each. Each model comes out a fan of whoever raised it. 16 of 20, 15 of 20, 14 of 20.</p>
+    <p>THEN THE HARDER HALF, and this is the slide's reason to exist. The last two rows train on THE SAME 54 NAMES. Balanced. Eighteen from each maker. The only difference is whether the three collections were laid end to end or shuffled together.</p>
+    <p>Concatenated, it comes out a Tandy fan: 14 of 20, indistinguishable from the model that only ever saw Tandy machines. Tandy went last, and last is what stuck.</p>
+    <p>Interleaved, the same data spreads: 10, 6, 3.</p>
+    <p>LAND IT: nobody chose to make that fourth model a Tandy fan. Nobody wrote a preference into it. Somebody decided how to lay the files out, and that was the decision, and they almost certainly did not know they were making it.</p>
+    <p>Also worth a beat: concatenated ends at loss 2.18 and interleaved at 0.88. The bad ordering trained worse as well as more narrowly.</p>
+    <p>IF FINE-TUNING COMES UP: fine-tuning is more of exactly this — training that moves the weights, on data somebody chose. A company fine-tuning a model on its own documents is choosing an upbringing, and it inherits every trap on this slide, ordering included.</p>
+    <p>Ask which human decision produced each row. DO NOT ANSWER IT.</p>
   </aside>
 </section>
 
@@ -1266,22 +762,12 @@
   nothing &mdash; not the rules, not you. Twenty-five rounds from now it
   will have one of those cold, and be gaining on the other.</p>
   <aside class="notes">
-    BLOCK 8 OF 9 - YOU PLAY IT - SLIDE 1/2
-
-    SWITCH to the parked EXP-013 XRoar window. Keys are on its screen:
-    1 ROCK, 2 SPOCK, 3 PAPER, 4 LIZARD, 5 SCISSORS. R resets. If anyone
-    played it during setup, press R now, so it starts knowing nothing.
-
-    NEVER CUT. Someone from the room calls throws.
-
-    It does not know the rules: RULES 0/25 says so. It does not know the player
-    either: MEMORY n/rounds says how little it has. Both stay on screen.
-
-    Six or eight rounds. It states its expectation BEFORE each throw. Around
-    twenty-five rounds it has the rules; it never finishes learning the person.
-
-    Press R in front of them and let it fall over. Then advance to the
-    honest number.
+    <p><strong>BLOCK 8 OF 9 - YOU PLAY IT - SLIDE 1/2</strong></p>
+    <p>SWITCH to the parked EXP-013 XRoar window. Keys are on its screen: 1 ROCK, 2 SPOCK, 3 PAPER, 4 LIZARD, 5 SCISSORS. R resets. If anyone played it during setup, press R now, so it starts knowing nothing.</p>
+    <p>NEVER CUT. Someone from the room calls throws.</p>
+    <p>It does not know the rules: RULES 0/25 says so. It does not know the player either: MEMORY n/rounds says how little it has. Both stay on screen.</p>
+    <p>Six or eight rounds. It states its expectation BEFORE each throw. Around twenty-five rounds it has the rules; it never finishes learning the person.</p>
+    <p>Press R in front of them and let it fall over. Then advance to the honest number.</p>
   </aside>
 </section>
 
@@ -1314,22 +800,11 @@
     </p>
   </div>
   <aside class="notes">
-    BLOCK 8 OF 9 - YOU PLAY IT - SLIDE 2/2
-
-    THE EXPLAINER, and the honest ending. 80% against six synthetic players
-    with habits. 52.8% against a recorded 200-round session with a person
-    who was trying. Better than chance at three sigma, nowhere near enough
-    to win. That gap is the talk in one number.
-
-    Five of six synthetic players had a habit and one did not. A person
-    plays like the one that did not. The test set encoded an assumption
-    about people, and reporting its average hid it. Ask the room what their
-    benchmarks are quietly assuming.
-
-    100 bytes. No neural network. A tiny table beat every model we tried,
-    which is why there is no model in there at all.
-
-    Invite whoever played to the table.
+    <p><strong>BLOCK 8 OF 9 - YOU PLAY IT - SLIDE 2/2</strong></p>
+    <p>THE EXPLAINER, and the honest ending. 80% against six synthetic players with habits. 52.8% against a recorded 200-round session with a person who was trying. Better than chance at three sigma, nowhere near enough to win. That gap is the talk in one number.</p>
+    <p>Five of six synthetic players had a habit and one did not. A person plays like the one that did not. The test set encoded an assumption about people, and reporting its average hid it. Ask the room what their benchmarks are quietly assuming.</p>
+    <p>100 bytes. No neural network. A tiny table beat every model we tried, which is why there is no model in there at all.</p>
+    <p>Invite whoever played to the table.</p>
   </aside>
 </section>
 
@@ -1339,14 +814,9 @@
   <p class="prose">Task. Data. Budget. Success criterion. What counts as good
   enough.</p>
   <aside class="notes">
-    BLOCK 9 OF 9 - WHO DECIDED
-
-    Not "language models are harmless" and not "no job will change." The
-    durable claim is smaller: the mechanism is understandable, the limitations
-    are observable, and every one of them traces back to a person who decided
-    something.
-
-    Close on the table. Say what is running there and that you will be at it.
+    <p><strong>BLOCK 9 OF 9 - WHO DECIDED</strong></p>
+    <p>Not "language models are harmless" and not "no job will change." The durable claim is smaller: the mechanism is understandable, the limitations are observable, and every one of them traces back to a person who decided something.</p>
+    <p>Close on the table. Say what is running there and that you will be at it.</p>
   </aside>
 </section>
 
