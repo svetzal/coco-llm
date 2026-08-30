@@ -637,14 +637,19 @@ remember_title
         inc     seen_count
         rts
 
-; VDG text codes are the low six bits of uppercase ASCII.
+; Normal video, black on green: uppercase ASCII $40-$5F already is the
+; VDG's code; space and punctuation shift up by $40. Masking to the low six
+; bits would give the inverse-video range instead.
 print_title
         ldx     row_pointer
         ldu     #title_buffer
 print_title_character
         lda     ,u+
         beq     print_title_done
-        anda    #$3f
+        cmpa    #$40
+        bhs     print_title_store
+        adda    #$40
+print_title_store
         sta     ,x+
         bra     print_title_character
 print_title_done

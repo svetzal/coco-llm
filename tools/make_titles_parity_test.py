@@ -74,7 +74,13 @@ def expected_screen() -> tuple[list[int], list[str]]:
             continue
         forbidden.add(title_hash(title))
         for column, character in enumerate(title):
-            cells[row * COLUMNS + column] = ord(character) & 0x3F
+            # Normal video, black on green: uppercase ASCII $40-$5F is
+            # already the VDG code; space and punctuation shift up by $40.
+            # The old & 0x3F produced the inverse-video range.
+            value = ord(character)
+            cells[row * COLUMNS + column] = (
+                value if value >= 0x40 else value + 0x40
+            )
     return cells, produced
 
 
