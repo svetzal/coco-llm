@@ -580,6 +580,13 @@
       stays negative while it halves.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="7">
+      Every number in this model is a whole number, because this machine has
+      no other kind. Running a model in integers is what the industry calls
+      <strong>quantization</strong> &mdash; the 4-bit models on phones make
+      the same trade &mdash; and the bits falling off the right are its
+      price, paid here in the open.
+    </p>
+    <p class="cap fragment" data-fragment-index="8">
       And the landing: four halvings is one multiplication by
       <strong>0.0625</strong> &mdash; the
       nudge rate from One step, the rate I chose. -6344 times
@@ -606,6 +613,7 @@
     <p>THEN POINT AT THE MIDDLE. Watch bits cross the gap: what falls out of A arrives at the top of B. That is the whole reason there are two different instructions instead of two ASRs.</p>
     <p>-6344, -3172, -1586, -793, -397. The weight goes from 683 to 1080.</p>
     <p>The bits falling off the right are thrown away: 0, 0, 0, 1. That is the rounding error of a learning rate. It accumulates over 1,160 updates, and it is also why the whole thing fits and runs.</p>
+    <p>NAME THE WORD on the way: every number in this model is a whole number — the machine has no other kind — and running a model in integers is QUANTIZATION. The 4-bit models on phones make the same trade for the same reason, and the bits falling off the right are the price, visible for once.</p>
     <p>THE LANDING, last fragment, and say it slowly: everything they just watched is one multiplication by 0.0625 — the nudge rate from One step, the rate I chose. -6344 times 0.0625 is exactly -396.5; the shifts land on -397; the dropped bits paid the difference. Close it: THE HYPERPARAMETER IS THESE EIGHT INSTRUCTIONS.</p>
     <p>IF ASKED WHY NOT ASRA AND ASRB, which an assembly-literate room will: ASRB sign-extends B instead of taking the carry, so the bit that fell out of A is thrown away and B's own top bit is duplicated. You get two independent 8-bit shifts. Verified on the direct simulator: halving $0175 gives 186 with asra/rorb and 58 with asra/asrb.</p>
     <p>Nasty detail worth having: on some values the two agree, whenever A's dropped bit happens to equal B's top bit. That is a bug that survives casual testing.</p>

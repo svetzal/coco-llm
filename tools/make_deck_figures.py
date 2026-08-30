@@ -574,6 +574,13 @@ def figure_shift(shift: dict) -> str:
       stays negative while it halves.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 2}">
+      Every number in this model is a whole number, because this machine has
+      no other kind. Running a model in integers is what the industry calls
+      <strong>quantization</strong> &mdash; the 4-bit models on phones make
+      the same trade &mdash; and the bits falling off the right are its
+      price, paid here in the open.
+    </p>
+    <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 3}">
       And the landing: four halvings is one multiplication by
       <strong>{1 / 2 ** (len(shift["steps"]) - 1)}</strong> &mdash; the
       nudge rate from One step, the rate I chose. {first["value"]} times

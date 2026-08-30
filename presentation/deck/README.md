@@ -134,7 +134,9 @@ the word first.
 The speaker notes extend the same move to words the material earns but the
 slides do not need: **hallucination** and **overfitting** on the epochs
 slide, **inference**, **open weights** and **the P in GPT** on the cost
-slide, **temperature** against greedy decoding in block 4, **system prompts,
+slide, **temperature** against greedy decoding in block 4, **quantization**
+on the shift slide (whole-number weights, with the dropped bits as its
+visible price), **system prompts,
 RAG and memory** as context edits in block 5, **fine-tuning** as more
 upbringing in block 7, and long chats forgetting their start as the window
 sliding. The rule for adding one: the mechanism must already be on screen,
