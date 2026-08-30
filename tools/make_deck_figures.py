@@ -543,16 +543,16 @@ def figure_shift(shift: dict) -> str:
         dropped = (
             ""
             if step["dropped"] is None
-            else f'<span class="fell">{step["dropped"]}</span>'
+            else f'<span class="dropped">{step["dropped"]}</span>'
         )
         label = "gradient" if n == 0 else f"asra rorb &times;{n}"
         rows.append(
-            f'<div class="brow2{" last" if n == len(shift["steps"]) - 1 else ""}'
+            f'<div class="bitrow{" last" if n == len(shift["steps"]) - 1 else ""}'
             f' fragment" data-fragment-index="{n}">'
-            f'<span class="blab2">{label}</span>'
+            f'<span class="steplab">{label}</span>'
             f'<span class="bits">{"".join(cells)}</span>'
-            f'<span class="bfell">{dropped}</span>'
-            f'<span class="bdec">{step["value"]}</span></div>'
+            f'<span class="carryout">{dropped}</span>'
+            f'<span class="decimal">{step["value"]}</span></div>'
         )
 
     where = shift["source"]
@@ -562,22 +562,22 @@ def figure_shift(shift: dict) -> str:
     unsigned = int(first["bits"], 2)
     return f"""
   <div class="fig shifts">
-    <div class="bhead">
-      <span class="blab2"></span>
-      <span class="bits"><span class="half">A &mdash; asra</span>
-        <span class="carry chead">carry in</span>
-        <span class="half">B &mdash; rorb</span></span>
-      <span class="bfell">carry out</span>
-      <span class="bdec"></span>
+    <div class="bithead">
+      <span class="steplab"></span>
+      <span class="bits"><span class="bytelab">A &mdash; asra</span>
+        <span class="carry">carry in</span>
+        <span class="bytelab">B &mdash; rorb</span></span>
+      <span class="carryout">carry out</span>
+      <span class="decimal"></span>
     </div>
-    <div class="brow2 signrow">
-      <span class="blab2"></span>
+    <div class="bitrow signrow">
+      <span class="steplab"></span>
       <span class="bits">{"".join(
         f'<span class="bit">{"&minus;" if i == 0 else ""}</span>'
         + ('<span class="carry"></span>' if i == 7 else "")
         for i in range(len(shift["steps"][0]["bits"])))}</span>
-      <span class="bfell"></span>
-      <span class="bdec"></span>
+      <span class="carryout"></span>
+      <span class="decimal"></span>
     </div>
     {"".join(rows)}
     <p class="cap fragment" data-fragment-index="{len(shift["steps"])}">
@@ -632,28 +632,28 @@ def figure_sign(fix: dict) -> str:
 
     return f"""
   <div class="fig shifts sign">
-    <div class="brow2">
-      <span class="blab2">the factor</span>
+    <div class="bitrow">
+      <span class="steplab">the factor</span>
       <span class="plain">{fix["factor"]}</span>
-      <span class="bexpl">MUL cannot take a negative, so it arrives as
+      <span class="explain">MUL cannot take a negative, so it arrives as
         {fix["unsigned_factor"]}, which is 256 too big</span>
     </div>
-    <div class="brow2 fragment" data-fragment-index="1">
-      <span class="blab2">two MULs give</span>
+    <div class="bitrow fragment" data-fragment-index="1">
+      <span class="steplab">two MULs give</span>
       {word(fix["raw"])}
-      <span class="bexpl">{fix["unsigned_factor"]} &times;
+      <span class="explain">{fix["unsigned_factor"]} &times;
         {fix["multiplier"]} = {fix["raw"]}, and wrong</span>
     </div>
-    <div class="brow2 fragment" data-fragment-index="2">
-      <span class="blab2">too big by</span>
+    <div class="bitrow fragment" data-fragment-index="2">
+      <span class="steplab">too big by</span>
       <span class="plain">256 &times; {fix["multiplier"]}</span>
-      <span class="bexpl">which in the low word is just
+      <span class="explain">which in the low word is just
         {fix["excess_high"]}, sitting in the high byte</span>
     </div>
-    <div class="brow2 fragment last" data-fragment-index="3">
-      <span class="blab2">suba 1,x</span>
+    <div class="bitrow fragment last" data-fragment-index="3">
+      <span class="steplab">suba 1,x</span>
       {word(fix["corrected"])}
-      <span class="bexpl">= {fix["signed"]}, and
+      <span class="explain">= {fix["signed"]}, and
         {fix["factor"]} &times; {fix["multiplier"]} =
         {fix["factor"] * fix["multiplier"]}</span>
     </div>

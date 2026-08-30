@@ -494,28 +494,28 @@
   <p class="lead">why one subtraction is enough</p>
   <!-- FIGURE:signbits -->
   <div class="fig shifts sign">
-    <div class="brow2">
-      <span class="blab2">the factor</span>
+    <div class="bitrow">
+      <span class="steplab">the factor</span>
       <span class="plain">-121</span>
-      <span class="bexpl">MUL cannot take a negative, so it arrives as
+      <span class="explain">MUL cannot take a negative, so it arrives as
         135, which is 256 too big</span>
     </div>
-    <div class="brow2 fragment" data-fragment-index="1">
-      <span class="blab2">two MULs give</span>
+    <div class="bitrow fragment" data-fragment-index="1">
+      <span class="steplab">two MULs give</span>
       <span class="bits "><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span>
-      <span class="bexpl">135 &times;
+      <span class="explain">135 &times;
         60 = 8100, and wrong</span>
     </div>
-    <div class="brow2 fragment" data-fragment-index="2">
-      <span class="blab2">too big by</span>
+    <div class="bitrow fragment" data-fragment-index="2">
+      <span class="steplab">too big by</span>
       <span class="plain">256 &times; 60</span>
-      <span class="bexpl">which in the low word is just
+      <span class="explain">which in the low word is just
         60, sitting in the high byte</span>
     </div>
-    <div class="brow2 fragment last" data-fragment-index="3">
-      <span class="blab2">suba 1,x</span>
+    <div class="bitrow fragment last" data-fragment-index="3">
+      <span class="steplab">suba 1,x</span>
       <span class="bits "><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span>
-      <span class="bexpl">= -7260, and
+      <span class="explain">= -7260, and
         -121 &times; 60 =
         -7260</span>
     </div>
@@ -560,21 +560,21 @@
   <p class="lead">divide by two, four times over</p>
   <!-- FIGURE:shiftbits -->
   <div class="fig shifts">
-    <div class="bhead">
-      <span class="blab2"></span>
-      <span class="bits"><span class="half">A &mdash; asra</span>
-        <span class="carry chead">carry in</span>
-        <span class="half">B &mdash; rorb</span></span>
-      <span class="bfell">carry out</span>
-      <span class="bdec"></span>
+    <div class="bithead">
+      <span class="steplab"></span>
+      <span class="bits"><span class="bytelab">A &mdash; asra</span>
+        <span class="carry">carry in</span>
+        <span class="bytelab">B &mdash; rorb</span></span>
+      <span class="carryout">carry out</span>
+      <span class="decimal"></span>
     </div>
-    <div class="brow2 signrow">
-      <span class="blab2"></span>
+    <div class="bitrow signrow">
+      <span class="steplab"></span>
       <span class="bits"><span class="bit">&minus;</span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="carry"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span><span class="bit"></span></span>
-      <span class="bfell"></span>
-      <span class="bdec"></span>
+      <span class="carryout"></span>
+      <span class="decimal"></span>
     </div>
-    <div class="brow2 fragment" data-fragment-index="0"><span class="blab2">gradient</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="carry"></span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></span><span class="bfell"></span><span class="bdec">-6344</span></div><div class="brow2 fragment" data-fragment-index="1"><span class="blab2">asra rorb &times;1</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="carry">&rarr;1&rarr;</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span><span class="bfell"><span class="fell">0</span></span><span class="bdec">-3172</span></div><div class="brow2 fragment" data-fragment-index="2"><span class="blab2">asra rorb &times;2</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on edge">1</span><span class="carry">&rarr;1&rarr;</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span></span><span class="bfell"><span class="fell">0</span></span><span class="bdec">-1586</span></div><div class="brow2 fragment" data-fragment-index="3"><span class="blab2">asra rorb &times;3</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit edge">0</span><span class="carry">&rarr;1&rarr;</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span></span><span class="bfell"><span class="fell">0</span></span><span class="bdec">-793</span></div><div class="brow2 last fragment" data-fragment-index="4"><span class="blab2">asra rorb &times;4</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit edge">0</span><span class="carry">&rarr;0&rarr;</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span></span><span class="bfell"><span class="fell">1</span></span><span class="bdec">-397</span></div>
+    <div class="bitrow fragment" data-fragment-index="0"><span class="steplab">gradient</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="carry"></span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></span><span class="carryout"></span><span class="decimal">-6344</span></div><div class="bitrow fragment" data-fragment-index="1"><span class="steplab">asra rorb &times;1</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="carry">&rarr;1&rarr;</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span><span class="carryout"><span class="dropped">0</span></span><span class="decimal">-3172</span></div><div class="bitrow fragment" data-fragment-index="2"><span class="steplab">asra rorb &times;2</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on edge">1</span><span class="carry">&rarr;1&rarr;</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span></span><span class="carryout"><span class="dropped">0</span></span><span class="decimal">-1586</span></div><div class="bitrow fragment" data-fragment-index="3"><span class="steplab">asra rorb &times;3</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit edge">0</span><span class="carry">&rarr;1&rarr;</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span></span><span class="carryout"><span class="dropped">0</span></span><span class="decimal">-793</span></div><div class="bitrow last fragment" data-fragment-index="4"><span class="steplab">asra rorb &times;4</span><span class="bits"><span class="bit on sign">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit edge">0</span><span class="carry">&rarr;0&rarr;</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span></span><span class="carryout"><span class="dropped">1</span></span><span class="decimal">-397</span></div>
     <p class="cap fragment" data-fragment-index="5">
       Two's complement: <strong>a leading 1 means negative.</strong> These
       same sixteen bits read as 59,192 if you take them as unsigned.

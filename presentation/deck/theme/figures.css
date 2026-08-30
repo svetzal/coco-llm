@@ -622,21 +622,31 @@
  * Eight instructions on the code slide are eight instructions. This is what
  * they do to the value, bit by bit, on the one number the rest of the deck
  * already follows.
+ *
+ * The column vocabulary, shared by the shift and sign figures:
+ *   bitrow / bithead   one row of the walk, and the header row (same grid)
+ *   steplab            the instruction label ("gradient", "asra rorb x2")
+ *   bits / bit         the sixteen cells; .on lit, .sign bit 15, .edge the
+ *                      byte boundary
+ *   bytelab            the header's byte labels ("A - asra", "B - rorb")
+ *   carry              the carry-in column between the bytes
+ *   carryout / dropped the carry-out column, and the orphaned bit's chip
+ *   decimal            the signed value at the row's end
+ *   explain            the sign figure's right-hand explanation column
  */
 .reveal .fig.shifts { font-size: 0.62em; }
-.reveal .brow2, .reveal .bhead {
+.reveal .bitrow, .reveal .bithead {
   display: grid; grid-template-columns: 8em 20em 2em 3.5em 5em;
   gap: 0 0.8em; align-items: center; margin: 0.3em 0;
 }
-.reveal .bhead .blab2, .reveal .bhead .bfell,
-.reveal .bhead .bdec, .reveal .bhead .breal,
-.reveal .brow2 .blab2 {
+.reveal .bithead .steplab, .reveal .bithead .carryout,
+.reveal .bithead .decimal, .reveal .bitrow .steplab {
   font-family: var(--deck-prose); text-transform: uppercase;
   font-size: 0.6em; letter-spacing: 0.08em; color: var(--deck-quiet);
   text-align: right;
 }
-.reveal .bhead .bits { display: flex; }
-.reveal .bhead .half {
+.reveal .bithead .bits { display: flex; }
+.reveal .bithead .bytelab {
   flex: 1; text-align: center; font-family: var(--deck-prose);
   text-transform: uppercase; font-size: 0.6em; letter-spacing: 0.08em;
   color: var(--deck-quiet);
@@ -656,19 +666,17 @@
   flex: 0 0 auto; width: 3.4em; text-align: center;
   color: var(--deck-mark); white-space: nowrap;
 }
-.reveal .carry.chead {
+.reveal .bithead .carry {
   font-family: var(--deck-prose); text-transform: uppercase;
   font-size: 0.6em; letter-spacing: 0.08em; color: var(--deck-quiet);
   width: 5.67em; /* 3.4em at row size, restated at this font size */
 }
-.reveal .bfell { text-align: center; }
-.reveal .fell {
+.reveal .carryout { text-align: center; }
+.reveal .dropped {
   color: var(--coco-c00); background: var(--coco-amber);
   padding: 0 0.25em;
 }
-.reveal .brow2 .bdec { color: var(--deck-quiet); text-align: right; }
-.reveal .brow2 .breal { color: var(--deck-quiet); text-align: right; }
-.reveal .brow2.last .bdec, .reveal .brow2.last .breal { color: var(--deck-mark); }
+.reveal .bitrow .decimal { color: var(--deck-quiet); text-align: right; }
 .reveal .fig.shifts .cap { max-width: 54em; margin-top: 0.5em; }
 .reveal .fig.shifts .cap code {
   font-family: var(--coco-type); color: var(--deck-ink); font-size: 1em;
@@ -677,13 +685,13 @@
 /* The sign-correction reveal reuses the bit cells, with an explanation column
  * instead of the decimal columns: here the interesting part is why one
  * subtraction is enough, not the sequence of values. */
-.reveal .fig.sign .brow2 { grid-template-columns: 9em 20em auto; }
+.reveal .fig.sign .bitrow { grid-template-columns: 9em 20em auto; }
 .reveal .fig.sign .plain { color: var(--deck-loud); text-align: center; }
-.reveal .fig.sign .bexpl {
+.reveal .fig.sign .explain {
   font-family: var(--deck-prose); text-transform: none;
   font-size: 0.62em; color: var(--deck-quiet); text-align: left;
 }
-.reveal .fig.sign .brow2.last .bexpl { color: var(--deck-mark); }
+.reveal .fig.sign .bitrow.last .explain { color: var(--deck-mark); }
 
 /* The sign bit. It is the one to watch on this figure, so it is marked. */
 .reveal .bit.sign { box-shadow: inset 0 0 0 1px var(--deck-mark); }
