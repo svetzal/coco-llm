@@ -818,10 +818,18 @@
      its manifest and write-up. Offline simulations, labelled as such. -->
 <section data-timing="90">
   <p class="changed">We changed exactly one thing:<br><span class="one">the size</span></p>
+  <p class="lead">We built this completer twice: an 8 KiB model first, then
+  the same recipe given four times the memory.</p>
   <div class="fig changed">
-    <p class="held"><span class="hlead">held fixed</span><span>the task: rank the next word</span><span class="hsep">&middot;</span><span>the training recipe, on the Mac</span><span class="hsep">&middot;</span><span>the machine and its editor</span></p>
-    <div class="deltas"><div class="ba fragment" data-fragment-index="1"><span class="balab">parameters</span><span class="bfrom">8,188</span><span class="barrow">&rarr;</span><span class="bto">32,385</span></div><div class="ba fragment" data-fragment-index="2"><span class="balab">top-three accuracy</span><span class="bfrom">59.3%</span><span class="barrow">&rarr;</span><span class="bto">60.0%</span></div><div class="ba fragment" data-fragment-index="3"><span class="balab">keystrokes saved</span><span class="bfrom">58.8%</span><span class="barrow">&rarr;</span><span class="bto">51.7%</span></div></div>
+    <p class="held"><span class="hlead">held fixed</span><span>the task: rank the next word</span><span class="hsep">&middot;</span><span>the training recipe, on the Mac</span><span class="hsep">&middot;</span><span>the test: the same held-out sentences</span></p>
+    <div class="deltas"><div class="ba hdr"><span class="balab"></span><span class="bfrom">the 8 KiB model</span><span class="barrow"></span><span class="bto">this one, 32 KiB</span></div><div class="ba fragment" data-fragment-index="1"><span class="balab">parameters</span><span class="bfrom">8,188</span><span class="barrow">&rarr;</span><span class="bto">32,385</span></div><div class="ba fragment" data-fragment-index="2"><span class="balab">right word in its top three</span><span class="bfrom">59.3%</span><span class="barrow">&rarr;</span><span class="bto">60.0%</span></div><div class="ba fragment" data-fragment-index="3"><span class="balab">typing saved by accepting</span><span class="bfrom">58.8%</span><span class="barrow">&rarr;</span><span class="bto">51.7%</span></div></div>
     <p class="cap fragment" data-fragment-index="4">
+      The same test for both: hundreds of held-out sentences neither model
+      ever saw. How often was the word you wanted in that top-three
+      popover, and how much typing did accepting suggestions save?
+      Offline scores; the physical keyboard is unmeasured.
+    </p>
+    <p class="cap fragment" data-fragment-index="5">
       Four times the parameters bought a 255-token vocabulary, a fifth
       context token, and punctuation &mdash; capability, not quality.
       <strong>Bigger can mean able to attempt more, not reliably better at
@@ -830,11 +838,13 @@
   </div>
   <aside class="notes">
     <p><strong>BLOCK 5 OF 9 - THE SIZE - SLIDE 3/3</strong></p>
-    <p>THE EXPLAINER, and the block's reason to exist. Ask the question before the fragments: we made it four times bigger — what did that buy?</p>
-    <p>Step the rows. Parameters: 8,188 to 32,385. Top-three accuracy: up seven tenths of a point. Keystrokes saved: DOWN seven points. Let the third row land in silence for a beat.</p>
+    <p>THE EXPLAINER, and the block's reason to exist. Say the setup before any number: we built this completer TWICE. The first got an 8 KiB budget — that is EXP-006, and it runs at the table all day. The second got four times the memory and the same recipe. One decision moved. Everything else held, including the test.</p>
+    <p>The arrow on every row reads first model to second model. 8,188 is the first model's parameter count; the room has not met it, so this sentence is where it gets introduced.</p>
+    <p>WHAT THE PERCENTAGES ARE, in the demo's own terms: take hundreds of held-out sentences neither model ever saw. Right word in its top three — how often the word the sentence actually needed was in that popover they just watched. Typing saved — if you accepted every good suggestion, how much of your typing the model did for you.</p>
+    <p>Step the rows. Parameters: four times bigger. Top three: up seven tenths of a point. Typing saved: DOWN seven points. Let the third row land in silence for a beat.</p>
     <p>What the memory actually bought: all 255 token identifiers, a fifth context token, real punctuation — a more expressive task, attempted. Not a general quality improvement on the task it already had.</p>
-    <p>BOTH CALLED SHOTS MISSED, and say so with some pride: EXP-006 called 70% top-three and got 59.3. EXP-007 called a 60% keystroke gate and got 51.7. Failed hypotheses, useful bounded prototypes — both can be true, and that is what honest measurement looks like.</p>
-    <p>SAY THE LABEL: both scores are offline keystroke simulations on held-out text. Nobody has measured the physical keyboard.</p>
+    <p>BOTH CALLED SHOTS MISSED, and say so with some pride: EXP-006 called 70% top-three and got 59.3. EXP-007 called a 60% typing-saved gate and got 51.7. Failed hypotheses, useful bounded prototypes — both can be true, and that is what honest measurement looks like.</p>
+    <p>SAY THE LABEL: offline simulations on held-out text. Nobody has measured the physical keyboard.</p>
     <p>The landing: bigger is a decision with a bill, and the bill does not buy what people assume. Same lesson at every scale, and hold it for the last slide.</p>
   </aside>
 </section>

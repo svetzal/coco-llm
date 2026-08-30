@@ -609,6 +609,13 @@
 .reveal .ba .barrow { color: var(--coco-c01); text-align: center; }
 .reveal .ba .bto { color: var(--deck-mark); text-align: left;
                    white-space: nowrap; }
+/* A header row over the deltas, naming what the two columns are, for the
+ * one comparison whose "before" is not on stage. */
+.reveal .ba.hdr .bfrom, .reveal .ba.hdr .bto {
+  font-family: var(--deck-prose); font-size: 0.55em;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--coco-c01);
+}
 
 /* --- what a shift does ----------------------------------------------------
  *
