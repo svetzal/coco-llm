@@ -144,11 +144,18 @@ on the projector:
   during setup.
 
 The windows look identical. Arrange them in block order. **EXP-004 is the
-exception. Launch it live** with `make present EXP=4` at the top of block 3:
-it starts training the moment it loads, so the launch is the reset, and an
+exception. Launch it live** with `make block3` at the top of block 3: it
+starts training the moment it loads, so the launch is the reset, and an
 early launch would burn the run. Keep a terminal at the repository root
-ready for that command. Rehearse the switching, not only the demos. The
-same launch cues are in the deck's speaker notes on each cue slide.
+ready for that command. Rehearse the switching, not only the demos.
+
+Every block has a command, `make block1` through `make block9`. The
+slide-only blocks print what the block is; each demo block's target prints
+its keys and launches its emulator, which makes it the rehearsal path and
+the relaunch for a window that dies mid-talk. The deck's speaker notes
+carry the same cues, and every slide's notes open with a block marker —
+`BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 2/7` — so the speaker view always
+says where you are.
 
 ## The blocks
 

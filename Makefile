@@ -21,7 +21,8 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	xroar-attention exp012-corpus exp012-vocabulary exp012-tokenizations \
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
 	exp013-sweep exp013-play exp013-record rpsls-bin rpsls-test xroar-rpsls \
-	present stage tools
+	present stage block1 block2 block3 block4 block5 block6 block7 block8 \
+	block9 tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -59,7 +60,49 @@ stage: $(STAGE_BINARIES) build/roms/.coco1-roms
 	@echo "Parked: EXP-005 (block 4), EXP-011 (block 5)," \
 		"EXP-012 (block 6), EXP-013 (block 8)."
 	@echo "The windows detach from this terminal; quit them from XRoar itself."
-	@echo "Block 3 launches live: make present EXP=4"
+	@echo "Block 3 launches live: make block3"
+
+# One command per runsheet block, so the stage thinks in blocks rather than
+# experiment numbers. Blocks 4, 5, 6 and 8 are normally parked in advance by
+# `make stage`; their targets are the rehearsal path and the relaunch for a
+# dead window. Block 3 is the one launched live during the talk.
+block1:
+	@echo "BLOCK 1 - IT ALREADY WORKS - slides only."
+	@echo "The deck: open presentation/deck/index.html, press S for notes."
+
+block2:
+	@echo "BLOCK 2 - ON SLIDES - eight figures, no machine."
+
+block3:
+	@echo "BLOCK 3 - ON THE MACHINE - EXP-004 starts training on load."
+	@echo "The launch is the reset. Any CoCo key at PRESS ANY KEY infers."
+	@$(MAKE) xroar
+
+block4:
+	@echo "BLOCK 4 - THE PROMPT - EXP-005 trains itself, parks at"
+	@echo "PRESS ANY KEY. Up/Down chooses a prompt, Enter generates."
+	@$(MAKE) xroar-exp5
+
+block5:
+	@echo "BLOCK 5 - THE CONTEXT - EXP-011 parks at the context table."
+	@echo "Enter asks, E edits, Clear backs out, V is optional depth."
+	@$(MAKE) xroar-attention
+
+block6:
+	@echo "BLOCK 6 - NEVER EXISTED - EXP-012 parks showing titles."
+	@echo "Any key deals sixteen fresh ones."
+	@$(MAKE) xroar-titles
+
+block7:
+	@echo "BLOCK 7 - THE UPBRINGING - slides only, the five bias bars."
+
+block8:
+	@echo "BLOCK 8 - YOU PLAY IT - EXP-013 parks at the RPSLS keys."
+	@echo "1-5 throw, R forgets everything. Press R before the talk."
+	@$(MAKE) xroar-rpsls
+
+block9:
+	@echo "BLOCK 9 - WHO DECIDED - slides only. Close on the table."
 
 exp006-model:
 	$(UV) run python tools/export_exp_006.py

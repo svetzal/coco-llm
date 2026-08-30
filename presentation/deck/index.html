@@ -35,6 +35,8 @@
   <h1>Coco LLM</h1>
   <p class="sub">A 45-year-old computer, starting from random numbers</p>
   <aside class="notes">
+    BLOCK 1 OF 9 - IT ALREADY WORKS
+
     PRE-FLIGHT, before you walk on. Run: make stage
     It launches the four parked XRoar windows:
     - EXP-005, block 4 (trains itself, parks at PRESS ANY KEY)
@@ -43,7 +45,9 @@
     - EXP-013, block 8 (parks at the RPSLS keys. Press R if anyone played it)
     The windows look identical. Arrange them in block order. EXP-004 is NOT
     parked: it starts training the moment it loads, so block 3 launches it
-    live. Keep a terminal at the repo root ready for: make present EXP=4
+    live. Keep a terminal at the repo root ready for: make block3
+    Every block has a command — make block1 through block9 — and each
+    demo block's target relaunches its window if a parked one dies.
 
     Photograph of the physical CoCo 1 showing a real trained run. Full screen,
     no explanation.
@@ -82,6 +86,8 @@
   </div>
   <!-- /FIGURE:vocabulary -->
   <aside class="notes">
+    BLOCK 2 OF 9 - ON SLIDES - SLIDE 1/8
+
     TWO WORDS TO NAME, and most of the room has heard both without ever
     being shown one.
 
@@ -132,6 +138,8 @@
   </div>
   <!-- /FIGURE:ids -->
   <aside class="notes">
+    BLOCK 2 OF 9 - ON SLIDES - SLIDE 2/8
+
     THE BRIDGE. Block 2 left them holding COMMODORE = 13. This says why that
     is not enough, and it has to land before any table of numbers.
 
@@ -173,6 +181,8 @@
   </div>
   <!-- /FIGURE:tables -->
   <aside class="notes">
+    BLOCK 2 OF 9 - ON SLIDES - SLIDE 3/8
+
     THE FIX for arithmetic on names: give every token numbers that CAN be
     compared. Here they all are — three numbers per token, per window
     position. SAY THE WORD while pointing at a row: this is the token's
@@ -231,6 +241,8 @@
   </div>
   <!-- /FIGURE:why -->
   <aside class="notes">
+    BLOCK 2 OF 9 - ON SLIDES - SLIDE 4/8
+
     THE QUESTION THE LAST SLIDE PLANTED. They have just seen the triples, so
     answer it before they ask.
 
@@ -290,6 +302,8 @@
   </div>
   <!-- /FIGURE:params -->
   <aside class="notes">
+    BLOCK 2 OF 9 - ON SLIDES - SLIDE 5/8
+
     THE OTHER WORD EVERYONE HAS HEARD. Nobody has had it explained.
 
     We just chose 3 numbers per token. This is what that choice multiplies up
@@ -388,6 +402,8 @@
   </div>
   <!-- /FIGURE:step -->
   <aside class="notes">
+    BLOCK 2 OF 9 - ON SLIDES - SLIDE 6/8
+
     Real numbers, exported from the reference model. Say that out loud once.
 
     Step through. The context is two tokens, and the three numbers are not
@@ -466,6 +482,8 @@
   </div>
   <!-- /FIGURE:loop -->
   <aside class="notes">
+    BLOCK 2 OF 9 - ON SLIDES - SLIDE 7/8
+
     Step through the epochs. Nonsense, then a first-word habit, then shape,
     then TANDY MODEL 100 four times out of four.
 
@@ -602,6 +620,8 @@
   </div>
   <!-- /FIGURE:cost -->
   <aside class="notes">
+    BLOCK 2 OF 9 - ON SLIDES - SLIDE 8/8
+
     THEN THE BUDGET, and this is the point of the slide. Two numbers were
     chosen along the way, 20 epochs and 290 parameters, and each one is a bill
     that had to be paid.
@@ -679,9 +699,11 @@
   nonsense from random weights will draw names after 1,160 corrections.
   Nothing arrives from the Mac.</p>
   <aside class="notes">
-    LAUNCH: make present EXP=4, live, in the terminal — this one is never
-    parked because it starts training the moment it loads. The launch IS the
-    reset: fresh random weights, nothing carried over.
+    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 1/7
+
+    LAUNCH: make block3, live, in the terminal — this one is never parked
+    because it starts training the moment it loads. The launch IS the reset:
+    fresh random weights, nothing carried over.
 
     THE CENTREPIECE and the reason the talk exists. Block 2 did the
     explaining, so this needs far less narration than it used to.
@@ -713,6 +735,8 @@
   </div>
   <!-- /FIGURE:twomuls -->
   <aside class="notes">
+    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 2/7
+
     FIRST CODE IN THE TALK. It is training while this is on screen.
 
     The 6809 has a MUL instruction and it multiplies two UNSIGNED bytes. The
@@ -752,6 +776,8 @@
   </div>
   <!-- /FIGURE:signfix -->
   <aside class="notes">
+    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 3/7
+
     OPTIONAL DEPTH. Drop this first if the run finishes early.
 
     MUL is unsigned, so if the factor was negative its unsigned form is 256
@@ -816,6 +842,8 @@
   </div>
   <!-- /FIGURE:signbits -->
   <aside class="notes">
+    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 4/7
+
     Step it. MUL takes two unsigned bytes, so a negative factor cannot be
     handed to it as it is. -121 arrives as 135, and 135 is exactly 256 more
     than -121.
@@ -853,6 +881,8 @@
   </div>
   <!-- /FIGURE:lrcode -->
   <aside class="notes">
+    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 5/7
+
     CALLBACK to the nudge slide. We said the learning rate is 1/16. Here it
     is.
 
@@ -905,6 +935,8 @@
   </div>
   <!-- /FIGURE:shiftbits -->
   <aside class="notes">
+    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 6/7
+
     WHAT THOSE EIGHT INSTRUCTIONS DO, on a real weight update taken out of
     training: SINCLAIR's third weight at epoch 5, error -244 times context 26.
 
@@ -957,6 +989,8 @@
   <p class="call">Same seed. Same arithmetic. Only the weights changed.
   Judge the call.</p>
   <aside class="notes">
+    BLOCK 3 OF 9 - ON THE MACHINE - SLIDE 7/7
+
     SWITCH back to the EXP-004 XRoar window launched at Watch it learn. On
     the measured pace it has been parked at PRESS ANY KEY for a while.
 
@@ -988,6 +1022,8 @@
   </div>
   <!-- /FIGURE:promptchange -->
   <aside class="notes">
+    BLOCK 4 OF 9 - THE PROMPT
+
     THE SLIDE DOES THE TEACHING NOW, so use it before you touch the machine.
 
     Read the held-fixed line out. All 380 numbers, same checksum before and
@@ -1035,6 +1071,8 @@
   </div>
   <!-- /FIGURE:contextchange -->
   <aside class="notes">
+    BLOCK 5 OF 9 - THE CONTEXT
+
     Most direct bearing on what people already use. Protect its time.
 
     THE SLIDE FIRST. Held fixed: model 751B with its weights locked, the same
@@ -1083,6 +1121,8 @@
   learned a single word are about to deal sixteen plausible episode
   titles.</p>
   <aside class="notes">
+    BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 1/2
+
     SWITCH to the parked EXP-012 XRoar window, already showing a screen of
     titles. Any key deals sixteen fresh ones. Deal at least one screen live,
     so the room watches the invention happen.
@@ -1123,6 +1163,8 @@
     </p>
   </div>
   <aside class="notes">
+    BLOCK 6 OF 9 - NEVER EXISTED - SLIDE 2/2
+
     THE EXPLAINER, after they have seen the titles dealt. The lesson is the
     split, and it is visible in the sizes: 400 bytes of model hold the shape
     of a title; 1,591 bytes of dictionary and rules hold the words, and no
@@ -1164,6 +1206,8 @@
   </div>
   <!-- /FIGURE:bias -->
   <aside class="notes">
+    BLOCK 7 OF 9 - THE UPBRINGING
+
     The bars are where the first generated token came from, over 20 draws.
     They label themselves, so there is no legend to explain.
 
@@ -1207,6 +1251,8 @@
   nothing &mdash; not the rules, not you. Twenty-five rounds from now it
   will have one of those cold, and be gaining on the other.</p>
   <aside class="notes">
+    BLOCK 8 OF 9 - YOU PLAY IT - SLIDE 1/2
+
     SWITCH to the parked EXP-013 XRoar window. Keys are on its screen:
     1 ROCK, 2 SPOCK, 3 PAPER, 4 LIZARD, 5 SCISSORS. R resets. If anyone
     played it during setup, press R now, so it starts knowing nothing.
@@ -1253,6 +1299,8 @@
     </p>
   </div>
   <aside class="notes">
+    BLOCK 8 OF 9 - YOU PLAY IT - SLIDE 2/2
+
     THE EXPLAINER, and the honest ending. 80% against six synthetic players
     with habits. 52.8% against a recorded 200-round session with a person
     who was trying. Better than chance at three sigma, nowhere near enough
@@ -1276,6 +1324,8 @@
   <p class="prose">Task. Data. Budget. Success criterion. What counts as good
   enough.</p>
   <aside class="notes">
+    BLOCK 9 OF 9 - WHO DECIDED
+
     Not "language models are harmless" and not "no job will change." The
     durable claim is smaller: the mechanism is understandable, the limitations
     are observable, and every one of them traces back to a person who decided

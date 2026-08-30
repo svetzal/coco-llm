@@ -12,6 +12,10 @@ open presentation/deck/index.html
 Press `S` for the speaker view. It carries the presenter notes and paces
 against the runsheet's budget, because each `<section>` sets `data-timing` to
 its block's minutes in seconds and `totalTime` is the forty minutes of content.
+Every slide's notes open with a block marker — `BLOCK 3 OF 9 - ON THE
+MACHINE - SLIDE 2/7` — and every block has a matching command, `make block1`
+through `make block9`, which prints the block's cues and launches its
+emulator where one is involved.
 If the speaker view says you are behind, that is the runsheet's cut order
 becoming relevant: block 6 goes first, then block 4, block 3 shortens rather
 than goes, block 8 never goes.
