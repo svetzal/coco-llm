@@ -110,6 +110,25 @@
 .reveal .corpus .entry { white-space: nowrap; color: var(--deck-ink); }
 .reveal .corpus .col .lbl { text-align: center; margin-bottom: 0.25em; }
 
+/* --- the tunes, as tokens --------------------------------------------------
+ * The melody corpus: title and key quiet, the token line in ink, because
+ * the token line is the thing being taught - a melody is just tokens too. */
+.reveal .tunes { width: fit-content; margin: 0.4em auto; text-align: left; }
+.reveal .tune {
+  display: grid; grid-template-columns: 16em 6em max-content;
+  gap: 0 1.2em; align-items: baseline; margin: 0.3em 0;
+}
+.reveal .tune .tname {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.62em; letter-spacing: 0.08em; color: var(--deck-quiet);
+  white-space: nowrap; overflow: hidden;
+}
+.reveal .tune .tkey {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.62em; letter-spacing: 0.08em; color: var(--deck-quiet);
+}
+.reveal .tune .ttok { white-space: nowrap; }
+
 /* --- the sliding window -------------------------------------------------- */
 .reveal .slide-window { margin: 0.5em auto; display: table; }
 .reveal .win-row {

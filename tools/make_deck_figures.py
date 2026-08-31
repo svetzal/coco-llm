@@ -978,6 +978,42 @@ def figure_corpus(filename: str, shown: int, columns: int, note: str) -> str:
   </div>"""
 
 
+def figure_melody_corpus() -> str:
+    """The dance tunes as the melody model reads them: a token per sixteenth
+    note. Drawn straight from the committed corpus file - title, mode and
+    metre from the record, then the first bar's tokens with the demo's own
+    glosses: a dot holds the note (token 32), R is a rest (token 33)."""
+    import json as json_module
+    path = ROOT / "experiments" / "data" / "EXP-010-dance.jsonl"
+    tunes = [json_module.loads(line) for line in path.read_text().splitlines()]
+    shown = tunes[:4]
+
+    def gloss(token: int) -> str:
+        if token == 32:
+            return "&middot;"
+        if token == 33:
+            return "R"
+        return str(token)
+
+    rows = "".join(
+        '<div class="tune">'
+        f'<span class="tname">{esc(t["title"].split(" -- ")[0].upper())}</span>'
+        f'<span class="tkey">{esc(t["mode"])} {esc(t["metre"])}</span>'
+        f'<span class="ttok">{" ".join(gloss(k) for k in t["melody"][:16])}</span>'
+        "</div>"
+        for t in shown
+    )
+    trained = sum(1 for t in tunes if t["split"] == "train")
+    return f"""
+  <div class="fig">
+    <div class="tunes">{rows}</div>
+    <p class="cap">The first sixteen tokens of {len(shown)} of {len(tunes)}
+      tunes: the number is how far the pitch sits above the home note, a dot
+      holds it, R is a rest. It read {trained}; the other
+      {len(tunes) - trained} were held back to test it.</p>
+  </div>"""
+
+
 def figure_corpora(
     sources: list[tuple[str, str]], shown: int, note: str
 ) -> str:
@@ -1278,6 +1314,7 @@ def main() -> None:
     deck = splice(deck, "corpus5", figure_corpus(
         "EXP-007-sentence-training.txt", 8, 1,
         "The 248 word seats come from sentences like these."))
+    deck = splice(deck, "melodycorpus", figure_melody_corpus())
     dealt_titles = json.loads((TRACES.parent / "titles.json").read_text())
     deck = splice(deck, "shape", figure_shape(dealt_titles["dealt"]))
     deck = splice(deck, "corpus6", figure_corpus(

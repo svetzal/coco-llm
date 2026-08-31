@@ -43,7 +43,7 @@ green-on-black deck did not give them, and the deck and the machine now
 speak one visual language: what the room sees on a slide is what the room
 sees on the CoCo's screens, bar and all.
 
-Each of the runsheet's nine blocks owns a palette colour, worn as a thin
+Each of the runsheet's ten blocks owns a palette colour, worn as a thin
 band under the title bar on every slide and as the full background of the
 chapter card that opens the block. The bar text and band come from
 `data-bar` and `data-block` attributes on each `<section>`; a new slide

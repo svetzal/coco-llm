@@ -22,7 +22,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
 	exp013-sweep exp013-play exp013-record rpsls-bin rpsls-test xroar-rpsls \
 	present stage block1 block2 block3 block4 block5 block6 block7 block8 \
-	block9 tools
+	block9 block10 tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -143,8 +143,18 @@ block8: build/coco-rpsls.bin build/roms/.coco1-roms
 		-ratelimit -run build/coco-rpsls.bin >/dev/null 2>&1 &
 	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
-block9:
-	@echo "BLOCK 9 - WHO DECIDED - slides only. Close on the table."
+block9: build/coco-melody-demo.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	@echo "BLOCK 9 - A TOKEN IS A NOTE - EXP-010 composes, then performs."
+	@echo "It starts on its own; let a phrase play before talking."
+	@nohup $(XROAR) -machine cocous -ram 32 \
+		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
+		-ratelimit -run build/coco-melody-demo.bin >/dev/null 2>&1 &
+	@echo "Detached. Quit it from XRoar; nothing here can kill it."
+
+block10:
+	@echo "BLOCK 10 - WHO DECIDED - slides only. Close on the table."
 
 exp006-model:
 	$(UV) run python tools/export_exp_006.py

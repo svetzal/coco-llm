@@ -7,7 +7,7 @@
  * now speak one visual language: what the room sees on a slide is what the
  * room sees on the CoCo's screens, bar and all.
  *
- * Each of the runsheet's nine blocks owns a palette colour. It shows as a
+ * Each of the runsheet's ten blocks owns a palette colour. It shows as a
  * thin band under the title bar on every slide, and as the full background
  * of the chapter card that opens the block.
  *
@@ -38,7 +38,8 @@
 .reveal section[data-block="6"] { --blk: var(--coco-magenta); }
 .reveal section[data-block="7"] { --blk: var(--coco-loss); }
 .reveal section[data-block="8"] { --blk: var(--coco-c53); }
-.reveal section[data-block="9"] { --blk: var(--coco-win); }
+.reveal section[data-block="9"] { --blk: var(--coco-c27); }
+.reveal section[data-block="10"] { --blk: var(--coco-win); }
 
 /* The machine's reversed title bar. It lives OUTSIDE the scaled slide
  * canvas, pinned to the browser viewport, because a fixed pseudo-element

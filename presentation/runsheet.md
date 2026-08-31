@@ -63,9 +63,15 @@ is there for questions.
 | 6 | A screen of things that never existed | 3 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the training data | 2 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
 | 8 | Now you play it | 2 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
-| 9 | Who decided? | 1 | 2 | 36 | Slide | Agency |
-| | Reserve, held for block 3 | | 2 | 38 | | |
-| | Questions | | 7 | 45 | | |
+| 9 | A token is a note | 2 | 3 | 37 | CoCo, EXP-010 melody continuation | Delight |
+| 10 | Who decided? | 1 | 2 | 39 | Slide | Agency |
+| | Reserve, held for block 3 | | 2 | 41 | | |
+| | Questions | | 7 | 48 | | |
+
+**The music block books 3 minutes the 45 did not have.** The table above now
+sums to 48. Something gives: three minutes out of questions, a minute each
+from blocks 3, 5 and 8, or the music block itself if a rehearsal shows the
+tune cannot earn its time. Decide at rehearsal, not on stage.
 
 Blocks 2 and 3 were one block when this file was written. Building the figures
 split them: eight slides now carry the explanation that used to be narrated
@@ -132,7 +138,7 @@ Announced here so it is a decision, not a panic.
 
 ### Changeover cost
 
-Five of nine blocks load a different binary. On real hardware that is 20 to 30
+Six of ten blocks load a different binary. On real hardware that is 20 to 30
 seconds of dead air each, and the original budget spent roughly two minutes on
 it. Under the emulator each one is a window switch, so that time comes back as
 buffer rather than being spent.
@@ -242,7 +248,7 @@ Every number in every figure is exported from the reference model by
    callback: character tokens instead of word tokens would cost 12.8 million
    multiplies against a 180-second budget, and we built that one first and
    rejected it. Then the admission that **six would have fitted**. Three is
-   a decision, not a limit. Hold that for block 9.
+   a decision, not a limit. Hold that for block 10.
 5. **What a parameter is.** `2 x 29 x 3` plus `29 x 3` plus `29` is 290,
    counted out. Then the definition: one number training is allowed to change.
    Then GPT-3's 175 billion, without editorial.
@@ -406,7 +412,7 @@ marketing completions, called its shot — five recognizable continuations,
 at least one blend. Recitation was block 2's failure mode because that
 model's job was inventing; this model's job is slogans the room
 recognizes. Whether overfitting is a bug is a decision about the task,
-and that lands in block 9's lap where it belongs.
+and that lands in block 10's lap where it belongs.
 
 Then the experiment. The slide teaches; the machine proves it. Read the
 controls out loud first:
@@ -594,7 +600,22 @@ set encoded an assumption about people, and reporting its average hid that.
 100 bytes. No neural network. A tiny table beat every model we tried, which is
 why there is no model here at all.
 
-### 9. Who decided?
+### 9. A token is a note
+
+**On screen:** slides, then the CoCo composing and performing (EXP-010, the
+melody continuation, on the EXP-009 four-voice player).
+
+`make block9` parks the demo. The corpus slide runs the recurring "What it
+read" pattern one last time: 376 public-domain fiddle tunes from Ryan's
+Mammoth Collection (1883), a token per sixteenth note, 313 read and 63 held
+back. The explainer steps the same split as the fake titles - the seed a
+person wrote, the melody the 3,044-byte model composes, the band that is
+rules, and the compose-then-perform shape the four-voice player forces.
+
+The landing sets up the close: the loop never knew it was doing words, and
+what a token stands for was a person's decision.
+
+### 10. Who decided?
 
 **On screen:** slides.
 
@@ -623,7 +644,7 @@ badly.
 | EXP-013, the playable game opponent | Also on stage. On the table people play until it beats them. |
 | EXP-012, the fake title generator | Runs unattended in a loop. Good attractor. |
 | The four table exercises | Already designed against a 10-second to 15-minute ladder. |
-| EXP-009 and EXP-010, the four-voice synthesizer and melody continuation | Not stage-ready. Worth playing for anyone who asks. |
+| EXP-009 and EXP-010, the four-voice synthesizer and melody continuation | On stage as block 9 (`make block9`); also worth playing at the table. |
 
 `table-exercises.md` currently assumes the table is the only surface. It needs
 a pass to say which demo is running on which machine and when the presenter is
