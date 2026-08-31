@@ -541,9 +541,13 @@ names.** Balanced, eighteen from each maker. The only difference is whether
 the three collections were laid end to end or shuffled together.
 
 Concatenated, it comes out a Tandy fan at 14 of 20, indistinguishable from the
-model that only ever saw Tandy machines. (The thin slice in the tandy fan bar
-is explained on the slide itself: one draw of twenty came out COMMODORE — the
-bias is a lean, not a wall.) Tandy went last, and last is what
+model that only ever saw Tandy machines. (The thin slice in what the tandy fan
+wrote is explained on the slide itself: one draw of twenty came out COMMODORE —
+the bias is a lean, not a wall, the words were in the vocabulary.) Each row now
+pairs two bars in the same maker colours — what it read, then the 20 names it
+wrote by first word — so the training composition and the output composition
+sit side by side: solid colour in, solid colour out; three blocks end to end
+in, one colour out; fifty-four stripes in, a spread out. Tandy went last, and last is what
 stuck. Interleaved, the same data spreads: 10, 6, 3.
 
 Land it plainly. Nobody chose to make that fourth model a Tandy fan. Nobody

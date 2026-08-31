@@ -614,7 +614,10 @@
  */
 .reveal .fig.bias { font-size: 0.62em; }
 .reveal .brun {
-  display: grid; grid-template-columns: 12em 20em 13em 8em;
+  /* Two bars per row - what it read, then what it wrote - so the training
+   * composition and the output composition sit side by side in the same
+   * colours and the causality is the picture. */
+  display: grid; grid-template-columns: 10em 14em 14em 11em 7em;
   gap: 0 0.8em; align-items: center; margin: 0.4em 0;
 }
 /* The header row: left column names the input, the rest name the output.

@@ -1006,37 +1006,81 @@ MAKER_CLASS = {"APPLE": "mk-a", "COMMODORE": "mk-c", "TANDY": "mk-t"}
 def figure_bias(trace: dict) -> str:
     """Same everything, different data. Then same data, different order."""
 
-    def row(run: dict, index: int, note: str = "") -> str:
-        # Segments label themselves, so the figure needs no legend and the
-        # reader never has to hold a colour mapping in their head.
-        def label(maker: str, count: int) -> str:
-            if count >= 3:
-                return f"{maker} {count}"
-            return str(count) if count >= 2 else ""
+    # Both bars are 14em wide, and a segment label that does not fit its
+    # segment gets clipped mid-glyph, which reads as a rendering bug. So
+    # every segment labels itself by what fits: the full "MAKER n" when the
+    # segment is wide enough, the bare count when only that fits, nothing
+    # when not even the count does (the interleave's stripes). 0.45em per
+    # character is calibrated against the labels that render today.
+    BAR_EM = 14.0
 
+    def seg_span(css: str, full: str, short: str, share: float) -> str:
+        budget = (BAR_EM * share / 100) / 0.45
+        text = full if len(full) <= budget else (short if len(short) <= budget else "")
+        return f'<span class="seg {css}" style="width:{share:.2f}%">{text}</span>'
+
+    def read_bar(composition: list) -> str:
+        # The training composition in the same colours as the output bar, so
+        # cause and effect share one visual language. Labels are uniform
+        # across the bar: equal segments with unequal labels read as if the
+        # segments differed, so if any full label fails to fit, they all
+        # drop to counts together.
+        total = sum(count for _, count in composition)
+        shares = [(maker, count, 100 * count / total) for maker, count in composition]
+        fulls_fit = all(
+            len(f"{maker} {count}") <= (BAR_EM * share / 100) / 0.45
+            for maker, count, share in shares
+        )
+        return "".join(
+            seg_span(
+                MAKER_CLASS[maker],
+                f"{maker} {count}" if fulls_fit else str(count),
+                str(count), share,
+            )
+            for maker, count, share in shares
+        )
+
+    def row(run: dict, index: int, composition: list, note: str = "") -> str:
         segments = "".join(
-            f'<span class="seg {MAKER_CLASS[maker]}" '
-            f'style="width:{100 * run["counts"][maker] / run["total"]:.1f}%">'
-            f'{label(maker, run["counts"][maker])}</span>'
-            for maker in trace["makers"]
+            seg_span(
+                MAKER_CLASS[maker],
+                f'{maker} {run["counts"][maker]}', str(run["counts"][maker]),
+                100 * run["counts"][maker] / run["total"],
+            )
+            for maker in trace["makers"] if run["counts"][maker]
         )
         if run["other"]:
-            # The gray segment labels itself like the coloured ones do: draws
-            # that opened with some other vocabulary word, no maker first.
-            segments += (
-                f'<span class="seg mk-o" '
-                f'style="width:{100 * run["other"] / run["total"]:.1f}%">'
-                f'{label("NONE", run["other"])}</span>'
+            # The gray segment: draws that opened with some other vocabulary
+            # word, no maker first.
+            segments += seg_span(
+                "mk-o", f'NONE {run["other"]}', str(run["other"]),
+                100 * run["other"] / run["total"],
             )
         return (
             f'<div class="brun fragment" data-fragment-index="{index}">'
             f'<span class="blab">{esc(run["label"].lower())}</span>'
+            f'<span class="bbar">{read_bar(composition)}</span>'
             f'<span class="bbar">{segments}</span>'
             f'<span class="bsample">{esc(run["sample"])}</span>'
             f'<span class="bnote2">{note}</span></div>'
         )
 
-    fans = "".join(row(run, n + 1) for n, run in enumerate(trace["runs"][:3]))
+    # Each run's training composition, in the order the model met it. The
+    # single-fan corpora are one maker each; the concatenated corpus is the
+    # three collections in file order (asserted below: the favourite it
+    # produced is the last maker in that order); the interleaved corpus
+    # cycles the makers name by name, drawn as the stripes it is. Counts
+    # follow EXP-003, the fan-corpus bias runs: 18 names per collection.
+    makers = trace["makers"]
+    def single(run):
+        return [(run["favourite"], run["names"])]
+    per_maker_all = trace["runs"][3]["names"] // len(makers)
+    concat_comp = [(maker, per_maker_all) for maker in makers]
+    interleave_comp = [(maker, 1) for _ in range(per_maker_all) for maker in makers]
+
+    fans = "".join(
+        row(run, n + 1, single(run)) for n, run in enumerate(trace["runs"][:3])
+    )
     concatenated, interleaved = trace["runs"][3], trace["runs"][4]
 
     # A stray draw renders as a sliver too thin to label itself, and an
@@ -1051,7 +1095,7 @@ def figure_bias(trace: dict) -> str:
     blip = ""
     if strays:
         clauses = " ".join(
-            f'The thin slice in the {esc(run["label"].lower())} bar: '
+            f'The thin slice in what the {esc(run["label"].lower())} wrote: '
             f'{count} draw{"" if count == 1 else "s"} of {run["total"]} '
             f'came out {esc(maker)} anyway.'
             for _, run, maker, count in strays
@@ -1082,8 +1126,8 @@ def figure_bias(trace: dict) -> str:
     copy_note = (
         f'<p class="lbl blip fragment" data-fragment-index="4">'
         f'{per_maker} names per maker went in, balanced - and the bar comes '
-        f'out {"a copy of" if is_copy else "nearly a copy of"} the '
-        f'{esc(tandy_fan["label"].lower())}\'s. {esc(last_maker)}\'s names '
+        f'out {"a copy of" if is_copy else "nearly a copy of"} what the '
+        f'{esc(tandy_fan["label"].lower())} wrote. {esc(last_maker)}\'s names '
         f'went last in the file, and last is what stuck.</p>'
     )
 
@@ -1093,10 +1137,11 @@ def figure_bias(trace: dict) -> str:
     # to output happens only in the speaker notes.
     header = (
         '<div class="brun bhead">'
-        '<span class="blab">trained on</span>'
-        f'<span class="bh">who its {trace["samples"]} generated names '
-        'were about</span>'
-        '<span class="bh">one name it generated</span>'
+        '<span class="blab"></span>'
+        '<span class="bh">what it read</span>'
+        f'<span class="bh">the {trace["samples"]} names it wrote, '
+        'by first word</span>'
+        '<span class="bh">one of the 20</span>'
         '<span class="bh"></span></div>'
     )
 
@@ -1108,9 +1153,9 @@ def figure_bias(trace: dict) -> str:
     <p class="lbl fragment" data-fragment-index="4">
       the same {concatenated["names"]} names, balanced, in two orders
     </p>
-    {row(concatenated, 4, "end to end")}
+    {row(concatenated, 4, concat_comp, "end to end")}
     {copy_note}
-    {row(interleaved, 5, "shuffled together")}
+    {row(interleaved, 5, interleave_comp, "shuffled together")}
     <p class="cap fragment" data-fragment-index="6">
       Held fixed throughout: the architecture, the starting numbers, the
       training budget, the vocabulary, the sampling seeds.
