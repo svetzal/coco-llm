@@ -1059,6 +1059,30 @@ def figure_bias(trace: dict) -> str:
             f'{clauses} The bias is a lean, not a wall.</p>'
         )
 
+    # The concatenated run lands as a near-copy of the tandy fan's bar. That
+    # is the finding, and unsaid it reads as a chart mistake - so say it, on
+    # the same click, with the copy claim checked against the data and the
+    # went-last claim checked against the maker order the corpus was laid in.
+    tandy_fan = trace["runs"][2]
+    is_copy = (
+        concatenated["counts"] == tandy_fan["counts"]
+        and concatenated["other"] == tandy_fan["other"]
+    )
+    last_maker = trace["makers"][-1]
+    if concatenated["favourite"] != last_maker:
+        raise SystemExit(
+            "bias figure premise gone: concatenated favourite is "
+            f"{concatenated['favourite']!r}, not the last maker {last_maker!r}"
+        )
+    per_maker = concatenated["names"] // len(trace["makers"])
+    copy_note = (
+        f'<p class="lbl blip fragment" data-fragment-index="4">'
+        f'{per_maker} names per maker went in, balanced - and the bar comes '
+        f'out {"a copy of" if is_copy else "nearly a copy of"} the '
+        f'{esc(tandy_fan["label"].lower())}\'s. {esc(last_maker)}\'s names '
+        f'went last in the file, and last is what stuck.</p>'
+    )
+
     return f"""
   <div class="fig bias">
     <p class="lbl">one collection each</p>
@@ -1067,6 +1091,7 @@ def figure_bias(trace: dict) -> str:
       the same {concatenated["names"]} names, balanced, in two orders
     </p>
     {row(concatenated, 4, "end to end")}
+    {copy_note}
     {row(interleaved, 5, "shuffled together")}
     <p class="cap fragment" data-fragment-index="6">
       Held fixed throughout: the architecture, the starting numbers, the
