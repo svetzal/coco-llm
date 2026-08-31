@@ -313,11 +313,10 @@ xroar-rpsls: build/coco-rpsls.bin build/roms/.coco1-roms
 exp013-sweep:
 	$(UV) run python tools/run_exp_013.py
 
-exp013-record:
+exp013-record: build/coco-rpsls.bin build/roms/.coco1-roms
 ifndef LABEL
 	$(error set LABEL, for example: make exp013-record LABEL=stacey-coco-01)
 endif
-exp013-record: build/coco-rpsls.bin build/roms/.coco1-roms
 	$(UV) run python tools/capture_rpsls_coco.py --label $(LABEL) \
 		--xroar $(XROAR)
 
