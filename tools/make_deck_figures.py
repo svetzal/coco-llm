@@ -1056,7 +1056,8 @@ def figure_bias(trace: dict) -> str:
         blip = (
             f'\n    <p class="lbl blip fragment" '
             f'data-fragment-index="{max(n for n, *_ in strays)}">'
-            f'{clauses} The bias is a lean, not a wall.</p>'
+            f'{clauses} The bias is a lean, not a wall, the words were '
+            f'in the vocabulary.</p>'
         )
 
     # The concatenated run lands as a near-copy of the tandy fan's bar. That
