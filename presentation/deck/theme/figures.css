@@ -49,6 +49,15 @@
 }
 .reveal .tok.hot .id { color: var(--deck-mark); }
 
+/* --- the rules, as sentences ----------------------------------------------
+ * Each rule is one plain sentence with the failure it prevents as the
+ * punchline. Ledger rows fragment explanations; these do not. */
+.reveal .rules { max-width: 46em; margin: 0.7em auto 0; text-align: left; }
+.reveal .rules .cap { text-align: left; margin-top: 0.55em; max-width: none; }
+.reveal .rules .rname {
+  color: var(--deck-quiet); margin-right: 0.6em;
+}
+
 /* --- what it read ---------------------------------------------------------
  * A model's training corpus, quoted verbatim from its data file by the
  * figure tool. The same style everywhere, so by block 7 the audience reads

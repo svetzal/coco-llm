@@ -145,6 +145,12 @@ upbringing in block 7, and long chats forgetting their start as the window
 sliding. The rule for adding one: the mechanism must already be on screen,
 so the word lands on something visible rather than replacing it.
 
+**Ledger rows are for quantities.** The budget-row grid (kind, sum, value,
+note) fragments anything that needs a verb: an explanation split across
+four cells decays into telegraphic stubs nobody can parse. If a cell wants
+a sentence, the content wants a sentence — give it a .cap or a .rules
+block and write it in plain speech, with the consequence as the punchline.
+
 **Nothing in a figure may shrink.** Every box carries `flex: 0 0 auto`.
 Flex items shrink below their own content by default, and a bordered box
 holding a number is exactly where that shows: the border cuts through the
