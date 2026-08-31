@@ -76,10 +76,12 @@ EXPECT_ROW = 13
 RULES_ROW = 14
 MEMORY_ROW = 15
 
-# The one row drawn from the reversed set. The body is black on green - the
-# CoCo's own look and the convention across this series - and the title bar is
-# green on black, which is what makes it read as a bar.
-REVERSED = frozenset({TITLE_ROW})
+# The rows drawn from the reversed set, green on black. The body is black on
+# green - the CoCo's own look and the convention across this series. The
+# title bar reverses to read as a bar, and the play field reverses so the
+# score marks' red, green and blue sit on black instead of the body green,
+# with the YOU and CPU trails on the same ground.
+REVERSED = frozenset({TITLE_ROW, RESULT_ROW, YOU_ROW, CPU_ROW})
 
 # Semigraphics-4: a cell byte is 1 C C C L L L L. Bit 7 marks the cell as
 # graphic rather than a character, bits 6-4 choose one of eight colours, and
@@ -248,10 +250,18 @@ def frame(rows: list[str]) -> str:
     edge = "+" + "-" * COLUMNS + "+"
     drawn = []
     for index, row in enumerate(rows):
-        if index in REVERSED:
+        if index in GRAPHIC_ROWS:
+            # The marks keep their colours; on a reversed row the cells
+            # around them show reversed, the way the screen holds them.
+            around = (
+                (lambda c: f"\033[7m{c}\033[0m") if index in REVERSED
+                else (lambda c: c)
+            )
+            drawn.append(
+                "|" + "".join(PREVIEW.get(c) or around(c) for c in row) + "|"
+            )
+        elif index in REVERSED:
             drawn.append(f"|\033[7m{row}\033[0m|")
-        elif index in GRAPHIC_ROWS:
-            drawn.append("|" + "".join(PREVIEW.get(c, c) for c in row) + "|")
         else:
             drawn.append(f"|{row}|")
     return "\n".join([edge, *drawn, edge])

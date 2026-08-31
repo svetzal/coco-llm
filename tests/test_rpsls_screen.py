@@ -12,6 +12,7 @@ from rpsls import MOVE_COUNT, MOVES, outcome
 from rpsls_screen import (
     BLUE,
     COLUMNS,
+    CPU_ROW,
     GREEN,
     HISTORY,
     MARKS,
@@ -21,6 +22,7 @@ from rpsls_screen import (
     ROWS,
     SHORT,
     TITLE_ROW,
+    YOU_ROW,
     cells,
     render,
     result_lines,
@@ -96,9 +98,11 @@ def test_an_empty_session_says_so_rather_than_showing_zero() -> None:
     assert "%" not in rows[3]
 
 
-def test_the_title_is_the_only_reverse_field_row() -> None:
-    """The bar is what separates it from the keys, instead of a blank row."""
-    assert REVERSED == {TITLE_ROW}
+def test_the_reverse_field_rows_are_the_bar_and_the_play_field() -> None:
+    """The bar reads as a bar because it reverses, and the play field sits
+    on black so the score marks' colours land on black, with the YOU and
+    CPU trails on the same ground."""
+    assert REVERSED == {TITLE_ROW, RESULT_ROW, YOU_ROW, CPU_ROW}
 
 
 def test_the_keys_spell_the_moves_out() -> None:

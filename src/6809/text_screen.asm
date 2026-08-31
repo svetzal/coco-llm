@@ -110,4 +110,17 @@ screen_blit_next
         bne     screen_blit_next
         rts
 
+; The same row, drawn green on black: VDG codes without bit 6 are inverse
+; video, so the mask is the whole conversion, spaces included.
+screen_blit_body_inverse
+        lbsr    screen_row_address
+        ldb     #SCREEN_COLS
+screen_blit_inverse_next
+        lda     ,u+
+        anda    #$3f
+        sta     ,x+
+        decb
+        bne     screen_blit_inverse_next
+        rts
+
 screen_length   rmb     1

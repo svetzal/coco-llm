@@ -64,6 +64,9 @@ K_WIN           equ     3
 MARK_WIN        equ     $8f             ; green
 MARK_TIE        equ     $af             ; blue
 MARK_LOSS       equ     $bf             ; red
+; An inverse-video space: an all-black cell. The play field rows sit on
+; black so the marks' colours land on it rather than on the body green.
+BLACK_BLANK     equ     $20
 
 start
         lds     #$7f00
@@ -799,6 +802,12 @@ blit_line
         ldu     #line
         lbra    screen_blit_body
 
+; The play-field rows are green on black, so the score marks' colours sit
+; on black. Same buffer, inverse blit.
+blit_line_inverse
+        ldu     #line
+        lbra    screen_blit_body_inverse
+
 ; --- the rows themselves -------------------------------------------------
 
 row_score
@@ -865,7 +874,7 @@ row_marks
         lda     #5
         lbsr    screen_row_address
         ldb     #COLS
-        lda     #BLANK
+        lda     #BLACK_BLANK
 row_marks_clear
         sta     ,x+
         decb
@@ -957,7 +966,7 @@ row_trail_next
         bra     row_trail_next
 row_trail_done
         puls    a
-        lbra    blit_line
+        lbra    blit_line_inverse
 
 ; Row 9 names both throws facing each other, row 10 the verdict and the rule
 ; that decided it. The three longest rules will not fit beside a verdict, so
