@@ -11,7 +11,7 @@ very different visitors, and each needs a complete experience:
 | --- | --- |
 | 10 seconds | Table card, and the tokenizer gotcha |
 | 2 minutes | Roll a name by hand (Exercise 1) |
-| 5 minutes | Same dice, different upbringing (Exercise 2) |
+| 5 minutes | Same dice, different training data (Exercise 2) |
 | 15 minutes | Watch the CoCo actually train, and talk to Stacey |
 
 ## Integrity rule
@@ -136,7 +136,7 @@ talk is about. Print one card for it:
 > still answer confidently if you ask it. Bring this to me and I will show you
 > what it says.
 
-## Exercise 2 — Same dice, different upbringing
+## Exercise 2 — Same dice, different training data
 
 This is EXP-003 made physical, and it is the strongest thing on the table. It
 delivers the thesis of the talk with no explanation required, which means it

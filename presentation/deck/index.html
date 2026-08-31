@@ -1048,36 +1048,36 @@
   </aside>
 </section>
 
-<!-- ============ 7. Change one thing: the upbringing · 4 min · slide ============ -->
-<section class="chapter" data-block="7" data-bar="COCO LLM - 7/9 THE UPBRINGING" data-background-color="var(--coco-loss)" data-timing="10">
+<!-- ============ 7. Change one thing: the training data · 4 min · slide ============ -->
+<section class="chapter" data-block="7" data-bar="COCO LLM - 7/9 THE TRAINING DATA" data-background-color="var(--coco-loss)" data-timing="10">
   <p class="chnum">7</p>
-  <h2>CHANGE ONE THING:<br>THE UPBRINGING</h2>
+  <h2>CHANGE ONE THING:<br>THE TRAINING DATA</h2>
   <p class="charc">Where bias actually comes from</p>
   <aside class="notes">
-    <p><strong>BLOCK 7 OF 9 - THE UPBRINGING - CHAPTER CARD</strong></p>
-    <p>Third lever, and the sobering one: what it read growing up.</p>
+    <p><strong>BLOCK 7 OF 9 - THE TRAINING DATA - CHAPTER CARD</strong></p>
+    <p>Third lever, and the sobering one: the data it trained on.</p>
   </aside>
 </section>
 
-<section data-timing="25" data-block="7" data-bar="COCO LLM - 7/9 THE UPBRINGING">
+<section data-timing="25" data-block="7" data-bar="COCO LLM - 7/9 THE TRAINING DATA">
   <h2>What they read</h2>
   <p class="lead">Three collections, one per fan. The only thing that will differ.</p>
   <!-- FIGURE:corpus7 -->
   <div class="fig">
     <div class="corpus"><div class="col"><p class="lbl">apple fan</p><div class="entry">APPLE II</div><div class="entry">APPLE LISA</div><div class="entry">APPLE MACINTOSH</div><div class="entry">APPLE II</div><div class="entry">APPLE LISA</div><div class="entry">APPLE MACINTOSH</div></div><div class="col"><p class="lbl">commodore fan</p><div class="entry">COMMODORE 64</div><div class="entry">COMMODORE AMIGA</div><div class="entry">COMMODORE PET</div><div class="entry">COMMODORE 64</div><div class="entry">COMMODORE AMIGA</div><div class="entry">COMMODORE PET</div></div><div class="col"><p class="lbl">tandy fan</p><div class="entry">TANDY TRS-80</div><div class="entry">TANDY 1000</div><div class="entry">TANDY COCO</div><div class="entry">TANDY TRS-80</div><div class="entry">TANDY 1000</div><div class="entry">TANDY COCO</div></div></div>
     <p class="cap">The first 6 lines of each collection, verbatim.
-      Same architecture, three different worlds to read.</p>
+      Same architecture, three different sets of training data.</p>
   </div>
   <!-- /FIGURE:corpus7 -->
   <aside class="notes">
-    <p><strong>BLOCK 7 OF 9 - THE UPBRINGING - SLIDE 1/2</strong></p>
-    <p>The recurring slide, but plural for the first time: three models are about to be raised, and this is the only thing that differs between them. Same architecture, same starting numbers, same budget, same seeds.</p>
-    <p>Point at the sameness inside each column — the apple fan reads APPLE, APPLE, APPLE. Nobody wrote a preference; the diet is the preference. The bars on the next slide are these columns, grown up.</p>
+    <p><strong>BLOCK 7 OF 9 - THE TRAINING DATA - SLIDE 1/2</strong></p>
+    <p>The recurring slide, but plural for the first time: three models are about to be trained, and this is the only thing that differs between them. Same architecture, same starting numbers, same budget, same seeds.</p>
+    <p>Point at the sameness inside each column — the apple fan reads APPLE, APPLE, APPLE. Nobody wrote a preference; the data is the preference. The bars on the next slide are these columns, grown up.</p>
   </aside>
 </section>
 
-<section data-timing="240" data-block="7" data-bar="COCO LLM - 7/9 THE UPBRINGING">
-  <p class="changed">We changed exactly one thing:<br><span class="one">the upbringing</span></p>
+<section data-timing="240" data-block="7" data-bar="COCO LLM - 7/9 THE TRAINING DATA">
+  <p class="changed">We changed exactly one thing:<br><span class="one">the training data</span></p>
   <!-- FIGURE:bias -->
   <div class="fig bias">
     <p class="lbl">one collection each</p>
@@ -1096,15 +1096,15 @@
   </div>
   <!-- /FIGURE:bias -->
   <aside class="notes">
-    <p><strong>BLOCK 7 OF 9 - THE UPBRINGING - SLIDE 2/2</strong></p>
+    <p><strong>BLOCK 7 OF 9 - THE TRAINING DATA - SLIDE 2/2</strong></p>
     <p>The bars are where the first generated token came from, over 20 draws. They label themselves, so there is no legend to explain.</p>
-    <p>FIRST THREE: same architecture, same starting numbers, same budget, same vocabulary, same sampling seeds. One collection each. Each model comes out a fan of whoever raised it. 16 of 20, 15 of 20, 14 of 20.</p>
+    <p>FIRST THREE: same architecture, same starting numbers, same budget, same vocabulary, same sampling seeds. One collection each. Each model comes out a fan of whoever wrote its data. 16 of 20, 15 of 20, 14 of 20.</p>
     <p>THEN THE HARDER HALF, and this is the slide's reason to exist. The last two rows train on THE SAME 54 NAMES. Balanced. Eighteen from each maker. The only difference is whether the three collections were laid end to end or shuffled together.</p>
     <p>Concatenated, it comes out a Tandy fan: 14 of 20, indistinguishable from the model that only ever saw Tandy machines. Tandy went last, and last is what stuck.</p>
     <p>Interleaved, the same data spreads: 10, 6, 3.</p>
     <p>LAND IT: nobody chose to make that fourth model a Tandy fan. Nobody wrote a preference into it. Somebody decided how to lay the files out, and that was the decision, and they almost certainly did not know they were making it.</p>
     <p>Also worth a beat: concatenated ends at loss 2.18 and interleaved at 0.88. The bad ordering trained worse as well as more narrowly.</p>
-    <p>IF FINE-TUNING COMES UP: fine-tuning is more of exactly this — training that moves the weights, on data somebody chose. A company fine-tuning a model on its own documents is choosing an upbringing, and it inherits every trap on this slide, ordering included.</p>
+    <p>IF FINE-TUNING COMES UP: fine-tuning is more of exactly this — training that moves the weights, on data somebody chose. A company fine-tuning a model on its own documents is choosing training data, and it inherits every trap on this slide, ordering included.</p>
     <p>Ask which human decision produced each row. DO NOT ANSWER IT.</p>
   </aside>
 </section>

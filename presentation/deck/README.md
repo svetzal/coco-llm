@@ -141,7 +141,7 @@ slide, **temperature** against greedy decoding in block 4, **quantization**
 on the shift slide (whole-number weights, with the dropped bits as its
 visible price), **system prompts,
 RAG and memory** as context edits in block 5, **fine-tuning** as more
-upbringing in block 7, and long chats forgetting their start as the window
+training on chosen data in block 7, and long chats forgetting their start as the window
 sliding. The rule for adding one: the mechanism must already be on screen,
 so the word lands on something visible rather than replacing it.
 

@@ -61,7 +61,7 @@ is there for questions.
 | 4 | Change one thing: the prompt | 4 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
 | 5 | Change one thing: the size | 4 | 5 | 22 | CoCo, EXP-007 all-RAM completion | Mechanism |
 | 6 | A screen of things that never existed | 3 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
-| 7 | Change one thing: the upbringing | 2 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
+| 7 | Change one thing: the training data | 2 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
 | 8 | Now you play it | 2 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
 | 9 | Who decided? | 1 | 2 | 36 | Slide | Agency |
 | | Reserve, held for block 3 | | 2 | 38 | | |
@@ -524,7 +524,7 @@ and every veto is a decision a person wrote down.
 Note the second scenario cost. This is the one place the talk leaves the
 vintage-computer example, so get in and out.
 
-### 7. Change one thing: the upbringing
+### 7. Change one thing: the training data
 
 **On screen:** EXP-003, the fan-corpus bias runs, as five stacked bars.
 

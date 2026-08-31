@@ -981,7 +981,7 @@ def figure_corpus(filename: str, shown: int, columns: int, note: str) -> str:
 def figure_corpora(
     sources: list[tuple[str, str]], shown: int, note: str
 ) -> str:
-    """Several corpora side by side, labelled - block 7's three upbringings."""
+    """Several corpora side by side, labelled - block 7's three corpora."""
     blocks = []
     for label, filename in sources:
         lines = corpus_lines(filename)[:shown]
@@ -1169,7 +1169,7 @@ def main() -> None:
         [("apple fan", "EXP-003-apple-fan.txt"),
          ("commodore fan", "EXP-003-commodore-fan.txt"),
          ("tandy fan", "EXP-003-tandy-fan.txt")], 6,
-        "Same architecture, three different worlds to read."))
+        "Same architecture, three different sets of training data."))
     deck = splice(deck, "ids", figure_identifiers(vocabulary))
     deck = splice(deck, "why", figure_why_three(traces["why_three"]))
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))
