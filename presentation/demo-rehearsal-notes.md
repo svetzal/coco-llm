@@ -488,7 +488,7 @@ happen rather than hears that it did.
 
 ### The split
 
-On stage this is the "Where the trick lives" explainer slide. Advance to it
+On stage this is the "Improved With Simple Rules" explainer slide. Advance to it
 after dealing.
 
 > Here's the thing. The model in there is 400 bytes, and it holds the shape
