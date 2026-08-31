@@ -1084,8 +1084,22 @@ def figure_bias(trace: dict) -> str:
         f'went last in the file, and last is what stuck.</p>'
     )
 
+    # The row labels name training data; the bars show generated output. The
+    # header row says so, on screen, before the first bar lands - without it
+    # the figure reads as a chart about the data and the journey from corpus
+    # to output happens only in the speaker notes.
+    header = (
+        '<div class="brun bhead">'
+        '<span class="blab">trained on</span>'
+        f'<span class="bh">who its {trace["samples"]} generated names '
+        'were about</span>'
+        '<span class="bh">one name it generated</span>'
+        '<span class="bh"></span></div>'
+    )
+
     return f"""
   <div class="fig bias">
+    {header}
     <p class="lbl">one collection each</p>
     {fans}{blip}
     <p class="lbl fragment" data-fragment-index="4">

@@ -617,6 +617,14 @@
   display: grid; grid-template-columns: 12em 20em 13em 8em;
   gap: 0 0.8em; align-items: center; margin: 0.4em 0;
 }
+/* The header row: left column names the input, the rest name the output.
+ * Static, so the journey is framed before the first bar lands. */
+.reveal .brun.bhead { align-items: end; margin: 0 0 0.1em; }
+.reveal .brun.bhead .bh {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.62em; letter-spacing: 0.08em; color: var(--deck-quiet);
+  text-align: left; white-space: normal;
+}
 .reveal .brun .blab {
   font-family: var(--deck-prose); text-transform: uppercase;
   font-size: 0.62em; letter-spacing: 0.08em; color: var(--deck-quiet);
