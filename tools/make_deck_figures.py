@@ -919,6 +919,47 @@ def corpus_columns(lines: list[str], columns: int) -> str:
     return "".join(blocks)
 
 
+def figure_shape(dealt: list[str]) -> str:
+    """One title's walk through the frame model, so "the shape" is a picture
+    before it is a ledger row: a real title the model read, the shape left
+    behind when the names lift out, and a dealt title where dictionary names
+    fill the gaps. Both titles are real - the read row is a corpus line and
+    the dealt row is on the demo screen - so the figure asserts them."""
+    corpus = corpus_lines("EXP-012-tos-titles.txt")
+    for premise in ("BALANCE OF TERROR", "JOURNEY TO BABEL"):
+        if premise not in corpus:
+            raise SystemExit(f"shape figure premise gone: {premise!r} not in corpus")
+    if "BALANCE OF BABEL" not in dealt:
+        raise SystemExit("shape figure premise gone: BALANCE OF BABEL not dealt")
+
+    def row(label: str, title: str, note: str) -> str:
+        return (
+            f'<span class="slab">{label}</span>'
+            f'<span class="stitle">{title}</span>'
+            f'<span class="snote">{note}</span>'
+        )
+
+    name = '<span class="name">{}</span>'.format
+    # The gap holds the lifted name in transparent ink, so the underline is
+    # exactly as wide as the name that left and the OFs stack vertically.
+    gap = '<span class="gap">{}</span>'.format
+    rows = "".join([
+        row("it read", f'{name("BALANCE")} OF {name("TERROR")}',
+            "a real title, straight from the corpus"),
+        row("it kept", f'{gap("BALANCE")} OF {gap("TERROR")}',
+            "the names lift out. the shape stays"),
+        row("it dealt", f'{name("BALANCE")} OF {name("BABEL")}',
+            "two dictionary names fill the gaps"),
+    ])
+    return f"""
+  <div class="fig">
+    <div class="shape">{rows}</div>
+    <p class="cap">Every word is real &mdash; BABEL was lifted from JOURNEY
+      TO BABEL, another real title. <strong>The title itself never
+      existed.</strong></p>
+  </div>"""
+
+
 def figure_corpus(filename: str, shown: int, columns: int, note: str) -> str:
     """A model's reading material, quoted verbatim from the data file it
     trains on. One recognisable style for every corpus in the talk, with the
@@ -1119,6 +1160,8 @@ def main() -> None:
     deck = splice(deck, "corpus5", figure_corpus(
         "EXP-007-sentence-training.txt", 8, 1,
         "The 248 word seats come from sentences like these."))
+    dealt_titles = json.loads((TRACES.parent / "titles.json").read_text())
+    deck = splice(deck, "shape", figure_shape(dealt_titles["dealt"]))
     deck = splice(deck, "corpus6", figure_corpus(
         "EXP-012-tos-titles.txt", 12, 2,
         "Every title here is real. Every title it deals is not."))

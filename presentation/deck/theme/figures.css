@@ -49,6 +49,36 @@
 }
 .reveal .tok.hot .id { color: var(--deck-mark); }
 
+/* --- the shape, drawn ------------------------------------------------------
+ * One title's walk through the frame model: read, lift, deal. Rows are
+ * derived from the corpus file and the exported demo screen (titles.json),
+ * so the picture cannot drift from what the machine does. Navy marks the
+ * names; the gaps are empty underlines waiting for them. */
+.reveal .shape {
+  display: grid;
+  grid-template-columns: max-content max-content max-content;
+  gap: 0.35em 1.1em;
+  align-items: baseline;
+  width: fit-content;
+  margin: 0.5em auto 0;
+}
+.reveal .shape .slab {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.6em; letter-spacing: 0.12em; color: var(--deck-quiet);
+  text-align: right;
+}
+.reveal .shape .stitle { text-align: left; white-space: nowrap; }
+.reveal .shape .stitle .name { color: var(--deck-mark); }
+.reveal .shape .stitle .gap {
+  color: transparent;
+  border-bottom: 0.12em solid var(--deck-ink);
+}
+.reveal .shape .snote {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 12px; letter-spacing: 0.08em; color: var(--deck-quiet);
+  text-align: left;
+}
+
 /* --- the rules, as sentences ----------------------------------------------
  * Each rule is one plain sentence with the failure it prevents as the
  * punchline. Ledger rows fragment explanations; these do not. */

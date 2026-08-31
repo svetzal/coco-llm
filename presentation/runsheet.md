@@ -510,7 +510,10 @@ deliverable. Which one you get was a decision about the task.
 The block runs corpus, call, demo, explainer. The cue slide calls the
 shot — 400 bytes that never learned a word are about to deal plausible
 titles — the machine deals them, and the explainer slide "Improved With Simple
-Rules" shows the three-way split: 400 bytes of learned shape, 1,333 of
+Rules" opens with a picture of the shape itself: BALANCE OF TERROR read from
+the corpus, the names lifted out to leave ___ OF ___, and BALANCE OF BABEL
+dealt back out of the gaps (both titles are real — the figure is derived from
+the corpus file and the exported demo screen). Under it, the three-way split: 400 bytes of learned shape, 1,333 of
 hand-written dictionary, and 258 of rules, with the rules laid out row by
 row alongside the failure each one vetoes — the transition mask (else
 TRISKELION THE MAN TRAP), the slot grammar (refuses A TRIBBLES and THE
