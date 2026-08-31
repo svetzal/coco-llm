@@ -639,7 +639,9 @@
 .reveal .seg.mk-a { background: var(--coco-c44); }  /* APPLE */
 .reveal .seg.mk-c { background: var(--coco-c25); }  /* COMMODORE */
 .reveal .seg.mk-t { background: var(--coco-c36); }  /* TANDY */
-.reveal .seg.mk-o { background: var(--coco-c16); }  /* everything else */
+.reveal .seg.mk-o {  /* everything else: no maker word first */
+  background: var(--coco-c16); color: var(--coco-bg);
+}
 .reveal .brun .bsample { color: var(--deck-ink); white-space: nowrap; }
 .reveal .brun .bnote2 {
   font-family: var(--deck-prose); text-transform: uppercase;

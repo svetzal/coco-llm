@@ -1021,9 +1021,12 @@ def figure_bias(trace: dict) -> str:
             for maker in trace["makers"]
         )
         if run["other"]:
+            # The gray segment labels itself like the coloured ones do: draws
+            # that opened with some other vocabulary word, no maker first.
             segments += (
                 f'<span class="seg mk-o" '
-                f'style="width:{100 * run["other"] / run["total"]:.1f}%"></span>'
+                f'style="width:{100 * run["other"] / run["total"]:.1f}%">'
+                f'{label("NO MAKER", run["other"])}</span>'
             )
         return (
             f'<div class="brun fragment" data-fragment-index="{index}">'
