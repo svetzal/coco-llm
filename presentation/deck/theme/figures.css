@@ -49,6 +49,14 @@
 }
 .reveal .tok.hot .id { color: var(--deck-mark); }
 
+/* --- the stray-draw note under the bias bars ------------------------------
+ * A one-draw segment is too thin to carry its own label, so this line says
+ * what it is. Generated only when the data has a stray draw. */
+.reveal .bias .blip {
+  white-space: normal; max-width: 52em;
+  margin: 0.2em auto 0.5em;
+}
+
 /* --- the shape, drawn ------------------------------------------------------
  * One title's walk through the frame model: read, lift, deal. Rows are
  * derived from the corpus file and the exported demo screen (titles.json),

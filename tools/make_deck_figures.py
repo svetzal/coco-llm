@@ -1036,10 +1036,33 @@ def figure_bias(trace: dict) -> str:
     fans = "".join(row(run, n + 1) for n, run in enumerate(trace["runs"][:3]))
     concatenated, interleaved = trace["runs"][3], trace["runs"][4]
 
+    # A stray draw renders as a sliver too thin to label itself, and an
+    # unlabelled value on screen is a question from the audience. Name it,
+    # from the data, on the same click as the row that shows it.
+    strays = [
+        (n + 1, run, maker, run["counts"][maker])
+        for n, run in enumerate(trace["runs"][:3])
+        for maker in trace["makers"]
+        if maker != run["favourite"] and run["counts"][maker] > 0
+    ]
+    blip = ""
+    if strays:
+        clauses = " ".join(
+            f'The thin slice in the {esc(run["label"].lower())} bar: '
+            f'{count} draw{"" if count == 1 else "s"} of {run["total"]} '
+            f'came out {esc(maker)} anyway.'
+            for _, run, maker, count in strays
+        )
+        blip = (
+            f'\n    <p class="lbl blip fragment" '
+            f'data-fragment-index="{max(n for n, *_ in strays)}">'
+            f'{clauses} The bias is a lean, not a wall.</p>'
+        )
+
     return f"""
   <div class="fig bias">
     <p class="lbl">one collection each</p>
-    {fans}
+    {fans}{blip}
     <p class="lbl fragment" data-fragment-index="4">
       the same {concatenated["names"]} names, balanced, in two orders
     </p>

@@ -541,7 +541,9 @@ names.** Balanced, eighteen from each maker. The only difference is whether
 the three collections were laid end to end or shuffled together.
 
 Concatenated, it comes out a Tandy fan at 14 of 20, indistinguishable from the
-model that only ever saw Tandy machines. Tandy went last, and last is what
+model that only ever saw Tandy machines. (The thin slice in the tandy fan bar
+is explained on the slide itself: one draw of twenty came out COMMODORE — the
+bias is a lean, not a wall.) Tandy went last, and last is what
 stuck. Interleaved, the same data spreads: 10, 6, 3.
 
 Land it plainly. Nobody chose to make that fourth model a Tandy fan. Nobody
