@@ -57,7 +57,9 @@
 .reveal .shape {
   display: grid;
   grid-template-columns: max-content max-content max-content;
-  gap: 0.35em 1.1em;
+  /* The column gap is in the figure's 0.62em context, so a polite-looking
+   * value ends up cramped on screen - TERROR ran straight into its note. */
+  gap: 0.35em 2.6em;
   align-items: baseline;
   width: fit-content;
   margin: 0.5em auto 0;
