@@ -1144,15 +1144,22 @@ def refuse_to_eat_hand_edits() -> None:
     """Splicing overwrites every FIGURE region, so uncommitted deck edits may
     include hand-written caption changes this run would silently destroy.
     That has happened. Commit the deck first (porting any figure-region edits
-    into this file), or pass --anyway to splice regardless."""
-    if "--anyway" in sys.argv:
-        return
+    into this file), or pass --anyway to splice regardless.
+
+    Even --anyway prints the dirty diff before splicing. That has also been
+    needed: an --anyway run once erased a hand edit nobody had read, and the
+    only copy left was in an editor's undo buffer. Printed, the edit at least
+    survives in the terminal scrollback and the session log."""
     try:
         dirty = subprocess.run(
             ["git", "diff", "--quiet", "--", str(DECK)],
             cwd=ROOT,
         ).returncode != 0
     except OSError:
+        return
+    if dirty and "--anyway" in sys.argv:
+        print("splicing over uncommitted deck changes; the diff, for the record:")
+        subprocess.run(["git", "--no-pager", "diff", "--", str(DECK)], cwd=ROOT)
         return
     if dirty:
         raise SystemExit(
