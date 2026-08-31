@@ -1026,7 +1026,7 @@ def figure_bias(trace: dict) -> str:
             segments += (
                 f'<span class="seg mk-o" '
                 f'style="width:{100 * run["other"] / run["total"]:.1f}%">'
-                f'{label("NO MAKER", run["other"])}</span>'
+                f'{label("NONE", run["other"])}</span>'
             )
         return (
             f'<div class="brun fragment" data-fragment-index="{index}">'
