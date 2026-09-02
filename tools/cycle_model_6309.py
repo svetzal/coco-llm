@@ -54,7 +54,11 @@ M6809_S16_S16 = [
 # 6309 native mode. MULD indexed is 30 cycles plus the indexed postbyte cost,
 # which is zero for ",x". SEX is 1 in native mode, TFR is 4, RTS is 4.
 M6309_S8_S16 = [
-    ("sex", "inherent", 1),          # caller leaves the signed byte in B
+    # The loop hands the multiplicand over in A, as the engine's own forward
+    # pass does, so the port pays for moving it rather than the benchmark
+    # changing its loop to flatter the newer chip.
+    ("tfr  a,b", "immediate", 4),
+    ("sex", "inherent", 1),
     ("muld ,x", "indexed no-offset", 30),
     ("tfr  w,d", "immediate", 4),
     ("rts", "inherent", 4),
@@ -122,6 +126,62 @@ def report():
     print("  Native mode also removes a cycle or two from most of the other")
     print("  instructions in the run. That is deliberately excluded here. The")
     print("  real figure comes off a stopwatch on the physical CoCo 3.")
+    print()
+    compare_against_measurement(avg8, new8)
+
+
+# What XRoar measured, in cycles per multiplication, from
+# `make bench-xroar-6309`: 58,000 multiplications, 200 passes over the trained
+# parameter block, ticks converted at 60 Hz and 0.895 MHz.
+MEASURED_6809_MODE = 134.0
+MEASURED_NATIVE_MODE = 116.2
+MEASURED_MULD = 87.4
+
+# The benchmark loop around each kernel call, from the same data sheet.
+BENCH_LOOP = [
+    ("lda  ,u+", "indexed auto-increment", 6),
+    ("jsr  ,y", "indexed no-offset", 7),
+    ("addd bench_sum", "extended", 7),
+    ("std  bench_sum", "extended", 6),
+    ("leax 2,x", "indexed 5-bit", 5),
+    ("ldd  bench_items_left", "extended", 6),
+    ("subd #1", "immediate", 4),
+    ("std  bench_items_left", "extended", 6),
+    ("bne  bench_item", "relative", 3),
+]
+
+
+def compare_against_measurement(avg8: float, new8: int) -> None:
+    """The data sheet is only worth anything if the machine agrees with it.
+
+    Only the first row is a clean prediction: every cycle in it is tabulated,
+    nothing is fitted, and it is checked against a measurement taken later.
+    The other two rows need native-mode timings for the loop, which are not
+    transcribed here, so they are reported as what the measurement implies
+    about the kernel rather than as predictions of it.
+    """
+    loop = total(BENCH_LOOP)
+    predicted = avg8 + loop
+    error = (predicted - MEASURED_6809_MODE) / MEASURED_6809_MODE
+    print("Data sheet against XRoar, cycles per multiplication")
+    print(f"  6809 kernel, 6809 mode     kernel {avg8:.1f} + loop {loop} "
+          f"= {predicted:.1f}")
+    print(f"                             measured {MEASURED_6809_MODE:.1f}, "
+          f"{error:+.1%}. Nothing fitted.")
+    print()
+    print("  What the other two rows imply, given that loop:")
+    print(f"  6809 kernel, native mode   {MEASURED_NATIVE_MODE:.1f} measured, "
+          f"so kernel and loop together save "
+          f"{MEASURED_6809_MODE - MEASURED_NATIVE_MODE:.1f}")
+    print(f"  MULD kernel, native mode   {MEASURED_MULD:.1f} measured, and the "
+          f"data sheet kernel is {new8}, leaving "
+          f"{MEASURED_MULD - new8:.1f} for the loop")
+    print(f"                             against {loop} in 6809 mode, which is "
+          "the native-mode saving")
+    print()
+    print("  XRoar calls its own 6309 emulation UNVERIFIED, so the last two")
+    print("  rows are corroboration rather than proof. The physical CoCo 3 is")
+    print("  the authority for anything the 6309 does.")
 
 
 def prove_bit_exact():

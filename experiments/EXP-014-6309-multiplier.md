@@ -2,18 +2,24 @@
 
 ## Status
 
-**Not built. Analysis supported, toolchain gap identified, hardware
-measurement is the whole point.** The arithmetic below is datasheet
-calculation and one direct-simulator measurement. Nothing has been assembled
-for the 6309 yet.
+**Built and running in the emulator on both CPUs. Physical hardware
+outstanding, and it is the measurement that matters.** A standalone CoCo
+program runs the same 58,000 multiplications three ways over the model's own
+trained parameters and reports what each one cost. All three reach the
+checksum the Python reference computes.
 
+The measured result is under [What the machine did](#what-the-machine-did).
 The bit-exactness question that could have killed the idea is settled: a MULD
 kernel cannot diverge from the engine the CoCo 1 runs. See
 [Bit-exactness](#bit-exactness).
 
 ```sh
+make bench                                # test, then both emulator runs
 uv run python tools/cycle_model_6309.py   # the cycle table and the proof
 ```
+
+The code is standalone in `src/6309/`, sharing no routine with the learning
+engine. See its [README](../src/6309/README.md).
 
 ## Question
 
@@ -26,6 +32,8 @@ the 6809's unsigned 8-by-8 `MUL`. How much of the run is that routine, and
 what happens to it when the multiply the code wants exists in silicon?
 
 ## Hypothesis
+
+*Recorded before the benchmark was built. Left as written.*
 
 Replacing `multiply_s8_s16` with a `MULD` kernel will:
 
@@ -59,7 +67,7 @@ every variable access is extended.
 | --- | ---: | ---: |
 | 6809, negative operand | 16 | 93 |
 | 6809, positive operand | 13 | 78 |
-| 6309 native, either sign | 4 | 39 |
+| 6309 native, either sign | 5 | 43 |
 
 The sign correction is 3 instructions and 15 cycles on the 6809. On the 6309
 it is not a faster correction. It is **not there**, because `MULD` is signed.
@@ -67,6 +75,37 @@ it is not a faster correction. It is **not there**, because `MULD` is signed.
 The 16-by-16 kernel EXP-005, the prompted marketing completions, uses is
 starker: three `MUL` instructions and 105 cycles collapse to `muld ,x` plus
 `tfr w,d`, 38 cycles.
+
+## What the machine did
+
+58,000 multiplications, 200 passes over the 290 trained parameters, all three
+kernels on one CoCo under XRoar. Ticks are the 60 Hz video counter, which
+measures wall-clock time whatever the processor is doing.
+
+| Kernel and mode | Ticks | Seconds | Cycles each | Against the first row |
+| --- | ---: | ---: | ---: | ---: |
+| 6809 kernel, 6809 emulation mode | 521 | 8.68 | 134.0 | 1.00x |
+| 6809 kernel, 6309 native mode | 452 | 7.53 | 116.2 | **1.15x** |
+| MULD kernel, 6309 native mode | 340 | 5.67 | 87.4 | **1.53x** |
+
+Every row produced checksum `$1E10`, which is what `tools/export_bench_data.py`
+computes in Python. A faster kernel with a different sum would be a broken
+kernel.
+
+The three rows are the reason the block is worth its slot. Native mode alone
+buys 1.15x. The instruction buys the rest. Neither number alone would separate
+"the newer chip is faster" from "the newer chip has the operation this
+workload wants", and it is the second claim the block is about.
+
+The data sheet predicted the first row within 1.1% with nothing fitted: 85.5
+cycles of kernel plus 50 cycles of benchmark loop is 135.5 against 134.0
+measured. That is the row the direct simulator and the data sheet both stand
+behind. XRoar labels its own 6309 emulation UNVERIFIED, so rows two and three
+are corroboration and the physical CoCo 3 is still the authority.
+
+Double speed needs no code and is not in the table. `TIMER` counts video
+frames, so `POKE 65497,0` before `EXEC` halves every row and the comparison
+stays honest.
 
 ## How much of the run is it
 
@@ -76,13 +115,18 @@ twenty-epoch run. Against EXP-004's recorded cycle-model projection of roughly
 66.7 million cycles, the kernel and its call overhead account for about
 **46% of the entire training run**.
 
-So the projection: `MULD` alone is worth about 1.29x, and with the CoCo 3's
-double clock roughly 2.6x against a stock CoCo 1. Native mode also trims a
-cycle or two from most other instructions, which is deliberately excluded.
+So the projection: `MULD` alone is worth about 1.26x on the training run, and
+with the CoCo 3's double clock roughly 2.5x against a stock CoCo 1.
 
-**Every figure in that paragraph is a projection.** The measurement is a
-stopwatch against the physical machine, and it is the only number that belongs
-on a slide.
+Note how much smaller that is than the 1.53x the benchmark measured, and
+smaller again than the 1.99x the kernel gets on its own. Three numbers, each
+correct about a different thing: the instruction, the loop around it, and the
+program around that. The block has to show the shrinkage rather than quote the
+biggest one, because the shrinkage is the lesson.
+
+**The training-run figure is still a projection.** Running EXP-004, the live
+training run, on both machines and timing it is the measurement, and it has
+not been done.
 
 ## Bit-exactness
 
@@ -102,7 +146,7 @@ should pass unchanged, and if they do not, the port is wrong.
 
 | Tool | 6309 support |
 | --- | --- |
-| lwasm | Yes. 6309 is the default mode. |
+| lwasm | Yes. 6309 is the default mode, and it took `muld`, `sex`, `tfr w,d` and `ldmd` without complaint. |
 | XRoar 1.12.1 | `-machine-cpu 6309`, which XRoar's own help labels **UNVERIFIED**. |
 | The direct simulator | **None.** MC6809 only. |
 
@@ -125,15 +169,16 @@ during the block.
    to be established.
 2. Enter native mode by setting bit 0 of the MD register, and confirm the
    existing engine still passes its parity tests in 6809 emulation mode first.
-3. Add a third named multiply policy beside EXP-004's 8-by-16 and EXP-005's
-   16-by-16, following the existing composition-root pattern. No conditionals
-   in the shared engine.
-4. Run the complete twenty-epoch training on the CoCo 1, on the CoCo 3 in
-   emulation mode at 0.895 MHz, on the CoCo 3 native at 0.895 MHz, and on the
-   CoCo 3 native at 1.79 MHz. Four stopwatch readings isolate the clock from
-   the instruction.
-5. Verify the parity result matches on every one of them. If a number is fast
-   and wrong it is not a result.
+3. Run `bench6809.bin` on the CoCo 1 and confirm 521 ticks. If the physical
+   machine disagrees with the emulator on the 6809 row, nothing further in
+   this experiment can be trusted.
+4. Run `bench6309.bin` on the CoCo 3 and compare all three rows against the
+   table above. Then run it again after `POKE 65497,0` and confirm the rows
+   halve.
+5. Only then consider a third named multiply policy in the engine itself,
+   beside EXP-004's 8-by-16 and EXP-005's 16-by-16, and time the complete
+   twenty-epoch training run on both machines. That converts the projection
+   above into a measurement.
 
 ## Null result to respect
 

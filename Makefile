@@ -749,3 +749,69 @@ tools:
 
 $(SIM6809):
 	$(MAKE) tools
+
+# ---------------------------------------------------------------------------
+# EXP-014, the 6309 multiplier block. Standalone: it shares the engine's
+# arithmetic and its trained parameters, and none of its code.
+
+BENCH_SOURCES := src/6309/coco_bench.asm src/6309/multiply_bench.asm \
+		src/6809/text_screen.asm build/bench6309/bench_data.inc
+
+build/bench6309/bench_data.inc: tools/export_bench_data.py \
+		experiments/data/EXP-002-tokenized-computer-names.txt
+	$(UV) run python tools/export_bench_data.py
+
+build/bench6309/bench-test.bin: src/6309/tests/bench_test.asm $(BENCH_SOURCES)
+	lwasm --6809 --format=raw \
+		--symbol-dump=build/bench6309/bench-test.sym --output=$@ $<
+
+build/bench6309/bench-test-runner.asm: build/bench6309/bench-test.bin \
+		tools/make_bench_runner.py
+	$(UV) run python tools/make_bench_runner.py \
+		--binary build/bench6309/bench-test.bin \
+		--symbols build/bench6309/bench-test.sym \
+		--assert-symbol bench_sum=BENCH_EXPECTED \
+		--output $@
+
+# The direct simulator is MC6809 only, so this proves kernel one. Kernel two
+# is proven in Python over every input pair, and then on the machine.
+bench-test: build/bench6309/bench-test-runner.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --reset-vector 0x2000 --run --perf $<
+
+build/bench6309/bench6809.bin: $(BENCH_SOURCES)
+	lwasm --6809 --format=decb --output=$@ src/6309/coco_bench.asm
+	lwasm --6809 --format=raw \
+		--symbol-dump=build/bench6309/coco-bench.sym \
+		--output=build/bench6309/coco-bench.bin src/6309/coco_bench.asm
+
+build/bench6309/bench6309.bin: $(BENCH_SOURCES)
+	lwasm --6309 --format=decb --define=BENCH_6309=1 --output=$@ \
+		src/6309/coco_bench.asm
+	lwasm --6309 --format=raw --define=BENCH_6309=1 \
+		--symbol-dump=build/bench6309/coco-bench-6309.sym \
+		--output=build/bench6309/coco-bench-6309.bin src/6309/coco_bench.asm
+
+bench-bin: build/bench6309/bench6809.bin build/bench6309/bench6309.bin
+
+# Both runs use -no-ratelimit. TIMER counts video frames rather than processor
+# cycles, so the tick figures are the ones the machine would report at its own
+# speed, and the run finishes in a second instead of nine.
+#
+# XRoar's own help calls its 6309 emulation UNVERIFIED. These numbers are
+# evidence, not the measurement: the physical CoCo 3 is the authority for
+# anything the 6309 does.
+bench-xroar-6809: build/bench6309/bench6809.bin build/roms/.coco1-roms
+	$(UV) run python tools/run_bench_xroar.py --xroar $(XROAR) \
+		--binary $< --symbols build/bench6309/coco-bench.sym \
+		--basic-rom $(COCO_BASIC_ROM) \
+		--extended-basic-rom $(COCO_EXTBASIC_ROM) --cpu 6809
+
+bench-xroar-6309: build/bench6309/bench6309.bin build/roms/.coco1-roms
+	$(UV) run python tools/run_bench_xroar.py --xroar $(XROAR) \
+		--binary $< --symbols build/bench6309/coco-bench-6309.sym \
+		--basic-rom $(COCO_BASIC_ROM) \
+		--extended-basic-rom $(COCO_EXTBASIC_ROM) --cpu 6309
+
+bench: bench-test bench-xroar-6809 bench-xroar-6309
+
+.PHONY: bench bench-test bench-bin bench-xroar-6809 bench-xroar-6309
