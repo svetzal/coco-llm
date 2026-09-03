@@ -77,7 +77,10 @@ def main() -> None:
     if native:
         rows.append(("6809 kernel, native mode", native))
     if muld:
-        rows.append(("MULD kernel, native mode", muld))
+        # The fallback build runs MULD without entering native mode, and it is
+        # the absence of the native row that says so.
+        mode = "native mode" if native else "6809 mode"
+        rows.append((f"MULD kernel, {mode}", muld))
     for label, ticks in rows:
         seconds = ticks / TICKS_PER_SECOND
         cycles = seconds * 895_000 / multiplies

@@ -14,9 +14,12 @@ kernel cannot diverge from the engine the CoCo 1 runs. See
 [Bit-exactness](#bit-exactness).
 
 ```sh
-make bench                                # test, then both emulator runs
+make bench                                # test, build, then both emulator runs
 uv run python tools/cycle_model_6309.py   # the cycle table and the proof
 ```
+
+To run it on the machines, see the
+[hardware session sheet](EXP-014-hardware-session.md).
 
 The code is standalone in `src/6309/`, sharing no routine with the learning
 engine. See its [README](../src/6309/README.md).
@@ -102,6 +105,12 @@ cycles of kernel plus 50 cycles of benchmark loop is 135.5 against 134.0
 measured. That is the row the direct simulator and the data sheet both stand
 behind. XRoar labels its own 6309 emulation UNVERIFIED, so rows two and three
 are corroboration and the physical CoCo 3 is still the authority.
+
+A fourth build, `bench6309safe.bin`, runs MULD without entering native mode
+and reaches 388 ticks, 99.8 cycles each, 1.34x. It exists because native-mode
+interrupt stacking is the one thing here that has never run on real silicon,
+and MULD works in either mode. The data sheet predicted that row too, within
+1%: 49 cycles of kernel plus the same 50 of loop is 99.
 
 Double speed needs no code and is not in the table. `TIMER` counts video
 frames, so `POKE 65497,0` before `EXEC` halves every row and the comparison

@@ -785,13 +785,31 @@ build/bench6309/bench6809.bin: $(BENCH_SOURCES)
 		--output=build/bench6309/coco-bench.bin src/6309/coco_bench.asm
 
 build/bench6309/bench6309.bin: $(BENCH_SOURCES)
-	lwasm --6309 --format=decb --define=BENCH_6309=1 --output=$@ \
-		src/6309/coco_bench.asm
-	lwasm --6309 --format=raw --define=BENCH_6309=1 \
+	lwasm --6309 --format=decb --define=BENCH_6309=1 --define=BENCH_NATIVE=1 \
+		--output=$@ src/6309/coco_bench.asm
+	lwasm --6309 --format=raw --define=BENCH_6309=1 --define=BENCH_NATIVE=1 \
 		--symbol-dump=build/bench6309/coco-bench-6309.sym \
 		--output=build/bench6309/coco-bench-6309.bin src/6309/coco_bench.asm
 
-bench-bin: build/bench6309/bench6809.bin build/bench6309/bench6309.bin
+# The fallback: MULD without native mode, for the case where native-mode
+# interrupt stacking misbehaves on real silicon. MULD works in either mode.
+build/bench6309/bench6309safe.bin: $(BENCH_SOURCES)
+	lwasm --6309 --format=decb --define=BENCH_6309=1 --output=$@ \
+		src/6309/coco_bench.asm
+	lwasm --6309 --format=raw --define=BENCH_6309=1 \
+		--symbol-dump=build/bench6309/coco-bench-safe.sym \
+		--output=build/bench6309/coco-bench-safe.bin src/6309/coco_bench.asm
+
+build/bench6309/BENCH309.DSK: build/bench6309/bench6809.bin \
+		build/bench6309/bench6309.bin build/bench6309/bench6309safe.bin \
+		tools/make_rsdos_dsk.py
+	$(UV) run python tools/make_rsdos_dsk.py --output $@ \
+		--file BENCH09.BIN=build/bench6309/bench6809.bin \
+		--file BENCH39.BIN=build/bench6309/bench6309.bin \
+		--file BENCH39S.BIN=build/bench6309/bench6309safe.bin
+
+bench-bin: build/bench6309/bench6809.bin build/bench6309/bench6309.bin \
+		build/bench6309/bench6309safe.bin build/bench6309/BENCH309.DSK
 
 # Both runs use -no-ratelimit. TIMER counts video frames rather than processor
 # cycles, so the tick figures are the ones the machine would report at its own
@@ -812,6 +830,6 @@ bench-xroar-6309: build/bench6309/bench6309.bin build/roms/.coco1-roms
 		--basic-rom $(COCO_BASIC_ROM) \
 		--extended-basic-rom $(COCO_EXTBASIC_ROM) --cpu 6309
 
-bench: bench-test bench-xroar-6809 bench-xroar-6309
+bench: bench-test bench-bin bench-xroar-6809 bench-xroar-6309
 
 .PHONY: bench bench-test bench-bin bench-xroar-6809 bench-xroar-6309

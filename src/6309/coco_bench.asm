@@ -18,7 +18,16 @@
 ; by `ldb #column` silently replaces half the value with the column. Values
 ; travel in X, or the small number is stored before the value is loaded.
 
-        org     $2000
+; $4000, not $2000. A disk system puts DOS buffers and the start of BASIC's
+; program area below roughly $2600, so a program loaded at $2000 lands on top
+; of the buffers DSKCON is using to load it and LOADM hangs. This was found by
+; loading the disk image in the emulator, which is the only reason it is not
+; going to be found on Saturday instead.
+        ifndef  BENCH_ORG
+BENCH_ORG       equ     $4000
+        endc
+
+        org     BENCH_ORG
 
 start
         lds     #$7f00
@@ -52,8 +61,12 @@ start
         lbsr    report_result
 
         ifdef   BENCH_6309
+        ifdef   BENCH_NATIVE
 ; Native mode is bit 0 of MD. Interrupts stay enabled because TIMER is the
-; clock, and the 6309 stacks and unstacks the extra register itself.
+; clock, and the 6309 stacks and unstacks the extra register itself. That is
+; the one thing here that has never run on real silicon, which is why
+; BENCH_NATIVE is optional: MULD works in either mode, so the fallback build
+; still gets the comparison the block is about.
         ldu     #text_kernel_native
         lda     #8
         lbsr    say
@@ -64,6 +77,7 @@ start
         lbsr    check_sum
         lda     #9
         lbsr    report_result
+        endc
 
         ldu     #text_kernel_muld
         lda     #11
@@ -74,7 +88,9 @@ start
         lbsr    check_sum
         lda     #12
         lbsr    report_result
+        ifdef   BENCH_NATIVE
         ldmd    #0
+        endc
 
         ldd     ticks_emulation
         std     bench_ratio_a
@@ -329,7 +345,11 @@ text_multiplies         fcn     "MULTIPLICATIONS"
 text_parameters         fcn     "TRAINED PARAMETERS"
 text_kernel_6809        fcn     "6809 KERNEL, 6809 MODE"
 text_kernel_native      fcn     "6809 KERNEL, NATIVE MODE"
+        ifdef   BENCH_NATIVE
 text_kernel_muld        fcn     "MULD KERNEL, NATIVE MODE"
+        else
+text_kernel_muld        fcn     "MULD KERNEL, 6809 MODE"
+        endc
 text_ticks              fcn     "TICKS"
 text_sum                fcn     "SUM"
 text_muld_is            fcn     "MULD IS"

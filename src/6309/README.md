@@ -51,11 +51,30 @@ to show up as fewer ticks. That is also why double speed needs no code: enter
 
 ```sh
 make bench-test          # the 6809 kernel against the Python checksum
-make bench-bin           # both CoCo binaries
+make bench-bin           # three CoCo binaries and a disk image
 make bench-xroar-6809    # the stock-machine baseline
 make bench-xroar-6309    # all three rows
 make bench               # all of it
 ```
+
+Three binaries, because two of them are insurance:
+
+| Build | Defines | Rows |
+| --- | --- | --- |
+| `bench6809.bin` | none | the 6809 kernel only |
+| `bench6309.bin` | `BENCH_6309`, `BENCH_NATIVE` | all three |
+| `bench6309safe.bin` | `BENCH_6309` | MULD without native mode |
+
+Native-mode interrupt stacking is the one thing here that has never run on
+real silicon. MULD works in either mode, so the fallback still gets the
+comparison the block is about if native mode misbehaves.
+
+They load at **$4000**, not the `$2000` the rest of the project uses. On a disk
+system `$2000` is inside Disk BASIC's buffers and the start of its program
+area, which is a good way to lose a Saturday.
+
+For the hardware session see
+[EXP-014's session sheet](../../experiments/EXP-014-hardware-session.md).
 
 ## What each tool can and cannot do
 
