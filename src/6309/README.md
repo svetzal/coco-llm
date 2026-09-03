@@ -69,9 +69,10 @@ Native-mode interrupt stacking is the one thing here that has never run on
 real silicon. MULD works in either mode, so the fallback still gets the
 comparison the block is about if native mode misbehaves.
 
-They load at **$4000**, not the `$2000` the rest of the project uses. On a disk
-system `$2000` is inside Disk BASIC's buffers and the start of its program
-area, which is a good way to lose a Saturday.
+They load at **$4000**, not the `$2000` the rest of the project uses. With Disk
+BASIC the program area starts near `$2601` and the graphics pages occupy
+`$0E00-$2600`, so `$2000` is inside memory BASIC will use. A precaution from
+the memory map rather than a fault anyone has reproduced.
 
 For the hardware session see
 [EXP-014's session sheet](../../experiments/EXP-014-hardware-session.md).

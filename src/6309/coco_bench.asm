@@ -18,11 +18,11 @@
 ; by `ldb #column` silently replaces half the value with the column. Values
 ; travel in X, or the small number is stored before the value is loaded.
 
-; $4000, not $2000. A disk system puts DOS buffers and the start of BASIC's
-; program area below roughly $2600, so a program loaded at $2000 lands on top
-; of the buffers DSKCON is using to load it and LOADM hangs. This was found by
-; loading the disk image in the emulator, which is the only reason it is not
-; going to be found on Saturday instead.
+; $4000, not the $2000 the rest of the project uses. A precaution from the
+; memory map, not a reproduced bug: with Disk BASIC the program area starts
+; near $2601 and the graphics pages occupy $0E00-$2600, so $2000 is inside
+; memory BASIC will use the moment anything touches graphics. $4000 is above
+; all of it and costs nothing. `CLEAR 200,&H3FFF` keeps BASIC out of it.
         ifndef  BENCH_ORG
 BENCH_ORG       equ     $4000
         endc

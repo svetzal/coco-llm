@@ -22,10 +22,11 @@ carries a caveat, [below](#about-the-disk-image).
 
 `BENCH39.BIN` will crash a 6809. That is expected, not a fault.
 
-All three load at **$4000**, above Disk BASIC's buffers and above the start of
-BASIC's program area. The rest of the project loads at `$2000`, which is inside
-that region on a disk system; if these run and the other experiments do not,
-that is the difference to look at.
+All three load at **$4000**. The rest of the project loads at `$2000`, which on
+a disk system sits inside the graphics pages BASIC reserves below `$2600`. That
+is a precaution taken from the memory map rather than a fault anyone has seen,
+but if these run and the other experiments do not, it is the difference to look
+at first.
 
 ## About the disk image
 
@@ -34,11 +35,15 @@ geometry and its directory: a `LOADM` of a name that is not on it returns
 `?FILE NOT FOUND` rather than failing, which means Disk BASIC parsed the
 directory and the granule table this tool wrote.
 
-**A full load out of it was never completed in the emulator.** Neither was
-`DIR`, on a disk that Disk BASIC had just formatted for itself, so the rig is
-the suspect rather than the image. It is offered as a convenience and not as a
-verified artifact. If it does not work, use the `.BIN` files, which have been
-run.
+**A full load out of it was never completed in the emulator, and neither was a
+load out of a commercial CoCo disk.** `LOADM` of a file that exists hangs on
+`MAGIC.DSK` exactly as it does on this one, while `LOADM` of a missing name
+errors cleanly on both. So the headless emulator rig cannot load any disk, and
+the image is not what is failing.
+
+Its directory and granule table also match the fourteen commercial disks
+checked against the same reader. That is good evidence, not proof. If it does
+not work on the day, use the `.BIN` files, which have been run end to end.
 
 ## Running it
 
