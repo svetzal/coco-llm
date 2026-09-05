@@ -92,8 +92,8 @@ actually wants to see.
 
 **Done 2026-09-05:** runs 2 and 3 on the CoCo 3 - 519 / 442 / 338 at normal
 speed, 259 / 220 / 168 at double. Recorded in EXP-014 under What the machine
-did. Run 1, the CoCo 1 baseline, is still to do, and the checksum line from
-runs 2 and 3 was not written down.
+did. Both runs ended `SUM MATCHES THE REFERENCE`. Run 1, the CoCo 1
+baseline, is still to do.
 
 ## What the emulator predicts
 

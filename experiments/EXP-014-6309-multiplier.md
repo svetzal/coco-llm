@@ -107,11 +107,11 @@ where the machine is 2.2% faster than the emulator. Native-mode interrupt
 stacking, the one thing that had never run on real silicon, ran; the program
 did not hang or reset between rows.
 
-Not yet recorded from this session: the checksum line. Every row should have
-read sum `$1E10` and the run should have ended `SUM MATCHES THE REFERENCE`;
-until that is confirmed the timings above are ticks of a program whose
-arithmetic is assumed, not shown, to be right. The CoCo 1 baseline run
-(`BENCH09.BIN`, run 1 on the session sheet) has not been done.
+Both runs ended `SUM MATCHES THE REFERENCE`, so every kernel on the machine,
+native mode and double clock included, computed the same `$1E10` the Python
+reference computes. The timings are of arithmetic shown to be right, not
+assumed. The CoCo 1 baseline run (`BENCH09.BIN`, run 1 on the session sheet)
+has not been done.
 
 ### In the emulator
 
