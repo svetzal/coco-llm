@@ -2,11 +2,12 @@
 
 ## Status
 
-**Built and running in the emulator on both CPUs. Physical hardware
-outstanding, and it is the measurement that matters.** A standalone CoCo
+**Measured on a physical CoCo 3 with a 6309, 2026-09-05, and the machine
+agrees with the emulator within 2.2% on every row.** A standalone CoCo
 program runs the same 58,000 multiplications three ways over the model's own
 trained parameters and reports what each one cost. All three reach the
-checksum the Python reference computes.
+checksum the Python reference computes. The CoCo 1 baseline run and the
+training-run timing are still outstanding.
 
 The measured result is under [What the machine did](#what-the-machine-did).
 The bit-exactness question that could have killed the idea is settled: a MULD
@@ -81,6 +82,39 @@ starker: three `MUL` instructions and 105 cycles collapse to `muld ,x` plus
 
 ## What the machine did
 
+### On the CoCo 3, 2026-09-05
+
+Stacey ran `BENCH39.BIN` on a physical CoCo 3 fitted with a 6309, from the
+CoCo SDC, at normal speed and then again with `POKE 65497,0`. Ticks are the
+60 Hz video counter. Cycles per multiplication are derived the same way as the
+emulator rows below: ticks / 60 x 894,886 Hz / 58,000.
+
+| Kernel and mode | Ticks | Seconds | Cycles each | Against the first row | Emulator said | Delta |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 6809 kernel, 6809 emulation mode | 519 | 8.65 | 133.5 | 1.00x | 521 | -0.4% |
+| 6809 kernel, 6309 native mode | 442 | 7.37 | 113.7 | **1.17x** | 452 | -2.2% |
+| MULD kernel, 6309 native mode | 338 | 5.63 | 86.9 | **1.54x** | 340 | -0.6% |
+
+At double speed: **259 / 220 / 168** ticks. Each row halves within a tick or
+two of exactly half (259.5 / 221 / 169 predicted), which is what a video-frame
+counter should do when only the processor clock changes. Against the stock
+first row, the MULD kernel at double speed is **3.09x** - the number the
+block's closing beat is built around, now measured rather than projected.
+
+XRoar's 6309 emulation, which XRoar itself labels UNVERIFIED, is corroborated
+by silicon on all three rows: the largest disagreement is the native-mode row,
+where the machine is 2.2% faster than the emulator. Native-mode interrupt
+stacking, the one thing that had never run on real silicon, ran; the program
+did not hang or reset between rows.
+
+Not yet recorded from this session: the checksum line. Every row should have
+read sum `$1E10` and the run should have ended `SUM MATCHES THE REFERENCE`;
+until that is confirmed the timings above are ticks of a program whose
+arithmetic is assumed, not shown, to be right. The CoCo 1 baseline run
+(`BENCH09.BIN`, run 1 on the session sheet) has not been done.
+
+### In the emulator
+
 58,000 multiplications, 200 passes over the 290 trained parameters, all three
 kernels on one CoCo under XRoar. Ticks are the 60 Hz video counter, which
 measures wall-clock time whatever the processor is doing.
@@ -104,7 +138,7 @@ The data sheet predicted the first row within 1.1% with nothing fitted: 85.5
 cycles of kernel plus 50 cycles of benchmark loop is 135.5 against 134.0
 measured. That is the row the direct simulator and the data sheet both stand
 behind. XRoar labels its own 6309 emulation UNVERIFIED, so rows two and three
-are corroboration and the physical CoCo 3 is still the authority.
+were corroboration until the CoCo 3 run above confirmed them.
 
 A fourth build, `bench6309safe.bin`, runs MULD without entering native mode
 and reaches 388 ticks, 99.8 cycles each, 1.34x. It exists because native-mode
