@@ -14,11 +14,17 @@ the CoCo SDC and FujiNet both load, and they are the artifacts that have
 actually been run end to end. `BENCH309.DSK` is there as a convenience and
 carries a caveat, [below](#about-the-disk-image).
 
-| File | Machine | Rows | Notes |
-| --- | --- | --- | --- |
-| `BENCH09.BIN` | CoCo 1, or CoCo 3 | 1 | Plain 6809. The baseline. |
-| `BENCH39.BIN` | CoCo 3 with 6309 | 3 | Enters native mode. **Run this one.** |
-| `BENCH39S.BIN` | CoCo 3 with 6309 | 2 | MULD without native mode. Fallback. |
+| File | Built as | Machine | Rows | Notes |
+| --- | --- | --- | --- | --- |
+| `BENCH09.BIN` | `bench6809.bin` | CoCo 1, or CoCo 3 | 1 | Plain 6809. The baseline. |
+| `BENCH39.BIN` | `bench6309.bin` | CoCo 3 with 6309 | 3 | Enters native mode. **Run this one.** |
+| `BENCH39S.BIN` | `bench6309safe.bin` | CoCo 3 with 6309 | 2 | MULD without native mode. Fallback. |
+
+The short names are the ones inside `BENCH309.DSK`; the loose files in
+`build/bench6309/` carry the long names, so rename them as you copy. On the
+CoCo SDC the disk image mounts with `DRIVE 0,"BENCH309"` and the `LOADM`
+lines below then read from it (copied to the card 2026-09-05, all four
+files, verified byte-for-byte).
 
 `BENCH39.BIN` will crash a 6809. That is expected, not a fault.
 
