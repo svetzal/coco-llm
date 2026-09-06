@@ -221,8 +221,10 @@ MUSIC_RATE ?= 5679
 # Toolshed's decb is the reference DECB disk tool; override if it moves.
 DECB ?= $(HOME)/OneDrive/CoCo/dev/toolshed/build/unix/decb/decb
 
+# PLAYER=wave enumerates EXP-017's wavetable loop instead of EXP-009's.
+PLAYER ?= square
 music-cycles:
-	$(UV) run python tools/music_cycle_budget.py
+	$(UV) run python tools/music_cycle_budget.py --player $(PLAYER)
 
 build/exp009/tune_data.inc: tools/export_tune.py src/reference/coco_synth.py
 	$(UV) run python tools/export_tune.py --sample-rate $(MUSIC_RATE)
@@ -263,7 +265,7 @@ COCO3_ROM_ARCHIVE ?= $(HOME)/OneDrive/CoCo/MAME/roms/coco3.zip
 COCO3_ROM := build/roms/coco3.rom
 
 music-cycles-6309:
-	$(UV) run python tools/music_cycle_budget.py --cpu 6309
+	$(UV) run python tools/music_cycle_budget.py --cpu 6309 --player $(PLAYER)
 
 build/exp015/tune_data_fast.inc: tools/export_tune.py src/reference/coco_synth.py
 	$(UV) run python tools/export_tune.py --sample-rate $(MUSIC_RATE_FAST) \
@@ -321,11 +323,13 @@ exp015-test: build/exp015/music-fast.bin build/exp015/music-6309.bin \
 	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
 		--machine coco3 --coco3-rom $(COCO3_ROM) \
 		--binary build/exp015/music-fast.bin \
-		--symbols build/exp015/music-fast.sym --trap-symbol audio_disable
+		--symbols build/exp015/music-fast.sym --trap-symbol audio_disable \
+		--ram-init set
 	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
 		--machine coco3h --coco3-rom $(COCO3_ROM) \
 		--binary build/exp015/music-6309.bin \
-		--symbols build/exp015/music-6309.sym --trap-symbol audio_disable
+		--symbols build/exp015/music-6309.sym --trap-symbol audio_disable \
+		--ram-init set
 
 xroar-exp015-fast: build/exp015/music-fast.bin build/roms/.coco3-rom
 	@test -x "$(XROAR)" || \
@@ -341,6 +345,132 @@ exp015: exp015-bin exp015-wav exp015-test
 
 .PHONY: music-cycles-6309 exp015-bin exp015-wav exp015-test exp015 \
 	xroar-exp015-fast xroar-exp015-6309
+
+# ---- EXP-017, the wavetable voices ---------------------------------------
+# EXP-009's player with each tone voice's masked bit replaced by a table
+# lookup: a triangle or a sine instead of a square, at the same cost per
+# sample. Rates are pinned from `make music-cycles PLAYER=wave` and its
+# 6309 twin; the 6309 rate is the same prediction EXP-015 is testing.
+#
+# Each build assembles in its own directory holding the two generated
+# includes it needs, tune_data.inc for its rate and wavetable.inc for its
+# shape, found through -I. One wrapper per processor and clock serves
+# every shape.
+EXP017 := build/exp017
+WAVE_RATE ?= 5789
+WAVE_RATE_FAST ?= 11578
+WAVE_RATE_6309 ?= 14402
+
+$(EXP017)/table-%.inc: tools/export_wavetable.py src/reference/wave_synth.py
+	$(UV) run python tools/export_wavetable.py --shape $* --output $@
+
+$(EXP017)/tune-$(WAVE_RATE).inc: tools/export_tune.py src/reference/coco_synth.py
+	$(UV) run python tools/export_tune.py --sample-rate $(WAVE_RATE) --output $@
+
+$(EXP017)/tune-$(WAVE_RATE_FAST).inc: tools/export_tune.py src/reference/coco_synth.py
+	$(UV) run python tools/export_tune.py --sample-rate $(WAVE_RATE_FAST) \
+		--output $@
+
+$(EXP017)/tune-$(WAVE_RATE_6309).inc: tools/export_tune.py src/reference/coco_synth.py
+	$(UV) run python tools/export_tune.py --sample-rate $(WAVE_RATE_6309) \
+		--wide-ticks --output $@
+
+# $(1) build name, $(2) wrapper, $(3) processor, $(4) shape, $(5) rate
+define wave_build
+$(EXP017)/$(1)/wave.bin: $(2) src/6809/wave_player.asm \
+		$(EXP017)/table-$(4).inc $(EXP017)/tune-$(5).inc
+	mkdir -p $(EXP017)/$(1)
+	cp $(EXP017)/table-$(4).inc $(EXP017)/$(1)/wavetable.inc
+	cp $(EXP017)/tune-$(5).inc $(EXP017)/$(1)/tune_data.inc
+	lwasm --$(3) -I $(EXP017)/$(1) --format=decb \
+		--symbol-dump=$(EXP017)/$(1)/wave.sym --output=$$@ $(2)
+endef
+
+$(eval $(call wave_build,wave09,src/6809/coco_wave.asm,6809,triangle,$(WAVE_RATE)))
+$(eval $(call wave_build,square09,src/6809/coco_wave.asm,6809,square,$(WAVE_RATE)))
+$(eval $(call wave_build,wave2x,src/6809/coco_wave_fast.asm,6809,triangle,$(WAVE_RATE_FAST)))
+$(eval $(call wave_build,wave39,src/6309/coco_wave_native.asm,6309,triangle,$(WAVE_RATE_6309)))
+$(eval $(call wave_build,sine39,src/6309/coco_wave_native.asm,6309,sine,$(WAVE_RATE_6309)))
+
+WAVE_BINS := $(EXP017)/wave09/wave.bin $(EXP017)/wave2x/wave.bin \
+	$(EXP017)/wave39/wave.bin $(EXP017)/sine39/wave.bin
+
+$(EXP017)/WAVE017.DSK: $(WAVE_BINS) tools/make_rsdos_dsk.py
+	cp $(EXP017)/wave09/wave.bin $(EXP017)/WAVE09.BIN
+	cp $(EXP017)/wave2x/wave.bin $(EXP017)/WAVE2X.BIN
+	cp $(EXP017)/wave39/wave.bin $(EXP017)/WAVE39.BIN
+	cp $(EXP017)/sine39/wave.bin $(EXP017)/SINE39.BIN
+	$(UV) run python tools/make_rsdos_dsk.py --output $@ \
+		--file WAVE09.BIN=$(EXP017)/WAVE09.BIN \
+		--file WAVE2X.BIN=$(EXP017)/WAVE2X.BIN \
+		--file WAVE39.BIN=$(EXP017)/WAVE39.BIN \
+		--file SINE39.BIN=$(EXP017)/SINE39.BIN
+
+exp017-bin: $(EXP017)/WAVE017.DSK
+
+# Loop-level parity in the direct simulator, for the triangle build and for
+# a square-table build that must reproduce EXP-009's masked bit exactly.
+$(EXP017)/wave-parity-test.asm: $(EXP017)/wave09/wave.bin tools/make_wave_parity_test.py
+	$(UV) run python tools/make_wave_parity_test.py --shape triangle \
+		--binary $(EXP017)/wave09/wave.bin --symbols $(EXP017)/wave09/wave.sym \
+		--output $@
+
+$(EXP017)/square-parity-test.asm: $(EXP017)/square09/wave.bin tools/make_wave_parity_test.py
+	$(UV) run python tools/make_wave_parity_test.py --shape square \
+		--binary $(EXP017)/square09/wave.bin --symbols $(EXP017)/square09/wave.sym \
+		--output $@
+
+wave-test: $(EXP017)/wave-parity-test.asm $(EXP017)/square-parity-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run $(EXP017)/wave-parity-test.asm
+	$(SIM6809) --ram-top 65535 --run $(EXP017)/square-parity-test.asm
+
+# The reference at each build's rate and shape, to hear on the Mac.
+exp017-wav:
+	$(UV) run python tools/render_wave_tune.py --shape triangle \
+		--sample-rate $(WAVE_RATE) --output $(EXP017)/wave-triangle-$(WAVE_RATE).wav
+	$(UV) run python tools/render_wave_tune.py --shape triangle \
+		--sample-rate $(WAVE_RATE_6309) --output $(EXP017)/wave-triangle-$(WAVE_RATE_6309).wav
+	$(UV) run python tools/render_wave_tune.py --shape sine \
+		--sample-rate $(WAVE_RATE_6309) --output $(EXP017)/wave-sine-$(WAVE_RATE_6309).wav
+	$(UV) run python tools/render_wave_tune.py --shape square \
+		--sample-rate $(WAVE_RATE_6309) --output $(EXP017)/wave-square-$(WAVE_RATE_6309).wav
+
+# Every build to the end of its tune under XRoar.
+exp017-test: $(WAVE_BINS) build/roms/.coco1-roms build/roms/.coco3-rom
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--basic-rom $(COCO_BASIC_ROM) --extended-basic-rom $(COCO_EXTBASIC_ROM) \
+		--binary $(EXP017)/wave09/wave.bin --symbols $(EXP017)/wave09/wave.sym \
+		--trap-symbol audio_disable --ram-init set
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--machine coco3 --coco3-rom $(COCO3_ROM) \
+		--binary $(EXP017)/wave2x/wave.bin --symbols $(EXP017)/wave2x/wave.sym \
+		--trap-symbol audio_disable --ram-init set
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--machine coco3h --coco3-rom $(COCO3_ROM) \
+		--binary $(EXP017)/wave39/wave.bin --symbols $(EXP017)/wave39/wave.sym \
+		--trap-symbol audio_disable --ram-init set
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--machine coco3h --coco3-rom $(COCO3_ROM) \
+		--binary $(EXP017)/sine39/wave.bin --symbols $(EXP017)/sine39/wave.sym \
+		--trap-symbol audio_disable --ram-init set
+
+xroar-wave09: $(EXP017)/wave09/wave.bin build/roms/.coco1-roms
+	$(XROAR) -machine cocous -ram 32 -bas $(COCO_BASIC_ROM) \
+		-extbas $(COCO_EXTBASIC_ROM) -ratelimit -run $<
+
+xroar-wave2x: $(EXP017)/wave2x/wave.bin build/roms/.coco3-rom
+	$(XROAR) -machine coco3 -extbas $(COCO3_ROM) -ratelimit -run $<
+
+xroar-wave39: $(EXP017)/wave39/wave.bin build/roms/.coco3-rom
+	$(XROAR) -machine coco3h -extbas $(COCO3_ROM) -ratelimit -run $<
+
+xroar-sine39: $(EXP017)/sine39/wave.bin build/roms/.coco3-rom
+	$(XROAR) -machine coco3h -extbas $(COCO3_ROM) -ratelimit -run $<
+
+exp017: exp017-bin wave-test exp017-wav exp017-test
+
+.PHONY: exp017-bin wave-test exp017-wav exp017-test exp017 \
+	xroar-wave09 xroar-wave2x xroar-wave39 xroar-sine39
 
 exp010-corpus:
 	$(UV) run python tools/extract_chorales.py
@@ -517,7 +647,8 @@ xroar-test-music: build/coco-music.bin build/coco-music.sym build/roms/.coco1-ro
 		--xroar $(XROAR) --binary build/coco-music.bin \
 		--basic-rom $(COCO_BASIC_ROM) \
 		--extended-basic-rom $(COCO_EXTBASIC_ROM) \
-		--symbols build/coco-music.sym --trap-symbol audio_disable
+		--symbols build/coco-music.sym --trap-symbol audio_disable \
+		--ram-init set
 
 xroar-music: build/coco-music.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \

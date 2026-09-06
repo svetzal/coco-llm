@@ -219,3 +219,20 @@ The sample loop and the 5679 Hz rate are untouched, so the freeze stands:
 stub. `make xroar-test-music` now plays the whole tune to `audio_disable`
 under XRoar's CoCo 1, so a row-level regression cannot hide behind the
 sample-loop parity again.
+
+### And a second cell it never wrote
+
+Found the same day, building EXP-017, the wavetable voices. `music_start`
+reads `ticks_cfg` and applies the default tempo only if the cell is zero,
+so a caller can set a tempo first. The standalone wrapper never wrote it
+either. The direct simulator zeroes RAM, and XRoar's power-on pattern
+happened to hold a zero at that address in this player's layout; the
+wavetable player's layout moved the cell onto an `$FF`, and its tune ran
+at 255 ticks a row until the emulator gave up. On a real machine the RAM
+is whatever it is, so the frozen player's tempo on hardware had been a
+coin toss.
+
+Every standalone wrapper now clears `ticks_cfg` beside setting the hook,
+and every whole-tune emulator test runs with `--ram-init set`, XRoar's
+all-ones power-on pattern, so a cell that is read before it is written
+fails on the Mac rather than at the table.

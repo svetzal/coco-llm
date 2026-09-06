@@ -13,6 +13,8 @@
 coco_music_entry
         ldd     #row_hook_none
         std     >row_hook
+        clr     >ticks_cfg      ; zero asks music_start for the default tempo;
+                                ; the RAM it loads into is not zero by right
         jmp     music_start
 
         end     coco_music_entry

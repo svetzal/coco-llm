@@ -39,6 +39,14 @@ def parse_arguments() -> argparse.Namespace:
         "--coco3-rom instead of the two CoCo 1 ROMs",
     )
     parser.add_argument("--coco3-rom", type=Path, help="the 32 KiB CoCo 3 ROM")
+    parser.add_argument(
+        "--ram-init",
+        choices=("clear", "set", "pattern", "random"),
+        default=None,
+        help="what XRoar fills RAM with at power-on. 'set' (all ones) is the "
+        "hostile choice: a program that only works because a cell it never "
+        "wrote happened to be zero fails here instead of on the machine",
+    )
     parser.add_argument("--symbols", required=True, type=Path)
     parser.add_argument("--trap-symbol", default="wait_for_key")
     parser.add_argument("--ram", choices=(16, 32, 64), type=int, default=32)
@@ -78,6 +86,9 @@ def main() -> None:
         verify_rom(arguments.coco3_rom, COCO3_ROM_CRC32, "CoCo 3 ROM")
         machine_options = ["-extbas", str(arguments.coco3_rom)]
         rom_note = "a valid CoCo 3 ROM"
+    if arguments.ram_init:
+        machine_options += ["-ram-init", arguments.ram_init]
+        rom_note += f", RAM {arguments.ram_init} at power-on"
 
     with tempfile.TemporaryDirectory(prefix="coco-llm-xroar-") as directory:
         snapshot = Path(directory) / "wait-for-key.sna"

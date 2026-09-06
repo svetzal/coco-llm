@@ -106,11 +106,42 @@ TICK_COUNTDOWN_6309 = [
     ("BNE", "relative", 3),
 ]
 
+# EXP-017, the wavetable voices: the phase update is the same, and the
+# masked bit becomes one indexed load. The page byte sits before the phase
+# in memory, so LDX on it reads page:phase_hi, the sample's own address.
+# One cycle cheaper than the mask on the 6809, the same in native mode.
+VOICE_WAVE = [
+    ("LDD", "direct", 5),
+    ("ADDD", "direct", 6),
+    ("STD", "direct", 5),
+    ("LDX", "direct", 5),
+    ("LDA", "indexed ,x", 4),
+    ("ADDA", "direct", 4),
+    ("STA", "direct", 4),
+]
+
+VOICE_WAVE_6309 = [
+    ("LDD", "direct", 4),
+    ("ADDD", "direct", 5),
+    ("STD", "direct", 4),
+    ("LDX", "direct", 4),
+    ("LDA", "indexed ,x", 4),
+    ("ADDA", "direct", 3),
+    ("STA", "direct", 3),
+]
+
 CPUS = {
-    "6809": (VOICE3_NOISE, VOICE_SQUARE, MIX_AND_OUTPUT, TICK_COUNTDOWN),
-    "6309": (
+    ("square", "6809"): (VOICE3_NOISE, VOICE_SQUARE, MIX_AND_OUTPUT, TICK_COUNTDOWN),
+    ("square", "6309"): (
         VOICE3_NOISE_6309,
         VOICE_SQUARE_6309,
+        MIX_AND_OUTPUT_6309,
+        TICK_COUNTDOWN_6309,
+    ),
+    ("wave", "6809"): (VOICE3_NOISE, VOICE_WAVE, MIX_AND_OUTPUT, TICK_COUNTDOWN),
+    ("wave", "6309"): (
+        VOICE3_NOISE_6309,
+        VOICE_WAVE_6309,
         MIX_AND_OUTPUT_6309,
         TICK_COUNTDOWN_6309,
     ),
@@ -137,9 +168,16 @@ def parse_arguments() -> argparse.Namespace:
                         "or the CoCo 3's fast clock for --cpu 6309")
     parser.add_argument(
         "--cpu",
-        choices=tuple(CPUS),
+        choices=("6809", "6309"),
         default="6809",
         help="6309 uses native-mode timings, as EXP-015's native build does",
+    )
+    parser.add_argument(
+        "--player",
+        choices=("square", "wave"),
+        default="square",
+        help="square is EXP-009's masked-bit player; wave is EXP-017's "
+        "wavetable player",
     )
     parser.add_argument(
         "--overhead-cycles",
@@ -153,16 +191,18 @@ def parse_arguments() -> argparse.Namespace:
 
 def main() -> None:
     arguments = parse_arguments()
-    noise_block, voice_block, mix_block, tick_block = CPUS[arguments.cpu]
+    noise_block, voice_block, mix_block, tick_block = CPUS[
+        (arguments.player, arguments.cpu)
+    ]
     clock = arguments.clock
     if clock is None:
         clock = COCO3_FAST_CLOCK if arguments.cpu == "6309" else COCO1_CLOCK
 
-    print(f"Sample loop (every path, every sample), {arguments.cpu}"
-          + (" native mode" if arguments.cpu == "6309" else ""))
+    print(f"Sample loop (every path, every sample), {arguments.player} player, "
+          f"{arguments.cpu}" + (" native mode" if arguments.cpu == "6309" else ""))
     noise3 = show("voice 3 (noise, branch-free)", noise_block)
     print()
-    one_voice = show("voice 2, 1, or 0 (square)", voice_block)
+    one_voice = show(f"voice 2, 1, or 0 ({arguments.player})", voice_block)
     print()
     mix = show("mix and output", mix_block)
     print()
@@ -182,9 +222,9 @@ def main() -> None:
         # by about what the loop did. Scaling the amortised share by the loop
         # ratio is an estimate of an estimate; it moves the rate by well
         # under a tenth of a percent.
-        loop_6809 = (total(VOICE3_NOISE) + total(VOICE_SQUARE) * 3
-                     - VOICE_SQUARE[-1][2] + total(MIX_AND_OUTPUT)
-                     + total(TICK_COUNTDOWN))
+        noise_6809, voice_6809, mix_6809, tick_6809 = CPUS[(arguments.player, "6809")]
+        loop_6809 = (total(noise_6809) + total(voice_6809) * 3
+                     - voice_6809[-1][2] + total(mix_6809) + total(tick_6809))
         overhead = overhead * loop / loop_6809
     print(f"plus amortised tick/row work: {overhead:.2f} cycles")
     effective = loop + overhead

@@ -92,6 +92,18 @@ Current experiments:
   predicted 14.4 kHz on the CoCo 3, to hear what sample rate buys before
   any 6309 rewrite of the loop. Built and emulator-checked; the listening
   is pending. Found and fixed the standalone player's missing row hook.
+- [`EXP-016-register-resident-loop.md`](EXP-016-register-resident-loop.md) —
+  the register-resident loop: rejected by arithmetic before building. The
+  best 6309 register rewrite of the sample loop saves six percent, and the
+  work showed that the mask, not the phase, is where a tone voice's cycles
+  go.
+- [`EXP-017-wavetable-voices.md`](EXP-017-wavetable-voices.md) — the
+  wavetable voices: each tone voice's masked bit replaced by a table lookup
+  at the same cost, so a triangle or a sine where there was a square. Bit-
+  exact against its reference, a square-table build reproduces EXP-009's
+  player, four builds run to the end under XRoar with hostile RAM; the
+  listening is pending. Found a second uninitialised cell in the frozen
+  player, its tempo.
 
 ## Presentation commands
 
