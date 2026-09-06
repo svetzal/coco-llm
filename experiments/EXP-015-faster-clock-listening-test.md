@@ -106,9 +106,17 @@ The 6309 row is the one genuinely being tested on the day.
 
 Stacey played `MUSIC39` in XRoar's 6309 CoCo 3 with the rate limiter on,
 through the Mac's speakers, and called it a marked improvement over the
-CoCo 1 player. That is one listener, one emulator, and the machine's DAC
-as XRoar models it, so it is a reason to expect hypothesis 3 to hold, not
-evidence that it does. The 1703 session below is still the experiment.
+CoCo 1 player. Against `MUSIC2X` at 11.4 kHz, the same session, she heard
+a distinct further gain from `MUSIC39`: a warmer tone. Warmer is what
+less aliasing sounds like; the folded-down harmonics that give the
+square waves their edge at a low rate are inharmonic, and thinning them
+reads as warmth rather than as brightness.
+
+That is one listener, one emulator, and the machine's DAC as XRoar
+models it, so it is a reason to expect hypothesis 3's first half to hold
+and its second half, that the step to 14 kHz is small, to fail. If the
+1703 agrees, the W-register rewrite of the loop earns its experiment.
+The 1703 session below is still the one that decides.
 
 ## Hardware session
 
