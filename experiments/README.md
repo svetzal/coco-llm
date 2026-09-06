@@ -103,7 +103,13 @@ Current experiments:
   exact against its reference, a square-table build reproduces EXP-009's
   player, four builds run to the end under XRoar with hostile RAM; the
   listening is pending. Found a second uninitialised cell in the frozen
-  player, its tempo.
+  player, its tempo. On the 1703 the square was preferred.
+- [`EXP-018-steady-sample-clock.md`](EXP-018-steady-sample-clock.md) — the
+  steady sample clock: the tune compiled into an event stream and applied
+  one byte per sample through a path padded to cost what idling costs, so
+  the sample clock never stretches. Tests whether the 8 Hz warble heard on
+  the melody voice is the row-change stall EXP-009 accepted. Costs a fifth
+  of the rate. Built and emulator-checked; the listening is pending.
 
 ## Presentation commands
 

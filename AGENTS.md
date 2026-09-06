@@ -84,6 +84,7 @@ Use these glosses, so the short names stay stable across documents:
 | EXP-015 | the faster-clock listening test |
 | EXP-016 | the register-resident loop |
 | EXP-017 | the wavetable voices |
+| EXP-018 | the steady sample clock |
 
 Shorten a gloss where the sentence already supplies the context, but do not
 drop it. Add a row here when an experiment is added.

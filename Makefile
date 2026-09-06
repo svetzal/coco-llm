@@ -472,6 +472,82 @@ exp017: exp017-bin wave-test exp017-wav exp017-test
 .PHONY: exp017-bin wave-test exp017-wav exp017-test exp017 \
 	xroar-wave09 xroar-wave2x xroar-wave39 xroar-sine39
 
+# ---- EXP-018, the steady sample clock ------------------------------------
+# EXP-009's loop with its row and tick work compiled away into an event
+# stream, applied one byte per sample through a path padded to cost what
+# the idle path costs. Every sample costs the same, so the rate is the
+# loop's exact cycle count with nothing amortised: `make music-cycles
+# PLAYER=steady` and its 6309 twin, pinned here.
+EXP018 := build/exp018
+STEADY_RATE ?= 4590
+STEADY_RATE_6309 ?= 11188
+
+$(EXP018)/events-%.inc: tools/export_events.py src/reference/steady_synth.py \
+		src/reference/coco_synth.py
+	$(UV) run python tools/export_events.py --sample-rate $* --output $@
+
+# $(1) build name, $(2) wrapper, $(3) processor, $(4) rate
+define steady_build
+$(EXP018)/$(1)/steady.bin: $(2) src/6809/steady_player.asm $(EXP018)/events-$(4).inc
+	mkdir -p $(EXP018)/$(1)
+	cp $(EXP018)/events-$(4).inc $(EXP018)/$(1)/tune_events.inc
+	lwasm --$(3) -I $(EXP018)/$(1) --format=decb \
+		--symbol-dump=$(EXP018)/$(1)/steady.sym --output=$$@ $(2)
+endef
+
+$(eval $(call steady_build,steady09,src/6809/coco_steady.asm,6809,$(STEADY_RATE)))
+$(eval $(call steady_build,steady39,src/6309/coco_steady_native.asm,6309,$(STEADY_RATE_6309)))
+
+$(EXP018)/STEADY18.DSK: $(EXP018)/steady09/steady.bin $(EXP018)/steady39/steady.bin \
+		tools/make_rsdos_dsk.py
+	cp $(EXP018)/steady09/steady.bin $(EXP018)/STEADY09.BIN
+	cp $(EXP018)/steady39/steady.bin $(EXP018)/STEADY39.BIN
+	$(UV) run python tools/make_rsdos_dsk.py --output $@ \
+		--file STEADY09.BIN=$(EXP018)/STEADY09.BIN \
+		--file STEADY39.BIN=$(EXP018)/STEADY39.BIN
+
+exp018-bin: $(EXP018)/STEADY18.DSK
+
+$(EXP018)/steady-parity-test.asm: $(EXP018)/steady09/steady.bin \
+		tools/make_steady_parity_test.py
+	$(UV) run python tools/make_steady_parity_test.py \
+		--binary $(EXP018)/steady09/steady.bin \
+		--symbols $(EXP018)/steady09/steady.sym --output $@
+
+steady-test: $(EXP018)/steady-parity-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run $<
+
+exp018-wav:
+	$(UV) run python tools/render_steady_tune.py --sample-rate $(STEADY_RATE) \
+		--output $(EXP018)/steady-$(STEADY_RATE).wav
+	$(UV) run python tools/render_steady_tune.py --sample-rate $(STEADY_RATE_6309) \
+		--output $(EXP018)/steady-$(STEADY_RATE_6309).wav
+
+exp018-test: $(EXP018)/steady09/steady.bin $(EXP018)/steady39/steady.bin \
+		build/roms/.coco1-roms build/roms/.coco3-rom
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--basic-rom $(COCO_BASIC_ROM) --extended-basic-rom $(COCO_EXTBASIC_ROM) \
+		--binary $(EXP018)/steady09/steady.bin \
+		--symbols $(EXP018)/steady09/steady.sym \
+		--trap-symbol audio_disable --ram-init set
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--machine coco3h --coco3-rom $(COCO3_ROM) \
+		--binary $(EXP018)/steady39/steady.bin \
+		--symbols $(EXP018)/steady39/steady.sym \
+		--trap-symbol audio_disable --ram-init set
+
+xroar-steady09: $(EXP018)/steady09/steady.bin build/roms/.coco1-roms
+	$(XROAR) -machine cocous -ram 32 -bas $(COCO_BASIC_ROM) \
+		-extbas $(COCO_EXTBASIC_ROM) -ratelimit -run $<
+
+xroar-steady39: $(EXP018)/steady39/steady.bin build/roms/.coco3-rom
+	$(XROAR) -machine coco3h -extbas $(COCO3_ROM) -ratelimit -run $<
+
+exp018: exp018-bin steady-test exp018-wav exp018-test
+
+.PHONY: exp018-bin steady-test exp018-wav exp018-test exp018 \
+	xroar-steady09 xroar-steady39
+
 exp010-corpus:
 	$(UV) run python tools/extract_chorales.py
 

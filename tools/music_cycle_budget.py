@@ -130,7 +130,44 @@ VOICE_WAVE_6309 = [
     ("STA", "direct", 3),
 ]
 
+# EXP-018, the steady sample clock: the countdown ends in an event or in
+# padding that costs exactly what the event costs, so the loop's cost is
+# the whole story and nothing is amortised. The padding figure printed
+# below is what steady_player.asm must carry for that processor.
+EVENT_TAIL = [
+    ("DEC", "direct", 6),
+    ("BNE", "relative", 3),
+    ("LDB", "indexed ,x+", 6),
+    ("LDA", "indexed ,x+", 6),
+    ("STA", "indexed b,y", 5),
+    ("LDA", "indexed ,x+", 6),
+    ("STA", "direct", 4),
+    ("TST", "direct", 6),
+    ("BNE", "relative", 3),
+    ("BRA", "relative", 3),
+]
+
+EVENT_TAIL_6309 = [
+    ("DEC", "direct", 5),
+    ("BNE", "relative", 3),
+    ("LDB", "indexed ,x+", 5),
+    ("LDA", "indexed ,x+", 5),
+    ("STA", "indexed b,y", 5),
+    ("LDA", "indexed ,x+", 5),
+    ("STA", "direct", 3),
+    ("TST", "direct", 5),
+    ("BNE", "relative", 3),
+    ("BRA", "relative", 3),
+]
+
 CPUS = {
+    ("steady", "6809"): (VOICE3_NOISE, VOICE_SQUARE, MIX_AND_OUTPUT, EVENT_TAIL),
+    ("steady", "6309"): (
+        VOICE3_NOISE_6309,
+        VOICE_SQUARE_6309,
+        MIX_AND_OUTPUT_6309,
+        EVENT_TAIL_6309,
+    ),
     ("square", "6809"): (VOICE3_NOISE, VOICE_SQUARE, MIX_AND_OUTPUT, TICK_COUNTDOWN),
     ("square", "6309"): (
         VOICE3_NOISE_6309,
@@ -174,10 +211,10 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--player",
-        choices=("square", "wave"),
+        choices=("square", "wave", "steady"),
         default="square",
         help="square is EXP-009's masked-bit player; wave is EXP-017's "
-        "wavetable player",
+        "wavetable player; steady is EXP-018's constant-cost player",
     )
     parser.add_argument(
         "--overhead-cycles",
@@ -208,6 +245,16 @@ def main() -> None:
     print()
     tick = show("tick countdown", tick_block)
     print()
+    if arguments.player == "steady":
+        # The idle path is BNE taken, the padding, and BRA back; it must
+        # cost what the event path costs after its BNE.
+        after_bne = total(tick_block[2:])
+        padding = after_bne - tick_block[-1][2]
+        print(f"event path after the countdown's BNE: {after_bne} cycles")
+        print(f"idle path must pad {padding} cycles before its BRA")
+        print("(nothing is amortised: every sample costs the same)")
+        print()
+        arguments.overhead_cycles = 0.0
 
     # Voice 0 skips its store; its sum goes straight to the DAC.
     store = voice_block[-1][2]
