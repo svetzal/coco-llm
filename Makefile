@@ -22,7 +22,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
 	exp013-sweep exp013-play exp013-record rpsls-bin rpsls-test xroar-rpsls \
 	present stage xroar-test-music block1 block2 block3 block4 block5 block6 block7 block8 \
-	block9 block10 tools
+	block9 block10 sdcard sdcard-install tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -155,6 +155,22 @@ block9: build/coco-melody-demo.bin build/roms/.coco1-roms
 
 block10:
 	@echo "BLOCK 10 - WHO DECIDED - slides only. Close on the table."
+
+# Everything the hardware loads, staged for an SD card: one disk image per
+# purpose plus the same files loose, and a manifest derived from the
+# binaries. tools/make_sdcard.py owns the list. DEST is the mounted card.
+SDCARD_BINARIES := build/coco-llm.bin build/coco-llm-exp5.bin \
+	build/coco-llm-exp7.bin build/coco-titles.bin build/coco-rpsls.bin \
+	build/coco-melody-demo.bin build/coco-music.bin build/coco-attention.bin \
+	build/bench6309/BENCH309.DSK build/exp015/MUSIC015.DSK \
+	build/exp017/WAVE017.DSK build/exp018/STEADY18.DSK
+
+sdcard: $(SDCARD_BINARIES) tools/make_sdcard.py tools/make_rsdos_dsk.py
+	$(UV) run python tools/make_sdcard.py
+
+DEST ?= /Volumes/COCO
+sdcard-install: $(SDCARD_BINARIES) tools/make_sdcard.py tools/make_rsdos_dsk.py
+	$(UV) run python tools/make_sdcard.py --install $(DEST)
 
 exp006-model:
 	$(UV) run python tools/export_exp_006.py

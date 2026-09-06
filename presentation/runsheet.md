@@ -629,6 +629,16 @@ Close on the table. Say what is running there and that you will be at it.
 
 ## What moves to the table
 
+**Everything the hardware loads is staged by one command.** `make sdcard`
+builds `build/sdcard/`: five RS-DOS disk images (the talk and table demos on
+`COCOLLM.DSK`, then the hardware experiments EXP-014, EXP-015, EXP-017 and
+EXP-018 on their own), the same files loose in a directory per disk for the
+CoCo SDC's directory mounts, and a `MANIFEST.md` whose load addresses and
+`PCLEAR`/`CLEAR` recipes are read out of the binaries rather than remembered.
+`make sdcard-install DEST=/Volumes/COCO` copies it to the mounted card and
+verifies every byte. `tools/make_sdcard.py` owns the list of disks.
+
+
 The table is not the overflow bin, and since the talk projects an emulator it
 now holds the only real hardware in the building. That is a promotion. It gets
 the physical CoCo 1, plus everything that needs a keyboard, a patient visitor,
