@@ -102,6 +102,14 @@ nothing about pitch: XRoar runs the emulated processor at whatever the
 host allows and its 6309 emulation is, in its own words, unverified.
 The 6309 row is the one genuinely being tested on the day.
 
+### Heard on the emulator, 2026-09-06
+
+Stacey played `MUSIC39` in XRoar's 6309 CoCo 3 with the rate limiter on,
+through the Mac's speakers, and called it a marked improvement over the
+CoCo 1 player. That is one listener, one emulator, and the machine's DAC
+as XRoar models it, so it is a reason to expect hypothesis 3 to hold, not
+evidence that it does. The 1703 session below is still the experiment.
+
 ## Hardware session
 
 Everything is in `build/exp015/` after `make exp015-bin`. Copy the three
