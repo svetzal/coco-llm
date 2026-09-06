@@ -81,6 +81,7 @@ Use these glosses, so the short names stay stable across documents:
 | EXP-012 | the fake episode titles |
 | EXP-013 | the game opponent that learns |
 | EXP-014 | the 6309 multiplier benchmark |
+| EXP-015 | the faster-clock listening test |
 
 Shorten a gloss where the sentence already supplies the context, but do not
 drop it. Add a row here when an experiment is added.

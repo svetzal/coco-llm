@@ -51,11 +51,23 @@ def encode_cell(cell) -> tuple[int, int, int]:
 
 
 def render_source(
-    tune: Tune, *, sample_rate: int, repeats: int, ram_rows: int = 0
+    tune: Tune,
+    *,
+    sample_rate: int,
+    repeats: int,
+    ram_rows: int = 0,
+    wide_ticks: bool = False,
 ) -> str:
     samples_per_tick = round(sample_rate / tune.tick_hz)
-    if not 1 <= samples_per_tick <= 255:
-        raise ValueError(f"samples per tick {samples_per_tick} does not fit a byte")
+    # The 6809 player counts a tick down in one byte. The 6309 build of
+    # EXP-015 counts in a 16-bit register, and is the only build allowed past
+    # 255: at its rate a 50 Hz tick is nearly 300 samples.
+    limit = 65535 if wide_ticks else 255
+    if not 1 <= samples_per_tick <= limit:
+        raise ValueError(
+            f"samples per tick {samples_per_tick} does not fit in {limit}"
+            + ("" if wide_ticks else " (a byte; pass --wide-ticks for a 6309 build)")
+        )
     if not 1 <= len(tune.rows) <= 255:
         raise ValueError(f"row count {len(tune.rows)} does not fit a byte")
 
@@ -117,6 +129,12 @@ def parse_arguments() -> argparse.Namespace:
         default=0,
         help="emit an empty buffer of this many rows for a generator to fill",
     )
+    parser.add_argument(
+        "--wide-ticks",
+        action="store_true",
+        help="allow more than 255 samples per tick, for the 6309 build whose "
+        "tick countdown is sixteen bits",
+    )
     return parser.parse_args()
 
 
@@ -128,6 +146,7 @@ def main() -> None:
         sample_rate=arguments.sample_rate,
         repeats=arguments.repeats,
         ram_rows=arguments.ram_rows,
+        wide_ticks=arguments.wide_ticks,
     )
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(source, encoding="ascii")

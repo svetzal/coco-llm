@@ -21,7 +21,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	xroar-attention exp012-corpus exp012-vocabulary exp012-tokenizations \
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
 	exp013-sweep exp013-play exp013-record rpsls-bin rpsls-test xroar-rpsls \
-	present stage block1 block2 block3 block4 block5 block6 block7 block8 \
+	present stage xroar-test-music block1 block2 block3 block4 block5 block6 block7 block8 \
 	block9 block10 tools
 
 PRESENTER := $(UV) run python tools/present_experiment.py
@@ -247,6 +247,101 @@ build/coco-music.dsk: build/coco-music.bin
 
 music-dsk: build/coco-music.dsk
 
+# ---- EXP-015, the faster-clock listening test ----------------------------
+# The EXP-009 player three ways on the CoCo 3: as built for the CoCo 1, at
+# the CoCo 3's fast clock, and in 6309 native mode at the fast clock. The
+# sample loop is untouched. Each build gets an increment table for the rate
+# its cycle count implies, so all three should play at one pitch; if one
+# does not, its rate is wrong and that is the finding.
+#
+# MUSIC_RATE doubles exactly at the fast clock: same instructions, same
+# cycles, twice the clock. The 6309 rate is `make music-cycles-6309`, a
+# data-sheet prediction that the pitch comparison on the hardware tests.
+MUSIC_RATE_FAST ?= 11358
+MUSIC_RATE_6309 ?= 14405
+COCO3_ROM_ARCHIVE ?= $(HOME)/OneDrive/CoCo/MAME/roms/coco3.zip
+COCO3_ROM := build/roms/coco3.rom
+
+music-cycles-6309:
+	$(UV) run python tools/music_cycle_budget.py --cpu 6309
+
+build/exp015/tune_data_fast.inc: tools/export_tune.py src/reference/coco_synth.py
+	$(UV) run python tools/export_tune.py --sample-rate $(MUSIC_RATE_FAST) \
+		--output $@
+
+build/exp015/tune_data_6309.inc: tools/export_tune.py src/reference/coco_synth.py
+	$(UV) run python tools/export_tune.py --sample-rate $(MUSIC_RATE_6309) \
+		--wide-ticks --output $@
+
+build/exp015/music-fast.bin: src/6809/coco_music_fast.asm \
+		src/6809/music_player.asm build/exp015/tune_data_fast.inc
+	lwasm --6809 --format=decb --symbol-dump=build/exp015/music-fast.sym \
+		--output=$@ $<
+
+build/exp015/music-6309.bin: src/6309/coco_music_native.asm \
+		src/6809/music_player.asm build/exp015/tune_data_6309.inc
+	lwasm --6309 --format=decb --symbol-dump=build/exp015/music-6309.sym \
+		--output=$@ $<
+
+# The three files under the names the session sheet uses, loose and on a
+# disk image, the way EXP-014's benchmark travelled to the machine.
+build/exp015/MUSIC015.DSK: build/coco-music.bin build/exp015/music-fast.bin \
+		build/exp015/music-6309.bin tools/make_rsdos_dsk.py
+	cp build/coco-music.bin build/exp015/MUSIC09.BIN
+	cp build/exp015/music-fast.bin build/exp015/MUSIC2X.BIN
+	cp build/exp015/music-6309.bin build/exp015/MUSIC39.BIN
+	$(UV) run python tools/make_rsdos_dsk.py --output $@ \
+		--file MUSIC09.BIN=build/exp015/MUSIC09.BIN \
+		--file MUSIC2X.BIN=build/exp015/MUSIC2X.BIN \
+		--file MUSIC39.BIN=build/exp015/MUSIC39.BIN
+
+exp015-bin: build/exp015/MUSIC015.DSK
+
+# The reference rendered at each build's rate: what the machine should
+# sound like, to hear on the Mac before carrying the card over.
+exp015-wav:
+	$(UV) run python tools/render_tune.py --sample-rate $(MUSIC_RATE) \
+		--output build/exp015/music-$(MUSIC_RATE).wav
+	$(UV) run python tools/render_tune.py --sample-rate $(MUSIC_RATE_FAST) \
+		--output build/exp015/music-$(MUSIC_RATE_FAST).wav
+	$(UV) run python tools/render_tune.py --sample-rate $(MUSIC_RATE_6309) \
+		--output build/exp015/music-$(MUSIC_RATE_6309).wav
+
+build/roms/.coco3-rom: $(COCO3_ROM_ARCHIVE)
+	mkdir -p build/roms
+	unzip -jo $(COCO3_ROM_ARCHIVE) coco3.rom -d build/roms
+	touch $@
+
+# Each build runs to the end of its tune under XRoar's CoCo 3, trapping at
+# audio_disable. That proves the tick machinery works at the new rates; it
+# says nothing about pitch, which only the hardware can, and XRoar calls its
+# own 6309 emulation unverified.
+exp015-test: build/exp015/music-fast.bin build/exp015/music-6309.bin \
+		build/roms/.coco3-rom
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--machine coco3 --coco3-rom $(COCO3_ROM) \
+		--binary build/exp015/music-fast.bin \
+		--symbols build/exp015/music-fast.sym --trap-symbol audio_disable
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--machine coco3h --coco3-rom $(COCO3_ROM) \
+		--binary build/exp015/music-6309.bin \
+		--symbols build/exp015/music-6309.sym --trap-symbol audio_disable
+
+xroar-exp015-fast: build/exp015/music-fast.bin build/roms/.coco3-rom
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine coco3 -extbas $(COCO3_ROM) -ratelimit -run $<
+
+xroar-exp015-6309: build/exp015/music-6309.bin build/roms/.coco3-rom
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	$(XROAR) -machine coco3h -extbas $(COCO3_ROM) -ratelimit -run $<
+
+exp015: exp015-bin exp015-wav exp015-test
+
+.PHONY: music-cycles-6309 exp015-bin exp015-wav exp015-test exp015 \
+	xroar-exp015-fast xroar-exp015-6309
+
 exp010-corpus:
 	$(UV) run python tools/extract_chorales.py
 
@@ -412,6 +507,17 @@ build/music-parity-test.asm: build/coco-music.bin tools/make_music_parity_test.p
 
 music-test: build/music-parity-test.asm $(SIM6809)
 	$(SIM6809) --ram-top 65535 --run $<
+
+# The standalone player played to the end of its tune under XRoar's CoCo 1.
+# The direct-simulator parity test covers the sample loop only; this is the
+# check that rows, ticks and the row hook carry a whole tune, which is what
+# was silently broken from 2026-08-02 until EXP-015 tripped over it.
+xroar-test-music: build/coco-music.bin build/coco-music.sym build/roms/.coco1-roms
+	$(UV) run python tools/test_xroar.py \
+		--xroar $(XROAR) --binary build/coco-music.bin \
+		--basic-rom $(COCO_BASIC_ROM) \
+		--extended-basic-rom $(COCO_EXTBASIC_ROM) \
+		--symbols build/coco-music.sym --trap-symbol audio_disable
 
 xroar-music: build/coco-music.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \

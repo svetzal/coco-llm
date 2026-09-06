@@ -84,6 +84,14 @@ Current experiments:
   person better than chance at 3.3 sigma but not nearly well enough to win.
   The synthetic average was an artifact of a player set in which five of six
   had exploitable habits.
+- [`EXP-014-6309-multiplier.md`](EXP-014-6309-multiplier.md) — the 6309
+  multiplier benchmark: the same 58,000 multiplications three ways, measured
+  on the physical CoCo 3. Native mode alone is 1.17x; MULD is 1.54x.
+- [`EXP-015-faster-clock-listening-test.md`](EXP-015-faster-clock-listening-test.md)
+  — the faster-clock listening test: the EXP-009 player at 5.7, 11.4 and a
+  predicted 14.4 kHz on the CoCo 3, to hear what sample rate buys before
+  any 6309 rewrite of the loop. Built and emulator-checked; the listening
+  is pending. Found and fixed the standalone player's missing row hook.
 
 ## Presentation commands
 

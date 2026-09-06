@@ -11,6 +11,8 @@ from pathlib import Path
 
 BASIC_11_CRC32 = 0x6270955A
 EXTENDED_BASIC_10_CRC32 = 0x6111A086
+# The 32 KiB Super Extended Color BASIC image XRoar loads for a CoCo 3.
+COCO3_ROM_CRC32 = 0xB4C88D6C
 
 
 def symbol_address(symbols: Path, name: str) -> int:
@@ -27,8 +29,16 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--xroar", required=True, type=Path)
     parser.add_argument("--binary", required=True, type=Path)
-    parser.add_argument("--basic-rom", required=True, type=Path)
-    parser.add_argument("--extended-basic-rom", required=True, type=Path)
+    parser.add_argument("--basic-rom", type=Path)
+    parser.add_argument("--extended-basic-rom", type=Path)
+    parser.add_argument(
+        "--machine",
+        choices=("cocous", "coco3", "coco3h"),
+        default="cocous",
+        help="coco3 is a CoCo 3 with a 6809, coco3h one with a 6309; both take "
+        "--coco3-rom instead of the two CoCo 1 ROMs",
+    )
+    parser.add_argument("--coco3-rom", type=Path, help="the 32 KiB CoCo 3 ROM")
     parser.add_argument("--symbols", required=True, type=Path)
     parser.add_argument("--trap-symbol", default="wait_for_key")
     parser.add_argument("--ram", choices=(16, 32, 64), type=int, default=32)
@@ -47,12 +57,27 @@ def verify_rom(path: Path, expected_crc32: int, label: str) -> None:
 def main() -> None:
     arguments = parse_arguments()
     trap_address = symbol_address(arguments.symbols, arguments.trap_symbol)
-    verify_rom(arguments.basic_rom, BASIC_11_CRC32, "Color BASIC 1.1")
-    verify_rom(
-        arguments.extended_basic_rom,
-        EXTENDED_BASIC_10_CRC32,
-        "Extended Color BASIC 1.0",
-    )
+    if arguments.machine == "cocous":
+        if arguments.basic_rom is None or arguments.extended_basic_rom is None:
+            raise SystemExit("cocous needs --basic-rom and --extended-basic-rom")
+        verify_rom(arguments.basic_rom, BASIC_11_CRC32, "Color BASIC 1.1")
+        verify_rom(
+            arguments.extended_basic_rom,
+            EXTENDED_BASIC_10_CRC32,
+            "Extended Color BASIC 1.0",
+        )
+        machine_options = [
+            "-ram", str(arguments.ram),
+            "-bas", str(arguments.basic_rom),
+            "-extbas", str(arguments.extended_basic_rom),
+        ]
+        rom_note = "valid Color BASIC 1.1 / Extended Color BASIC 1.0 ROMs"
+    else:
+        if arguments.coco3_rom is None:
+            raise SystemExit(f"{arguments.machine} needs --coco3-rom")
+        verify_rom(arguments.coco3_rom, COCO3_ROM_CRC32, "CoCo 3 ROM")
+        machine_options = ["-extbas", str(arguments.coco3_rom)]
+        rom_note = "a valid CoCo 3 ROM"
 
     with tempfile.TemporaryDirectory(prefix="coco-llm-xroar-") as directory:
         snapshot = Path(directory) / "wait-for-key.sna"
@@ -61,13 +86,8 @@ def main() -> None:
             "-ui",
             "null",
             "-machine",
-            "cocous",
-            "-ram",
-            str(arguments.ram),
-            "-bas",
-            str(arguments.basic_rom),
-            "-extbas",
-            str(arguments.extended_basic_rom),
+            arguments.machine,
+            *machine_options,
             "-no-ratelimit",
             "-trap-snap",
             str(snapshot),
@@ -87,7 +107,7 @@ def main() -> None:
             )
 
     print(
-        "XRoar used valid Color BASIC 1.1 / Extended Color BASIC 1.0 ROMs "
+        f"XRoar ({arguments.machine}) used {rom_note} "
         f"and reached {arguments.trap_symbol} at program counter "
         f"${trap_address:04X}"
     )

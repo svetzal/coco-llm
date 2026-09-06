@@ -39,6 +39,32 @@ PIA1_CRB        equ     $FF23
 ; 1.78. The tuning is a cycle count, so the clock cannot be left to whatever
 ; the host BASIC happened to set.
 SLOW_CLOCK      equ     $FFD8
+; $FFD9 selects the fast clock: 1.78 MHz on a CoCo 3, with the display still
+; working. On a CoCo 1 it garbles the screen, which is why only the builds
+; that define MUSIC_FAST_CLOCK touch it. EXP-015, the faster-clock listening
+; test, is where those builds live; this file's default is the CoCo 1 player
+; and stays byte-for-byte what EXP-009 froze.
+FAST_CLOCK      equ     $FFD9
+
+; Two build-time switches, both off unless a wrapper defines them:
+;   MUSIC_FAST_CLOCK  select the fast clock for the tune; the increment
+;                     table must then be built for the doubled rate
+;   MUSIC_6309        assemble for a 6309 in native mode. The instruction
+;                     stream is the same; only its cycle counts change, so
+;                     the rate changes again and tick_samples grows to
+;                     sixteen bits because a tick no longer fits a byte.
+
+; tick_samples is written from five places. The 6309 build keeps it in
+; sixteen bits, so every write goes through here and picks the width.
+set_tick        macro
+                ifdef   MUSIC_6309
+                ldd     #\1
+                std     <tick_samples
+                else
+                lda     #\1
+                sta     <tick_samples
+                endc
+                endm
 
 VOICES          equ     4
 LOW_NOTE        equ     12
@@ -59,7 +85,11 @@ STATE_BYTES     equ     24
 dac_acc         rmb     1               ; sum of the voices high this sample
 lfsr            rmb     2               ; 16-bit maximal-length shift register
 
+                ifdef   MUSIC_6309
+tick_samples    rmb     2               ; up to 65535 samples per tick
+                else
 tick_samples    rmb     1
+                endc
 row_ticks       rmb     1
 rows_left       rmb     1
 repeats_left    rmb     1
@@ -87,6 +117,9 @@ music_start
                                         ; so this must name the address, not
                                         ; an offset into whatever page that is
                 orcc    #$50            ; mask IRQ and FIRQ for the whole tune
+                ifdef   MUSIC_6309
+                ldmd    #1              ; native mode: same instructions, fewer cycles
+                endc
                 lda     #$20
                 tfr     a,dp
 
@@ -108,6 +141,9 @@ music_pass
                 lbsr    audio_disable
                 lda     >saved_dp
                 tfr     a,dp
+                ifdef   MUSIC_6309
+                ldmd    #0              ; back to 6809 emulation mode for BASIC
+                endc
                 andcc   #$AF            ; restore interrupts
                 rts
 
@@ -115,7 +151,11 @@ music_pass
 ; PA2-PA7 drive the DAC. PA0 is cassette in and PA1 is RS-232 in, so the
 ; direction register must leave those two as inputs.
 audio_enable
+                ifdef   MUSIC_FAST_CLOCK
+                sta     FAST_CLOCK      ; 1.78 MHz: the table was built for it
+                else
                 sta     SLOW_CLOCK      ; force 0.89 MHz before anything is timed
+                endc
 
                 lda     PIA1_CRA
                 anda    #$FB            ; select the direction register
@@ -141,6 +181,9 @@ audio_enable
                 rts
 
 audio_disable
+                ifdef   MUSIC_FAST_CLOCK
+                sta     SLOW_CLOCK      ; hand BASIC back the clock it boots with
+                endc
                 clra
                 sta     PIA1_DA         ; rest the DAC at zero
                 lda     PIA1_CRB
@@ -168,12 +211,21 @@ tr_clear        clr     ,x+
                 sta     <rows_left
                 lda     #1
                 sta     <row_ticks      ; expires immediately, fetching row 0
+                ifdef   MUSIC_6309
+                ldd     #1
+                std     <tick_samples
+                else
                 sta     <tick_samples
+                endc
                 rts
 
 ; ----------------------------------------------------------- sample loop ----
 ; Constant cost on every path. `make music-cycles` enumerates it.
 play_tune
+                ifdef   MUSIC_6309
+                ldw     <tick_samples   ; the countdown lives in W, reloaded
+                                        ; after every tick's work
+                endc
 sample_loop
 ; ---- voice 3: noise ----
                 lsr     <lfsr           ; 6
@@ -225,6 +277,16 @@ sample_loop
 ; ---- output ----
                 sta     PIA1_DA         ; 5
 
+                ifdef   MUSIC_6309
+                decw                    ; 2   sixteen-bit countdown, in a register
+                bne     sample_loop     ; 3
+
+                lbsr    next_tick
+                tst     <finished
+                bne     play_done
+                ldw     <tick_samples
+                bra     sample_loop
+                else
                 dec     <tick_samples   ; 6
                 bne     sample_loop     ; 3
 
@@ -232,6 +294,7 @@ sample_loop
                 tst     <finished
                 bne     play_done
                 bra     sample_loop
+                endc
 
 play_done
                 rts
@@ -245,8 +308,7 @@ next_tick
                 tst     <cells_left     ; still applying a row?
                 bne     nt_cell
 
-                lda     #SAMPLES_PER_TICK
-                sta     <tick_samples
+                set_tick SAMPLES_PER_TICK
 
                 dec     <row_ticks
                 beq     nt_row
@@ -284,8 +346,7 @@ nt_cell
                 cmpa    #1
                 bne     nt_cell_apply
                 clr     <cells_left
-                lda     #SAMPLES_PER_TICK-VOICES-1
-                sta     <tick_samples
+                set_tick SAMPLES_PER_TICK-VOICES-1
                 jsr     [row_hook]
                 rts
 
@@ -295,8 +356,7 @@ nt_cell_apply
                 stu     <row_ptr
                 inc     <voice_no
                 dec     <cells_left
-                lda     #1              ; return on the very next sample
-                sta     <tick_samples
+                set_tick 1              ; return on the very next sample
                 rts
 
 nt_row
@@ -320,8 +380,7 @@ nr_fetch
                 clr     <voice_no
                 lda     #VOICES+1       ; one extra for the display hook
                 sta     <cells_left
-                lda     #1              ; first cell on the next sample
-                sta     <tick_samples
+                set_tick 1              ; first cell on the next sample
                 rts
 
 ; The default hook: no display, so the standalone player behaves exactly as

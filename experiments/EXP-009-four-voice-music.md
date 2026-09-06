@@ -201,3 +201,21 @@ Tracker data is a natural token stream and pattern reuse is real long-range
 structure, which is why the direction is interesting. But EXP-008 closed
 because a ninety-byte table beat the model, and nothing here changes the
 obligation to check that first.
+
+## Addendum, 2026-09-06: the standalone player was broken
+
+Found while building EXP-015, the faster-clock listening test, whose
+emulator runs never reached the end of the tune. On 2026-08-02 the row
+hook was handed to the caller so the composer's cursor could run
+(`a60e53e`), and the standalone wrapper `coco_music.asm` was never given
+one to set. From the end of its first row the player did `jsr [row_hook]`
+into whatever the RAM held. The direct-simulator parity test did not see
+it because it runs 200 samples of the loop and never a row.
+
+The fix is in the wrapper, which now points the hook at `row_hook_none`
+before entering, and the same three lines are in EXP-015's two wrappers.
+The sample loop and the 5679 Hz rate are untouched, so the freeze stands:
+`build/coco-music.bin` differs from the frozen build only by that entry
+stub. `make xroar-test-music` now plays the whole tune to `audio_disable`
+under XRoar's CoCo 1, so a row-level regression cannot hide behind the
+sample-loop parity again.
