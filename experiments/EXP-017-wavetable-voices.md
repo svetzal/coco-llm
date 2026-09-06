@@ -121,6 +121,20 @@ from the listing, not measured: a cell is near one sample period on the
 6809, which is the rule's edge, and comfortably under it in native mode.
 A stall would be audible as a click at row boundaries. Listen for it.
 
+### Heard on the CoCo 3 through the 1703, 2026-09-06
+
+Stacey played the triangle build against the square on the physical
+CoCo 3. There was a very slight difference, and she favoured the square:
+its harmonics were the sound she wanted. Hypothesis 3 is refuted on the
+machine, at least for this tune, and the sine was not needed to settle
+hypothesis 4. What she did hear as an improvement was the higher sample
+rate itself, on the drum track most of all, which is EXP-015's finding.
+
+So the wavetable player stays as a capability, verified and cheap, and
+the CoCo 1 player keeps its square. The warble she heard on the melody
+voice is a timing fault, not a waveform one; it is taken up in EXP-018,
+the steady sample clock.
+
 ## Hardware session
 
 Copy the four `.BIN` files to the SDC, or mount `WAVE017.DSK`. The player

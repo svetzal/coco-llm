@@ -118,6 +118,24 @@ and its second half, that the step to 14 kHz is small, to fail. If the
 1703 agrees, the W-register rewrite of the loop earns its experiment.
 The 1703 session below is still the one that decides.
 
+### Heard on the CoCo 3 through the 1703, 2026-09-06
+
+Stacey played the builds on the physical CoCo 3 into the Commodore 1703.
+The higher rates were audibly better: brighter, and the drum track in
+particular gained from it. Hypothesis 3's first half holds on hardware.
+
+She also heard a warble on the melody voice at a specific rate, about 8
+to 10 Hz, and could not tell whether the other voices had it. That is
+not a hypothesis this experiment made; it is a finding. The tune's rows
+change 8.33 times a second, and EXP-009's timing table records that each
+of the five borrowed samples at a row change costs 0.92 of a sample
+period, so a sustained note's phase slips by about four sample periods
+at every row. EXP-018, the steady sample clock, is the experiment that
+tests that explanation by removing the slip.
+
+Pitch and tune length against `MUSIC09` were not recorded; hypotheses 1
+and 2 are still open.
+
 ## Hardware session
 
 Everything is in `build/exp015/` after `make exp015-bin`. Copy the three
