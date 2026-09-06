@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CoCo LLM table signage</title>
+<link rel="stylesheet" href="../../presentation/coco-palette.css">
+<link rel="stylesheet" href="../../presentation/coco-type.css">
+<link rel="stylesheet" href="signage.css">
+</head>
+<body data-seconds="12">
+
+<!--
+  The loop that runs on the big screen beside the two CoCos. One idea per
+  slide, most of them a question, because the job is to make someone stop
+  and ask it out loud. The machines do the demonstrating; this points at
+  them.
+
+  Copy discipline, same as the deck and the print: no runtime claim that
+  has not been measured on the physical machine, no sample output that did
+  not come from a real run, and the model invents PLAUSIBLE names, never
+  real ones. Every name, number and completion below is filled in from
+  data.js, which tools/export_slide_data.py generates from the reference
+  model and the recorded experiments. Hand-typed words are only the words
+  around them.
+
+  Open this file through a local server to preview the loop as the Pi will
+  show it (the fonts will not load from file://):
+
+      make preview
+
+  Arrow keys step through slides. ?slide=N shows one slide, which is how
+  tools/render_slides.py photographs them.
+-->
+
+<div class="topbar"><span id="bar-text">COCO LLM</span><span>Ask me anything</span></div>
+
+<main>
+
+<section data-bar="COCO LLM">
+  <h1>This computer is teaching itself to talk</h1>
+  <p class="lead">It arrived under a Christmas tree 45 years ago. Right now it is starting from random numbers and inventing computer names that never existed.</p>
+</section>
+
+<section data-bar="COCO LLM - HOW">
+  <h1>How?</h1>
+  <ol class="steps">
+    <li>Guess the next word.</li>
+    <li>Measure how wrong you were.</li>
+    <li>Nudge.</li>
+    <li>Repeat.</li>
+  </ol>
+  <p class="cap">Same trick as ChatGPT.</p>
+</section>
+
+<section data-bar="COCO LLM - WHAT IT READ">
+  <h1>What did it read?</h1>
+  <div class="corpus" id="corpus"></div>
+  <p class="cap">All <span data-num="live.corpus_count"></span> lines, word for word. This is every fact it will ever meet.</p>
+</section>
+
+<section data-bar="COCO LLM - BEFORE AND AFTER">
+  <h1>What changed?</h1>
+  <div class="stack">
+    <div class="screen"><span class="bar">Random weights, seed <span data-num="live.seed"></span></span><span class="row" id="before"></span></div>
+    <div class="screen"><span class="bar">Learned weights, same seed</span><span class="row" id="after-first"></span></div>
+  </div>
+  <p class="cap">Same dice both times. Only the <span data-num="live.parameters"></span> numbers inside it moved: <span data-num="live.corrections"></span> small corrections, <span data-num="live.epochs"></span> passes over <span data-num="live.corpus_count"></span> names.</p>
+</section>
+
+<section data-bar="COCO LLM - WHAT CAME OUT">
+  <h1>Which of these were real?</h1>
+  <div class="names" id="gallery"></div>
+  <p class="cap">Eleven draws from one real run, seeds <span data-num="live.seed"></span> to <span data-num="live.last_seed"></span>. <strong><span data-num="live.copied_count"></span></strong> it copied from what it read. <strong><span data-num="live.novel_count"></span></strong> never existed.</p>
+</section>
+
+<section data-bar="COCO LLM - HOW BIG">
+  <h1>How big is it?</h1>
+  <div class="ledger">
+    <span class="val" data-num="live.parameters"></span><span>parameters, every one a whole number</span>
+    <span class="val" data-num="live.weight_bytes"></span><span>bytes of weights</span>
+    <span class="val" data-num="live.program_bytes"></span><span>bytes of program, in 6809 assembly</span>
+    <span class="val">32K</span><span>of memory in the whole machine</span>
+    <span class="val">0.89 MHz</span><span>clock. Nothing is sped up.</span>
+  </div>
+  <p class="cap">The big models use a different network shape and read most of the internet. The learning loop is this one.</p>
+</section>
+
+<section data-bar="COCO LLM - TRAINING DATA">
+  <h1>Same dice. Different training data.</h1>
+  <div class="cols three" id="fans"></div>
+  <p class="cap">Three copies of the same model, each raised on a different fan's list. Same rules, same rolls, row for row. Nothing changed but what it read.</p>
+</section>
+
+<section data-bar="COCO LLM - UNDERSTANDING">
+  <h1>Does it understand?</h1>
+  <p class="big">It has never seen a computer. It does not know Commodore is a company. It knows that AMIGA often follows COMMODORE. That is all it knows.</p>
+  <p class="cap">Prediction is not understanding.</p>
+</section>
+
+<section data-bar="COCO LLM - WONDER">
+  <h1>So where is the wonder?</h1>
+  <p class="big">To the machine there is no difference between nonsense and wonder. The wonder is the people who wrote what it read.</p>
+</section>
+
+<section data-bar="COCO LLM - STEERING">
+  <h1>Can two words steer it?</h1>
+  <div class="pairs" id="prompts"></div>
+  <p class="cap">A second model: <span data-num="prompts.vocabulary"></span> words, eight lines of 1980s advertising. You type the first two words. <strong><span data-num="prompts.copied_count"></span></strong> of these it copied word for word. <strong><span data-num="prompts.novel_count"></span></strong> it made up. Which?</p>
+</section>
+
+<section data-bar="COCO LLM - BE THE MODEL">
+  <h1>Roll the dice and be the model</h1>
+  <ol class="steps">
+    <li>Take a card from the table.</li>
+    <li>Roll the d20. Read off the word.</li>
+    <li>Write it down. Take the next card.</li>
+    <li>Stop when the roll says stop.</li>
+  </ol>
+  <p class="cap">You just ran the model by hand, exactly the way it does. Keep the computer you invented.</p>
+</section>
+
+<section data-bar="COCO LLM - TOKENS">
+  <h1>Write your name with these</h1>
+  <div class="tokens" id="tokens"></div>
+  <p class="cap">All <span data-num="live.vocab_count"></span> words this computer has. It cannot write IPHONE either. Somebody chose these before any learning happened.</p>
+</section>
+
+<section data-bar="COCO LLM - MADE UP">
+  <h1>Can it make up something that reads?</h1>
+  <div class="titles" id="titles"></div>
+  <p class="cap">Star Trek episodes that were never made, from <span data-num="titles.program_bytes"></span> bytes trained on the <span data-num="titles.real_titles"></span> real titles.</p>
+</section>
+
+<section data-bar="COCO LLM - PLAY IT">
+  <h1>Can it learn a game, and learn you?</h1>
+  <p class="big">Rock, paper, scissors, lizard, Spock. It starts knowing neither the rules nor you, and learns both while you play.</p>
+  <div class="ledger">
+    <span class="val"><span data-num="game.score_percent"></span>%</span><span>against a person who was trying, over <span data-num="game.rounds"></span> rounds</span>
+  </div>
+  <p class="cap">A coin flip. It reads you better than chance, and not nearly well enough to win. Come and beat it.</p>
+</section>
+
+<section data-bar="COCO LLM - CONTEXT">
+  <h1>Can it use a fact you give it right now?</h1>
+  <div class="screen"><span class="bar">Context</span><span class="row">Before: LISA = <span data-text="context.before"></span></span><span class="row">After:  LISA = <span data-text="context.after"></span></span><span class="row">Model <span data-text="context.model"></span> did not change</span></div>
+  <p class="cap">Training moves the weights. A prompt only changes the context. Ask the same question again and the answer changes, and not one weight moved.</p>
+</section>
+
+<section data-bar="COCO LLM - ON THE TABLE">
+  <h1>Two machines, one program</h1>
+  <div class="cols two">
+    <div>
+      <div class="head">Color Computer 1</div>
+      <div class="row">1981</div>
+      <div class="row">6809 at 0.89 MHz</div>
+      <div class="row">32K</div>
+      <div class="row quiet">Trains it live, from random numbers</div>
+    </div>
+    <div>
+      <div class="head">Color Computer 3</div>
+      <div class="row">1986</div>
+      <div class="row">Hitachi 6309 fitted</div>
+      <div class="row">Same code, bit for bit</div>
+      <div class="row quiet">The one we race</div>
+    </div>
+  </div>
+  <p class="cap">The learning engine is byte-for-byte identical on both. Which one is it running on right now? Look.</p>
+</section>
+
+<section data-bar="COCO LLM - FASTER">
+  <h1>How much faster is the 6309?</h1>
+  <div class="ledger" id="bench"></div>
+  <p class="cap">Ticks of the 60 Hz frame counter over <span data-num="bench.multiplications"></span> multiplications. Measured on the CoCo 3 on this table, <span data-text="bench.measured_on"></span>. Every row got the same answer.</p>
+</section>
+
+<section data-bar="COCO LLM - WHAT IT IS NOT">
+  <h1>What is it not?</h1>
+  <ul class="steps">
+    <li>Predicting is not understanding.</li>
+    <li>Useful output is not always correct output.</li>
+    <li>Doing a task is not taking responsibility for it.</li>
+  </ul>
+</section>
+
+<section data-bar="COCO LLM - ASK ME">
+  <h1>Questions worth asking</h1>
+  <ul class="steps">
+    <li>Why won't it write STACEY?</li>
+    <li>What does the d20 have to do with the temperature dial?</li>
+    <li>Why did it have to stop at twenty passes?</li>
+    <li>What went wrong building this?</li>
+  </ul>
+  <p class="cap">I make mistakes for a living. I made plenty here.</p>
+</section>
+
+<section data-bar="COCO LLM">
+  <h1>Coco LLM</h1>
+  <p class="big">Definitely not large. Barely even a language model. The coolest thing I've done yet on my CoCo.</p>
+  <p class="byline">Stacey Vetzal. Everything here is open. Ask me for the code.</p>
+</section>
+
+</main>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  const D = window.COCO_SIGNAGE;
+  const $ = (selector) => document.querySelector(selector);
+
+  // Walk a dotted path into the exported data.
+  const get = (path) => path.split(".").reduce((node, key) => node[key], D);
+
+  D.live.last_seed = D.live.seed + D.live.after.length - 1;
+
+  // --- fill the figures from data.js ------------------------------------
+  const cell = (parent, text, className) => {
+    const div = document.createElement("div");
+    div.textContent = text;
+    if (className) div.className = className;
+    parent.appendChild(div);
+    return div;
+  };
+
+  for (const name of D.live.corpus) cell($("#corpus"), name);
+  $("#before").textContent = D.live.before;
+  $("#after-first").textContent = D.live.after[0].text;
+  for (const entry of D.live.after) {
+    cell($("#gallery"), entry.text, entry.copied ? "copied" : "");
+  }
+  for (const column of D.fans.columns) {
+    const col = cell($("#fans"), "");
+    cell(col, column.label, "head");
+    for (const sample of column.samples) cell(col, sample, "row");
+  }
+  for (const token of D.live.vocabulary) {
+    cell($("#tokens"), token === "<END>" ? "(end)" : token);
+  }
+  for (const entry of D.prompts.completions) {
+    cell($("#prompts"), entry.prompt, "p");
+    cell($("#prompts"), "→", "arrow");
+    cell($("#prompts"), entry.completion);
+  }
+  for (const title of D.titles.dealt) cell($("#titles"), title);
+  for (const row of D.bench.rows) {
+    cell($("#bench"), row.ticks.toLocaleString("en-CA"), "val");
+    cell($("#bench"), row.what);
+  }
+
+  for (const el of document.querySelectorAll("[data-num]")) {
+    const value = get(el.dataset.num);
+    el.textContent = typeof value === "number" ? value.toLocaleString("en-CA") : value;
+  }
+  for (const el of document.querySelectorAll("[data-text]")) {
+    el.textContent = get(el.dataset.text);
+  }
+
+  // --- the loop -----------------------------------------------------------
+  const sections = Array.from(document.querySelectorAll("main > section"));
+  let current = 0;
+  const show = (index) => {
+    current = (index + sections.length) % sections.length;
+    sections.forEach((section, i) => section.classList.toggle("show", i === current));
+    $("#bar-text").textContent = sections[current].dataset.bar || "COCO LLM";
+  };
+
+  const params = new URLSearchParams(location.search);
+  const only = params.get("slide");
+  if (only !== null) {
+    show(Number(only) - 1);
+  } else {
+    show(0);
+    const seconds = Number(document.body.dataset.seconds) || 12;
+    let timer = setInterval(() => show(current + 1), seconds * 1000);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") show(current + 1);
+      else if (event.key === "ArrowLeft") show(current - 1);
+      else return;
+      clearInterval(timer);
+      timer = setInterval(() => show(current + 1), seconds * 1000);
+    });
+  }
+
+  // --- fit the 1920 by 1080 canvas to whatever window is previewing it ---
+  const fit = () => {
+    const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    document.body.style.transform = `scale(${scale})`;
+  };
+  fit();
+  window.addEventListener("resize", fit);
+})();
+</script>
+</body>
+</html>

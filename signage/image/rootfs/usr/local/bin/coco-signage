@@ -1,0 +1,40 @@
+#!/bin/sh
+# Loop the rendered slides on the console, for ever.
+#
+# Started on tty1 by coco-signage.service. fbi draws straight onto the
+# display, so there is no desktop, no browser and nothing to log in to.
+# The slides are PNGs in /opt/coco-signage/slides, shown in name order;
+# replacing them and restarting the service is the whole update procedure:
+#
+#   sudo systemctl restart coco-signage
+#
+# Settings come from /etc/coco-signage.conf, written by the image build.
+
+set -u
+
+CONF=/etc/coco-signage.conf
+SLIDES=/opt/coco-signage/slides
+SLIDE_SECONDS=12
+BLEND_MS=400
+FBI_DEVICE=
+[ -r "$CONF" ] && . "$CONF"
+
+# No blinking cursor over the slides, and never blank the display.
+setterm --cursor off --blank 0 --powersave off --powerdown 0 > /dev/tty1 2>/dev/null || true
+
+set --
+if [ -n "$FBI_DEVICE" ]; then
+  set -- -d "$FBI_DEVICE"
+fi
+# Fade between slides only if this fbi knows how; a rejected option would
+# leave the screen black, which is the failure this script exists to avoid.
+# fbi 2.14 spells its long options with one dash, as its help prints them.
+if [ "$BLEND_MS" -gt 0 ] 2>/dev/null && fbi --help 2>&1 | grep -q -- '-blend'; then
+  set -- "$@" -blend "$BLEND_MS"
+fi
+
+# -T 1        draw on virtual terminal 1
+# -a          scale each slide to fit the display
+# -noverbose  no filename or status line over the picture
+# -t N        seconds per slide; fbi wraps to the first slide after the last
+exec fbi -T 1 -a -noverbose -t "$SLIDE_SECONDS" "$@" "$SLIDES"/*.png

@@ -1,0 +1,26 @@
+[Unit]
+Description=CoCo LLM table signage slideshow
+Documentation=file:///opt/coco-signage
+# Takes tty1 over from the login prompt. The prompt is also masked by the
+# image build; this line is the belt to that pair of braces.
+Conflicts=getty@tty1.service
+After=systemd-user-sessions.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/coco-signage
+# fbi needs a real console: it switches to the VT and draws on its display.
+StandardInput=tty
+StandardOutput=tty
+StandardError=journal
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+# If it ever dies, come back. A black screen at a show is the one failure
+# that matters.
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

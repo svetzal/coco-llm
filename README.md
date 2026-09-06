@@ -82,6 +82,8 @@ assembly implementation emerged. Emulator execution is proven; physical CoCo
 - `research/` — durable findings, design decisions, sources, and hardware notes.
 - `experiments/` — bounded hypotheses, procedures, measurements, and conclusions.
 - `presentation/` — the talk, live-demonstration choreography, and exhibit copy.
+- `signage/` — the exhibit table's big-screen slideshow and the Raspberry Pi
+  SD-card image that boots straight into it.
 - `src/reference/` — the readable reference implementation, then its bit-exact
   fixed-point form.
 - `src/6809/` — the 6809 implementation and CoCo platform adapters.

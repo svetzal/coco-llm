@@ -1,0 +1,189 @@
+/* The table signage, in the machine's own body: black ink on the composite
+ * screen green, the reversed title bar across the top, Hot CoCo for every
+ * word. What a visitor sees on the big screen is what they see on the CoCo
+ * screens beside it, bar and all.
+ *
+ * The page is a fixed 1920 by 1080 canvas. It is rendered to PNG at that
+ * size for the Pi, and scaled to fit the window for previewing on a Mac.
+ *
+ * Colours come from ../../presentation/coco-palette.css and are never
+ * written literally here. Type comes from ../../presentation/coco-type.css.
+ */
+
+html {
+  font-size: 40px;
+  background: var(--coco-bg);
+}
+html, body {
+  margin: 0;
+  overflow: hidden;
+}
+body {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  background: var(--coco-bg);
+  color: var(--coco-ink);
+  font-family: var(--coco-type);
+  /* The MC6847 has no lowercase; Hot CoCo renders lowercase as inverse
+   * video. Fold everything up, and reach for sans where case matters. */
+  text-transform: uppercase;
+  -webkit-font-smoothing: none;
+  transform-origin: top left;
+}
+
+:root {
+  --sig-mark: var(--coco-c13);   /* navy: the thing to notice */
+  --sig-quiet: var(--coco-c03);  /* darker green: captions */
+  --sig-line: var(--coco-c02);   /* borders and rules */
+  --sig-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* The reversed title bar, green on black, like the CoCo's own. */
+.topbar {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 72px; line-height: 72px;
+  background: var(--coco-ink); color: var(--coco-bar);
+  padding: 0 48px;
+  font-size: 34px; letter-spacing: 0.06em;
+  display: flex; justify-content: space-between;
+  -webkit-font-smoothing: antialiased;
+}
+
+main > section {
+  display: none;
+  position: absolute; top: 72px; right: 0; bottom: 0; left: 0;
+  padding: 40px 120px 70px;
+  flex-direction: column; justify-content: center; align-items: center;
+  text-align: center;
+  gap: 40px;
+}
+main > section.show { display: flex; }
+
+h1 {
+  font-size: 84px; line-height: 1.12;
+  margin: 0; font-weight: normal;
+  max-width: 1680px;
+}
+.lead { font-size: 50px; line-height: 1.35; max-width: 1560px; margin: 0; }
+.big  { font-size: 56px; line-height: 1.32; max-width: 1600px; margin: 0; }
+
+/* A caption reads as prose, so it gets a real sans and keeps its case. */
+.cap {
+  font-family: var(--sig-sans); text-transform: none;
+  font-size: 30px; line-height: 1.35;
+  color: var(--sig-quiet);
+  max-width: 1500px; margin: 0;
+}
+.cap strong { color: var(--sig-mark); font-weight: 600; }
+
+/* Steps and short lists: one line each, a prompt mark in navy. */
+.steps {
+  list-style: none; padding: 0; margin: 0;
+  font-size: 58px; line-height: 1.45;
+  text-align: left;
+}
+.steps li::before { content: "> "; color: var(--sig-mark); }
+
+/* Text quoted off a CoCo screen, bordered like a monitor bezel. */
+.screen {
+  display: inline-block;
+  border: 4px solid var(--coco-ink);
+  padding: 0 0 20px;
+  white-space: pre;
+  font-size: 44px; line-height: 1.2;
+  text-align: left;
+  min-width: 1200px;
+}
+.screen .row { display: block; padding: 0 28px; }
+.screen .bar {
+  display: block;
+  background: var(--coco-ink); color: var(--coco-bar);
+  padding: 4px 28px; margin-bottom: 16px;
+}
+.stack { display: flex; flex-direction: column; gap: 28px; align-items: center; }
+
+/* The corpus: two columns, verbatim. */
+.corpus {
+  display: grid; grid-template-columns: repeat(2, max-content);
+  gap: 8px 140px;
+  font-size: 44px; line-height: 1.25;
+  text-align: left;
+}
+
+/* The gallery of generated names. Copied ones are marked in navy, because
+ * which two were copied is the question the slide asks. */
+.names {
+  display: grid; grid-template-columns: repeat(2, max-content);
+  gap: 10px 120px;
+  font-size: 40px; line-height: 1.3;
+  text-align: left;
+}
+.names .copied { color: var(--sig-mark); }
+
+/* Side-by-side columns: the three fan corpora, or the two machines. */
+.cols {
+  display: grid; gap: 0 60px;
+  width: 100%;
+  font-size: 40px; line-height: 1.5;
+  text-align: left;
+}
+.cols.three { grid-template-columns: repeat(3, 1fr); }
+.cols.two   { grid-template-columns: repeat(2, 1fr); }
+.cols .head {
+  font-family: var(--sig-sans); text-transform: uppercase;
+  font-size: 26px; letter-spacing: 0.2em; color: var(--sig-quiet);
+  border-bottom: 3px solid var(--sig-line);
+  padding-bottom: 8px; margin-bottom: 14px;
+}
+.cols .row { white-space: nowrap; }
+.cols .row.quiet { color: var(--sig-quiet); }
+
+/* Every token the model has, as cells. */
+.tokens {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+  width: 100%;
+  font-size: 34px; line-height: 1.2;
+}
+.tokens div {
+  border: 3px solid var(--sig-line);
+  padding: 10px 6px;
+  overflow-wrap: anywhere;
+}
+
+/* Prompt, arrow, completion. The prompt is the person's part, in navy. */
+.pairs {
+  display: grid; grid-template-columns: max-content max-content max-content;
+  gap: 18px 44px;
+  font-size: 46px; line-height: 1.2;
+  align-items: baseline;
+  text-align: left;
+}
+.pairs .p { color: var(--sig-mark); text-align: right; }
+.pairs .arrow { font-family: var(--sig-sans); color: var(--sig-quiet); }
+
+/* Quantities: a big value and what it is. */
+.ledger {
+  display: grid; grid-template-columns: max-content 1fr;
+  gap: 18px 48px;
+  font-size: 46px; line-height: 1.2;
+  align-items: baseline;
+  text-align: left;
+}
+.ledger .val { color: var(--sig-mark); text-align: right; font-size: 62px; }
+
+/* Sixteen fake titles, two columns. */
+.titles {
+  display: grid; grid-template-columns: repeat(2, max-content);
+  gap: 8px 80px;
+  font-size: 38px; line-height: 1.3;
+  text-align: left;
+}
+
+/* The closing card: names the person, quietly. */
+.byline {
+  font-family: var(--sig-sans); text-transform: none;
+  font-size: 34px; color: var(--coco-ink);
+  margin: 0;
+}
