@@ -2,8 +2,9 @@
 
 ## Status
 
-**Built, bit-exact against its reference, emulator-checked, awaiting the
-CoCo 3 and the 1703.** Two builds, one for each machine, play their tune
+**Supported on the CoCo 3, 2026-09-06.** The warble is gone and the
+steady build is preferred; see the dated section below. Built, bit-exact
+against its reference, emulator-checked. Two builds, one for each machine, play their tune
 to the end under XRoar with hostile RAM, and the 6809 loop agrees with the
 reference on every phase, the noise register and the DAC byte.
 
@@ -112,6 +113,21 @@ XRoar's 6809 is cycle-accurate enough that the warble should be audible
 in it too, with the rate limiter on, on `MUSIC09` against `STEADY09`. That
 is worth a listen on the Mac before the card goes over, but the 1703 is
 the instrument.
+
+### Heard on the CoCo 3 through the 1703, 2026-09-06
+
+Stacey played `STEADY39` against `MUSIC39` on the physical CoCo 3 and
+called it much better. The warble on the melody voice is gone, so
+hypothesis 1 holds: the row-change stall EXP-009 accepted was the cause.
+Her preference settles hypothesis 3 the same way: a steady clock at
+11.2 kHz beats a moving one at 14.4 kHz, and the rate it cost was worth
+it. The tune's length and pitch against `MUSIC09`, and the CoCo 1 pair,
+were not recorded; hypothesis 2 is still open and the stopwatch is still
+the way to close it.
+
+The sample clock is now the thing to protect. Anything that runs between
+samples must cost exactly what not running it costs, and the cycle model
+is the only instrument on the Mac that checks it.
 
 ## Hardware session
 
