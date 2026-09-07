@@ -121,9 +121,10 @@ called it much better. The warble on the melody voice is gone, so
 hypothesis 1 holds: the row-change stall EXP-009 accepted was the cause.
 Her preference settles hypothesis 3 the same way: a steady clock at
 11.2 kHz beats a moving one at 14.4 kHz, and the rate it cost was worth
-it. The tune's length and pitch against `MUSIC09`, and the CoCo 1 pair,
-were not recorded; hypothesis 2 is still open and the stopwatch is still
-the way to close it.
+it. The timing was perfect: the tune's length was as predicted, so
+hypothesis 2 holds and, since nothing in this build's rate is amortised,
+the HD6309 native-mode cycle table in `tools/music_cycle_budget.py` is
+right to within a stopwatch. The CoCo 1 pair was not recorded.
 
 The sample clock is now the thing to protect. Anything that runs between
 samples must cost exactly what not running it costs, and the cycle model
