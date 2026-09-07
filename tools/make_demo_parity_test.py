@@ -56,7 +56,6 @@ SEED_FIGURE = [
     HOLD,
 ]
 RNG_SEED = 0x1A2B
-HOOK_SENTINEL = 0xBEEF
 CALLER_DP = 0xA5
 # The figure entered at the keyboard: scale degrees 1-7, plus the hold and
 # rest tokens the '-' and '.' keys add. Every entry lasts two rows.
@@ -146,9 +145,6 @@ def main() -> None:
             "demo_seed_rows",
             "mel_rng",
             "ui_last",
-            "row_hook",
-            "tune_reset",
-            "music_start",
             "ui_panel",
             "ui_build_seed",
             "ui_seed",
@@ -156,8 +152,9 @@ def main() -> None:
             "ui_mode",
             "demo_seed",
             "demo_steps",
-            "ticks_cfg",
-            "row_hook_none",
+            "event_buffer",
+            "finished",
+            "music_start",
         )
     }
 
@@ -193,17 +190,8 @@ def main() -> None:
     lines.append("        sta     first_note")
     expectations.append(f";! first_note = #${(tokens[0] + 60) & 0xFF:02X}")
 
-    # The player must not clobber the row hook the caller installed. It did:
-    # tune_reset defaulted it, so the playback cursor never ran once. Nothing
-    # exercised music_start, which is why that reached the screen.
-    lines.append("        lda     #$20")
-    lines.append("        tfr     a,dp")
-    lines.append(f"        ldd     #${HOOK_SENTINEL:04X}")
-    lines.append(f"        std     ${address['row_hook']:04X}")
-    lines.append(f"        jsr     ${address['tune_reset']:04X}")
-    lines.append(f"        ldd     ${address['row_hook']:04X}")
-    lines.append("        std     hook_kept")
-    expectations.append(f";! hook_kept = #${HOOK_SENTINEL:04X}")
+    # The row hook check that used to sit here is gone with the hook: the
+    # steady player (EXP-018) has nothing between samples to hook.
 
     # The entered figure must actually reach the composer. It did not:
     # ui_step_of reloaded X, which ui_build_seed was using as its write
@@ -240,12 +228,18 @@ def main() -> None:
     # still the caller's, so the value went to the wrong page and the restore
     # read RAM nobody had written. The UI then polled the keyboard through a
     # garbage DP and BASIC scribbled through the screen.
+    # The stream is one event per pass, so the run is short: a wait of one
+    # sample, then the event that sets finished.
     lines.append(f"        lda     #${CALLER_DP:02X}")
     lines.append("        tfr     a,dp")
+    lines.append(f"        ldx     #${address['event_buffer']:04X}")
     lines.append("        lda     #1")
-    lines.append(f"        sta     ${address['ticks_cfg']:04X}   ; keep the run short")
-    lines.append(f"        ldd     #${address['row_hook_none']:04X}")
-    lines.append(f"        std     ${address['row_hook']:04X}")
+    lines.append("        sta     ,x+")
+    lines.append(f"        ldd     #${address['finished']:04X}")
+    lines.append("        std     ,x++")
+    lines.append("        lda     #1")
+    lines.append("        sta     ,x+")
+    lines.append("        clr     ,x")
     lines.append(f"        jsr     ${address['music_start']:04X}")
     lines.append("        tfr     dp,a")
     lines.append("        clrb")
@@ -257,7 +251,6 @@ def main() -> None:
     for index in range(CHECKS):
         lines.append(f"t{index} rmb 1")
     lines.append("first_note rmb 1")
-    lines.append("hook_kept rmb 2")
     lines.append("dp_kept rmb 1")
     lines.append("title_first rmb 2")
     lines.append("seed_rows rmb 1")

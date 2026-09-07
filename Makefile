@@ -16,7 +16,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp008-replay music-tune music-cycles music-bin music-test \
 	xroar-music music-dsk exp010-corpus exp010-dance exp010-model \
 	exp010-core exp010-test exp010-demo exp010-demo-test \
-	xroar-melody exp011-sweep exp011-replicate exp011-model \
+	xroar-melody xroar-melody-6309 melody-dsk block9-6309 exp010-compile-test exp010-xroar-test exp011-sweep exp011-replicate exp011-model \
 	attention-bin attention-test attention-ui-test xroar-test-attention \
 	xroar-attention exp012-corpus exp012-vocabulary exp012-tokenizations \
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
@@ -495,7 +495,7 @@ exp017: exp017-bin wave-test exp017-wav exp017-test
 # loop's exact cycle count with nothing amortised: `make music-cycles
 # PLAYER=steady` and its 6309 twin, pinned here.
 EXP018 := build/exp018
-STEADY_RATE ?= 4590
+STEADY_RATE ?= 4566
 STEADY_RATE_6309 ?= 11188
 
 $(EXP018)/events-%.inc: tools/export_events.py src/reference/steady_synth.py \
@@ -694,19 +694,93 @@ build/melody-parity-test.asm: build/melody-core.bin \
 exp010-test: build/melody-parity-test.asm $(SIM6809)
 	$(SIM6809) --ram-top 65535 --run $<
 
-build/exp010/tune_frame.inc: tools/export_tune.py
-	$(UV) run python tools/export_tune.py --sample-rate $(MUSIC_RATE) \
+# The demo's performer is EXP-018's steady clock, so the frame's increments
+# are built for that player's rate: STEADY_RATE for the CoCo 1 build and
+# STEADY_RATE_6309 for the stage build on the CoCo 3.
+build/exp010/tune_frame.inc: tools/export_tune.py Makefile
+	$(UV) run python tools/export_tune.py --sample-rate $(STEADY_RATE) \
 		--ram-rows 128 --output $@
 
+build/exp010/tune_frame_6309.inc: tools/export_tune.py Makefile
+	$(UV) run python tools/export_tune.py --sample-rate $(STEADY_RATE_6309) \
+		--ram-rows 128 --output $@
+
+MELODY_DEMO_SOURCES := src/6809/melody_demo.asm src/6809/melody_ui.asm \
+	src/6809/melody_inference.asm src/6809/steady_player.asm \
+	src/6809/steady_compile.asm build/exp010/melody_model.inc
+
 build/coco-melody-demo.bin: src/6809/coco_melody_demo.asm \
-		src/6809/melody_demo.asm src/6809/melody_ui.asm \
-		src/6809/melody_inference.asm \
-		src/6809/music_player.asm build/exp010/melody_model.inc \
-		build/exp010/tune_frame.inc
+		$(MELODY_DEMO_SOURCES) build/exp010/tune_frame.inc
 	lwasm --6809 --format=decb \
 		--symbol-dump=build/coco-melody-demo.sym --output=$@ $<
 
-exp010-demo: build/coco-melody-demo.bin
+# The same demo entered at demo_run: composes from the built-in figure and
+# plays with no keyboard, so the emulator can run it to the end.
+build/coco-melody-run.bin: src/6809/coco_melody_demo.asm \
+		$(MELODY_DEMO_SOURCES) build/exp010/tune_frame.inc
+	lwasm --6809 --format=decb --define=ENTRY_RUN=1 \
+		--symbol-dump=build/coco-melody-run.sym --output=$@ $<
+
+build/coco-melody-demo-6309.bin: src/6309/coco_melody_demo_native.asm \
+		$(MELODY_DEMO_SOURCES) build/exp010/tune_frame_6309.inc
+	lwasm --6309 --format=decb \
+		--symbol-dump=build/coco-melody-demo-6309.sym --output=$@ $<
+
+build/coco-melody-run-6309.bin: src/6309/coco_melody_demo_native.asm \
+		$(MELODY_DEMO_SOURCES) build/exp010/tune_frame_6309.inc
+	lwasm --6309 --format=decb --define=ENTRY_RUN=1 \
+		--symbol-dump=build/coco-melody-run-6309.sym --output=$@ $<
+
+exp010-demo: build/coco-melody-demo.bin build/coco-melody-run.bin \
+	build/coco-melody-demo-6309.bin build/coco-melody-run-6309.bin
+
+# The CoCo's compiler against the reference's, on the same 128 rows.
+build/compile-parity-test.asm: build/coco-melody-demo.bin \
+		tools/make_compile_parity_test.py src/reference/steady_synth.py
+	$(UV) run python tools/make_compile_parity_test.py \
+		--binary build/coco-melody-demo.bin --symbols build/coco-melody-demo.sym \
+		--sample-rate $(STEADY_RATE) --output $@
+
+exp010-compile-test: build/compile-parity-test.asm $(SIM6809)
+	$(SIM6809) --ram-top 65535 --run $<
+
+# Compose, compile and play to the end under XRoar, both machines.
+exp010-xroar-test: build/coco-melody-run.bin build/coco-melody-run-6309.bin \
+		build/roms/.coco1-roms build/roms/.coco3-rom
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--basic-rom $(COCO_BASIC_ROM) --extended-basic-rom $(COCO_EXTBASIC_ROM) \
+		--binary build/coco-melody-run.bin --symbols build/coco-melody-run.sym \
+		--trap-symbol audio_disable --ram-init set --timeout 300
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--machine coco3h --coco3-rom $(COCO3_ROM) \
+		--binary build/coco-melody-run-6309.bin \
+		--symbols build/coco-melody-run-6309.sym \
+		--trap-symbol audio_disable --ram-init set --timeout 300
+
+# The demo under the names the SDC uses, and on a disk image.
+build/exp010/MELODY10.DSK: build/coco-melody-demo.bin build/coco-melody-demo-6309.bin \
+		tools/make_rsdos_dsk.py
+	cp build/coco-melody-demo.bin build/exp010/MELODY09.BIN
+	cp build/coco-melody-demo-6309.bin build/exp010/MELODY39.BIN
+	$(UV) run python tools/make_rsdos_dsk.py --output $@ \
+		--file MELODY09.BIN=build/exp010/MELODY09.BIN \
+		--file MELODY39.BIN=build/exp010/MELODY39.BIN
+
+melody-dsk: build/exp010/MELODY10.DSK
+
+# Block 9 on a CoCo 3 with a 6309: the performer in native mode at the
+# fast clock, 11,188 Hz with a steady clock. The stage option.
+block9-6309: build/coco-melody-demo-6309.bin build/roms/.coco3-rom
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	@echo "BLOCK 9 - A TOKEN IS A NOTE - EXP-010 on a 6309 CoCo 3."
+	@echo "It starts on its own; let a phrase play before talking."
+	@nohup $(XROAR) -machine coco3h -extbas $(COCO3_ROM) \
+		-ratelimit -run build/coco-melody-demo-6309.bin >/dev/null 2>&1 &
+	@echo "Detached. Quit it from XRoar; nothing here can kill it."
+
+xroar-melody-6309: build/coco-melody-demo-6309.bin build/roms/.coco3-rom
+	$(XROAR) -machine coco3h -extbas $(COCO3_ROM) -ratelimit -run $<
 
 build/demo-parity-test.asm: build/coco-melody-demo.bin \
 		tools/make_demo_parity_test.py

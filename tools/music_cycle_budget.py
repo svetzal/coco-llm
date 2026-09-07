@@ -137,9 +137,9 @@ VOICE_WAVE_6309 = [
 EVENT_TAIL = [
     ("DEC", "direct", 6),
     ("BNE", "relative", 3),
-    ("LDB", "indexed ,x+", 6),
+    ("LDU", "indexed ,x++", 8),
     ("LDA", "indexed ,x+", 6),
-    ("STA", "indexed b,y", 5),
+    ("STA", "indexed ,u", 4),
     ("LDA", "indexed ,x+", 6),
     ("STA", "direct", 4),
     ("TST", "direct", 6),
@@ -150,9 +150,9 @@ EVENT_TAIL = [
 EVENT_TAIL_6309 = [
     ("DEC", "direct", 5),
     ("BNE", "relative", 3),
-    ("LDB", "indexed ,x+", 5),
+    ("LDU", "indexed ,x++", 6),
     ("LDA", "indexed ,x+", 5),
-    ("STA", "indexed b,y", 5),
+    ("STA", "indexed ,u", 4),
     ("LDA", "indexed ,x+", 5),
     ("STA", "direct", 3),
     ("TST", "direct", 5),

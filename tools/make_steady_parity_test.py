@@ -4,7 +4,7 @@
 The EXP-009 parity test, pointed at the EXP-018 player: a known voice
 configuration, a fixed number of samples through the real loop in the
 direct simulator, then the phase accumulators, LFSR and final DAC byte
-asserted against the reference. The runner supplies a two-event stream:
+asserted against the reference. The runner supplies a one-event stream:
 a wait of the sample count, then the event that sets `finished`.
 
 It also checks the assembled direct-page layout against the offsets
@@ -36,7 +36,7 @@ from steady_synth import (  # noqa: E402
 RUNNER_ORG = 0x1000
 PAGE = 0x2000
 SAMPLES = 200
-SAMPLE_RATE = 4590
+SAMPLE_RATE = 4566
 
 NOTES = (45, 57, 69, 96)
 VOLUMES = (12, 13, 6, 11)
@@ -136,7 +136,8 @@ def build_source(binary: Path, symbols_path: Path) -> str:
         "        swi",
         "",
         "; wait SAMPLES, then the event that sets finished, then a spare wait",
-        f"stream  fcb     ${SAMPLES:02X},${FINISHED:02X},$01,$01,$00",
+        f"stream  fcb     ${SAMPLES:02X},${(PAGE + FINISHED) >> 8:02X},"
+        f"${(PAGE + FINISHED) & 0xFF:02X},$01,$00",
         "",
     ]
 

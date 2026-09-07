@@ -188,38 +188,11 @@ ust_done
                 rts
 
 ; ------------------------------------------------------------------------
-; The playback cursor, on its own row beneath the roll.
-;
-; It reads the player's own row counter, not the composer's. Reading
-; demo_row was the first attempt and it holds 128 for the whole of playback,
-; so the cursor XORed one cell over and over and the accumulated state made
-; the second pass look corrupted.
-;
-; A whole column would be ten cells to redraw, well past what the borrowed
-; sample affords. One solid block on a dedicated row costs two writes and is
-; far easier to follow. It is written inline rather than through a helper:
-; with the call and its stack traffic the hook came to 157 cycles against a
-; 156-cycle sample period, which is not a margin worth having.
-ui_row_cursor
-                ldx     #UI_TRACK       ; blank where it was
-                ldb     ui_cursor
-                abx
-                lda     #UI_BLANK
-                sta     ,x
-
-                lda     #TUNE_ROWS      ; rows played so far
-                suba    <rows_left      ; DP is the player's here
-                lsra
-                lsra                    ; four tune rows to a cell
-                cmpa    #UI_WIDTH
-                bhs     urc_done
-                sta     ui_cursor
-                ldx     #UI_TRACK
-                tfr     a,b
-                abx
-                lda     #UI_ORANGE+$0F  ; the cursor stands out from the line
-                sta     ,x
-urc_done        rts
+; The playback cursor, on its own row beneath the roll, is no longer drawn
+; from here. The player runs with a steady sample clock (EXP-018) and does
+; nothing between samples, so the cursor's two screen writes per cell are
+; compiled into the event stream beside the notes; see COMPILE_CURSOR in
+; coco_melody_demo.asm. ui_cursor survives as the cell to blank on reset.
 
 ; ------------------------------------------------------------------------
 ui_panel
@@ -424,20 +397,17 @@ ui_perform
                 lda     ui_mode
                 sta     demo_mode
                 lda     ui_tempo
-                sta     >ticks_cfg      ; the player's, not a copy of our own
+                sta     >compile_ticks  ; ticks per row, for the compiler
                 lbsr    ui_build_seed
 
                 lbsr    demo_compose
                 lbsr    demo_arrange
+                lbsr    compile_rows    ; rows and cursor into the event stream
 
                 ldu     #ui_msg_play
                 lbsr    ui_status
                 clr     ui_cursor
-                ldd     #ui_row_cursor  ; sweep the roll while it plays
-                std     >row_hook
                 lbsr    music_start
-                ldd     #row_hook_none
-                std     >row_hook
                 rts
 
 ; Turn the entered degrees into melody tokens, two rows each.

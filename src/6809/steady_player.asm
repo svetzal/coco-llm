@@ -2,19 +2,21 @@
 ;
 ; EXP-009's sample loop, with its row and tick machinery removed. The tune
 ; arrives compiled into a stream of events: a wait in samples, then one
-; byte and the direct-page offset to store it at. When the wait runs out
-; the loop applies the event and reads the next wait; when it has not, the
-; loop runs a padding path that costs exactly the same. So every sample
-; costs the same number of cycles whatever the tune is doing, and the
-; sample clock never stretches. That stretch, five nearly-doubled samples
-; at every row change, is the warble EXP-015 heard on the melody voice.
+; byte and the address to store it at. When the wait runs out the loop
+; applies the event and reads the next wait; when it has not, the loop
+; runs a padding path that costs exactly the same. So every sample costs
+; the same number of cycles whatever the tune is doing, and the sample
+; clock never stretches. That stretch, five nearly-doubled samples at
+; every row change, is the warble EXP-015 heard on the melody voice.
 ;
 ; What the CoCo does per sample: four voices, one DAC write, one countdown,
 ; and one event or its padding. What it never does: fetch a row, apply a
-; cell, decay a volume. tools/export_events.py did all of that on the Mac.
+; cell, decay a volume. The compiler did all of that first, on the Mac
+; (tools/export_events.py) or on the CoCo (steady_compile.asm). The
+; address is absolute, so an event can as easily draw a cursor on the
+; screen as change a voice.
 ;
-; X holds the stream pointer and Y the direct page for the whole tune.
-; Interrupts stay masked.
+; X holds the stream pointer for the whole tune. Interrupts stay masked.
 ;
 ; Build-time switches, off unless a wrapper defines them:
 ;   MUSIC_FAST_CLOCK  the CoCo 3's 1.78 MHz clock (stream built for it)
@@ -143,7 +145,6 @@ tr_clear        clr     ,x+
 ; `make music-cycles PLAYER=steady` enumerates it and states the padding.
 play_tune
                 ldx     <ev_ptr         ; the stream
-                ldy     #phases         ; the direct page, for the event's store
                 lda     ,x+             ; the first wait
                 sta     <tick_samples
 sample_loop
@@ -200,14 +201,14 @@ sample_loop
 ; ---- the event, or exactly its cost in padding ----
                 dec     <tick_samples   ; 6809 6   6309 5
                 bne     idle            ;      3        3
-                ldb     ,x+             ;      6        5   the offset,
+                ldu     ,x++            ;      8        6   the address,
                 lda     ,x+             ;      6        5   the byte,
-                sta     b,y             ;      5        5   stored in the page,
+                sta     ,u              ;      4        4   stored there,
                 lda     ,x+             ;      6        5   and the next wait
                 sta     <tick_samples   ;      4        3
                 tst     <finished       ;      6        5
                 bne     play_done       ;      3        3
-                bra     sample_loop     ;      3        3   = 39 / 34 after bne
+                bra     sample_loop     ;      3        3   = 40 / 34 after bne
 
 idle
                 ifdef   MUSIC_6309
@@ -224,7 +225,7 @@ idle
                 brn     *
                 nop
                 else
-; 36 cycles: twelve BRN at 3, then the branch back.
+; 37 cycles: eleven BRN at 3 and two NOP at 2, then the branch back.
                 brn     *
                 brn     *
                 brn     *
@@ -236,9 +237,10 @@ idle
                 brn     *
                 brn     *
                 brn     *
-                brn     *
+                nop
+                nop
                 endc
-                bra     sample_loop     ;      3        3   = 39 / 34 after bne
+                bra     sample_loop     ;      3        3   = 40 / 34 after bne
 
 play_done
                 rts

@@ -285,9 +285,8 @@ demo_main
 demo_run
                 lbsr    demo_compose
                 lbsr    demo_arrange
-                ldd     #row_hook_none  ; no display to drive from here
-                std     >row_hook
-                lda     #7              ; and a tempo, rather than stale RAM
-                sta     >ticks_cfg
+                lda     #7              ; the tempo the display defaults to
+                sta     >compile_ticks
+                lbsr    compile_rows
                 lbsr    music_start
                 rts

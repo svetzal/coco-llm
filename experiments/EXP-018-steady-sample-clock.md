@@ -42,9 +42,8 @@ Is that the cause? And what does it cost to remove it?
 ## What changed
 
 The player keeps EXP-009's sample loop and loses everything between
-samples. The tune is compiled on the Mac into a stream of events, each a
-wait in samples followed by one byte and the direct-page offset to store
-it at. The loop's tail counts the wait down; when it reaches zero, the
+samples. The tune is compiled into a stream of events, each a wait in
+samples followed by one byte and the address to store it at. The loop's tail counts the wait down; when it reaches zero, the
 event path stores the byte, reads the next wait and checks for the end,
 and when it does not, an idle path of `BRN` instructions costs exactly
 the same:
@@ -52,34 +51,36 @@ the same:
 ```asm
                 dec     <tick_samples   ; 6809 6   6309 5
                 bne     idle            ;      3        3
-                ldb     ,x+             ;      6        5   the offset,
+                ldu     ,x++            ;      8        6   the address,
                 lda     ,x+             ;      6        5   the byte,
-                sta     b,y             ;      5        5   stored in the page,
+                sta     ,u              ;      4        4   stored there,
                 lda     ,x+             ;      6        5   and the next wait
                 sta     <tick_samples   ;      4        3
                 tst     <finished       ;      6        5
                 bne     play_done       ;      3        3
-                bra     sample_loop     ;      3        3   = 39 / 34 after bne
-idle            ...twelve BRN, or ten BRN and a NOP in native mode...
-                bra     sample_loop     ;                   = 39 / 34 after bne
+                bra     sample_loop     ;      3        3   = 40 / 34 after bne
+idle            ...eleven BRN and two NOP, or ten BRN and one NOP in native mode...
+                bra     sample_loop     ;                   = 40 / 34 after bne
 ```
 
-X holds the stream and Y the direct page for the whole tune. The CoCo
-never fetches a row, applies a cell or decays a volume; the exporter did
+X holds the stream for the whole tune. The CoCo never fetches a row, applies a cell or decays a volume; the exporter did
 that, with the reference's own tick logic, and emitted the resulting
 bytes: five writes for a note, one for a decay step, one to silence a
 voice. Within a tick the writes land one per sample after the tick's
 first sample, so the first sample of every tick is on the old state, as
 in the other players. A wait longer than 255 samples is split with a
-filler event that writes to a spare cell.
+filler event that writes to a spare cell. The original build had a
+three-byte event with a direct-page offset; the address became absolute
+the same day so the stream could drive the screen, which is where the
+6809's one extra cycle comes from.
 
 The reference, `src/reference/steady_synth.py`, replays the same bytes
 against the same page layout and produces the stream the CoCo produces,
-event for event. The demo tune compiles to 673 events, 2,020 bytes.
+event for event. The demo tune compiles to 673 events, 2,693 bytes.
 
 | File | Built from | Processor | Loop | Rate | Samples per tick |
 | --- | --- | --- | ---: | ---: | ---: |
-| `STEADY09.BIN` | `src/6809/coco_steady.asm` | 6809, 0.89 MHz | 195 cycles | 4,590 Hz | 92 |
+| `STEADY09.BIN` | `src/6809/coco_steady.asm` | 6809, 0.89 MHz | 196 cycles | 4,566 Hz | 91 |
 | `STEADY39.BIN` | `src/6309/coco_steady_native.asm` | 6309 native, 1.79 MHz | 160 cycles | 11,188 Hz | 224 |
 
 Nothing is amortised in those rates. That is new: every earlier player's
@@ -129,6 +130,18 @@ right to within a stopwatch. The CoCo 1 pair was not recorded.
 The sample clock is now the thing to protect. Anything that runs between
 samples must cost exactly what not running it costs, and the cycle model
 is the only instrument on the Mac that checks it.
+
+### Adopted by the composer, 2026-09-06
+
+The melody demo, EXP-010, now performs through this player on both
+machines, with the tune compiled on the CoCo by
+`src/6809/steady_compile.asm`, a line-for-line mirror of the reference's
+compiler that a parity test holds to the same bytes. The event's address
+became absolute, four bytes an event instead of three, so the stream can
+draw the playback cursor on the screen as well as write the voices; the
+6809 tail grew by one cycle to 196 and the CoCo 1 rate is 4,566 Hz. The
+6309 tail did not change and neither did its rate. Details in EXP-010's
+addendum.
 
 ## Hardware session
 

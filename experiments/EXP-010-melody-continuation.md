@@ -799,3 +799,40 @@ than real tunes do. That remains open.
    against 1.9%) with the sampler now honest. Undertraining or the
    fixed-point quantisation are still open. The fixed chord progression is
    not - see below.
+
+## Addendum, 2026-09-06: the performer is now the steady clock
+
+The demo's performer was EXP-009's player, and on the CoCo 3 through the
+1703 its row-change stall was audible as a warble on the melody voice.
+EXP-018, the steady sample clock, removed it, and the demo now performs
+through that player: `src/6809/steady_player.asm` with
+`src/6809/steady_compile.asm`, which turns the composed rows into the
+player's event stream on the CoCo, cursor writes included, so the
+playback cursor is drawn by the stream rather than by a hook between
+samples. The compiler mirrors the reference's line for line and
+`make exp010-compile-test` proves it on 128 rows: the same 12,037 bytes.
+
+Two builds: `build/coco-melody-demo.bin` for the CoCo 1 at 4,566 Hz, and
+`build/coco-melody-demo-6309.bin` for a CoCo 3 with a 6309, whose
+performer runs in native mode at the fast clock, 11,188 Hz. The composer
+and the display are the same code in both; only the player and the tune
+frame's increments differ. `make block9-6309` is the stage launch for the
+second, beside `make block9`. `make melody-dsk` puts both on the SDC's
+names, `MELODY09.BIN` and `MELODY39.BIN`, and on `MELODY10.DSK`. Both
+compose, compile and play to the end under XRoar with all-ones RAM
+(`make exp010-xroar-test`), through `demo_run`, the keyboard-free entry.
+
+The move found a fault. The row buffer sat at `$2C00` and its last 194
+bytes lay on top of the model's position tables at `$3200`, so the first
+performance composed correctly and every later one composed from a
+corrupted model; the direct-simulator parity test composes before it
+arranges and could not see it. The layout is packed lower now with room
+between regions, and the compiled stream has the 14 KiB from `$4800` to
+the top of a 32 KiB machine. A dense tune at seven ticks a row compiles
+to about 12 KiB; if the buffer ever fills, the compiler stops emitting,
+sets `compile_overflow`, and the tune ends early rather than overwriting
+anything.
+
+What changed for the listener: no warble, and on the CoCo 1 a fifth less
+sample rate. The trade was heard and preferred on the CoCo 3 in EXP-018.
+On the CoCo 1 it has not been heard yet.
