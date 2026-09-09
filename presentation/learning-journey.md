@@ -732,8 +732,8 @@ the model, and it is true for us.
 
 ## Live-demo spine
 
-The delivery plan lives in [`runsheet.md`](runsheet.md): nine blocks, sixteen
-slides, forty minutes, with the cut order decided in advance. This section
+The delivery plan lives in [`runsheet.md`](runsheet.md): ten blocks, thirty-five
+slides, thirty-six minutes, with the cut order decided in advance. This section
 records only the two structural decisions behind it, because both changed the
 shape of the talk.
 

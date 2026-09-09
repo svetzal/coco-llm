@@ -1,6 +1,6 @@
 # Deck
 
-The talk, as a reveal.js deck. Nine blocks matching
+The talk, as a reveal.js deck. Ten blocks matching
 [`../runsheet.md`](../runsheet.md) block for block.
 
 Open it. There is no build step:
@@ -11,11 +11,11 @@ open presentation/deck/index.html
 
 Press `S` for the speaker view. It carries the presenter notes and paces
 against the runsheet's budget, because each `<section>` sets `data-timing` to
-its block's minutes in seconds and `totalTime` is the forty minutes of content.
-Every slide's notes open with a block marker — `BLOCK 3 OF 9 - A LITTLE
-6809 ASSEMBLY - SLIDE 2/7` — and every block has a matching command, `make block1`
-through `make block9`, which prints the block's cues and launches its
-emulator where one is involved.
+its block's minutes in seconds and `totalTime` is the thirty-six minutes of
+content. Every slide's notes open with a block marker — `BLOCK 3 OF 10 - A
+LITTLE 6809 ASSEMBLY - SLIDE 2/7` — and every block has a matching command,
+`make block1` through `make block10`, which prints the block's cues and
+launches its emulator where one is involved.
 
 Notes are HTML, because the speaker view renders the aside's markup and
 plain text collapses into a wall. The conventions: one `<p>` per thought,
@@ -27,7 +27,7 @@ If the speaker view says you are behind, that is the runsheet's cut order
 becoming relevant: block 6 goes first, then block 5's demo shortens to its
 slide, block 3 shortens rather than goes, block 8 never goes.
 
-Blocks 3, 4, 5, 6 and 8 run in XRoar rather than here. Their slides carry the
+Blocks 3, 4, 5, 6, 8 and 9 run in XRoar rather than here. Their slides carry the
 `cue` class and stay nearly empty so the projector is not competing with the
 emulator window. Each cue opens with `.call`: the block's falsifiable
 hypothesis, stated before the window switch, so the demo is a shot the room

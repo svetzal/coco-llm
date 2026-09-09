@@ -468,7 +468,8 @@ to systems whose scale normally hides them.
 
 On stage this is block 6, the delight beat after the size lesson. It is also
 the first block to cut, so rehearse it tight: in and out in three minutes. At
-the table it runs unattended in a loop all day.
+the table it shows one screen of titles until somebody presses a key; it
+does not redeal on its own.
 
 ### EXP-012 question
 
@@ -614,3 +615,60 @@ them again.
 - If the opponent starts winning heavily and the room deflates, press R.
   Let the volunteer watch it fall back to guessing. The recovery is a better
   lesson than the streak.
+
+## EXP-010: the melody continuation
+
+On stage this is block 9, the last lever: change what a token stands for and
+the same loop writes tunes. `make stage` parks it at `YOU SEED - MODEL
+CONTINUES`; `make block9` relaunches it. The performer is EXP-018, the
+steady sample clock, since 2026-09-06.
+
+### EXP-010 question
+
+Can the same next-token loop, pointed at notes instead of words, continue a
+figure a person just played?
+
+### Before EXP-010 launch
+
+The keys are on screen, and they are scale degrees, so nobody can play a
+wrong note:
+
+- 1 to 7: a note. Eight of them make the figure.
+- `-` holds the last note, `.` is a rest, `0` erases one.
+- `M` flips major and minor. `S` steps the speed.
+- Enter composes, then performs. `THINKING` is the model; `PLAYING` is the
+  tune.
+
+> Fair warning: it is going to sound like a fiddle tune played by a
+> calculator. That is the point. Eight notes are mine; everything after
+> them is the model's.
+
+Enter the figure yourself, or hand the keys to someone in the front row.
+Call it before Enter: the model read 313 fiddle tunes and will continue in
+their idiom, whatever the figure was.
+
+### During the tune
+
+Let a whole phrase play before talking over it. Point at the cursor: it is
+drawn by the same event stream that drives the voices, so what is heard and
+what is pointed at share one clock.
+
+> Nothing in the loop knows this is music. A token stood for a word, then a
+> note. What it stands for was a decision. Mine.
+
+### After the tune
+
+Advance to the explainer and step the split: seed, melody, band,
+performance. The melody line is the model. The bass, the arpeggio and the
+drums are rules, like the title machine's rules. Four voices take the whole
+machine, which is why it composes first and performs second.
+
+### EXP-010 recovery
+
+- If a key does nothing, click the XRoar window once. Try again.
+- Enter with no figure entered does nothing. Enter at least one note.
+- A second Enter after the tune composes a different continuation from the
+  same figure; the seed keeps changing while the machine waits.
+- `make block9-6309` is the same demo in 6309 native mode at 11,188 Hz. If
+  it is used on stage, say it is a CoCo 3 in fast mode; the staging rule
+  requires it.

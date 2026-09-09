@@ -118,7 +118,8 @@ one-on-one at the table.
 Announced here so it is a decision, not a panic.
 
 1. **Block 6** goes first, the fake titles. It is the delight beat, and the
-   table runs it in a loop all day on the real machine.
+   table shows it all day on the real machine, one screen of sixteen until
+   somebody presses a key.
 
    Inside block 2, the first slide to drop is **What did it cost?**, then **Why
    three?**. Both answer questions rather than advance the argument, and both
@@ -156,6 +157,8 @@ on the projector:
 - EXP-012, block 6 — parks showing titles.
 - EXP-013, block 8 — parks at the RPSLS keys. Press `R` if anyone played it
   during setup.
+- EXP-010, block 9 — parks at `YOU SEED - MODEL CONTINUES`, waiting for a
+  figure. Nothing plays until Enter.
 
 The windows look identical. Arrange them in block order. **EXP-004 is the
 exception. It launches live, in front of the room, with `make block1` as
@@ -164,7 +167,7 @@ the reset, and it trains while block 2 explains it. Keep a terminal at the
 repository root ready for that command; `make block3` relaunches a fresh
 run if that window dies. Rehearse the switching, not only the demos.
 
-Every block has a command, `make block1` through `make block9`. The
+Every block has a command, `make block1` through `make block10`. The
 slide-only blocks print what the block is; each demo block's target prints
 its keys and launches its emulator, which makes it the rehearsal path and
 the relaunch for a window that dies mid-talk. Every launch **detaches from
@@ -172,7 +175,7 @@ the terminal**: the prompt comes straight back, and no Ctrl-C, closed
 terminal window, or stray keystroke on the laptop can kill a running
 emulator. Quitting one is done from XRoar itself, deliberately. The deck's speaker notes
 carry the same cues, and every slide's notes open with a block marker —
-`BLOCK 3 OF 9 - A LITTLE 6809 ASSEMBLY - SLIDE 2/7` — so the speaker view always
+`BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 2/7` — so the speaker view always
 says where you are.
 
 ## The blocks
@@ -603,14 +606,27 @@ why there is no model here at all.
 ### 9. A token is a note
 
 **On screen:** slides, then the CoCo composing and performing (EXP-010, the
-melody continuation, on the EXP-009 four-voice player).
+melody continuation, performed by EXP-018, the steady sample clock, since
+2026-09-06).
 
-`make block9` parks the demo. The corpus slide runs the recurring "What it
+`make stage` parks the demo at `YOU SEED - MODEL CONTINUES`; `make block9`
+relaunches it. It waits for a figure: keys 1 to 7 enter scale degrees, `-`
+holds, `.` rests, `0` erases, `M` flips major and minor, `S` steps the
+speed, and Enter composes and then performs. Enter the eight-note figure
+yourself, or hand the keys to the room. THINKING is the composer and takes a
+moment; PLAYING is the tune. The corpus slide runs the recurring "What it
 read" pattern one last time: 376 public-domain fiddle tunes from Ryan's
 Mammoth Collection (1883), a token per sixteenth note, 313 read and 63 held
 back. The explainer steps the same split as the fake titles - the seed a
 person wrote, the melody the 3,044-byte model composes, the band that is
 rules, and the compose-then-perform shape the four-voice player forces.
+
+The stage build is the CoCo 1 one at 4,566 Hz. `make block9-6309` launches
+the same demo in 6309 native mode at 11,188 Hz, which is what the CoCo 3 at
+the table plays; if it is used on stage, say so, because the staging rule
+above forbids a CoCo 3 in fast mode without saying so. The steady-clock
+performer has been heard on the CoCo 3 and preferred; on the CoCo 1 it has
+not been heard yet.
 
 The landing sets up the close: the loop never knew it was doing words, and
 what a token stands for was a person's decision.
@@ -638,6 +654,33 @@ CoCo SDC's directory mounts, and a `MANIFEST.md` whose load addresses and
 `make sdcard-install DEST=/Volumes/COCO` copies it to the mounted card and
 verifies every byte. `tools/make_sdcard.py` owns the list of disks.
 
+**Where everything is.** One row per thing the talk or the signage promises
+is at the table. The file names are the ones on `COCOLLM.DSK`; the manifest
+beside the disks carries each one's load recipe, read from the binary. The
+table's CoCo 1 is a 32K machine on a small television and the CoCo 3, with
+a 6309 fitted, is on the Commodore 1703; the signage says so on its "Two
+machines, one program" slide, so this layout has to match it.
+
+| What | File | Machine | Leave it |
+| --- | --- | --- | --- |
+| EXP-004, the live training run | `LLM04` | CoCo 1 | Training, or on the comparison screen. It halts there; `RESET` then `EXEC &H2000` trains again from random weights without reloading (untested on hardware; if it does not, `LOADM` again). The signage says this machine "trains it live". |
+| EXP-013, the game opponent that learns | `RPSLS` | either | At the keys, `R` pressed. "Come and beat it" is on the signage. |
+| EXP-012, the fake episode titles | `TITLES` | either | Showing a screen. It does not redeal until a key is pressed, so an unattended machine shows one screen all day. |
+| EXP-005, the prompted marketing completions | `LLM05` | either | At the prompt selector. The signage says "you type the first two words". |
+| EXP-011, the context-editing attention head | `ATTN` | either | At the context table, Lisa selected. The signage's context slide is this demo. |
+| EXP-006, the 8 KiB completion workbench | `LLM06` | either, 32K | At the editor. Table only; block 5's notes say it runs here all day. |
+| EXP-007, the all-RAM sentence completer | `LLM07` | CoCo 3 only | At the editor. It needs 64K and the table's CoCo 1 has 32K. |
+| EXP-010, the melody continuation | `MELODY`, `MELODY39` | `MELODY` either, `MELODY39` CoCo 3 | At `YOU SEED`. `MELODY39` is the one the CoCo 3 has been heard playing. |
+| EXP-009, the four-voice synthesizer | `MUSIC` | either | Plays once and stops. |
+| EXP-014, the 6309 multiplier benchmark | `BENCH309.DSK` | CoCo 3 | The signage's "How much faster is the 6309?" numbers came from this disk on 2026-09-05. Its session sheet is `experiments/EXP-014-hardware-session.md`. |
+| EXP-015, EXP-017, EXP-018, the listening tests | `MUSIC015.DSK`, `WAVE017.DSK`, `STEADY18.DSK` | see each sheet | Not promised anywhere; on the card for anyone who asks what the CoCo 3 sounded like. |
+
+Only two machines, so two of these run at once. When the presenter is on
+stage: the CoCo 1 on `LLM04` (or `TITLES` once a run has finished, since
+neither needs a hand) and the CoCo 3 on `RPSLS` with `R` pressed, which is
+the one a visitor can play without instructions. Everything else is a
+`LOADM` away when Stacey is back at the table.
+
 
 The table is not the overflow bin, and since the talk projects an emulator it
 now holds the only real hardware in the building. That is a promotion. It gets
@@ -652,9 +695,9 @@ badly.
 | EXP-007, the all-RAM sentence completer | Also on stage, rehearsed tight. On the table a visitor explores at their own pace, and the `<END>` interface-failure story gets a conversation. |
 | EXP-011, the context-editing attention head | Needs a keyboard, a patient visitor, and more than ninety seconds — the table's own criterion. The fact-edit lands one-on-one. |
 | EXP-013, the playable game opponent | Also on stage. On the table people play until it beats them. |
-| EXP-012, the fake title generator | Runs unattended in a loop. Good attractor. |
+| EXP-012, the fake title generator | Shows sixteen titles until a key deals sixteen more. Good attractor, but it does not redeal on its own. |
 | The four table exercises | Already designed against a 10-second to 15-minute ladder. |
-| EXP-009 and EXP-010, the four-voice synthesizer and melody continuation | On stage as block 9 (`make block9`); also worth playing at the table. |
+| EXP-009 and EXP-010, the four-voice synthesizer and melody continuation | On stage as block 9 (`make block9`); at the table `MELODY39` on the CoCo 3 is the one that has been heard and preferred. |
 
 `table-exercises.md` currently assumes the table is the only surface. It needs
 a pass to say which demo is running on which machine and when the presenter is
@@ -705,8 +748,9 @@ missing figures, and the physical-world items.
    covers EXP-012, the fake titles, and EXP-013, the game opponent.
 3. **A projector legibility check** for XRoar and for the deck, and whatever
    scaling flags the stage targets turn out to need. See open decision 3.
-4. **Slides for blocks 1 and 9**, the two still without a figure. Block 7,
-   the bias comparison, now carries the five stacked bars.
+4. **A slide for block 1**, the one still without a figure. Block 7,
+   the bias comparison, carries the five stacked bars and block 9 carries
+   its corpus slide and explainer.
 5. **The photograph in block 1**, of the physical machine, from a genuine run.
 6. **The handout**, if decision 5 says yes.
 7. **A table plan** revising `table-exercises.md` for two surfaces and two
@@ -714,8 +758,11 @@ missing figures, and the physical-world items.
 
 ## Deck state
 
-Thirty-three content slides plus eight chapter cards, 36 minutes of
-content. Five of them are one recurring slide, "What it read": each
+Thirty-five content slides plus nine chapter cards. The speaker view's
+total is the 36 minutes of content, and the per-slide timings sum to 42.5
+minutes, which is the budget table's 39 plus the cards and a little air; the
+music block's three minutes are still the open question above. Six of the
+slides are one recurring slide, "What it read": each
 model's training corpus quoted verbatim from its data file by the figure
 tool, in one shared style — the 18 names, the 8 advertising lines, the
 EXP-007 sentences, the real episode titles, and, plural for the first
@@ -741,7 +788,7 @@ uv run python tools/measure_train_vs_infer.py  # classify the image by job
 uv run python tools/make_deck_figures.py       # draw them, splice them in
 ```
 
-Blocks 1 and 9 are the two with no figure yet; block 7 now carries the bias
-bars. Blocks 3, 4, 5, 6 and 8 run in XRoar and their slides are cues, each
-cue slide's speaker notes naming the `make present` command or window switch
-it needs.
+Block 1 is the one with no figure yet; block 7 carries the bias bars and
+block 9 its corpus and explainer. Blocks 3, 4, 5, 6, 8 and 9 run in XRoar
+and their slides are cues, each cue slide's speaker notes naming the window
+switch or `make` command it needs.
