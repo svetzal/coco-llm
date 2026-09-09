@@ -41,13 +41,13 @@ PRESENTER := $(UV) run python tools/present_experiment.py
 present:
 	@$(PRESENTER) $(if $(EXP),run $(EXP),list)
 
-# Pre-flight for the talk: launch the four parkable XRoar instances in the
+# Pre-flight for the talk: launch the five parkable XRoar instances in the
 # background, one per demo block. EXP-004 is deliberately absent - it starts
 # training the moment it loads, so block 3 launches it live with
 # `make present EXP=4`. Arrange the four windows in block order once they
 # are up; XRoar windows are otherwise indistinguishable.
 STAGE_BINARIES := build/coco-llm-exp5.bin \
-	build/coco-titles.bin build/coco-rpsls.bin
+	build/coco-titles.bin build/coco-rpsls.bin build/coco-melody-demo.bin
 
 stage: $(STAGE_BINARIES) build/coco-llm-exp7.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
@@ -61,12 +61,12 @@ stage: $(STAGE_BINARIES) build/coco-llm-exp7.bin build/roms/.coco1-roms
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
 		-ratelimit -run build/coco-llm-exp7.bin >/dev/null 2>&1 &
 	@echo "Parked: EXP-005 (block 4), EXP-007 (block 5)," \
-		"EXP-012 (block 6), EXP-013 (block 8)."
+		"EXP-012 (block 6), EXP-013 (block 8), EXP-010 (block 9)."
 	@echo "The windows detach from this terminal; quit them from XRoar itself."
 	@echo "Block 3 launches live: make block3"
 
 # One command per runsheet block, so the stage thinks in blocks rather than
-# experiment numbers. Blocks 4, 5, 6 and 8 are normally parked in advance by
+# experiment numbers. Blocks 4, 5, 6, 8 and 9 are normally parked in advance by
 # `make stage`; their targets are the rehearsal path and the relaunch for a
 # dead window. Block 3 is the one launched live during the talk.
 # The deck opens first, then the emulator launches: the most recent launch
@@ -146,8 +146,9 @@ block8: build/coco-rpsls.bin build/roms/.coco1-roms
 block9: build/coco-melody-demo.bin build/roms/.coco1-roms
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
-	@echo "BLOCK 9 - A TOKEN IS A NOTE - EXP-010 composes, then performs."
-	@echo "It starts on its own; let a phrase play before talking."
+	@echo "BLOCK 9 - A TOKEN IS A NOTE - EXP-010 parks at YOU SEED -"
+	@echo "MODEL CONTINUES. 1-7 enter notes, - holds, . rests, 0 erases,"
+	@echo "Enter composes, then performs. Let a phrase play before talking."
 	@nohup $(XROAR) -machine cocous -ram 32 \
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
 		-ratelimit -run build/coco-melody-demo.bin >/dev/null 2>&1 &
@@ -160,8 +161,10 @@ block10:
 # purpose plus the same files loose, and a manifest derived from the
 # binaries. tools/make_sdcard.py owns the list. DEST is the mounted card.
 SDCARD_BINARIES := build/coco-llm.bin build/coco-llm-exp5.bin \
-	build/coco-llm-exp7.bin build/coco-titles.bin build/coco-rpsls.bin \
-	build/coco-melody-demo.bin build/coco-music.bin build/coco-attention.bin \
+	build/coco-llm-exp6.bin build/coco-llm-exp7.bin \
+	build/coco-titles.bin build/coco-rpsls.bin \
+	build/coco-melody-demo.bin build/coco-melody-demo-6309.bin \
+	build/coco-music.bin build/coco-attention.bin \
 	build/bench6309/BENCH309.DSK build/exp015/MUSIC015.DSK \
 	build/exp017/WAVE017.DSK build/exp018/STEADY18.DSK
 
@@ -773,8 +776,8 @@ melody-dsk: build/exp010/MELODY10.DSK
 block9-6309: build/coco-melody-demo-6309.bin build/roms/.coco3-rom
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
-	@echo "BLOCK 9 - A TOKEN IS A NOTE - EXP-010 on a 6309 CoCo 3."
-	@echo "It starts on its own; let a phrase play before talking."
+	@echo "BLOCK 9 - A TOKEN IS A NOTE - EXP-010 on a 6309 CoCo 3: say so."
+	@echo "Same keys as block9; Enter composes, then performs at 11,188 Hz."
 	@nohup $(XROAR) -machine coco3h -extbas $(COCO3_ROM) \
 		-ratelimit -run build/coco-melody-demo-6309.bin >/dev/null 2>&1 &
 	@echo "Detached. Quit it from XRoar; nothing here can kill it."

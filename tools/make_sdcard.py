@@ -56,39 +56,57 @@ class Disk:
 DISKS = (
     Disk("COCOLLM", "The talk and the table", (
         Entry("LLM04", BUILD / "coco-llm.bin",
-              "EXP-004, the live training run (blocks 1 and 3)",
+              "EXP-004, the live training run (blocks 1 and 3; the CoCo 1 "
+              "at the table)",
               "CoCo 1 or CoCo 3, 32K",
               "Trains from random weights the moment it starts, one to two "
-              "minutes, then parks at PRESS ANY KEY."),
+              "minutes, then parks at PRESS ANY KEY. After the comparison "
+              "screen it halts; RESET, then EXEC &H2000 trains again "
+              "without reloading."),
         Entry("LLM05", BUILD / "coco-llm-exp5.bin",
-              "EXP-005, the prompted marketing completions (block 4)",
+              "EXP-005, the prompted marketing completions (block 4; table)",
               "CoCo 1 or CoCo 3, 32K",
               "Trains itself, parks at PRESS ANY KEY. Up/Down chooses a "
               "prompt, Enter generates."),
-        Entry("LLM07", BUILD / "coco-llm-exp7.bin",
-              "EXP-007, the all-RAM sentence completer (block 5)",
-              "64K required: CoCo 3, or a 64K CoCo 1",
-              "Right Arrow predicts and accepts, Up/Down choose, Clear "
-              "resets."),
-        Entry("TITLES", BUILD / "coco-titles.bin",
-              "EXP-012, the fake episode titles (block 6)",
+        Entry("LLM06", BUILD / "coco-llm-exp6.bin",
+              "EXP-006, the 8 KiB completion workbench (table only)",
               "CoCo 1 or CoCo 3, 32K",
-              "Shows sixteen titles; any key deals sixteen fresh ones."),
+              "Right Arrow predicts and accepts, Up/Down choose, Left "
+              "erases, Clear resets. Four words of context, 178 words."),
+        Entry("LLM07", BUILD / "coco-llm-exp7.bin",
+              "EXP-007, the all-RAM sentence completer (block 5; the CoCo 3 "
+              "at the table)",
+              "64K required: CoCo 3, or a 64K CoCo 1",
+              "Right Arrow predicts and accepts, Up/Down choose, Left "
+              "erases, Clear resets."),
+        Entry("TITLES", BUILD / "coco-titles.bin",
+              "EXP-012, the fake episode titles (block 6; table)",
+              "CoCo 1 or CoCo 3, 32K",
+              "Shows sixteen titles; any key deals sixteen fresh ones. It "
+              "does not redeal on its own."),
         Entry("RPSLS", BUILD / "coco-rpsls.bin",
-              "EXP-013, the game opponent that learns (block 8)",
+              "EXP-013, the game opponent that learns (block 8; table)",
               "CoCo 1 or CoCo 3, 32K",
               "1-5 throw, R forgets everything. Press R before the talk."),
         Entry("MELODY", BUILD / "coco-melody-demo.bin",
-              "EXP-010, the melody continuation (block 9)",
+              "EXP-010, the melody continuation, performed by EXP-018's "
+              "steady clock (block 9; table)",
               "CoCo 1 or CoCo 3, 32K, sound out",
-              "Composes for a moment, then performs. Nothing on screen "
-              "during the tune."),
+              "Parks at YOU SEED - MODEL CONTINUES. 1-7 enter notes, - "
+              "holds, . rests, 0 erases, M major/minor, S speed, Enter "
+              "composes and then performs. 4,566 Hz."),
+        Entry("MELODY39", BUILD / "coco-melody-demo-6309.bin",
+              "EXP-010, the same demo with the performer in 6309 native "
+              "mode (the CoCo 3 at the table; block 9 if said out loud)",
+              "CoCo 3 with a 6309 - crashes a 6809, expected",
+              "Same keys as MELODY. 11,188 Hz; the composer is the same "
+              "code, only the player and its rate differ."),
         Entry("MUSIC", BUILD / "coco-music.bin",
               "EXP-009, the four-voice synthesizer (table)",
               "CoCo 1 or CoCo 3, 32K, sound out",
               "Plays its tune to the end. Nothing on screen."),
         Entry("ATTN", BUILD / "coco-attention.bin",
-              "EXP-011, the context-editing attention head (table)",
+              "EXP-011, the context-editing attention head (table only)",
               "CoCo 1 or CoCo 3, 32K",
               "Up/Down chooses a question, Enter asks it, E edits the "
               "selected context record, V shows how it looked, Clear goes "
