@@ -847,7 +847,9 @@ test: reference-test asm-test model-test model-test-exp5 model-test-exp6 \
 	workbench-test-exp6 model-test-exp7 workbench-test-exp7 \
 	attention-test attention-ui-test titles-test rpsls-test
 
-reference-test:
+# The direct-page safety test assembles the melody demo, whose generated
+# includes must exist first.
+reference-test: build/exp010/melody_model.inc build/exp010/tune_frame.inc
 	$(UV) sync
 	$(UV) run ruff format --check src tests tools
 	$(UV) run ruff check src tests tools

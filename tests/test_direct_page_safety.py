@@ -59,8 +59,14 @@ def listing() -> list[tuple[str, str, str]]:
         ],
         capture_output=True,
         text=True,
-        check=True,
+        check=False,
     )
+    if with_list.returncode != 0:
+        pytest.fail(
+            "lwasm could not assemble the melody demo, so there is no listing to "
+            "check. If an include under build/ is missing, run "
+            f"`make exp010-model`. lwasm said:\n{with_list.stderr.strip()}"
+        )
     rows = []
     for line in with_list.stdout.splitlines():
         match = LISTING.match(line)
