@@ -200,9 +200,13 @@ def show(title: str, block: list[tuple[str, str, int]]) -> int:
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--clock", type=int, default=None,
-                        help="processor clock in Hz; defaults to the CoCo 1's, "
-                        "or the CoCo 3's fast clock for --cpu 6309")
+    parser.add_argument(
+        "--clock",
+        type=int,
+        default=None,
+        help="processor clock in Hz; defaults to the CoCo 1's, "
+        "or the CoCo 3's fast clock for --cpu 6309",
+    )
     parser.add_argument(
         "--cpu",
         choices=("6809", "6309"),
@@ -235,8 +239,10 @@ def main() -> None:
     if clock is None:
         clock = COCO3_FAST_CLOCK if arguments.cpu == "6309" else COCO1_CLOCK
 
-    print(f"Sample loop (every path, every sample), {arguments.player} player, "
-          f"{arguments.cpu}" + (" native mode" if arguments.cpu == "6309" else ""))
+    print(
+        f"Sample loop (every path, every sample), {arguments.player} player, "
+        f"{arguments.cpu}" + (" native mode" if arguments.cpu == "6309" else "")
+    )
     noise3 = show("voice 3 (noise, branch-free)", noise_block)
     print()
     one_voice = show(f"voice 2, 1, or 0 ({arguments.player})", voice_block)
@@ -270,8 +276,13 @@ def main() -> None:
         # ratio is an estimate of an estimate; it moves the rate by well
         # under a tenth of a percent.
         noise_6809, voice_6809, mix_6809, tick_6809 = CPUS[(arguments.player, "6809")]
-        loop_6809 = (total(noise_6809) + total(voice_6809) * 3
-                     - voice_6809[-1][2] + total(mix_6809) + total(tick_6809))
+        loop_6809 = (
+            total(noise_6809)
+            + total(voice_6809) * 3
+            - voice_6809[-1][2]
+            + total(mix_6809)
+            + total(tick_6809)
+        )
         overhead = overhead * loop / loop_6809
     print(f"plus amortised tick/row work: {overhead:.2f} cycles")
     effective = loop + overhead

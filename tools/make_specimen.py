@@ -76,9 +76,7 @@ def main() -> None:
     blocks = "".join(
         f'<span class="coco-block {n}">{BLOCK}</span>' for n in ("win", "tie", "loss")
     )
-    body = "\n".join(
-        marks_row() if r is None else r.ljust(COLS)[:COLS] for r in ROWS
-    )
+    body = "\n".join(marks_row() if r is None else r.ljust(COLS)[:COLS] for r in ROWS)
 
     OUT.write_text(
         f"""<!doctype html>

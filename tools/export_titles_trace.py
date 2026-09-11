@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from make_titles_parity_test import expected_screen  # noqa: E402
+from make_titles_parity_test import expected_screen
 
 OUT = ROOT / "presentation" / "deck" / "data" / "titles.json"
 

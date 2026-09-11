@@ -75,9 +75,12 @@ def main() -> None:
             "Extended Color BASIC 1.0",
         )
         machine_options = [
-            "-ram", str(arguments.ram),
-            "-bas", str(arguments.basic_rom),
-            "-extbas", str(arguments.extended_basic_rom),
+            "-ram",
+            str(arguments.ram),
+            "-bas",
+            str(arguments.basic_rom),
+            "-extbas",
+            str(arguments.extended_basic_rom),
         ]
         rom_note = "valid Color BASIC 1.1 / Extended Color BASIC 1.0 ROMs"
     else:

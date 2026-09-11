@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from token_lm import (  # noqa: E402
+from token_lm import (
     ModelConfig,
     TokenLanguageModel,
     assess_samples,

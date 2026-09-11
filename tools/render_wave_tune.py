@@ -19,8 +19,8 @@ import numpy as np
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from coco_synth import demo_tune, steady_tune, to_waveform  # noqa: E402
-from wave_synth import SHAPES, render  # noqa: E402
+from coco_synth import demo_tune, steady_tune, to_waveform
+from wave_synth import SHAPES, render
 
 
 def write_wav(path: Path, waveform: np.ndarray, sample_rate: int) -> None:
@@ -53,7 +53,9 @@ def main() -> None:
     print(f"tune: {tune.name}   shape: {arguments.shape}")
     print(f"sample rate: {arguments.sample_rate} Hz")
     print(f"length: {len(dac_values) / arguments.sample_rate:.2f}s")
-    print(f"distinct DAC levels used: {len(distinct)} (range {distinct[0]}-{distinct[-1]})")
+    print(
+        f"distinct DAC levels used: {len(distinct)} (range {distinct[0]}-{distinct[-1]})"
+    )
     print(f"wrote {arguments.output}")
 
 

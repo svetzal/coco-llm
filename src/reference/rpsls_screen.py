@@ -254,12 +254,9 @@ def frame(rows: list[str]) -> str:
             # The marks keep their colours; on a reversed row the cells
             # around them show reversed, the way the screen holds them.
             around = (
-                (lambda c: f"\033[7m{c}\033[0m") if index in REVERSED
-                else (lambda c: c)
+                (lambda c: f"\033[7m{c}\033[0m") if index in REVERSED else (lambda c: c)
             )
-            drawn.append(
-                "|" + "".join(PREVIEW.get(c) or around(c) for c in row) + "|"
-            )
+            drawn.append("|" + "".join(PREVIEW.get(c) or around(c) for c in row) + "|")
         elif index in REVERSED:
             drawn.append(f"|\033[7m{row}\033[0m|")
         else:

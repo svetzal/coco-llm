@@ -23,9 +23,9 @@ M6809_S8_S16 = [
     ("stb  multiply_product", "extended", 5),
     ("tst  multiply_factor", "extended", 7),
     ("bpl  multiply_ready", "relative", 3),
-    ("lda  multiply_product", "extended", 5),   # sign-fix, negative path only
-    ("suba 1,x", "indexed 5-bit", 5),           # sign-fix
-    ("sta  multiply_product", "extended", 5),   # sign-fix
+    ("lda  multiply_product", "extended", 5),  # sign-fix, negative path only
+    ("suba 1,x", "indexed 5-bit", 5),  # sign-fix
+    ("sta  multiply_product", "extended", 5),  # sign-fix
     ("ldd  multiply_product", "extended", 6),
     ("rts", "inherent", 5),
 ]
@@ -79,7 +79,7 @@ CALLS_PER_TRAINING_RUN = 0x04AD9C
 
 # The project's recorded EXP-004 figures, the live training run.
 BASELINE_INSTRUCTIONS = 16_368_255
-BASELINE_CYCLES = 66_700_000   # cycle-model projection recorded in EXP-004
+BASELINE_CYCLES = 66_700_000  # cycle-model projection recorded in EXP-004
 
 
 def total(listing):
@@ -96,16 +96,28 @@ def report():
     new16 = total(M6309_S16_S16)
 
     print("8-bit by 16-bit signed multiply (EXP-004, the live training run)")
-    print(f"  6809  negative operand   {neg:3d} cycles, {len(M6809_S8_S16)} instructions")
-    print(f"  6809  positive operand   {pos:3d} cycles, {len(M6809_S8_S16) - 3} instructions")
-    print(f"  6309  either sign        {new8:3d} cycles, {len(M6309_S8_S16)} instructions")
+    print(
+        f"  6809  negative operand   {neg:3d} cycles, {len(M6809_S8_S16)} instructions"
+    )
+    print(
+        f"  6809  positive operand   {pos:3d} cycles, {len(M6809_S8_S16) - 3} instructions"
+    )
+    print(
+        f"  6309  either sign        {new8:3d} cycles, {len(M6309_S8_S16)} instructions"
+    )
     print(f"  kernel speedup           {avg8 / new8:.2f}x on the average operand")
-    print(f"  the sign fix             {total(M6809_S8_S16[SIGN_FIX])} cycles on the 6809, "
-          "and no instruction at all on the 6309")
+    print(
+        f"  the sign fix             {total(M6809_S8_S16[SIGN_FIX])} cycles on the 6809, "
+        "and no instruction at all on the 6309"
+    )
     print()
     print("16-bit by 16-bit signed multiply (EXP-005, the prompted completions)")
-    print(f"  6809                     {old16:3d} cycles, {len(M6809_S16_S16)} instructions")
-    print(f"  6309                     {new16:3d} cycles, {len(M6309_S16_S16)} instructions")
+    print(
+        f"  6809                     {old16:3d} cycles, {len(M6809_S16_S16)} instructions"
+    )
+    print(
+        f"  6309                     {new16:3d} cycles, {len(M6309_S16_S16)} instructions"
+    )
     print(f"  kernel speedup           {old16 / new16:.2f}x")
     print()
 
@@ -116,12 +128,18 @@ def report():
 
     print("Whole training run. PROJECTION, not a measurement.")
     print(f"  measured calls           {CALLS_PER_TRAINING_RUN:,}")
-    print(f"  cycles in the kernel     {spent/1e6:.1f}M of {BASELINE_CYCLES/1e6:.1f}M "
-          f"({spent / BASELINE_CYCLES:.0%} of the run)")
-    print(f"  cycles saved by MULD     {saved/1e6:.1f}M")
-    print(f"  speedup from MULD alone  {BASELINE_CYCLES / (BASELINE_CYCLES - saved):.2f}x")
-    print(f"  with the 2x clock        {2 * BASELINE_CYCLES / (BASELINE_CYCLES - saved):.2f}x "
-          "against a stock CoCo 1")
+    print(
+        f"  cycles in the kernel     {spent / 1e6:.1f}M of {BASELINE_CYCLES / 1e6:.1f}M "
+        f"({spent / BASELINE_CYCLES:.0%} of the run)"
+    )
+    print(f"  cycles saved by MULD     {saved / 1e6:.1f}M")
+    print(
+        f"  speedup from MULD alone  {BASELINE_CYCLES / (BASELINE_CYCLES - saved):.2f}x"
+    )
+    print(
+        f"  with the 2x clock        {2 * BASELINE_CYCLES / (BASELINE_CYCLES - saved):.2f}x "
+        "against a stock CoCo 1"
+    )
     print()
     print("  Native mode also removes a cycle or two from most of the other")
     print("  instructions in the run. That is deliberately excluded here. The")
@@ -164,20 +182,30 @@ def compare_against_measurement(avg8: float, new8: int) -> None:
     predicted = avg8 + loop
     error = (predicted - MEASURED_6809_MODE) / MEASURED_6809_MODE
     print("Data sheet against XRoar, cycles per multiplication")
-    print(f"  6809 kernel, 6809 mode     kernel {avg8:.1f} + loop {loop} "
-          f"= {predicted:.1f}")
-    print(f"                             measured {MEASURED_6809_MODE:.1f}, "
-          f"{error:+.1%}. Nothing fitted.")
+    print(
+        f"  6809 kernel, 6809 mode     kernel {avg8:.1f} + loop {loop} "
+        f"= {predicted:.1f}"
+    )
+    print(
+        f"                             measured {MEASURED_6809_MODE:.1f}, "
+        f"{error:+.1%}. Nothing fitted."
+    )
     print()
     print("  What the other two rows imply, given that loop:")
-    print(f"  6809 kernel, native mode   {MEASURED_NATIVE_MODE:.1f} measured, "
-          f"so kernel and loop together save "
-          f"{MEASURED_6809_MODE - MEASURED_NATIVE_MODE:.1f}")
-    print(f"  MULD kernel, native mode   {MEASURED_MULD:.1f} measured, and the "
-          f"data sheet kernel is {new8}, leaving "
-          f"{MEASURED_MULD - new8:.1f} for the loop")
-    print(f"                             against {loop} in 6809 mode, which is "
-          "the native-mode saving")
+    print(
+        f"  6809 kernel, native mode   {MEASURED_NATIVE_MODE:.1f} measured, "
+        f"so kernel and loop together save "
+        f"{MEASURED_6809_MODE - MEASURED_NATIVE_MODE:.1f}"
+    )
+    print(
+        f"  MULD kernel, native mode   {MEASURED_MULD:.1f} measured, and the "
+        f"data sheet kernel is {new8}, leaving "
+        f"{MEASURED_MULD - new8:.1f} for the loop"
+    )
+    print(
+        f"                             against {loop} in 6809 mode, which is "
+        "the native-mode saving"
+    )
     print()
     print("  XRoar calls its own 6309 emulation UNVERIFIED, so the last two")
     print("  rows are corroboration rather than proof. The physical CoCo 3 is")
@@ -187,6 +215,7 @@ def compare_against_measurement(avg8: float, new8: int) -> None:
 def prove_bit_exact():
     """The 6809 kernel already yields the low word of the true signed product,
     which is exactly what MULD leaves in W. Check every input pair."""
+
     def kernel(a_signed, x_signed):
         a, x = a_signed & 0xFF, x_signed & 0xFFFF
         xhi, xlo = x >> 8, x & 0xFF

@@ -38,125 +38,226 @@ GRAPHICS_PAGES_END = 0x2600
 
 @dataclass(frozen=True)
 class Entry:
-    name: str        # 8.3 name on the disk, without the .BIN
-    source: Path     # the DECB binary make built
-    what: str        # the experiment, with its gloss
-    machine: str     # what it needs to run
-    keys: str        # what to do once it is running
+    name: str  # 8.3 name on the disk, without the .BIN
+    source: Path  # the DECB binary make built
+    what: str  # the experiment, with its gloss
+    machine: str  # what it needs to run
+    keys: str  # what to do once it is running
 
 
 @dataclass(frozen=True)
 class Disk:
-    name: str        # 8.3 image name, without the .DSK
+    name: str  # 8.3 image name, without the .DSK
     title: str
     entries: tuple[Entry, ...]
-    sheet: str | None = None   # a session sheet that owns the procedure
+    sheet: str | None = None  # a session sheet that owns the procedure
 
 
 DISKS = (
-    Disk("COCOLLM", "The talk and the table", (
-        Entry("LLM04", BUILD / "coco-llm.bin",
-              "EXP-004, the live training run (blocks 1 and 3; the CoCo 1 "
-              "at the table)",
-              "CoCo 1 or CoCo 3, 32K",
-              "Trains from random weights the moment it starts, one to two "
-              "minutes, then parks at PRESS ANY KEY. After the comparison "
-              "screen it halts; RESET, then EXEC &H2000 trains again "
-              "without reloading."),
-        Entry("LLM05", BUILD / "coco-llm-exp5.bin",
-              "EXP-005, the prompted marketing completions (block 4; table)",
-              "CoCo 1 or CoCo 3, 32K",
-              "Trains itself, parks at PRESS ANY KEY. Up/Down chooses a "
-              "prompt, Enter generates."),
-        Entry("LLM06", BUILD / "coco-llm-exp6.bin",
-              "EXP-006, the 8 KiB completion workbench (table only)",
-              "CoCo 1 or CoCo 3, 32K",
-              "Right Arrow predicts and accepts, Up/Down choose, Left "
-              "erases, Clear resets. Four words of context, 178 words."),
-        Entry("LLM07", BUILD / "coco-llm-exp7.bin",
-              "EXP-007, the all-RAM sentence completer (block 5; the CoCo 3 "
-              "at the table)",
-              "64K required: CoCo 3, or a 64K CoCo 1",
-              "Right Arrow predicts and accepts, Up/Down choose, Left "
-              "erases, Clear resets."),
-        Entry("TITLES", BUILD / "coco-titles.bin",
-              "EXP-012, the fake episode titles (block 6; table)",
-              "CoCo 1 or CoCo 3, 32K",
-              "Shows sixteen titles; any key deals sixteen fresh ones. It "
-              "does not redeal on its own."),
-        Entry("RPSLS", BUILD / "coco-rpsls.bin",
-              "EXP-013, the game opponent that learns (block 8; table)",
-              "CoCo 1 or CoCo 3, 32K",
-              "1-5 throw, R forgets everything. Press R before the talk."),
-        Entry("MELODY", BUILD / "coco-melody-demo.bin",
-              "EXP-010, the melody continuation, performed by EXP-018's "
-              "steady clock (block 9; table)",
-              "CoCo 1 or CoCo 3, 32K, sound out",
-              "Parks at YOU SEED - MODEL CONTINUES. 1-7 enter notes, - "
-              "holds, . rests, 0 erases, M major/minor, S speed, Enter "
-              "composes and then performs. 4,566 Hz."),
-        Entry("MELODY39", BUILD / "coco-melody-demo-6309.bin",
-              "EXP-010, the same demo with the performer in 6309 native "
-              "mode (the CoCo 3 at the table; block 9 if said out loud)",
-              "CoCo 3 with a 6309 - crashes a 6809, expected",
-              "Same keys as MELODY. 11,188 Hz; the composer is the same "
-              "code, only the player and its rate differ."),
-        Entry("MUSIC", BUILD / "coco-music.bin",
-              "EXP-009, the four-voice synthesizer (table)",
-              "CoCo 1 or CoCo 3, 32K, sound out",
-              "Plays its tune to the end. Nothing on screen."),
-        Entry("ATTN", BUILD / "coco-attention.bin",
-              "EXP-011, the context-editing attention head (table only)",
-              "CoCo 1 or CoCo 3, 32K",
-              "Up/Down chooses a question, Enter asks it, E edits the "
-              "selected context record, V shows how it looked, Clear goes "
-              "back. The model never changes; the screen says so."),
-    )),
-    Disk("BENCH309", "EXP-014, the 6309 multiplier benchmark", (
-        Entry("BENCH09", BUILD / "bench6309" / "bench6809.bin",
-              "plain 6809 kernel, the baseline",
-              "CoCo 1 or CoCo 3", "Run 1 on the session sheet."),
-        Entry("BENCH39", BUILD / "bench6309" / "bench6309.bin",
-              "6809, native mode and MULD kernels, three rows",
-              "CoCo 3 with a 6309 - crashes a 6809, expected",
-              "Runs 2 and 3; POKE 65497,0 before EXEC for run 3."),
-        Entry("BENCH39S", BUILD / "bench6309" / "bench6309safe.bin",
-              "MULD without native mode, the fallback",
-              "CoCo 3 with a 6309", "Only if BENCH39 hangs between rows."),
-    ), sheet="experiments/EXP-014-hardware-session.md"),
-    Disk("MUSIC015", "EXP-015, the faster-clock listening test", (
-        Entry("MUSIC09", BUILD / "coco-music.bin",
-              "the player at 0.89 MHz, 5,679 Hz",
-              "CoCo 1 or CoCo 3", "Play first, and again last."),
-        Entry("MUSIC2X", BUILD / "exp015" / "music-fast.bin",
-              "the player at 1.79 MHz, 11,358 Hz",
-              "CoCo 3", "Second."),
-        Entry("MUSIC39", BUILD / "exp015" / "music-6309.bin",
-              "the player in 6309 native mode, 14,405 Hz",
-              "CoCo 3 with a 6309 - crashes a 6809, expected", "Third."),
-    ), sheet="experiments/EXP-015-faster-clock-listening-test.md"),
-    Disk("WAVE017", "EXP-017, the wavetable voices", (
-        Entry("WAVE09", BUILD / "exp017" / "WAVE09.BIN",
-              "triangle voices at 0.89 MHz, 5,789 Hz",
-              "CoCo 1 or CoCo 3", "The one to play on the CoCo 1."),
-        Entry("WAVE2X", BUILD / "exp017" / "WAVE2X.BIN",
-              "triangle voices at 1.79 MHz, 11,578 Hz",
-              "CoCo 3", ""),
-        Entry("WAVE39", BUILD / "exp017" / "WAVE39.BIN",
-              "triangle voices in 6309 native mode, 14,402 Hz",
-              "CoCo 3 with a 6309 - crashes a 6809, expected", ""),
-        Entry("SINE39", BUILD / "exp017" / "SINE39.BIN",
-              "sine voices in 6309 native mode, 14,402 Hz",
-              "CoCo 3 with a 6309 - crashes a 6809, expected", ""),
-    ), sheet="experiments/EXP-017-wavetable-voices.md"),
-    Disk("STEADY18", "EXP-018, the steady sample clock", (
-        Entry("STEADY09", BUILD / "exp018" / "STEADY09.BIN",
-              "the steady-clock player at 0.89 MHz, 4,590 Hz",
-              "CoCo 1 or CoCo 3", ""),
-        Entry("STEADY39", BUILD / "exp018" / "STEADY39.BIN",
-              "the steady-clock player in 6309 native mode, 11,188 Hz",
-              "CoCo 3 with a 6309 - crashes a 6809, expected", ""),
-    ), sheet="experiments/EXP-018-steady-sample-clock.md"),
+    Disk(
+        "COCOLLM",
+        "The talk and the table",
+        (
+            Entry(
+                "LLM04",
+                BUILD / "coco-llm.bin",
+                "EXP-004, the live training run (blocks 1 and 3; the CoCo 1 "
+                "at the table)",
+                "CoCo 1 or CoCo 3, 32K",
+                "Trains from random weights the moment it starts, one to two "
+                "minutes, then parks at PRESS ANY KEY. After the comparison "
+                "screen it halts; RESET, then EXEC &H2000 trains again "
+                "without reloading.",
+            ),
+            Entry(
+                "LLM05",
+                BUILD / "coco-llm-exp5.bin",
+                "EXP-005, the prompted marketing completions (block 4; table)",
+                "CoCo 1 or CoCo 3, 32K",
+                "Trains itself, parks at PRESS ANY KEY. Up/Down chooses a "
+                "prompt, Enter generates.",
+            ),
+            Entry(
+                "LLM06",
+                BUILD / "coco-llm-exp6.bin",
+                "EXP-006, the 8 KiB completion workbench (table only)",
+                "CoCo 1 or CoCo 3, 32K",
+                "Right Arrow predicts and accepts, Up/Down choose, Left "
+                "erases, Clear resets. Four words of context, 178 words.",
+            ),
+            Entry(
+                "LLM07",
+                BUILD / "coco-llm-exp7.bin",
+                "EXP-007, the all-RAM sentence completer (block 5; the CoCo 3 "
+                "at the table)",
+                "64K required: CoCo 3, or a 64K CoCo 1",
+                "Right Arrow predicts and accepts, Up/Down choose, Left "
+                "erases, Clear resets.",
+            ),
+            Entry(
+                "TITLES",
+                BUILD / "coco-titles.bin",
+                "EXP-012, the fake episode titles (block 6; table)",
+                "CoCo 1 or CoCo 3, 32K",
+                "Shows sixteen titles; any key deals sixteen fresh ones. It "
+                "does not redeal on its own.",
+            ),
+            Entry(
+                "RPSLS",
+                BUILD / "coco-rpsls.bin",
+                "EXP-013, the game opponent that learns (block 8; table)",
+                "CoCo 1 or CoCo 3, 32K",
+                "1-5 throw, R forgets everything. Press R before the talk.",
+            ),
+            Entry(
+                "MELODY",
+                BUILD / "coco-melody-demo.bin",
+                "EXP-010, the melody continuation, performed by EXP-018's "
+                "steady clock (block 9; table)",
+                "CoCo 1 or CoCo 3, 32K, sound out",
+                "Parks at YOU SEED - MODEL CONTINUES. 1-7 enter notes, - "
+                "holds, . rests, 0 erases, M major/minor, S speed, Enter "
+                "composes and then performs. 4,566 Hz.",
+            ),
+            Entry(
+                "MELODY39",
+                BUILD / "coco-melody-demo-6309.bin",
+                "EXP-010, the same demo with the performer in 6309 native "
+                "mode (the CoCo 3 at the table; block 9 if said out loud)",
+                "CoCo 3 with a 6309 - crashes a 6809, expected",
+                "Same keys as MELODY. 11,188 Hz; the composer is the same "
+                "code, only the player and its rate differ.",
+            ),
+            Entry(
+                "MUSIC",
+                BUILD / "coco-music.bin",
+                "EXP-009, the four-voice synthesizer (table)",
+                "CoCo 1 or CoCo 3, 32K, sound out",
+                "Plays its tune to the end. Nothing on screen.",
+            ),
+            Entry(
+                "ATTN",
+                BUILD / "coco-attention.bin",
+                "EXP-011, the context-editing attention head (table only)",
+                "CoCo 1 or CoCo 3, 32K",
+                "Up/Down chooses a question, Enter asks it, E edits the "
+                "selected context record, V shows how it looked, Clear goes "
+                "back. The model never changes; the screen says so.",
+            ),
+        ),
+    ),
+    Disk(
+        "BENCH309",
+        "EXP-014, the 6309 multiplier benchmark",
+        (
+            Entry(
+                "BENCH09",
+                BUILD / "bench6309" / "bench6809.bin",
+                "plain 6809 kernel, the baseline",
+                "CoCo 1 or CoCo 3",
+                "Run 1 on the session sheet.",
+            ),
+            Entry(
+                "BENCH39",
+                BUILD / "bench6309" / "bench6309.bin",
+                "6809, native mode and MULD kernels, three rows",
+                "CoCo 3 with a 6309 - crashes a 6809, expected",
+                "Runs 2 and 3; POKE 65497,0 before EXEC for run 3.",
+            ),
+            Entry(
+                "BENCH39S",
+                BUILD / "bench6309" / "bench6309safe.bin",
+                "MULD without native mode, the fallback",
+                "CoCo 3 with a 6309",
+                "Only if BENCH39 hangs between rows.",
+            ),
+        ),
+        sheet="experiments/EXP-014-hardware-session.md",
+    ),
+    Disk(
+        "MUSIC015",
+        "EXP-015, the faster-clock listening test",
+        (
+            Entry(
+                "MUSIC09",
+                BUILD / "coco-music.bin",
+                "the player at 0.89 MHz, 5,679 Hz",
+                "CoCo 1 or CoCo 3",
+                "Play first, and again last.",
+            ),
+            Entry(
+                "MUSIC2X",
+                BUILD / "exp015" / "music-fast.bin",
+                "the player at 1.79 MHz, 11,358 Hz",
+                "CoCo 3",
+                "Second.",
+            ),
+            Entry(
+                "MUSIC39",
+                BUILD / "exp015" / "music-6309.bin",
+                "the player in 6309 native mode, 14,405 Hz",
+                "CoCo 3 with a 6309 - crashes a 6809, expected",
+                "Third.",
+            ),
+        ),
+        sheet="experiments/EXP-015-faster-clock-listening-test.md",
+    ),
+    Disk(
+        "WAVE017",
+        "EXP-017, the wavetable voices",
+        (
+            Entry(
+                "WAVE09",
+                BUILD / "exp017" / "WAVE09.BIN",
+                "triangle voices at 0.89 MHz, 5,789 Hz",
+                "CoCo 1 or CoCo 3",
+                "The one to play on the CoCo 1.",
+            ),
+            Entry(
+                "WAVE2X",
+                BUILD / "exp017" / "WAVE2X.BIN",
+                "triangle voices at 1.79 MHz, 11,578 Hz",
+                "CoCo 3",
+                "",
+            ),
+            Entry(
+                "WAVE39",
+                BUILD / "exp017" / "WAVE39.BIN",
+                "triangle voices in 6309 native mode, 14,402 Hz",
+                "CoCo 3 with a 6309 - crashes a 6809, expected",
+                "",
+            ),
+            Entry(
+                "SINE39",
+                BUILD / "exp017" / "SINE39.BIN",
+                "sine voices in 6309 native mode, 14,402 Hz",
+                "CoCo 3 with a 6309 - crashes a 6809, expected",
+                "",
+            ),
+        ),
+        sheet="experiments/EXP-017-wavetable-voices.md",
+    ),
+    Disk(
+        "STEADY18",
+        "EXP-018, the steady sample clock",
+        (
+            Entry(
+                "STEADY09",
+                BUILD / "exp018" / "STEADY09.BIN",
+                "the steady-clock player at 0.89 MHz, 4,590 Hz",
+                "CoCo 1 or CoCo 3",
+                "",
+            ),
+            Entry(
+                "STEADY39",
+                BUILD / "exp018" / "STEADY39.BIN",
+                "the steady-clock player in 6309 native mode, 11,188 Hz",
+                "CoCo 3 with a 6309 - crashes a 6809, expected",
+                "",
+            ),
+        ),
+        sheet="experiments/EXP-018-steady-sample-clock.md",
+    ),
 )
 
 
@@ -165,7 +266,7 @@ def decb_range(path: Path) -> tuple[int, int, int]:
     data = path.read_bytes()
     low, high, at, execute = 0x10000, 0, 0, None
     while at < len(data):
-        kind, length, address = struct.unpack(">BHH", data[at:at + 5])
+        kind, length, address = struct.unpack(">BHH", data[at : at + 5])
         at += 5
         if kind == 0xFF:
             execute = address
@@ -197,8 +298,13 @@ def build_disk(disk: Disk) -> None:
         shutil.copyfile(entry.source, target)
         arguments += ["--file", f"{entry.name}.BIN={target}"]
     subprocess.run(
-        ["python3", str(DSK_TOOL), "--output", str(OUT / f"{disk.name}.DSK"),
-         *arguments],
+        [
+            "python3",
+            str(DSK_TOOL),
+            "--output",
+            str(OUT / f"{disk.name}.DSK"),
+            *arguments,
+        ],
         check=True,
     )
 
@@ -264,8 +370,12 @@ def install(destination: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--install", type=Path, metavar="DEST",
-                        help="after staging, copy to this mounted card and verify")
+    parser.add_argument(
+        "--install",
+        type=Path,
+        metavar="DEST",
+        help="after staging, copy to this mounted card and verify",
+    )
     arguments = parser.parse_args()
 
     if OUT.exists():

@@ -42,7 +42,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument(
-        "--file", dest="files", action="append", required=True,
+        "--file",
+        dest="files",
+        action="append",
+        required=True,
         metavar="NAME.EXT=PATH",
         help="a file to place on the disk, for example BENCH39.BIN=build/x.bin",
     )
@@ -67,11 +70,12 @@ def main() -> None:
         for index in range(needed):
             granule = first + index
             chunk = payload[
-                index * GRANULE_SECTORS * SECTOR_SIZE:
-                (index + 1) * GRANULE_SECTORS * SECTOR_SIZE
+                index * GRANULE_SECTORS * SECTOR_SIZE : (index + 1)
+                * GRANULE_SECTORS
+                * SECTOR_SIZE
             ]
             start = granule_offset(granule)
-            image[start:start + len(chunk)] = chunk
+            image[start : start + len(chunk)] = chunk
             if index + 1 < needed:
                 table[granule] = granule + 1
             else:
@@ -89,17 +93,19 @@ def main() -> None:
         )
 
     granule_table = sector_offset(DIRECTORY_TRACK, 2)
-    image[granule_table:granule_table + GRANULES] = table
+    image[granule_table : granule_table + GRANULES] = table
 
     directory = sector_offset(DIRECTORY_TRACK, 3)
     for index, entry in enumerate(entries):
-        image[directory + index * 32:directory + (index + 1) * 32] = entry
+        image[directory + index * 32 : directory + (index + 1) * 32] = entry
     # $FF in the first byte ends the directory, and the image starts that way.
 
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_bytes(bytes(image))
-    print(f"{arguments.output}: {len(entries)} files, "
-          f"{next_granule} of {GRANULES} granules used")
+    print(
+        f"{arguments.output}: {len(entries)} files, "
+        f"{next_granule} of {GRANULES} granules used"
+    )
     for specification in arguments.files:
         name, _, source = specification.partition("=")
         print(f"  {name:<12} {Path(source).stat().st_size:6d} bytes")

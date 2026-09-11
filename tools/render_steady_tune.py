@@ -19,8 +19,8 @@ import numpy as np
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from coco_synth import demo_tune, steady_tune, to_waveform  # noqa: E402
-from steady_synth import compile_events, render  # noqa: E402
+from coco_synth import demo_tune, steady_tune, to_waveform
+from steady_synth import compile_events, render
 
 
 def write_wav(path: Path, waveform: np.ndarray, sample_rate: int) -> None:

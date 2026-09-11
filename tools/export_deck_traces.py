@@ -32,10 +32,10 @@ import numpy as np
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from token_lm import (  # noqa: E402
+from token_lm import (
     ModelConfig,
-    assess_samples,
     TokenLanguageModel,
+    assess_samples,
     build_vocabulary,
     load_names,
     make_examples,
@@ -105,13 +105,11 @@ def main() -> None:
     vocabulary_trace = {
         "vocabulary": vocabulary,
         "focus": FOCUS,
-        "focus_tokens": [
-            {"text": t, "id": token_by_text[t]} for t in focus_tokens
-        ],
+        "focus_tokens": [{"text": t, "id": token_by_text[t]} for t in focus_tokens],
         "boundary": boundary,
         "walk": walk,
         "names": len(names),
-        "examples": int(len(targets)),
+        "examples": len(targets),
     }
 
     # --- block 3: one training step, before and after ------------------------
@@ -274,8 +272,7 @@ def main() -> None:
                 "copied": sum(1 for text in drawn if text in corpus),
                 "name_like": sum(1 for a in assessed if a.name_like),
                 "repeats": sum(
-                    1 for text in drawn
-                    if len(set(text.split())) < len(text.split())
+                    1 for text in drawn if len(set(text.split())) < len(text.split())
                 ),
                 "both": sum(1 for a in assessed if a.novel and a.name_like),
             }
@@ -294,9 +291,7 @@ def main() -> None:
         if epoch == EPOCHS:
             break
         losses.extend(
-            model.train(
-                contexts, targets, epochs=1, learning_rate=LEARNING_RATE
-            )
+            model.train(contexts, targets, epochs=1, learning_rate=LEARNING_RATE)
         )
 
     loop_trace = {
@@ -346,7 +341,7 @@ def main() -> None:
     why_three = {
         "widths": widths,
         "epochs": 20,
-        "examples": int(len(targets)),
+        "examples": len(targets),
         "mul_cycles": MUL_CYCLES,
         "clock_hz": CLOCK_HZ,
         # The architecture this one replaced, for scale.
@@ -433,7 +428,7 @@ def main() -> None:
     running = code_bytes + data_bytes + parameter_bytes + working_bytes
     budget = {
         "epochs": CHOSEN_EPOCHS,
-        "examples": int(len(targets)),
+        "examples": len(targets),
         "per_example": per_example,
         "multiplies": per_example * len(targets) * CHOSEN_EPOCHS,
         # Measured by instrumenting the exact 20-epoch reference run; see

@@ -21,8 +21,8 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from coco_synth import VOICE_COUNT, Voice, note_increment  # noqa: E402
-from wave_synth import SHAPES, wave_table  # noqa: E402
+from coco_synth import VOICE_COUNT, Voice, note_increment
+from wave_synth import SHAPES, wave_table
 
 RUNNER_ORG = 0x1000
 SAMPLES = 200
@@ -80,9 +80,7 @@ def expected_state(shape: str) -> tuple[list[Voice], int]:
 
     if shape == "square":
         masked = sum(
-            (VOLUMES[index] << 2)
-            for index, voice in enumerate(voices)
-            if voice.bit
+            (VOLUMES[index] << 2) for index, voice in enumerate(voices) if voice.bit
         )
         if masked != dac:
             raise AssertionError(

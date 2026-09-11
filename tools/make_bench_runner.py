@@ -29,15 +29,21 @@ def main() -> None:
     parser.add_argument("--symbols", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument(
-        "--assert", dest="assertions", action="append", default=[],
+        "--assert",
+        dest="assertions",
+        action="append",
+        default=[],
         metavar="SYMBOL=VALUE",
         help="a criterion, for example bench_sum=#$d636",
     )
     parser.add_argument(
-        "--assert-symbol", dest="symbol_assertions", action="append", default=[],
+        "--assert-symbol",
+        dest="symbol_assertions",
+        action="append",
+        default=[],
         metavar="SYMBOL=EXPECTED",
         help="compare a location against another symbol's value, so the "
-             "expected number comes from the build rather than being retyped",
+        "expected number comes from the build rather than being retyped",
     )
     arguments = parser.parse_args()
 
@@ -55,7 +61,7 @@ def main() -> None:
         f"        org     ${start:04x}",
     ]
     for offset in range(0, len(payload), 16):
-        values = ",".join(f"${value:02x}" for value in payload[offset:offset + 16])
+        values = ",".join(f"${value:02x}" for value in payload[offset : offset + 16])
         lines.append(f"        fcb     {values}")
     lines.append("")
 

@@ -1,6 +1,6 @@
 """No file outside the player may reach player state through the direct page.
 
-music_player.asm declares `setdp $20`, and lwasm applies that to the whole
+steady_player.asm declares `setdp $20`, and lwasm applies that to the whole
 assembly, not to one file. So a bare reference to a player variable written
 anywhere else assembles to a direct-page instruction: correct inside the
 player, where DP really is $20, and silently wrong everywhere else, where it
@@ -25,28 +25,20 @@ import pytest
 
 ROOT = Path(__file__).parents[1]
 TOP = ROOT / "src" / "6809" / "coco_melody_demo.asm"
-PLAYER = "music_player.asm"
+PLAYER = "steady_player.asm"
 
-# Everything music_player.asm keeps in the direct page.
+# Everything steady_player.asm keeps in the direct page.
 PLAYER_STATE = {
     "phases",
     "incrs",
     "scaled",
-    "decays",
     "dac_acc",
     "lfsr",
     "tick_samples",
-    "row_ticks",
-    "rows_left",
-    "repeats_left",
-    "row_ptr",
     "finished",
-    "voice_no",
-    "cells_left",
-    "row_hook",
-    "ticks_cfg",
-    "incr_tmp",
     "scratch",
+    "ev_ptr",
+    "repeats_left",
     "saved_dp",
 }
 
@@ -118,6 +110,6 @@ def test_player_state_is_reached_with_an_explicit_page(name: str) -> None:
         if source != PLAYER and bare.match(text.split(";")[0])
     ]
     assert not offenders, (
-        f"bare reference to the player's {name} outside music_player.asm, "
+        f"bare reference to the player's {name} outside {PLAYER}, "
         f"which setdp $20 makes direct-page: {offenders}"
     )

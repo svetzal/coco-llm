@@ -97,8 +97,7 @@ def figure_tables(trace: dict) -> str:
         for l in trace["lookups"]
     )
     total = "".join(
-        f'<span class="num moved">{v:+.4f}</span>'
-        for v in trace["vector_display"]
+        f'<span class="num moved">{v:+.4f}</span>' for v in trace["vector_display"]
     )
 
     return f"""
@@ -144,19 +143,11 @@ def figure_step(trace: dict, vocabulary: list[str]) -> str:
 
     def numbers(values, index=None, moved=False):
         cls = " moved" if moved else ""
-        frag = (
-            f' fragment" data-fragment-index="{index}'
-            if index is not None
-            else ""
-        )
-        return "".join(
-            f'<span class="num{cls}{frag}">{v:+.4f}</span>' for v in values
-        )
+        frag = f' fragment" data-fragment-index="{index}' if index is not None else ""
+        return "".join(f'<span class="num{cls}{frag}">{v:+.4f}</span>' for v in values)
 
     def row(cells, cls=""):
-        return "".join(
-            f'<span class="num{cls}">{v:+.4f}</span>' for v in cells
-        )
+        return "".join(f'<span class="num{cls}">{v:+.4f}</span>' for v in cells)
 
     lookups = "".join(
         f'<div class="look fragment" data-fragment-index="{n + 1}">'
@@ -277,7 +268,7 @@ def figure_identifiers(vocabulary: list[str]) -> str:
     for n, (words, note, related) in enumerate(ID_PAIRS):
         chips = "".join(
             f'<span class="idchip"><span class="idn">'
-            f'{vocabulary.index(w)}</span>{esc(w)}</span>'
+            f"{vocabulary.index(w)}</span>{esc(w)}</span>"
             for w in words
         )
         mark = "yes" if related else "no"
@@ -381,13 +372,12 @@ def figure_parameters(trace: dict) -> str:
 
 def figure_loop(trace: dict, budget: dict, split: dict) -> str:
     """What it makes as the loop runs, and what the loop was budgeted to cost."""
+
     # Caption figures are computed, never typed, so they cannot disagree with
     # the columns above them.
     def pct(epoch, key):
         counted = trace["novelty"][str(epoch)]
-        value = (
-            counted["drawn"] - counted["copied"] if key == "new" else counted[key]
-        )
+        value = counted["drawn"] - counted["copied"] if key == "new" else counted[key]
         return round(100 * value / counted["drawn"])
 
     first_new = pct(trace["checkpoints"][0], "new")
@@ -437,7 +427,7 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
             f'<span class="novel">{new_pct}%</span>'
             f'<span class="novel">{like_pct}%</span>'
             f'<span class="novel {"good" if both_pct >= 80 else "poor"}">'
-            f'{both_pct}%</span>'
+            f"{both_pct}%</span>"
             f'<span class="enote">{note}</span></div>'
         )
 
@@ -530,7 +520,7 @@ def figure_shift(shift: dict) -> str:
         for i, b in enumerate(bits):
             cells.append(
                 f'<span class="bit{" on" if b == "1" else ""}'
-                f'{" edge" if i == 7 else ""}'
+                f"{' edge' if i == 7 else ''}"
                 f'{" sign" if i == 0 else ""}">{b}</span>'
             )
             if i == 7:
@@ -566,10 +556,13 @@ def figure_shift(shift: dict) -> str:
     </div>
     <div class="bitrow signrow">
       <span class="steplab"></span>
-      <span class="bits">{"".join(
-        f'<span class="bit">{"&minus;" if i == 0 else ""}</span>'
-        + ('<span class="carry"></span>' if i == 7 else "")
-        for i in range(len(shift["steps"][0]["bits"])))}</span>
+      <span class="bits">{
+        "".join(
+            f'<span class="bit">{"&minus;" if i == 0 else ""}</span>'
+            + ('<span class="carry"></span>' if i == 7 else "")
+            for i in range(len(shift["steps"][0]["bits"]))
+        )
+    }</span>
       <span class="carryout"></span>
       <span class="decimal"></span>
     </div>
@@ -633,8 +626,10 @@ def figure_sign(fix: dict) -> str:
         if width == 8:
             cells = [f'<span class="byte">{value & 0xFF}</span>']
         else:
-            cells = [f'<span class="byte">{(value >> 8) & 0xFF}</span>',
-                     f'<span class="byte">{value & 0xFF}</span>']
+            cells = [
+                f'<span class="byte">{(value >> 8) & 0xFF}</span>',
+                f'<span class="byte">{value & 0xFF}</span>',
+            ]
         return register_box(cells, word)
 
     factor, unsigned = fix["factor"], fix["unsigned_factor"]
@@ -642,7 +637,9 @@ def figure_sign(fix: dict) -> str:
     excess = (256 * multiplier) & 0xFFFF
     corrected, answer = fix["corrected"], fix["signed"]
 
-    def row(index: int, label: str, value: int, width: int, word: str, note: str) -> str:
+    def row(
+        index: int, label: str, value: int, width: int, word: str, note: str
+    ) -> str:
         frag = f' class="fragment" data-fragment-index="{index}"' if index else ""
         return (
             f'<tr{frag}><td class="lab">{label}</td>'
@@ -651,16 +648,42 @@ def figure_sign(fix: dict) -> str:
             f'<td class="note">{note}</td></tr>'
         )
 
-    rows = "".join([
-        row(0, f"the factor, {factor}", factor, 8, str(factor),
-            f"MUL ignores the sign bit and reads {unsigned}"),
-        row(1, f"MUL makes {unsigned} &times; {multiplier}", raw, 16, str(raw),
-            f"too big by 256 &times; {multiplier}"),
-        row(2, f"the excess, 256 &times; {multiplier}", excess, 16, str(excess),
-            f"{multiplier} in the high byte, nothing below"),
-        row(3, f"suba takes {multiplier} off the high byte", corrected, 16, str(answer),
-            f"{factor} &times; {multiplier} = {answer}"),
-    ])
+    rows = "".join(
+        [
+            row(
+                0,
+                f"the factor, {factor}",
+                factor,
+                8,
+                str(factor),
+                f"MUL ignores the sign bit and reads {unsigned}",
+            ),
+            row(
+                1,
+                f"MUL makes {unsigned} &times; {multiplier}",
+                raw,
+                16,
+                str(raw),
+                f"too big by 256 &times; {multiplier}",
+            ),
+            row(
+                2,
+                f"the excess, 256 &times; {multiplier}",
+                excess,
+                16,
+                str(excess),
+                f"{multiplier} in the high byte, nothing below",
+            ),
+            row(
+                3,
+                f"suba takes {multiplier} off the high byte",
+                corrected,
+                16,
+                str(answer),
+                f"{factor} &times; {multiplier} = {answer}",
+            ),
+        ]
+    )
     return f"""
   <div class="fig sign2">
     <table class="signtbl">
@@ -747,9 +770,14 @@ def trace_two_muls(context_value: int, error: int) -> list[tuple]:
     row("ldb", {"xh"}, {"B"}, B=high)
     row("mul", {"A", "B"}, {"A", "B"}, {"D"}, A=second >> 8, B=second & 0xFF)
     row("addb", {"B", "ph"}, {"B"}, B=b_after_add)
-    row("stb", {"B"}, {"ph"}, {"product"},
+    row(
+        "stb",
+        {"B"},
+        {"ph"},
+        {"product"},
         note=("state", f"{context_value} \u00d7 {error} = {signed(product, 16)}"),
-        ph=b_after_add)
+        ph=b_after_add,
+    )
     return rows
 
 
@@ -759,13 +787,26 @@ def trace_sign_fix(trace: dict) -> list[tuple]:
     raw_high, raw_low = trace["raw"] >> 8, trace["raw"] & 0xFF
     multiplier = trace["multiplier"] & 0xFFFF
     corrected_high = (raw_high - (multiplier & 0xFF)) & 0xFF
-    st = {"f": trace["unsigned_factor"], "xh": multiplier >> 8,
-          "xl": multiplier & 0xFF, "ph": raw_high, "pl": raw_low}
-    rows = [(None, dict(st), {"f", "xh", "xl", "ph", "pl"},
-             {"factor", "at X", "product"},
-             (f"the MULs saw {trace['unsigned_factor']}, not {trace['factor']}: "
-              f"{trace['unsigned_factor']} \u00d7 {trace['multiplier']} = {trace['raw']}"),
-             set())]
+    st = {
+        "f": trace["unsigned_factor"],
+        "xh": multiplier >> 8,
+        "xl": multiplier & 0xFF,
+        "ph": raw_high,
+        "pl": raw_low,
+    }
+    rows = [
+        (
+            None,
+            dict(st),
+            {"f", "xh", "xl", "ph", "pl"},
+            {"factor", "at X", "product"},
+            (
+                f"the MULs saw {trace['unsigned_factor']}, not {trace['factor']}: "
+                f"{trace['unsigned_factor']} \u00d7 {trace['multiplier']} = {trace['raw']}"
+            ),
+            set(),
+        )
+    ]
 
     def row(mnemonic, read, written, values=(), note="", **changes):
         st.update(changes)
@@ -775,9 +816,17 @@ def trace_sign_fix(trace: dict) -> list[tuple]:
     row("bpl", set(), set(), note="no branch")
     row("lda", {"ph"}, {"A"}, A=raw_high)
     row("suba", {"A", "xl"}, {"A"}, A=corrected_high)
-    row("sta", {"A"}, {"ph"}, {"product"},
-        note=("state", f"{trace['factor']} \u00d7 {trace['multiplier']} = {trace['signed']}"),
-        ph=corrected_high)
+    row(
+        "sta",
+        {"A"},
+        {"ph"},
+        {"product"},
+        note=(
+            "state",
+            f"{trace['factor']} \u00d7 {trace['multiplier']} = {trace['signed']}",
+        ),
+        ph=corrected_high,
+    )
     assert signed((corrected_high << 8) | raw_low, 16) == trace["signed"]
     return rows
 
@@ -801,8 +850,12 @@ def trace_learning_rate(shift: dict) -> list[tuple]:
 
 
 def figure_register_trace(
-    excerpt: dict, note: str, groups: list[tuple], rows: list[tuple],
-    legend: bool = True, offset: bool = True,
+    excerpt: dict,
+    note: str,
+    groups: list[tuple],
+    rows: list[tuple],
+    legend: bool = True,
+    offset: bool = True,
 ) -> str:
     """One assembly excerpt beside its register trace: after every
     instruction, every byte the walk follows, with the bytes that
@@ -831,7 +884,8 @@ def figure_register_trace(
     head2 += (
         '<th class="note legend"><span class="byte r">read</span>'
         '<span class="byte w">written</span></th>'
-        if legend else '<th class="note"></th>'
+        if legend
+        else '<th class="note"></th>'
     )
 
     # What an instruction reads lights the snapshot before it, which is the
@@ -873,7 +927,8 @@ def figure_register_trace(
                 continue
             spans = [
                 '<span class="byte'
-                + (" w" if key in written else "") + (" r" if key in read else "")
+                + (" w" if key in written else "")
+                + (" r" if key in read else "")
                 + f'">{"" if byte is None else byte}</span>'
                 for (key, _), byte in zip(cells, bytes_)
             ]
@@ -886,7 +941,7 @@ def figure_register_trace(
             cells_html += f'<td class="g">{register_box(spans, word, ("" if value else " bare") + extra)}</td>'
         body += (
             f'<tr class="{cls.strip()}"><td class="ct"><div class="code">'
-            f'{esc(code)}</div></td>{cells_html}'
+            f"{esc(code)}</div></td>{cells_html}"
             f'<td class="note"><div class="code">{esc(text)}</div></td></tr>'
         )
     return f"""
@@ -903,8 +958,7 @@ def figure_register_trace(
 def figure_code(excerpt: dict, note: str) -> str:
     """One assembly reveal, taken verbatim from the source that assembles."""
     lines = "".join(
-        f'<div class="cline{" hot" if line["hot"] else ""}">'
-        f'{esc(line["text"])}</div>'
+        f'<div class="cline{" hot" if line["hot"] else ""}">{esc(line["text"])}</div>'
         for line in excerpt["lines"]
     )
     elided = '<div class="cline elide">...</div>' if excerpt["begins_inside"] else ""
@@ -964,10 +1018,16 @@ def figure_second_costs(prompts: dict, first_budget: dict) -> str:
     v = len(prompts["tokens"])
     ctx, emb = prompts["context"], prompts["embedding"]
     table_rows = (
-        ([(str(ctx), "context window"), (str(v), "tokens"), (str(emb), "numbers")],
-         ctx * v * emb, "a row for every window position and token"),
-        ([(str(v), "tokens"), (str(emb), "numbers")],
-         v * emb, "a row for every token it can predict"),
+        (
+            [(str(ctx), "context window"), (str(v), "tokens"), (str(emb), "numbers")],
+            ctx * v * emb,
+            "a row for every window position and token",
+        ),
+        (
+            [(str(v), "tokens"), (str(emb), "numbers")],
+            v * emb,
+            "a row for every token it can predict",
+        ),
         ([(str(v), "tokens")], v, "one starting nudge per token"),
     )
     if sum(count for _, count, _ in table_rows) != prompts["parameters"]:
@@ -1037,7 +1097,7 @@ def corpus_columns(lines: list[str], columns: int) -> str:
     for c in range(columns):
         entries = "".join(
             f'<div class="entry">{esc(line)}</div>'
-            for line in lines[c * per:(c + 1) * per]
+            for line in lines[c * per : (c + 1) * per]
         )
         blocks.append(f'<div class="col">{entries}</div>')
     return "".join(blocks)
@@ -1067,14 +1127,25 @@ def figure_shape(dealt: list[str]) -> str:
     # The gap holds the lifted name in transparent ink, so the underline is
     # exactly as wide as the name that left and the OFs stack vertically.
     gap = '<span class="gap">{}</span>'.format
-    rows = "".join([
-        row("it read", f'{name("BALANCE")} OF {name("TERROR")}',
-            "a real title, straight from the corpus"),
-        row("it kept", f'{gap("BALANCE")} OF {gap("TERROR")}',
-            "the names lift out. the shape stays"),
-        row("it dealt", f'{name("BALANCE")} OF {name("BABEL")}',
-            "two dictionary names fill the gaps"),
-    ])
+    rows = "".join(
+        [
+            row(
+                "it read",
+                f"{name('BALANCE')} OF {name('TERROR')}",
+                "a real title, straight from the corpus",
+            ),
+            row(
+                "it kept",
+                f"{gap('BALANCE')} OF {gap('TERROR')}",
+                "the names lift out. the shape stays",
+            ),
+            row(
+                "it dealt",
+                f"{name('BALANCE')} OF {name('BABEL')}",
+                "two dictionary names fill the gaps",
+            ),
+        ]
+    )
     return f"""
   <div class="fig">
     <div class="shape">{rows}</div>
@@ -1091,7 +1162,8 @@ def figure_corpus(filename: str, shown: int, columns: int, note: str) -> str:
     lines = corpus_lines(filename)
     picked = lines[:shown]
     caption = (
-        note if shown >= len(lines)
+        note
+        if shown >= len(lines)
         else f"The first {len(picked)} of {len(lines)} lines. {note}"
     )
     return f"""
@@ -1107,6 +1179,7 @@ def figure_melody_corpus() -> str:
     metre from the record, then the first bar's tokens with the demo's own
     glosses: a dot holds the note (token 32), R is a rest (token 33)."""
     import json as json_module
+
     path = ROOT / "experiments" / "data" / "EXP-010-dance.jsonl"
     tunes = [json_module.loads(line) for line in path.read_text().splitlines()]
     shown = tunes[:4]
@@ -1137,16 +1210,12 @@ def figure_melody_corpus() -> str:
   </div>"""
 
 
-def figure_corpora(
-    sources: list[tuple[str, str]], shown: int, note: str
-) -> str:
+def figure_corpora(sources: list[tuple[str, str]], shown: int, note: str) -> str:
     """Several corpora side by side, labelled - block 7's three corpora."""
     blocks = []
     for label, filename in sources:
         lines = corpus_lines(filename)[:shown]
-        entries = "".join(
-            f'<div class="entry">{esc(line)}</div>' for line in lines
-        )
+        entries = "".join(f'<div class="entry">{esc(line)}</div>' for line in lines)
         blocks.append(
             f'<div class="col"><p class="lbl">{esc(label)}</p>{entries}</div>'
         )
@@ -1193,7 +1262,8 @@ def figure_bias(trace: dict) -> str:
             seg_span(
                 MAKER_CLASS[maker],
                 f"{maker} {count}" if fulls_fit else str(count),
-                str(count), share,
+                str(count),
+                share,
             )
             for maker, count, share in shares
         )
@@ -1202,16 +1272,20 @@ def figure_bias(trace: dict) -> str:
         segments = "".join(
             seg_span(
                 MAKER_CLASS[maker],
-                f'{maker} {run["counts"][maker]}', str(run["counts"][maker]),
+                f"{maker} {run['counts'][maker]}",
+                str(run["counts"][maker]),
                 100 * run["counts"][maker] / run["total"],
             )
-            for maker in trace["makers"] if run["counts"][maker]
+            for maker in trace["makers"]
+            if run["counts"][maker]
         )
         if run["other"]:
             # The gray segment: draws that opened with some other vocabulary
             # word, no maker first.
             segments += seg_span(
-                "mk-o", f'NONE {run["other"]}', str(run["other"]),
+                "mk-o",
+                f"NONE {run['other']}",
+                str(run["other"]),
                 100 * run["other"] / run["total"],
             )
         return (
@@ -1230,8 +1304,10 @@ def figure_bias(trace: dict) -> str:
     # cycles the makers name by name, drawn as the stripes it is. Counts
     # follow EXP-003, the fan-corpus bias runs: 18 names per collection.
     makers = trace["makers"]
+
     def single(run):
         return [(run["favourite"], run["names"])]
+
     per_maker_all = trace["runs"][3]["names"] // len(makers)
     concat_comp = [(maker, per_maker_all) for maker in makers]
     interleave_comp = [(maker, 1) for _ in range(per_maker_all) for maker in makers]
@@ -1253,16 +1329,16 @@ def figure_bias(trace: dict) -> str:
     blip = ""
     if strays:
         clauses = " ".join(
-            f'The thin slice in what the {esc(run["label"].lower())} wrote: '
-            f'{count} draw{"" if count == 1 else "s"} of {run["total"]} '
-            f'came out {esc(maker)} anyway.'
+            f"The thin slice in what the {esc(run['label'].lower())} wrote: "
+            f"{count} draw{'' if count == 1 else 's'} of {run['total']} "
+            f"came out {esc(maker)} anyway."
             for _, run, maker, count in strays
         )
         blip = (
             f'\n    <p class="lbl blip fragment" '
             f'data-fragment-index="{max(n for n, *_ in strays)}">'
-            f'{clauses} The bias is a lean, not a wall, the words were '
-            f'in the vocabulary.</p>'
+            f"{clauses} The bias is a lean, not a wall, the words were "
+            f"in the vocabulary.</p>"
         )
 
     # The concatenated run lands as a near-copy of the tandy fan's bar. That
@@ -1283,10 +1359,10 @@ def figure_bias(trace: dict) -> str:
     per_maker = concatenated["names"] // len(trace["makers"])
     copy_note = (
         f'<p class="lbl blip fragment" data-fragment-index="4">'
-        f'{per_maker} names per maker went in, balanced - and the bar comes '
-        f'out {"a copy of" if is_copy else "nearly a copy of"} what the '
-        f'{esc(tandy_fan["label"].lower())} wrote. {esc(last_maker)}\'s names '
-        f'went last in the file, and last is what stuck.</p>'
+        f"{per_maker} names per maker went in, balanced - and the bar comes "
+        f"out {'a copy of' if is_copy else 'nearly a copy of'} what the "
+        f"{esc(tandy_fan['label'].lower())} wrote. {esc(last_maker)}'s names "
+        f"went last in the file, and last is what stuck.</p>"
     )
 
     # The row labels name training data; the bars show generated output. The
@@ -1298,7 +1374,7 @@ def figure_bias(trace: dict) -> str:
         '<span class="blab"></span>'
         '<span class="bh">what it read</span>'
         f'<span class="bh">the {trace["samples"]} names it wrote, '
-        'by first word</span>'
+        "by first word</span>"
         '<span class="bh">one of the 20</span>'
         '<span class="bh"></span></div>'
     )
@@ -1354,7 +1430,7 @@ def figure_changed(spec: dict) -> str:
 def splice(source: str, name: str, body: str) -> str:
     pattern = re.compile(
         rf"(<!-- FIGURE:{re.escape(name)} -->).*?(<!-- /FIGURE:{re.escape(name)} -->)",
-        re.S,
+        re.DOTALL,
     )
     if not pattern.search(source):
         raise SystemExit(f"no marker region for figure {name!r} in the deck")
@@ -1372,15 +1448,21 @@ def refuse_to_eat_hand_edits() -> None:
     only copy left was in an editor's undo buffer. Printed, the edit at least
     survives in the terminal scrollback and the session log."""
     try:
-        dirty = subprocess.run(
-            ["git", "diff", "--quiet", "--", str(DECK)],
-            cwd=ROOT,
-        ).returncode != 0
+        dirty = (
+            subprocess.run(
+                ["git", "diff", "--quiet", "--", str(DECK)],
+                cwd=ROOT,
+                check=False,
+            ).returncode
+            != 0
+        )
     except OSError:
         return
     if dirty and "--anyway" in sys.argv:
         print("splicing over uncommitted deck changes; the diff, for the record:")
-        subprocess.run(["git", "--no-pager", "diff", "--", str(DECK)], cwd=ROOT)
+        subprocess.run(
+            ["git", "--no-pager", "diff", "--", str(DECK)], cwd=ROOT, check=False
+        )
         return
     if dirty:
         raise SystemExit(
@@ -1425,68 +1507,119 @@ def main() -> None:
     deck = splice(deck, "vocabulary", figure_vocabulary(traces["vocabulary"]))
     deck = splice(deck, "tables", figure_tables(traces["step"]))
     deck = splice(deck, "step", figure_step(traces["step"], vocabulary))
-    deck = splice(deck, "corpus2", figure_corpus(
-        "EXP-002-tokenized-computer-names.txt", 18, 2,
-        "These are the facts we feed it for training."))
-    deck = splice(deck, "corpus4", figure_corpus(
-        "EXP-005-marketing-language.txt", 8, 1,
-        "Eighty epochs over eight lines is why it almost memorizes them."))
-    deck = splice(deck, "corpus5", figure_corpus(
-        "EXP-007-sentence-training.txt", 8, 1,
-        "The 248 vocabulary slots come from sentences like these."))
+    deck = splice(
+        deck,
+        "corpus2",
+        figure_corpus(
+            "EXP-002-tokenized-computer-names.txt",
+            18,
+            2,
+            "These are the facts we feed it for training.",
+        ),
+    )
+    deck = splice(
+        deck,
+        "corpus4",
+        figure_corpus(
+            "EXP-005-marketing-language.txt",
+            8,
+            1,
+            "Eighty epochs over eight lines is why it almost memorizes them.",
+        ),
+    )
+    deck = splice(
+        deck,
+        "corpus5",
+        figure_corpus(
+            "EXP-007-sentence-training.txt",
+            8,
+            1,
+            "The 248 vocabulary slots come from sentences like these.",
+        ),
+    )
     deck = splice(deck, "melodycorpus", figure_melody_corpus())
     dealt_titles = json.loads((TRACES.parent / "titles.json").read_text())
     deck = splice(deck, "shape", figure_shape(dealt_titles["dealt"]))
-    deck = splice(deck, "corpus6", figure_corpus(
-        "EXP-012-tos-titles.txt", 12, 2,
-        "All of them are real episode titles."))
-    deck = splice(deck, "corpus7", figure_corpora(
-        [("apple fan", "EXP-003-apple-fan.txt"),
-         ("commodore fan", "EXP-003-commodore-fan.txt"),
-         ("tandy fan", "EXP-003-tandy-fan.txt")], 6,
-        ""))
+    deck = splice(
+        deck,
+        "corpus6",
+        figure_corpus(
+            "EXP-012-tos-titles.txt", 12, 2, "All of them are real episode titles."
+        ),
+    )
+    deck = splice(
+        deck,
+        "corpus7",
+        figure_corpora(
+            [
+                ("apple fan", "EXP-003-apple-fan.txt"),
+                ("commodore fan", "EXP-003-commodore-fan.txt"),
+                ("tandy fan", "EXP-003-tandy-fan.txt"),
+            ],
+            6,
+            "",
+        ),
+    )
     deck = splice(deck, "ids", figure_identifiers(vocabulary))
     deck = splice(deck, "why", figure_why_three(traces["why_three"]))
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))
-    deck = splice(deck, "loop", figure_loop(traces["loop"], traces["budget"], traces["split"]))
+    deck = splice(
+        deck, "loop", figure_loop(traces["loop"], traces["budget"], traces["split"])
+    )
     deck = splice(deck, "cost", figure_cost(traces["budget"], traces["split"]))
     deck = splice(deck, "bias", figure_bias(bias))
-    deck = splice(deck, "vocab5", figure_second_model(
-        prompts, traces["vocabulary"], traces["budget"]["epochs"]))
+    deck = splice(
+        deck,
+        "vocab5",
+        figure_second_model(prompts, traces["vocabulary"], traces["budget"]["epochs"]),
+    )
     deck = splice(deck, "params5", figure_second_costs(prompts, traces["budget"]))
     deck = splice(deck, "promptchange", figure_changed(prompt_change))
     shift = json.loads((TRACES.parent / "shift.json").read_text())
     captured = shift["source"]
-    deck = splice(deck, "twomuls", figure_register_trace(
-        code["two_muls"],
-        "The 6809 multiplies two unsigned bytes. Two of those make one "
-        "signed multiply. The values are one real training step: context "
-        f"{captured['context_value']} times error {captured['error']}.",
-        TWO_MUL_GROUPS,
-        trace_two_muls(captured["context_value"], captured["error"]),
-    ))
-    deck = splice(deck, "signfix", figure_register_trace(
-        code["sign_fix"],
-        "The first slide's factor was positive, so it skipped this. Here the "
-        f"factor is {traces['sign_fix']['factor']}. MUL cannot take a negative "
-        f"byte and sees {traces['sign_fix']['unsigned_factor']}, which is 256 "
-        "too many, so the product is 256 times the multiplier too large. One "
-        "subtraction takes that out. The pair is chosen, not captured, and "
-        "sits inside the range the training run measured.",
-        TWO_MUL_GROUPS,
-        trace_sign_fix(traces["sign_fix"]),
-    ))
+    deck = splice(
+        deck,
+        "twomuls",
+        figure_register_trace(
+            code["two_muls"],
+            "The 6809 multiplies two unsigned bytes. Two of those make one "
+            "signed multiply. The values are one real training step: context "
+            f"{captured['context_value']} times error {captured['error']}.",
+            TWO_MUL_GROUPS,
+            trace_two_muls(captured["context_value"], captured["error"]),
+        ),
+    )
+    deck = splice(
+        deck,
+        "signfix",
+        figure_register_trace(
+            code["sign_fix"],
+            "The first slide's factor was positive, so it skipped this. Here the "
+            f"factor is {traces['sign_fix']['factor']}. MUL cannot take a negative "
+            f"byte and sees {traces['sign_fix']['unsigned_factor']}, which is 256 "
+            "too many, so the product is 256 times the multiplier too large. One "
+            "subtraction takes that out. The pair is chosen, not captured, and "
+            "sits inside the range the training run measured.",
+            TWO_MUL_GROUPS,
+            trace_sign_fix(traces["sign_fix"]),
+        ),
+    )
     deck = splice(deck, "signbits", figure_sign(traces["sign_fix"]))
     deck = splice(deck, "shiftbits", figure_shift(shift))
-    deck = splice(deck, "lrcode", figure_register_trace(
-        code["learning_rate"],
-        "Each ASRA and RORB pair halves the signed number. Four pairs divide "
-        "by sixteen, and that is the learning rate. It picks up the "
-        f"{captured['gradient']} the multiply slide made.",
-        SHIFT_GROUPS,
-        trace_learning_rate(shift),
-        legend=False, offset=False,
-    ))
+    deck = splice(
+        deck,
+        "lrcode",
+        figure_register_trace(
+            code["learning_rate"],
+            "Each ASRA and RORB pair halves the signed number. Four pairs divide "
+            "by sixteen, and that is the learning rate. It picks up the "
+            f"{captured['gradient']} the multiply slide made.",
+            SHIFT_GROUPS,
+            trace_learning_rate(shift),
+            legend=False,
+            offset=False,
+        ),
+    )
     DECK.write_text(deck, encoding="utf-8")
     count = deck.count("<!-- FIGURE:")
     print(f"spliced {count} figures into presentation/deck/index.html")

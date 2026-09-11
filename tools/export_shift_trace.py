@@ -28,8 +28,8 @@ import numpy as np
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from fixed_token_lm import FixedTokenLanguageModel  # noqa: E402
-from token_lm import (  # noqa: E402
+from fixed_token_lm import FixedTokenLanguageModel
+from token_lm import (
     ModelConfig,
     build_vocabulary,
     load_names,

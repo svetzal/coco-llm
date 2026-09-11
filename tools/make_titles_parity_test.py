@@ -78,9 +78,7 @@ def expected_screen() -> tuple[list[int], list[str]]:
             # already the VDG code; space and punctuation shift up by $40.
             # The old & 0x3F produced the inverse-video range.
             value = ord(character)
-            cells[row * COLUMNS + column] = (
-                value if value >= 0x40 else value + 0x40
-            )
+            cells[row * COLUMNS + column] = value if value >= 0x40 else value + 0x40
     return cells, produced
 
 

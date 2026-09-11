@@ -21,8 +21,8 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from coco_synth import VOICE_COUNT, Voice, note_increment  # noqa: E402
-from steady_synth import (  # noqa: E402
+from coco_synth import VOICE_COUNT, Voice, note_increment
+from steady_synth import (
     DAC_ACC,
     FINISHED,
     INCRS,
@@ -136,8 +136,10 @@ def build_source(binary: Path, symbols_path: Path) -> str:
         "        swi",
         "",
         "; wait SAMPLES, then the event that sets finished, then a spare wait",
-        f"stream  fcb     ${SAMPLES:02X},${(PAGE + FINISHED) >> 8:02X},"
-        f"${(PAGE + FINISHED) & 0xFF:02X},$01,$00",
+        (
+            f"stream  fcb     ${SAMPLES:02X},${(PAGE + FINISHED) >> 8:02X},"
+            f"${(PAGE + FINISHED) & 0xFF:02X},$01,$00"
+        ),
         "",
     ]
 

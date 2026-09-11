@@ -16,6 +16,7 @@ fails loudly instead of quietly landing in a bucket.
 from __future__ import annotations
 
 import collections
+import itertools
 import json
 import pathlib
 import re
@@ -40,47 +41,65 @@ CHAIN = [
 
 # Whole modules whose job is unambiguous.
 BY_FILE = {
-    "training.asm": "learn",       # epoch and example loops, gradient updates
-    "model_forward.asm": "both",   # forward pass, softmax, fixed-point multiply
-    "inference.asm": "use",        # the next-token loop
-    "sample_gallery.asm": "use",   # showing what it generated
+    "training.asm": "learn",  # epoch and example loops, gradient updates
+    "model_forward.asm": "both",  # forward pass, softmax, fixed-point multiply
+    "inference.asm": "use",  # the next-token loop
+    "sample_gallery.asm": "use",  # showing what it generated
     "experiment_004.asm": "both",  # the driver: calls training, then inference
 }
 
 # Routines inside mixed modules, named individually.
 BY_SYMBOL = {
     # model_core.asm: setting up and checking the training run.
-    "initialize_model": "learn", "initialize_random_parameter": "learn",
-    "clear_bias": "learn", "verify_parameters": "verify",
-    "verify_parameter": "verify", "verify_failed": "verify",
-    "verification_failed": "verify", "verification_halt": "verify",
-    "finish_training": "learn", "wait_for_key": "both",
+    "initialize_model": "learn",
+    "initialize_random_parameter": "learn",
+    "clear_bias": "learn",
+    "verify_parameters": "verify",
+    "verify_parameter": "verify",
+    "verify_failed": "verify",
+    "verification_failed": "verify",
+    "verification_halt": "verify",
+    "finish_training": "learn",
+    "wait_for_key": "both",
     # screen.asm: the training progress display.
-    "initialize_training_screen": "learn", "clear_training_rows": "learn",
-    "display_training_example": "learn", "clear_training_example": "learn",
-    "show_training_complete": "learn", "message_complete": "learn",
-    "message_press_key": "learn", "write_decimal_2": "learn",
-    "decimal_tens": "learn", "decimal_ready": "learn",
+    "initialize_training_screen": "learn",
+    "clear_training_rows": "learn",
+    "display_training_example": "learn",
+    "clear_training_example": "learn",
+    "show_training_complete": "learn",
+    "message_complete": "learn",
+    "message_press_key": "learn",
+    "write_decimal_2": "learn",
+    "decimal_tens": "learn",
+    "decimal_ready": "learn",
     "show_verification_failed": "verify",
     "message_verification_failed": "verify",
     # screen.asm: showing generated tokens.
-    "print_token_id": "use", "print_token_id_text": "use",
-    "print_token_id_ready": "use", "print_token_id_dark": "use",
-    "print_token_id_dark_text": "use", "message_generating": "use",
-    "message_generated": "use", "message_seed": "use",
+    "print_token_id": "use",
+    "print_token_id_text": "use",
+    "print_token_id_ready": "use",
+    "print_token_id_dark": "use",
+    "print_token_id_dark_text": "use",
+    "message_generating": "use",
+    "message_generated": "use",
+    "message_seed": "use",
     # screen.asm: three short strings. message_arrow and message_space appear
     # only in the training-example display; message_boundary is the "#" that
     # stands in for <END>, and inference.asm prints it too.
-    "message_arrow": "learn", "message_space": "learn",
+    "message_arrow": "learn",
+    "message_space": "learn",
     "message_boundary": "both",
     # screen.asm: plain drawing, used by both phases.
-    "clear_screen": "both", "fill_title_bar": "both", "print_string": "both",
-    "print_string_done": "both", "print_black_on_green": "both",
+    "clear_screen": "both",
+    "fill_title_bar": "both",
+    "print_string": "both",
+    "print_string_done": "both",
+    "print_black_on_green": "both",
     "print_black_on_green_done": "both",
     # The generated data fixture.
-    "training_examples": "learn",   # the corpus, only needed while learning
-    "exp_lut": "both",              # softmax lookup, both phases
-    "token_pointers": "use",        # token spellings, only needed to print
+    "training_examples": "learn",  # the corpus, only needed while learning
+    "exp_lut": "both",  # softmax lookup, both phases
+    "token_pointers": "use",  # token spellings, only needed to print
     "expected_parameters": "verify",
     "expected_checksum_text": "verify",
 }
@@ -111,7 +130,7 @@ def main() -> None:
 
     buckets: collections.Counter[str] = collections.Counter()
     unclassified = []
-    for (address, name), (following, _) in zip(symbols, symbols[1:]):
+    for (address, name), (following, _) in itertools.pairwise(symbols):
         if not IMAGE_START <= address < IMAGE_END:
             continue
         size = min(following, IMAGE_END) - address

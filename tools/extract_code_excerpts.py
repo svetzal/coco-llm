@@ -108,9 +108,7 @@ def excerpt(spec: dict) -> dict:
             "or narrow the range rather than putting a wall of code on a slide."
         )
 
-    hits = sum(
-        1 for line in body if any(h in line.split() for h in spec["highlight"])
-    )
+    hits = sum(1 for line in body if any(h in line.split() for h in spec["highlight"]))
     if not hits:
         raise SystemExit(
             f"{spec['file']}: highlight {spec['highlight']} matches nothing in "

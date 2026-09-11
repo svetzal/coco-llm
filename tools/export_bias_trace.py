@@ -23,7 +23,7 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from run_bias_demo import run_comparison  # noqa: E402
+from run_bias_demo import run_comparison
 
 OUT = ROOT / "presentation" / "deck" / "data" / "bias.json"
 SAMPLES = 20
@@ -69,7 +69,9 @@ def main() -> None:
     )
     for run in runs:
         share = f"{run['favourite']} {run['favourite_share']}/{run['total']}"
-        print(f"{run['label']:<24} loss {run['final_loss']:>5}  {share:<18} {run['sample']}")
+        print(
+            f"{run['label']:<24} loss {run['final_loss']:>5}  {share:<18} {run['sample']}"
+        )
 
 
 if __name__ == "__main__":

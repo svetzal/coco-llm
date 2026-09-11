@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from wave_synth import PAGE_SAMPLES, PAGES, SHAPES, wave_table  # noqa: E402
+from wave_synth import PAGE_SAMPLES, PAGES, SHAPES, wave_table
 
 
 def render_source(shape: str) -> str:

@@ -20,8 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
-from coco_synth import demo_tune  # noqa: E402
-from steady_synth import Cursor, compile_rows, encode_rows, stream_bytes  # noqa: E402
+from coco_synth import demo_tune
+from steady_synth import Cursor, compile_rows, encode_rows, stream_bytes
 
 RUNNER_ORG = 0x0C00
 TICKS_PER_ROW = 7
@@ -71,7 +71,9 @@ def build_source(binary: Path, symbols_path: Path, sample_rate: int) -> str:
         )
     }
     if address["TUNE_ROWS"] != TUNE_ROWS:
-        raise ValueError(f"demo holds {address['TUNE_ROWS']} rows, test assumes {TUNE_ROWS}")
+        raise ValueError(
+            f"demo holds {address['TUNE_ROWS']} rows, test assumes {TUNE_ROWS}"
+        )
 
     base = encode_rows(demo_tune())
     rows = (base * (TUNE_ROWS // len(base) + 1))[:TUNE_ROWS]
