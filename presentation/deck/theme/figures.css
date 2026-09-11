@@ -621,10 +621,15 @@
 }
 .reveal table.rtrace td.ct, .reveal table.rtrace th.ct {
   white-space: pre; text-align: left; color: var(--deck-quiet);
-  padding-left: 0.6em; padding-right: 1ch; font-size: 1.2em;
+  padding-left: 2.6em; padding-right: 1ch; font-size: 1.2em;
 }
 .reveal table.rtrace tr.hot td { background: rgba(0, 0, 0, 0.14); }
 .reveal table.rtrace tr.hot td.ct { color: var(--deck-mark); }
+/* A label is an anchor, not an instruction: flush left where the source
+ * puts it, in the ink the headings use, with the instructions indented
+ * beneath it as they are in the source. Its row shows the state the CPU
+ * arrives with, so none of its cells are lit. */
+.reveal table.rtrace tr.label td.ct { padding-left: 0.6em; color: var(--deck-ink); }
 .reveal table.rtrace th.grp {
   font-family: var(--deck-prose); text-transform: uppercase;
   font-size: 1em; letter-spacing: 0.08em; color: var(--deck-ink);

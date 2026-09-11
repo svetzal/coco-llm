@@ -699,7 +699,7 @@ def trace_two_muls(context_value: int, error: int) -> list[tuple]:
     product = (b_after_add << 8) | (first & 0xFF)
     assert signed(product, 16) == context_value * error, "walk disagrees"
     st = {"A": context_value, "xh": high, "xl": low}
-    rows = [("multiply_s8_s16", dict(st), {"A", "xh", "xl"}, {"at X"}, "")]
+    rows = [("multiply_s8_s16", dict(st), set(), {"at X"}, "on arrival")]
 
     def row(mnemonic, written, values=(), note="", **changes):
         st.update(changes)
@@ -806,7 +806,10 @@ def figure_register_trace(
             cls, code = "elide", "..."
         else:
             line = next(lines)
-            cls = "hot" if line["hot"] else ""
+            # A label sits in column one of the source. It is an anchor, not
+            # an instruction: nothing runs on that row, so it is drawn apart.
+            is_label = not line["text"][:1].isspace()
+            cls = "label" if is_label else ("hot" if line["hot"] else "")
             code = re.sub(r"\s+", "  ", line["text"].strip())
         cells_html = ""
         if mnemonic is None and not state:
