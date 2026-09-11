@@ -679,6 +679,8 @@ def signed(value: int, bits: int) -> int:
 # rows:   [(mnemonic or None for the elided entry row,
 #           {cell key: byte}, {written cell keys}, {groups whose value shows},
 #           note, {read cell keys})]
+# A note rides the boundary with its instruction. A note about the state
+# the row shows is given as ("state", text) and stays level with the row.
 # Each row is a snapshot of the bytes between two instructions, and the
 # instruction is drawn on the boundary: between the state it read and the
 # state it left. A byte it reads is lit navy in the row above it, a byte it
@@ -718,7 +720,9 @@ def trace_two_muls(context_value: int, error: int) -> list[tuple]:
     row("ldb", {"xh"}, {"B"}, B=high)
     row("mul", {"A", "B"}, {"A", "B"}, {"D"}, A=second >> 8, B=second & 0xFF)
     row("addb", {"B", "ph"}, {"B"}, B=b_after_add)
-    row("stb", {"B"}, {"ph"}, {"product"}, ph=b_after_add)
+    row("stb", {"B"}, {"ph"}, {"product"},
+        note=("state", f"{context_value} \u00d7 {error} = {signed(product, 16)}"),
+        ph=b_after_add)
     return rows
 
 
@@ -831,6 +835,9 @@ def figure_register_trace(
             code = re.sub(r"\s+", "  ", line["text"].strip())
         if not state:
             cls += " empty"
+        if isinstance(text, tuple):
+            cls += " statenote"
+            text = text[1]
         cells_html = ""
         if mnemonic is None and not state:
             cells_html = '<td class="g"></td>' * len(groups)

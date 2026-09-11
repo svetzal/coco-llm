@@ -704,8 +704,11 @@
  * the label row and an elided row it is about the state, and stays level. */
 .reveal table.rtrace td.note { vertical-align: top; padding-top: 0; }
 .reveal table.rtrace td.note .code { transform: translateY(-50%); display: inline-block; }
-.reveal table.rtrace tr.label td.note, .reveal table.rtrace tr.elide td.note { vertical-align: middle; }
-.reveal table.rtrace tr.label td.note .code, .reveal table.rtrace tr.elide td.note .code { transform: none; }
+.reveal table.rtrace tr.label td.note, .reveal table.rtrace tr.elide td.note,
+.reveal table.rtrace tr.statenote td.note { vertical-align: middle; }
+.reveal table.rtrace tr.label td.note .code, .reveal table.rtrace tr.elide td.note .code,
+.reveal table.rtrace tr.statenote td.note .code { transform: none; }
+.reveal table.rtrace tr.statenote td.note { color: var(--deck-ink); }
 .reveal .fig.code.trace .cap { margin-top: 0.4em; max-width: 56em; }
 /* The omission marker lines up with the code it stands in for, not with the
  * label column. A path is also left in its real case: these are file names. */
