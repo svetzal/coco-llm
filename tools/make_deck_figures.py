@@ -679,8 +679,11 @@ def signed(value: int, bits: int) -> int:
 # rows:   [(mnemonic or None for the elided entry row,
 #           {cell key: byte}, {written cell keys}, {groups whose value shows},
 #           note, {read cell keys})]
-# A byte the instruction reads is lit navy, one it writes amber, one it
-# does both to amber with a navy ring.
+# Each row is a snapshot of the bytes between two instructions, and the
+# instruction is drawn on the boundary: between the state it read and the
+# state it left. A byte it reads is lit navy in the row above it, a byte it
+# writes amber in the row below; a cell that is both (written by the
+# instruction above, read by the one below) is amber with a navy ring.
 TWO_MUL_GROUPS = [
     ("D", [("A", "A"), ("B", "B")], True),
     ("factor", [("f", "")], True),
@@ -806,17 +809,28 @@ def figure_register_trace(
         '<span class="byte w">written</span></th>'
     )
 
+    # What an instruction reads lights the snapshot before it, which is the
+    # previous row.
+    reads_above = [set() for _ in rows]
+    for i, (_, _, _, _, _, read) in enumerate(rows):
+        if i > 0:
+            reads_above[i - 1] |= read
+
     body = ""
-    for mnemonic, state, written, values, text, read in rows:
+    for i, (mnemonic, state, written, values, text, _) in enumerate(rows):
+        read = reads_above[i]
         if mnemonic is None:
             cls, code = "elide", "..."
         else:
             line = next(lines)
             # A label sits in column one of the source. It is an anchor, not
-            # an instruction: nothing runs on that row, so it is drawn apart.
+            # an instruction: nothing runs there, so it sits level with the
+            # state the CPU arrives with rather than between two states.
             is_label = not line["text"][:1].isspace()
             cls = "label" if is_label else ("hot" if line["hot"] else "")
             code = re.sub(r"\s+", "  ", line["text"].strip())
+        if not state:
+            cls += " empty"
         cells_html = ""
         if mnemonic is None and not state:
             cells_html = '<td class="g"></td>' * len(groups)
@@ -839,8 +853,9 @@ def figure_register_trace(
                 word = str(signed(total, 8 * len(bytes_)))
             cells_html += f'<td class="g">{box(spans, word, "" if value else " bare")}</td>'
         body += (
-            f'<tr class="{cls}"><td class="ct">{esc(code)}</td>{cells_html}'
-            f'<td class="note">{esc(text)}</td></tr>'
+            f'<tr class="{cls.strip()}"><td class="ct"><div class="code">'
+            f'{esc(code)}</div></td>{cells_html}'
+            f'<td class="note"><div class="code">{esc(text)}</div></td></tr>'
         )
     return f"""
   <p class="lead">{esc(excerpt["title"])}</p>

@@ -602,34 +602,46 @@
 .reveal .cline.hot {
   color: var(--deck-mark); background: rgba(0, 0, 0, 0.14);
 }
-/* The register trace: a table with one row per instruction and one column
- * per register or memory word, built from the exported traces by
- * make_deck_figures.py. Each word is a bordered box: its byte cells side by
- * side on top (A beside B is D; hi beside lo is a 16-bit word in memory),
- * and the number those bytes compose in a bar beneath spanning both. The
- * cells an instruction wrote are lit; the bar fills in when the walk needs
- * the composed value. Proportional figures here, because the machine's
- * font is too wide for a table of bytes. */
+/* The register trace: a table with one row per snapshot of the bytes and
+ * one column per register or memory word, built from the exported traces
+ * by make_deck_figures.py. Each word is a bordered box: its byte cells
+ * side by side on top (A beside B is D; hi beside lo is a 16-bit word in
+ * memory), and the number those bytes compose in a bar beneath spanning
+ * both. An instruction runs between two snapshots, so its text sits on the
+ * boundary between rows: what it read is lit in the row above, what it
+ * wrote in the row below. The bar fills in when the walk needs the
+ * composed value. Proportional figures here, because the machine's font is
+ * too wide for a table of bytes. */
 .reveal .fig.code.trace { font-size: 0.5em; }
 .reveal table.rtrace {
   border-collapse: separate; border-spacing: 0; margin: 0 auto;
   font-family: var(--coco-type); font-size: 1em; line-height: 1.25;
 }
 .reveal table.rtrace th, .reveal table.rtrace td {
-  border: none; padding: 0.05em 0.3em; text-align: center;
+  border: none; padding: 0.06em 0.25em; text-align: center;
   font-weight: normal; vertical-align: middle;
 }
+/* The instruction: top-aligned in its row, then lifted by half its own
+ * height, which centres it on the boundary with the row above. */
 .reveal table.rtrace td.ct, .reveal table.rtrace th.ct {
   white-space: pre; text-align: left; color: var(--deck-quiet);
-  padding-left: 2.6em; padding-right: 1ch; font-size: 1.2em;
+  padding: 0 1ch 0 2.2em; font-size: 1.2em; vertical-align: top;
 }
-.reveal table.rtrace tr.hot td { background: rgba(0, 0, 0, 0.14); }
-.reveal table.rtrace tr.hot td.ct { color: var(--deck-mark); }
+.reveal table.rtrace td.ct .code {
+  transform: translateY(-50%); padding: 0.1em 0.5em; margin-left: -0.5em;
+  display: inline-block;
+}
+.reveal table.rtrace tr.hot td.ct .code {
+  color: var(--deck-mark); background: rgba(0, 0, 0, 0.14);
+}
 /* A label is an anchor, not an instruction: flush left where the source
  * puts it, in the ink the headings use, with the instructions indented
- * beneath it as they are in the source. Its row shows the state the CPU
- * arrives with, so none of its cells are lit. */
-.reveal table.rtrace tr.label td.ct { padding-left: 0.6em; color: var(--deck-ink); }
+ * beneath it as they are in the source. It is not between two states, so
+ * it sits level with the state the CPU arrives with. */
+.reveal table.rtrace tr.label td.ct { padding-left: 0.5em; color: var(--deck-ink); vertical-align: middle; }
+.reveal table.rtrace tr.label td.ct .code { transform: none; }
+/* An elided row with nothing to show is a thin spacer under its dots. */
+.reveal table.rtrace tr.empty td { padding-top: 0; padding-bottom: 0; height: 0.9em; }
 .reveal table.rtrace th.grp {
   font-family: var(--deck-prose); text-transform: uppercase;
   font-size: 1em; letter-spacing: 0.08em; color: var(--deck-ink);
@@ -639,20 +651,21 @@
 /* The box. --n is the byte count; every byte cell is the same width so
  * bytes line up down the column and a word is exactly two bytes wide. */
 .reveal .r16 {
-  display: inline-grid; grid-template-columns: repeat(var(--n), 3.3em);
-  border: 2px solid var(--deck-quiet); border-radius: 0.3em;
+  display: inline-grid; grid-template-columns: repeat(var(--n), 2.9em);
+  border: 1.5px solid var(--deck-quiet); border-radius: 0.25em;
   overflow: hidden; vertical-align: middle;
   font-family: var(--deck-prose); font-variant-numeric: tabular-nums;
-  font-size: 1em; line-height: 1.15;
+  font-size: 1em; line-height: 1.05;
 }
 .reveal .r16 .byte {
-  text-align: center; padding: 0.04em 0; min-height: 1.15em;
+  text-align: center; padding: 0.05em 0; min-height: 1.05em;
   background: rgba(0, 0, 0, 0.08); color: var(--deck-quiet);
   border-right: 1px solid var(--deck-quiet);
 }
 .reveal .r16 .byte:nth-last-child(2) { border-right: none; }
-/* Lit cells: navy is a byte the instruction read, amber one it wrote, and
- * amber ringed in navy one it did both to (MUL reads A and B and writes D). */
+/* Lit cells: amber is a byte the instruction above wrote, navy one the
+ * instruction below reads, and amber ringed in navy is both: written, then
+ * read straight away. */
 .reveal .r16 .byte.r { background: var(--deck-mark); color: var(--coco-white); }
 .reveal .r16 .byte.w { background: var(--coco-amber); color: var(--coco-c00); }
 .reveal .r16 .byte.w.r {
@@ -668,8 +681,8 @@
 .reveal table.rtrace th.legend .byte.r { background: var(--deck-mark); color: var(--coco-white); }
 .reveal table.rtrace th.legend .byte.w { background: var(--coco-amber); color: var(--coco-c00); }
 .reveal .r16 .word {
-  grid-column: 1 / -1; text-align: right; padding: 0.04em 0.45em;
-  min-height: 1.15em; color: var(--deck-ink); font-weight: 600;
+  grid-column: 1 / -1; text-align: right; padding: 0.05em 0.4em;
+  min-height: 1.05em; color: var(--deck-ink); font-weight: 600;
   border-top: 1px solid var(--deck-quiet); background: rgba(255, 255, 255, 0.28);
 }
 /* A single byte with no composed value (the carry) is just the cell. */
@@ -687,6 +700,12 @@
   font-size: 1em; color: var(--deck-quiet); padding-left: 1em;
   white-space: nowrap;
 }
+/* A note is about the instruction, so it rides the boundary with it. On
+ * the label row and an elided row it is about the state, and stays level. */
+.reveal table.rtrace td.note { vertical-align: top; padding-top: 0; }
+.reveal table.rtrace td.note .code { transform: translateY(-50%); display: inline-block; }
+.reveal table.rtrace tr.label td.note, .reveal table.rtrace tr.elide td.note { vertical-align: middle; }
+.reveal table.rtrace tr.label td.note .code, .reveal table.rtrace tr.elide td.note .code { transform: none; }
 .reveal .fig.code.trace .cap { margin-top: 0.4em; max-width: 56em; }
 /* The omission marker lines up with the code it stands in for, not with the
  * label column. A path is also left in its real case: these are file names. */
