@@ -678,7 +678,9 @@ def signed(value: int, bits: int) -> int:
 # groups: [(header, [(cell key, cell label), ...], show value)]
 # rows:   [(mnemonic or None for the elided entry row,
 #           {cell key: byte}, {written cell keys}, {groups whose value shows},
-#           note)]
+#           note, {read cell keys})]
+# A byte the instruction reads is lit amber, one it writes navy, one it
+# does both to navy with an amber ring.
 TWO_MUL_GROUPS = [
     ("D", [("A", "A"), ("B", "B")], True),
     ("factor", [("f", "")], True),
@@ -699,21 +701,21 @@ def trace_two_muls(context_value: int, error: int) -> list[tuple]:
     product = (b_after_add << 8) | (first & 0xFF)
     assert signed(product, 16) == context_value * error, "walk disagrees"
     st = {"A": context_value, "xh": high, "xl": low}
-    rows = [("multiply_s8_s16", dict(st), set(), {"at X"}, "on arrival")]
+    rows = [("multiply_s8_s16", dict(st), set(), {"at X"}, "on arrival", set())]
 
-    def row(mnemonic, written, values=(), note="", **changes):
+    def row(mnemonic, read, written, values=(), note="", **changes):
         st.update(changes)
-        rows.append((mnemonic, dict(st), set(written), set(values), note))
+        rows.append((mnemonic, dict(st), set(written), set(values), note, set(read)))
 
-    row("sta", {"f"}, {"factor"}, f=context_value)
-    row("ldb", {"B"}, B=low)
-    row("mul", {"A", "B"}, {"D"}, A=first >> 8, B=first & 0xFF)
-    row("std", {"ph", "pl"}, {"product"}, ph=first >> 8, pl=first & 0xFF)
-    row("lda", {"A"}, A=context_value)
-    row("ldb", {"B"}, B=high)
-    row("mul", {"A", "B"}, {"D"}, A=second >> 8, B=second & 0xFF)
-    row("addb", {"B"}, note="B + product's high byte", B=b_after_add)
-    row("stb", {"ph"}, {"product"}, ph=b_after_add)
+    row("sta", {"A"}, {"f"}, {"factor"}, f=context_value)
+    row("ldb", {"xl"}, {"B"}, B=low)
+    row("mul", {"A", "B"}, {"A", "B"}, {"D"}, A=first >> 8, B=first & 0xFF)
+    row("std", {"A", "B"}, {"ph", "pl"}, {"product"}, ph=first >> 8, pl=first & 0xFF)
+    row("lda", {"f"}, {"A"}, A=context_value)
+    row("ldb", {"xh"}, {"B"}, B=high)
+    row("mul", {"A", "B"}, {"A", "B"}, {"D"}, A=second >> 8, B=second & 0xFF)
+    row("addb", {"B", "ph"}, {"B"}, B=b_after_add)
+    row("stb", {"B"}, {"ph"}, {"product"}, ph=b_after_add)
     return rows
 
 
@@ -726,17 +728,17 @@ def trace_sign_fix(trace: dict) -> list[tuple]:
     st = {"f": trace["unsigned_factor"], "xh": multiplier >> 8,
           "xl": multiplier & 0xFF, "ph": raw_high, "pl": raw_low}
     rows = [(None, dict(st), {"f", "xh", "xl", "ph", "pl"},
-             {"factor", "at X", "product"}, "after the two MULs")]
+             {"factor", "at X", "product"}, "after the two MULs", set())]
 
-    def row(mnemonic, written, values=(), note="", **changes):
+    def row(mnemonic, read, written, values=(), note="", **changes):
         st.update(changes)
-        rows.append((mnemonic, dict(st), set(written), set(values), note))
+        rows.append((mnemonic, dict(st), set(written), set(values), note, set(read)))
 
-    row("tst", set(), note="negative")
-    row("bpl", set(), note="no branch")
-    row("lda", {"A"}, A=raw_high)
-    row("suba", {"A"}, note=f"{raw_high} - {multiplier & 0xFF}", A=corrected_high)
-    row("sta", {"ph"}, {"product"}, ph=corrected_high)
+    row("tst", {"f"}, set(), note="negative")
+    row("bpl", set(), set(), note="no branch")
+    row("lda", {"ph"}, {"A"}, A=raw_high)
+    row("suba", {"A", "xl"}, {"A"}, A=corrected_high)
+    row("sta", {"A"}, {"ph"}, {"product"}, ph=corrected_high)
     assert signed((corrected_high << 8) | raw_low, 16) == trace["signed"]
     return rows
 
@@ -753,16 +755,16 @@ def trace_learning_rate(shift: dict) -> list[tuple]:
     steps = shift["steps"]
     value = steps[0]["value"] & 0xFFFF
     st = {"A": value >> 8, "B": value & 0xFF}
-    rows = [("lbsr", dict(st), {"A", "B"}, {"D"}, "the gradient")]
+    rows = [("lbsr", dict(st), {"A", "B"}, {"D"}, "the gradient", set())]
     for step in steps[1:]:
         carry = st["A"] & 1
         st["A"] = (st["A"] >> 1) | (st["A"] & 0x80)
         st["c"] = carry
-        rows.append(("asra", dict(st), {"A", "c"}, set(), ""))
+        rows.append(("asra", dict(st), {"A", "c"}, set(), "", {"A"}))
         dropped = st["B"] & 1
         st["B"] = (st["B"] >> 1) | (carry << 7)
         st["c"] = dropped
-        rows.append(("rorb", dict(st), {"B", "c"}, {"D"}, ""))
+        rows.append(("rorb", dict(st), {"B", "c"}, {"D"}, "", {"B", "c"}))
         assert (st["A"] << 8 | st["B"]) == step["value"] & 0xFFFF, "shift drifted"
         assert dropped == step["dropped"], "dropped bit drifted"
     return rows
@@ -775,10 +777,11 @@ def figure_register_trace(
     instruction, every byte the walk follows, with the bytes that
     instruction wrote lit and a 16-bit value printed where two cells
     compose into one number."""
+    rows = [r if len(r) == 6 else (*r, set()) for r in rows]
     walked = [r for r in rows if r[0] is not None]
     check_excerpt(excerpt, [r[0] for r in walked])
     if rows[0][0] is not None and excerpt["begins_inside"]:
-        rows = [(None, {}, set(), set(), "")] + rows
+        rows = [(None, {}, set(), set(), "", set())] + rows
     elif rows[0][0] is None and not excerpt["begins_inside"]:
         raise SystemExit(f"{excerpt['title']}: entry row without elided lines")
     lines = iter(excerpt["lines"])
@@ -798,10 +801,13 @@ def figure_register_trace(
         labels = [f'<span class="lab">{esc(label)}</span>' for _, label in cells]
         head2 += f'<th class="g">{box(labels, "", " hdr")}</th>'
     head1 += '<th class="note"></th>'
-    head2 += '<th class="note"></th>'
+    head2 += (
+        '<th class="note legend"><span class="byte r">read</span>'
+        '<span class="byte w">written</span></th>'
+    )
 
     body = ""
-    for mnemonic, state, written, values, text in rows:
+    for mnemonic, state, written, values, text, read in rows:
         if mnemonic is None:
             cls, code = "elide", "..."
         else:
@@ -820,8 +826,9 @@ def figure_register_trace(
         for header, cells, value in groups_here:
             bytes_ = [state.get(key) for key, _ in cells]
             spans = [
-                f'<span class="byte{" w" if key in written else ""}">'
-                f'{"" if byte is None else byte}</span>'
+                '<span class="byte'
+                + (" w" if key in written else "") + (" r" if key in read else "")
+                + f'">{"" if byte is None else byte}</span>'
                 for (key, _), byte in zip(cells, bytes_)
             ]
             word = ""
