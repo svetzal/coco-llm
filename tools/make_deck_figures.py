@@ -792,17 +792,17 @@ def trace_learning_rate(shift: dict) -> list[tuple]:
     """Walk the captured gradient through the four shift pairs, showing the
     value after each pair: halved, rounding toward minus infinity."""
     steps = shift["steps"]
-    rows = [("lbsr", {"d": steps[0]["value"]}, {"d"}, set(), "the gradient", set())]
+    rows = [("lbsr", {"d": steps[0]["value"]}, {"d"}, set(), "", set())]
     for step in steps[1:]:
         rows.append(("asra", {}, set(), set(), "", set()))
-        rows.append(("rorb", {"d": step["value"]}, {"d"}, set(), "halved", set()))
+        rows.append(("rorb", {"d": step["value"]}, {"d"}, set(), "", set()))
     assert steps[-1]["value"] == steps[0]["value"] >> 4, "four halvings is >> 4"
     return rows
 
 
 def figure_register_trace(
     excerpt: dict, note: str, groups: list[tuple], rows: list[tuple],
-    legend: bool = True,
+    legend: bool = True, offset: bool = True,
 ) -> str:
     """One assembly excerpt beside its register trace: after every
     instruction, every byte the walk follows, with the bytes that
@@ -892,7 +892,7 @@ def figure_register_trace(
     return f"""
   <p class="lead">{esc(excerpt["title"])}</p>
   <div class="fig code trace">
-    <table class="rtrace">
+    <table class="rtrace{"" if offset else " level"}">
       <thead><tr>{head1}</tr><tr>{head2}</tr></thead>
       <tbody>{body}</tbody>
     </table>
@@ -1491,7 +1491,7 @@ def main() -> None:
         f"{captured['gradient']} the multiply slide made.",
         SHIFT_GROUPS,
         trace_learning_rate(shift),
-        legend=False,
+        legend=False, offset=False,
     ))
     DECK.write_text(deck, encoding="utf-8")
     count = deck.count("<!-- FIGURE:")
