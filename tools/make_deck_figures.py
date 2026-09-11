@@ -735,7 +735,10 @@ def trace_sign_fix(trace: dict) -> list[tuple]:
     st = {"f": trace["unsigned_factor"], "xh": multiplier >> 8,
           "xl": multiplier & 0xFF, "ph": raw_high, "pl": raw_low}
     rows = [(None, dict(st), {"f", "xh", "xl", "ph", "pl"},
-             {"factor", "at X", "product"}, "after the two MULs", set())]
+             {"factor", "at X", "product"},
+             (f"the MULs saw {trace['unsigned_factor']}, not {trace['factor']}: "
+              f"{trace['unsigned_factor']} \u00d7 {trace['multiplier']} = {trace['raw']}"),
+             set())]
 
     def row(mnemonic, read, written, values=(), note="", **changes):
         st.update(changes)
@@ -745,7 +748,9 @@ def trace_sign_fix(trace: dict) -> list[tuple]:
     row("bpl", set(), set(), note="no branch")
     row("lda", {"ph"}, {"A"}, A=raw_high)
     row("suba", {"A", "xl"}, {"A"}, A=corrected_high)
-    row("sta", {"A"}, {"ph"}, {"product"}, ph=corrected_high)
+    row("sta", {"A"}, {"ph"}, {"product"},
+        note=("state", f"{trace['factor']} \u00d7 {trace['multiplier']} = {trace['signed']}"),
+        ph=corrected_high)
     assert signed((corrected_high << 8) | raw_low, 16) == trace["signed"]
     return rows
 
@@ -1448,9 +1453,12 @@ def main() -> None:
     ))
     deck = splice(deck, "signfix", figure_register_trace(
         code["sign_fix"],
-        "A negative factor comes out 256 too large. One subtraction fixes "
-        f"it. This walk is {traces['sign_fix']['factor']} times "
-        f"{traces['sign_fix']['multiplier']}.",
+        "The first slide's factor was positive, so it skipped this. Here the "
+        f"factor is {traces['sign_fix']['factor']}. MUL cannot take a negative "
+        f"byte and sees {traces['sign_fix']['unsigned_factor']}, which is 256 "
+        "too many, so the product is 256 times the multiplier too large. One "
+        "subtraction takes that out. The pair is chosen, not captured, and "
+        "sits inside the range the training run measured.",
         TWO_MUL_GROUPS,
         trace_sign_fix(traces["sign_fix"]),
     ))
