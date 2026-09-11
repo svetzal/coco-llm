@@ -204,7 +204,8 @@ in the same file; commit first.
 `make block1` through `make block10` print each block's cues. `make sdcard`
 builds the disk images and loose files for a CoCo SDC card, and
 `make sdcard-install DEST=/Volumes/COCO` copies them to a mounted card and
-verifies every byte. The big-screen slideshow and its Raspberry Pi image are
+verifies every byte. The one disk that needs Toolshed's `decb` reads it from
+`DECB`, which you can set in the environment or on the command line. The big-screen slideshow and its Raspberry Pi image are
 built from [`signage/`](signage/README.md). The talk itself is
 [`presentation/runsheet.md`](presentation/runsheet.md).
 
