@@ -651,13 +651,13 @@
   border-right: 1px solid var(--deck-quiet);
 }
 .reveal .r16 .byte:nth-last-child(2) { border-right: none; }
-/* Lit cells: navy is a byte the instruction wrote, amber one it read, and
- * navy ringed in amber one it did both to (MUL reads A and B and writes D). */
-.reveal .r16 .byte.w { background: var(--deck-mark); color: var(--coco-white); }
-.reveal .r16 .byte.r { background: var(--coco-amber); color: var(--coco-c00); }
+/* Lit cells: navy is a byte the instruction read, amber one it wrote, and
+ * amber ringed in navy one it did both to (MUL reads A and B and writes D). */
+.reveal .r16 .byte.r { background: var(--deck-mark); color: var(--coco-white); }
+.reveal .r16 .byte.w { background: var(--coco-amber); color: var(--coco-c00); }
 .reveal .r16 .byte.w.r {
-  background: var(--deck-mark); color: var(--coco-white);
-  box-shadow: inset 0 0 0 3px var(--coco-amber);
+  background: var(--coco-amber); color: var(--coco-c00);
+  box-shadow: inset 0 0 0 3px var(--deck-mark);
 }
 .reveal table.rtrace th.legend { text-align: right; padding-right: 0.6em; }
 .reveal table.rtrace th.legend .byte {
@@ -665,8 +665,8 @@
   border-radius: 0.25em; font-family: var(--deck-prose); font-size: 0.85em;
   letter-spacing: 0.06em; text-transform: uppercase;
 }
-.reveal table.rtrace th.legend .byte.r { background: var(--coco-amber); color: var(--coco-c00); }
-.reveal table.rtrace th.legend .byte.w { background: var(--deck-mark); color: var(--coco-white); }
+.reveal table.rtrace th.legend .byte.r { background: var(--deck-mark); color: var(--coco-white); }
+.reveal table.rtrace th.legend .byte.w { background: var(--coco-amber); color: var(--coco-c00); }
 .reveal .r16 .word {
   grid-column: 1 / -1; text-align: right; padding: 0.04em 0.45em;
   min-height: 1.15em; color: var(--deck-ink); font-weight: 600;

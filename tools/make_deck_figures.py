@@ -679,8 +679,8 @@ def signed(value: int, bits: int) -> int:
 # rows:   [(mnemonic or None for the elided entry row,
 #           {cell key: byte}, {written cell keys}, {groups whose value shows},
 #           note, {read cell keys})]
-# A byte the instruction reads is lit amber, one it writes navy, one it
-# does both to navy with an amber ring.
+# A byte the instruction reads is lit navy, one it writes amber, one it
+# does both to amber with a navy ring.
 TWO_MUL_GROUPS = [
     ("D", [("A", "A"), ("B", "B")], True),
     ("factor", [("f", "")], True),
