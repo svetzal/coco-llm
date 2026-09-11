@@ -783,17 +783,20 @@ def figure_register_trace(
         raise SystemExit(f"{excerpt['title']}: entry row without elided lines")
     lines = iter(excerpt["lines"])
 
+    def box(cells: list[str], word: str, extra: str = "") -> str:
+        """One register or memory word: its byte cells side by side, and
+        the number they compose in a bar beneath spanning both."""
+        return (
+            f'<div class="r16{extra}" style="--n:{len(cells)}">'
+            f'{"".join(cells)}<span class="word">{word}</span></div>'
+        )
+
     head1 = '<th class="ct"></th>'
     head2 = '<th class="ct"></th>'
     for header, cells, value in groups:
-        span = len(cells) + (1 if value else 0)
-        head1 += f'<th class="grp" colspan="{span}">{esc(header)}</th>'
-        head2 += "".join(
-            f'<th class="lab{" g0" if i == 0 else ""}">{esc(label)}</th>'
-            for i, (_, label) in enumerate(cells)
-        )
-        if value:
-            head2 += '<th class="lab val"></th>'
+        head1 += f'<th class="grp">{esc(header)}</th>'
+        labels = [f'<span class="lab">{esc(label)}</span>' for _, label in cells]
+        head2 += f'<th class="g">{box(labels, "", " hdr")}</th>'
     head1 += '<th class="note"></th>'
     head2 += '<th class="note"></th>'
 
@@ -806,20 +809,25 @@ def figure_register_trace(
             cls = "hot" if line["hot"] else ""
             code = re.sub(r"\s+", "  ", line["text"].strip())
         cells_html = ""
-        for header, cells, value in groups:
+        if mnemonic is None and not state:
+            cells_html = '<td class="g"></td>' * len(groups)
+            groups_here = []
+        else:
+            groups_here = groups
+        for header, cells, value in groups_here:
             bytes_ = [state.get(key) for key, _ in cells]
-            for i, byte in enumerate(bytes_):
-                key = cells[i][0]
-                c = "byte" + (" g0" if i == 0 else "") + (" w" if key in written else "")
-                cells_html += f'<td class="{c}">{"" if byte is None else byte}</td>'
-            if value:
-                shown = ""
-                if header in values and None not in bytes_:
-                    total = 0
-                    for byte in bytes_:
-                        total = (total << 8) | byte
-                    shown = f"= {signed(total, 8 * len(bytes_))}"
-                cells_html += f'<td class="val">{shown}</td>'
+            spans = [
+                f'<span class="byte{" w" if key in written else ""}">'
+                f'{"" if byte is None else byte}</span>'
+                for (key, _), byte in zip(cells, bytes_)
+            ]
+            word = ""
+            if value and header in values and None not in bytes_:
+                total = 0
+                for byte in bytes_:
+                    total = (total << 8) | byte
+                word = str(signed(total, 8 * len(bytes_)))
+            cells_html += f'<td class="g">{box(spans, word, "" if value else " bare")}</td>'
         body += (
             f'<tr class="{cls}"><td class="ct">{esc(code)}</td>{cells_html}'
             f'<td class="note">{esc(text)}</td></tr>'

@@ -603,52 +603,71 @@
   color: var(--deck-mark); background: rgba(0, 0, 0, 0.14);
 }
 /* The register trace: a table with one row per instruction and one column
- * per byte, built from the exported traces by make_deck_figures.py. The two
- * bytes of a 16-bit thing sit touching under one header (D over A and B,
- * product over hi and lo), the cells an instruction wrote are lit, and the
- * number the pair makes prints beside them when the walk needs it. */
-.reveal .fig.code.trace { font-size: 0.6em; }
+ * per register or memory word, built from the exported traces by
+ * make_deck_figures.py. Each word is a bordered box: its byte cells side by
+ * side on top (A beside B is D; hi beside lo is a 16-bit word in memory),
+ * and the number those bytes compose in a bar beneath spanning both. The
+ * cells an instruction wrote are lit; the bar fills in when the walk needs
+ * the composed value. Proportional figures here, because the machine's
+ * font is too wide for a table of bytes. */
+.reveal .fig.code.trace { font-size: 0.5em; }
 .reveal table.rtrace {
   border-collapse: separate; border-spacing: 0; margin: 0 auto;
-  font-family: var(--coco-type); font-size: 1em; line-height: 1.28;
+  font-family: var(--coco-type); font-size: 1em; line-height: 1.25;
 }
 .reveal table.rtrace th, .reveal table.rtrace td {
-  border: none; padding: 0.05em 0.25em; text-align: center;
+  border: none; padding: 0.05em 0.3em; text-align: center;
   font-weight: normal; vertical-align: middle;
 }
 .reveal table.rtrace td.ct, .reveal table.rtrace th.ct {
   white-space: pre; text-align: left; color: var(--deck-quiet);
-  padding-left: 0.6em; padding-right: 1ch;
+  padding-left: 0.6em; padding-right: 1ch; font-size: 1.2em;
 }
 .reveal table.rtrace tr.hot td { background: rgba(0, 0, 0, 0.14); }
 .reveal table.rtrace tr.hot td.ct { color: var(--deck-mark); }
 .reveal table.rtrace th.grp {
   font-family: var(--deck-prose); text-transform: uppercase;
-  font-size: 0.8em; letter-spacing: 0.08em; color: var(--deck-ink);
-  border-bottom: 2px solid var(--deck-ink); padding-bottom: 0.15em;
+  font-size: 1em; letter-spacing: 0.08em; color: var(--deck-ink);
+  padding-bottom: 0;
 }
-.reveal table.rtrace th.lab {
-  font-family: var(--deck-prose); text-transform: uppercase;
-  font-size: 0.8em; letter-spacing: 0.08em; color: var(--deck-quiet);
-  padding-top: 0.25em;
+.reveal table.rtrace th.g { padding-top: 0; padding-bottom: 0.3em; }
+/* The box. --n is the byte count; every byte cell is the same width so
+ * bytes line up down the column and a word is exactly two bytes wide. */
+.reveal .r16 {
+  display: inline-grid; grid-template-columns: repeat(var(--n), 3.3em);
+  border: 2px solid var(--deck-quiet); border-radius: 0.3em;
+  overflow: hidden; vertical-align: middle;
+  font-family: var(--deck-prose); font-variant-numeric: tabular-nums;
+  font-size: 1em; line-height: 1.15;
 }
-.reveal table.rtrace td.byte {
-  min-width: 3.4ch; color: var(--deck-line);
-  background: rgba(0, 0, 0, 0.08); background-clip: content-box;
-  padding: 0.12em 0;
-  box-shadow: inset 0.15em 0 0 var(--deck-bg), inset -0.15em 0 0 var(--deck-bg);
+.reveal .r16 .byte {
+  text-align: center; padding: 0.04em 0; min-height: 1.15em;
+  background: rgba(0, 0, 0, 0.08); color: var(--deck-quiet);
+  border-right: 1px solid var(--deck-quiet);
 }
-.reveal table.rtrace td.byte.w { color: var(--coco-white); background-color: var(--deck-mark); }
-.reveal table.rtrace td.val, .reveal table.rtrace th.val {
-  min-width: 2ch; text-align: left; color: var(--deck-ink);
-  padding-left: 0.5em; padding-right: 0.3em; white-space: nowrap;
+.reveal .r16 .byte:nth-last-child(2) { border-right: none; }
+.reveal .r16 .byte.w { background: var(--deck-mark); color: var(--coco-white); }
+.reveal .r16 .word {
+  grid-column: 1 / -1; text-align: right; padding: 0.04em 0.45em;
+  min-height: 1.15em; color: var(--deck-ink); font-weight: 600;
+  border-top: 1px solid var(--deck-quiet); background: rgba(255, 255, 255, 0.28);
 }
-.reveal table.rtrace .g0 { padding-left: 1.1em; }
+/* A single byte with no composed value (the carry) is just the cell. */
+.reveal .r16.bare .word { display: none; }
+/* The header repeats the box shape without the box, so A and B sit over
+ * their columns. */
+.reveal .r16.hdr { border-color: transparent; }
+.reveal .r16.hdr .lab {
+  text-align: center; font-size: 1em; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--deck-quiet);
+}
+.reveal .r16.hdr .word { display: none; }
 .reveal table.rtrace td.note, .reveal table.rtrace th.note {
   font-family: var(--deck-prose); text-transform: none; text-align: left;
-  font-size: 0.85em; color: var(--deck-quiet); padding-left: 1em;
+  font-size: 1em; color: var(--deck-quiet); padding-left: 1em;
   white-space: nowrap;
 }
+.reveal .fig.code.trace .cap { margin-top: 0.4em; max-width: 56em; }
 /* The omission marker lines up with the code it stands in for, not with the
  * label column. A path is also left in its real case: these are file names. */
 .reveal .cline.elide { color: var(--deck-quiet); padding-left: 2.6em; }
