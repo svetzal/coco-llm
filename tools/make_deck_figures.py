@@ -455,16 +455,13 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
     </div>
     <p class="cap rubric">
       Right shape means two to four tokens starting with one of the six makers
-      in the corpus. It is a structure check, not a judgement:
-      <em>TANDY TANDY TANDY</em> would pass.
+      in the corpus.
     </p>
     <p class="cap invent fragment" data-fragment-index="5">
-      Same machine, same arithmetic, same {split["weights"]} bytes of weights.
+      Epoch by epoch, same arithmetic, same {split["weights"]} bytes of weights.
       Early on it says the same token twice. By {trace["chosen"]} it picks
       different tokens that sit together plausibly. By {trace["epochs"]} it
-      hands back what it was given.
-      <strong>SINCLAIR never made an AMIGA. It knows which tokens follow
-      which, and nothing else.</strong>
+      hands back what it was given. SINCLAIR never made an AMIGA.
     </p>
     <p class="cap fragment" data-fragment-index="6">
       New is not the same as good. Epoch 0 is {first_new}% new and
@@ -510,17 +507,12 @@ def figure_cost(budget: dict, split: dict) -> str:
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="4">
-      Neither number is magic. I picked both so this would finish in a
-      reasonable time and leave room for the rest of the program.
-      <strong>Whether it makes {budget["target_seconds"] // 60} minutes on the
-      real machine is still unmeasured.</strong>
+      Neither number is special. I picked them so this would finish in a
+      reasonable time and leave room for other code or graphics.
     </p>
     <p class="cap fragment" data-fragment-index="5">
-      The cheapest Color Computer of {budget["launch_year"]} had
-      {budget["baseline_bytes"]:,} bytes.
-      <strong>This would have fitted it</strong>, with
-      {budget["baseline_bytes"] - budget["running_bytes"]} to spare, before
-      BASIC and the screen take theirs.
+      Still wouldn't fit on a {budget["baseline_bytes"] // 1024}K machine,
+      but it's in the ballpark.
     </p>
   </div>"""
 
@@ -585,7 +577,6 @@ def figure_shift(shift: dict) -> str:
     <p class="cap fragment" data-fragment-index="{len(shift["steps"])}">
       Two's complement: <strong>a leading 1 means negative.</strong> These
       same sixteen bits read as {unsigned:,} if you take them as unsigned.
-      The bits don't care about the sign. The instruction you choose does.
     </p>
     <p class="cap fragment" data-fragment-index="{len(shift["steps"]) + 1}">
       <code>asra</code> keeps that top bit and drops the bottom one into the
@@ -654,8 +645,6 @@ def figure_sign(fix: dict) -> str:
     <p class="cap fragment" data-fragment-index="4">
       Compare the two bit rows: <strong>the low byte is identical.</strong>
       Only the high half moved, because that is where the whole error was.
-      Five instructions is the difference between this machine being able to
-      train a model and not.
     </p>
   </div>"""
 
@@ -890,10 +879,7 @@ def figure_second_costs(prompts: dict, first_budget: dict) -> str:
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="3">
-      The whole bill followed two decisions I made: the vocabulary and the epochs.
-      {budget["floor_seconds"]:.1f} seconds of bare MUL instructions — a
-      floor, not a runtime. <strong>The machine still was not the
-      constraint.</strong>
+      Two choices set the cost: vocabulary size and epoch count.
     </p>
   </div>"""
 
@@ -966,15 +952,14 @@ def figure_corpus(filename: str, shown: int, columns: int, note: str) -> str:
     count always honest about how much is on screen."""
     lines = corpus_lines(filename)
     picked = lines[:shown]
-    count = (
-        f"The whole corpus, all {len(lines)} lines, verbatim"
-        if shown >= len(lines)
-        else f"The first {len(picked)} of {len(lines)} lines, verbatim"
+    caption = (
+        note if shown >= len(lines)
+        else f"The first {len(picked)} of {len(lines)} lines. {note}"
     )
     return f"""
   <div class="fig">
     <div class="corpus">{corpus_columns(picked, columns)}</div>
-    <p class="cap">{count}. {note}</p>
+    <p class="cap">{caption}</p>
   </div>"""
 
 
@@ -1030,8 +1015,7 @@ def figure_corpora(
     return f"""
   <div class="fig">
     <div class="corpus">{"".join(blocks)}</div>
-    <p class="cap">The first {shown} lines of each collection, verbatim.
-      {note}</p>
+    <p class="cap">The first {shown} lines of each collection.{" " + note if note else ""}</p>
   </div>"""
 
 
@@ -1291,9 +1275,7 @@ def main() -> None:
             ("asked", "ARE YOU", by_prompt["ARE YOU"]),
             ("asked", "THE COMPUTER", by_prompt["THE COMPUTER"]),
         ],
-        "note": "Not one number in the model moved between those four "
-        "answers. <strong>A prompt is not training. It is the first few "
-        "tokens of the answer, handed over before the machine starts.</strong>",
+        "note": "The prompt is just the first few tokens of the output.",
     }
 
     # Block 5 moved to EXP-007, the all-RAM sentence completer, whose size
@@ -1307,24 +1289,24 @@ def main() -> None:
     deck = splice(deck, "step", figure_step(traces["step"], vocabulary))
     deck = splice(deck, "corpus2", figure_corpus(
         "EXP-002-tokenized-computer-names.txt", 18, 2,
-        "This is every fact the model will ever meet."))
+        "These are the facts we feed it for training."))
     deck = splice(deck, "corpus4", figure_corpus(
         "EXP-005-marketing-language.txt", 8, 1,
-        "Eighty epochs over eight lines is how the memorizing happens."))
+        "Eighty epochs over eight lines is why it memorizes them."))
     deck = splice(deck, "corpus5", figure_corpus(
         "EXP-007-sentence-training.txt", 8, 1,
-        "The 248 word seats come from sentences like these."))
+        "The 248 vocabulary slots come from sentences like these."))
     deck = splice(deck, "melodycorpus", figure_melody_corpus())
     dealt_titles = json.loads((TRACES.parent / "titles.json").read_text())
     deck = splice(deck, "shape", figure_shape(dealt_titles["dealt"]))
     deck = splice(deck, "corpus6", figure_corpus(
         "EXP-012-tos-titles.txt", 12, 2,
-        "Every title here is real. Every title it deals is not."))
+        "All of them are real episode titles."))
     deck = splice(deck, "corpus7", figure_corpora(
         [("apple fan", "EXP-003-apple-fan.txt"),
          ("commodore fan", "EXP-003-commodore-fan.txt"),
          ("tandy fan", "EXP-003-tandy-fan.txt")], 6,
-        "Same architecture, three different sets of training data."))
+        ""))
     deck = splice(deck, "ids", figure_identifiers(vocabulary))
     deck = splice(deck, "why", figure_why_three(traces["why_three"]))
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))

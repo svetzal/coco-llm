@@ -350,16 +350,13 @@
     </div>
     <p class="cap rubric">
       Right shape means two to four tokens starting with one of the six makers
-      in the corpus. It is a structure check, not a judgement:
-      <em>TANDY TANDY TANDY</em> would pass.
+      in the corpus.
     </p>
     <p class="cap invent fragment" data-fragment-index="5">
-      Epoch by epoc, same arithmetic, same 580 bytes of weights.
+      Epoch by epoch, same arithmetic, same 580 bytes of weights.
       Early on it says the same token twice. By 20 it picks
       different tokens that sit together plausibly. By 60 it
-      hands back what it was given.
-      <strong>SINCLAIR never made an AMIGA. It knows which tokens follow
-      which, and nothing else.</strong>
+      hands back what it was given. SINCLAIR never made an AMIGA.
     </p>
     <p class="cap fragment" data-fragment-index="6">
       New is not the same as good. Epoch 0 is 100% new and
@@ -421,7 +418,8 @@
       reasonable time and leave room for other code or graphics.
     </p>
     <p class="cap fragment" data-fragment-index="5">
-      Still wouldn't fit on a 4K machine, but it's in the ballpark.
+      Still wouldn't fit on a 4K machine,
+      but it's in the ballpark.
     </p>
   </div>
   <!-- /FIGURE:cost -->
@@ -432,8 +430,8 @@
     <p>THE SPLIT — every byte in the image classified by job:</p>
     <ul><li>TO USE: 850 inference + 1,086 shared + 580 weights = 2,516. Name INFERENCE — the half a provider bills per token. An "open-weights" release ships the weights file: 580 bytes here, gigabytes there, same file.</li><li>TO LEARN: 730 more — the loops, the gradients, the 58 examples, the progress display. Dead weight the moment training finishes.</li></ul>
     <p>THE POINT: learning and using are different jobs, and the learning half runs once. That is how EXP-006 and EXP-007 put bigger models on this machine — the Mac paid. Same as every model the room has used: somebody paid once, somewhere else. The P in GPT.</p>
-    <p>DO NOT QUOTE A RUNTIME. Three minutes was a target; I have a cycle projection, not a measurement. Say so — it is on the slide.</p>
-    <p>LAST FRAGMENT, the ender: announced 31 July 1980, on sale that September. The cheapest CoCo, catalogue 26-3001, US$399, had 4,096 bytes. This needs 3,480 — it fits, 616 to spare. SAY THE CAVEAT: that is the chip; a real 4K machine still owes the 512-byte screen and BASIC's workspace. And not "it would have run in 1977" — the machine did not exist.</p>
+    <p>DO NOT QUOTE A RUNTIME. Three minutes was a target; I have a cycle projection, not a measurement. Say so.</p>
+    <p>LAST FRAGMENT, the ender: announced 31 July 1980, on sale that September. The cheapest CoCo, catalogue 26-3001, US$399, had 4,096 bytes. This needs 3,480, so on the chip alone it fits with 616 to spare, but a real 4K machine still owes the 512-byte screen and BASIC's workspace, so it would not. In the ballpark, as the slide says. And not "it would have run in 1977" — the machine did not exist.</p>
     <p>Keep the proportions in view: the model is 580 bytes and its trainer is four times bigger. Learning is expensive; the thing you learn is small.</p>
     <p>If asked:</p>
     <ul><li>Working space 234 bytes; self-check 689 (reference weights and checksum, so the CoCo proves it trained to the Mac's numbers) — integrity machinery, counted apart.</li><li>How long? One to two minutes under the emulator, not timed on hardware — say both halves.</li><li>The 60-epoch row is evidence that 20 was enough, not a rival choice.</li></ul>
@@ -443,7 +441,7 @@
 <section class="chapter" data-block="3" data-bar="COCO LLM - 3/10 A LITTLE 6809 ASSEMBLY" data-background-color="var(--coco-orange)" data-timing="10">
   <p class="chnum">3</p>
   <h2>A LITTLE<br>6809 ASSEMBLY</h2>
-  <p class="charc">A peak at the important code</p>
+  <p class="charc">A peek at the important code</p>
   <aside class="notes">
     <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - CHAPTER CARD</strong></p>
     <p>The slides said what it does. The machine has been doing it since the talk started. Go and look.</p>
@@ -453,9 +451,8 @@
 <section class="cue" data-timing="100" data-block="3" data-bar="COCO LLM - 3/10 A LITTLE 6809 ASSEMBLY">
   <h2>Watch it learn</h2>
   <p class="what">EXP-004 &middot; the live training run</p>
-  <p class="call"><span class="k">The call, made at launch:</span> the same
-  seed that drew nonsense from random weights will draw names after 1,160
-  corrections. Nothing arrived from the Mac.</p>
+  <p class="call">Before training, this seed produced nonsense. After
+  training it should produce names.</p>
   <aside class="notes">
     <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 1/7</strong></p>
     <p>SWITCH to the EXP-004 window that block 1 launched. It has been training since the talk opened — measured at one to two minutes, so it is parked at PRESS ANY KEY by now. (Recovery: make block3 launches a fresh run if that window died. The launch is the reset.)</p>
@@ -534,8 +531,6 @@
     <p class="cap fragment" data-fragment-index="4">
       Compare the two bit rows: <strong>the low byte is identical.</strong>
       Only the high half moved, because that is where the whole error was.
-      Five instructions is the difference between this machine being able to
-      train a model and not.
     </p>
   </div>
   <!-- /FIGURE:signbits -->
@@ -590,7 +585,6 @@
     <p class="cap fragment" data-fragment-index="5">
       Two's complement: <strong>a leading 1 means negative.</strong> These
       same sixteen bits read as 59,192 if you take them as unsigned.
-      The bits don't care about the sign. The instruction you choose does.
     </p>
     <p class="cap fragment" data-fragment-index="6">
       <code>asra</code> keeps that top bit and drops the bottom one into the
@@ -636,8 +630,6 @@
 <section class="cue" data-timing="150" data-block="3" data-bar="COCO LLM - 3/10 A LITTLE 6809 ASSEMBLY">
   <h2>Back to the machine</h2>
   <p class="what">EXP-004 &middot; the comparison</p>
-  <p class="call">Same seed. Same arithmetic. Only the weights changed.
-  Judge the call.</p>
   <aside class="notes">
     <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 7/7</strong></p>
     <p>SWITCH back to the EXP-004 XRoar window launched at block 1, parked at PRESS ANY KEY since somewhere in block 2.</p>
@@ -652,7 +644,7 @@
 <section class="chapter" data-block="4" data-bar="COCO LLM - 4/10 THE PROMPT" data-background-color="var(--coco-tie)" data-timing="10">
   <p class="chnum">4</p>
   <h2>CHANGE ONE THING:<br>THE PROMPT</h2>
-  <p class="charc">What your words actually do</p>
+  <p class="charc">What a prompt does</p>
   <aside class="notes">
     <p><strong>BLOCK 4 OF 10 - THE PROMPT - CHAPTER CARD</strong></p>
     <p>The loop is proven. Now the levers, one at a time. First lever: change nothing but the prompt.</p>
@@ -704,11 +696,11 @@
 
 <section data-timing="25" data-block="4" data-bar="COCO LLM - 4/10 THE PROMPT">
   <h2>What it read</h2>
-  <p class="lead">All eight lines of it. This is the model's entire world.</p>
+  <p class="lead">The eight lines it trained on.</p>
   <!-- FIGURE:corpus4 -->
   <div class="fig">
     <div class="corpus"><div class="col"><div class="entry">THE WONDER COMPUTER OF THE 1980S</div><div class="entry">GET YOUR START IN COLOR COMPUTING</div><div class="entry">I ADORE MY 64</div><div class="entry">ARE YOU KEEPING UP WITH COMMODORE</div><div class="entry">THE COMPUTER FOR THE REST OF US</div><div class="entry">POWER WITHOUT THE PRICE</div><div class="entry">THE BIGGEST NAME IN LITTLE COMPUTERS</div><div class="entry">WHY BUY JUST A VIDEO GAME</div></div></div>
-    <p class="cap">The whole corpus, all 8 lines, verbatim. Eighty epochs over eight lines is how the memorizing happens.</p>
+    <p class="cap">Eighty epochs over eight lines is why it memorizes them.</p>
   </div>
   <!-- /FIGURE:corpus4 -->
   <aside class="notes">
@@ -751,10 +743,7 @@
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="3">
-      The whole bill followed two decisions I made: the vocabulary and the epochs.
-      17.8 seconds of bare MUL instructions — a
-      floor, not a runtime. <strong>The machine still was not the
-      constraint.</strong>
+      Two choices set the cost: vocabulary size and epoch count.
     </p>
   </div>
   <!-- /FIGURE:params5 -->
@@ -773,7 +762,7 @@
     <p class="held"><span class="hlead">held fixed</span><span>the model, all 380 of its numbers</span><span class="hsep">&middot;</span><span>checksum 6f9a6c88742221bb, before and after</span><span class="hsep">&middot;</span><span>seed 6809, greedy decoding</span></p>
     <div class="deltas"><div class="ba fragment" data-fragment-index="1"><span class="balab">asked nothing</span><span class="bfrom"></span><span class="barrow">&rarr;</span><span class="bto">WHY BUY JUST A VIDEO GAME</span></div><div class="ba fragment" data-fragment-index="2"><span class="balab">asked</span><span class="bfrom">I ADORE</span><span class="barrow">&rarr;</span><span class="bto">MY 64</span></div><div class="ba fragment" data-fragment-index="3"><span class="balab">asked</span><span class="bfrom">ARE YOU</span><span class="barrow">&rarr;</span><span class="bto">KEEPING UP IN LITTLE COMPUTERS</span></div><div class="ba fragment" data-fragment-index="4"><span class="balab">asked</span><span class="bfrom">THE COMPUTER</span><span class="barrow">&rarr;</span><span class="bto">FOR THE REST OF US</span></div></div>
     <p class="cap fragment" data-fragment-index="5">
-      Not one number in the model moved between those four answers. <strong>A prompt is not training. It is the first few tokens of the answer, handed over before the machine starts.</strong></p>
+      The prompt is just the first few tokens of the output.</p>
   </div>
   <!-- /FIGURE:promptchange -->
   <aside class="notes">
@@ -803,7 +792,7 @@
 <section class="chapter" data-block="5" data-bar="COCO LLM - 5/10 THE SIZE" data-background-color="var(--coco-cyan)" data-timing="10">
   <p class="chnum">5</p>
   <h2>CHANGE ONE THING:<br>THE SIZE</h2>
-  <p class="charc">What bigger actually buys</p>
+  <p class="charc">What a bigger model changes</p>
   <aside class="notes">
     <p><strong>BLOCK 5 OF 10 - THE SIZE - CHAPTER CARD</strong></p>
     <p>Second lever: the size. What does a hundred times bigger actually buy?</p>
@@ -812,11 +801,11 @@
 
 <section data-timing="25" data-block="5" data-bar="COCO LLM - 5/10 THE SIZE">
   <h2>What it read</h2>
-  <p class="lead">Sentences written about the machine reading them.</p>
+  <p class="lead">Sentences about this computer.</p>
   <!-- FIGURE:corpus5 -->
   <div class="fig">
     <div class="corpus"><div class="col"><div class="entry">WELCOME TO THE WORLD OF RETRO COMPUTING.</div><div class="entry">WELCOME TO THE COLOR COMPUTER!</div><div class="entry">WELCOME HOME, COMPUTER FAN.</div><div class="entry">ARE YOU READY TO COMPUTE?</div><div class="entry">YES, THE COMPUTER IS READY.</div><div class="entry">NO, THE CASSETTE IS NOT READY.</div><div class="entry">PRESS ENTER TO START.</div><div class="entry">PRESS TAB TO COMPLETE THE PHRASE.</div></div></div>
-    <p class="cap">The first 8 of 423 lines, verbatim. The 248 word seats come from sentences like these.</p>
+    <p class="cap">The first 8 of 423 lines. The 248 vocabulary slots come from sentences like these.</p>
   </div>
   <!-- /FIGURE:corpus5 -->
   <aside class="notes">
@@ -829,7 +818,7 @@
 <section data-timing="60" data-block="5" data-bar="COCO LLM - 5/10 THE SIZE">
   <h2>One byte of vocabulary</h2>
   <p class="lead">A token identifier is one byte, so the vocabulary caps at
-  <strong>255 tokens</strong>. Every seat is a decision.</p>
+  255 tokens.</p>
   <div class="fig">
     <div class="budget">
       <div class="brow fragment" data-fragment-index="1">
@@ -861,9 +850,8 @@
     </p>
     <p class="cap fragment" data-fragment-index="5">
       The rules are three lines: uppercase everything, keep words and
-      numbers whole, give six marks tokens of their own.
-      <strong>Same lesson as the first slide: a token is what I
-      chose.</strong>
+      numbers whole, give six marks tokens of their own. I chose what
+      counts as a token.
     </p>
   </div>
   <aside class="notes">
@@ -879,10 +867,9 @@
 <section class="cue" data-timing="150" data-block="5" data-bar="COCO LLM - 5/10 THE SIZE">
   <h2>It finishes your sentences</h2>
   <p class="what">EXP-007 &middot; the all-RAM sentence completer</p>
-  <p class="call"><span class="k">The call:</span> a model over a hundred
-  times the size of the one that trained live on stage will rank your next
-  word before you type it &mdash; on the same machine. The Mac trained it;
-  the CoCo only predicts.</p>
+  <p class="call">A model over a hundred times the size of the one that
+  trained on stage ranks your next word before you type it, on the same
+  machine. The Mac trained it. The CoCo predicts.</p>
   <aside class="notes">
     <p><strong>BLOCK 5 OF 10 - THE SIZE - SLIDE 3/4</strong></p>
     <p>SWITCH to the parked EXP-007 XRoar window, sitting at the completion editor. Read the call first, then the machine.</p>
@@ -902,8 +889,8 @@
      its manifest and write-up. Offline simulations, labelled as such. -->
 <section data-timing="90" data-block="5" data-bar="COCO LLM - 5/10 THE SIZE">
   <h2>Eighty-five times bigger</h2>
-  <p class="lead">Everything about this model is bigger than the
-  380-parameter one you just met.</p>
+  <p class="lead">This model is bigger than the marketing model in every
+  dimension.</p>
   <div class="fig changed">
     <div class="deltas"><div class="ba hdr"><span class="balab"></span><span class="bfrom">the marketing model</span><span class="barrow"></span><span class="bto">this one</span></div><div class="ba fragment" data-fragment-index="1"><span class="balab">parameters</span><span class="bfrom">380</span><span class="barrow">&rarr;</span><span class="bto">32,385</span></div><div class="ba fragment" data-fragment-index="2"><span class="balab">vocabulary</span><span class="bfrom">38 tokens</span><span class="barrow">&rarr;</span><span class="bto">255</span></div><div class="ba fragment" data-fragment-index="3"><span class="balab">context window</span><span class="bfrom">2 tokens</span><span class="barrow">&rarr;</span><span class="bto">5</span></div><div class="ba fragment" data-fragment-index="4"><span class="balab">training</span><span class="bfrom">this machine</span><span class="barrow">&rarr;</span><span class="bto">the Mac, once</span></div></div>
     <p class="cap fragment" data-fragment-index="5">
@@ -915,9 +902,8 @@
     </p>
     <p class="cap fragment" data-fragment-index="6">
       The extra room bought a bigger vocabulary, a longer window, and
-      punctuation &mdash; capability, not quality. <strong>Bigger can mean
-      able to attempt more, not reliably better at what it already
-      did.</strong>
+      punctuation. Bigger let it attempt more. It was not better at what it
+      already did.
     </p>
   </div>
   <aside class="notes">
@@ -935,7 +921,7 @@
 <section class="chapter" data-block="6" data-bar="COCO LLM - 6/10 NEVER EXISTED" data-background-color="var(--coco-magenta)" data-timing="10">
   <p class="chnum">6</p>
   <h2>THINGS THAT<br>NEVER EXISTED</h2>
-  <p class="charc">Sixteen titles nobody wrote</p>
+  <p class="charc">Made-up episode titles</p>
   <aside class="notes">
     <p><strong>BLOCK 6 OF 10 - NEVER EXISTED - CHAPTER CARD</strong></p>
     <p>A breath before the hard one. Sixteen things that never existed.</p>
@@ -944,11 +930,11 @@
 
 <section data-timing="25" data-block="6" data-bar="COCO LLM - 6/10 NEVER EXISTED">
   <h2>What it read</h2>
-  <p class="lead">Real episode titles &mdash; the only Star Trek it ever saw.</p>
+  <p class="lead">Real Star Trek episode titles.</p>
   <!-- FIGURE:corpus6 -->
   <div class="fig">
     <div class="corpus"><div class="col"><div class="entry">THE CAGE</div><div class="entry">THE MAN TRAP</div><div class="entry">CHARLIE X</div><div class="entry">WHERE NO MAN HAS GONE BEFORE</div><div class="entry">THE NAKED TIME</div><div class="entry">THE ENEMY WITHIN</div></div><div class="col"><div class="entry">MUDD&#x27;S WOMEN</div><div class="entry">WHAT ARE LITTLE GIRLS MADE OF?</div><div class="entry">MIRI</div><div class="entry">DAGGER OF THE MIND</div><div class="entry">THE CORBOMITE MANEUVER</div><div class="entry">THE MENAGERIE</div></div></div>
-    <p class="cap">The first 12 of 79 lines, verbatim. Every title here is real. Every title it deals is not.</p>
+    <p class="cap">The first 12 of 79 lines. All of them are real episode titles.</p>
   </div>
   <!-- /FIGURE:corpus6 -->
   <aside class="notes">
@@ -961,8 +947,7 @@
 <section class="cue" data-timing="120" data-block="6" data-bar="COCO LLM - 6/10 NEVER EXISTED">
   <h2>Things that never existed</h2>
   <p class="what">EXP-012 &middot; the fake episode titles</p>
-  <p class="call"><span class="k">The call:</span> 400 bytes that never
-  learned a single word are about to deal sixteen plausible episode
+  <p class="call">A 400-byte model produces sixteen believable episode
   titles.</p>
   <aside class="notes">
     <p><strong>BLOCK 6 OF 10 - NEVER EXISTED - SLIDE 2/3</strong></p>
@@ -1046,7 +1031,7 @@
 <section class="chapter" data-block="7" data-bar="COCO LLM - 7/10 THE TRAINING DATA" data-background-color="var(--coco-loss)" data-timing="10">
   <p class="chnum">7</p>
   <h2>CHANGE ONE THING:<br>THE TRAINING DATA</h2>
-  <p class="charc">Where bias actually comes from</p>
+  <p class="charc">Where bias comes from</p>
   <aside class="notes">
     <p><strong>BLOCK 7 OF 10 - THE TRAINING DATA - CHAPTER CARD</strong></p>
     <p>Third lever, and the sobering one: the data it trained on.</p>
@@ -1055,12 +1040,11 @@
 
 <section data-timing="25" data-block="7" data-bar="COCO LLM - 7/10 THE TRAINING DATA">
   <h2>What they read</h2>
-  <p class="lead">Three collections, one per fan. The only thing that will differ.</p>
+  <p class="lead">Three training sets, one per fan.</p>
   <!-- FIGURE:corpus7 -->
   <div class="fig">
     <div class="corpus"><div class="col"><p class="lbl">apple fan</p><div class="entry">APPLE II</div><div class="entry">APPLE LISA</div><div class="entry">APPLE MACINTOSH</div><div class="entry">APPLE II</div><div class="entry">APPLE LISA</div><div class="entry">APPLE MACINTOSH</div></div><div class="col"><p class="lbl">commodore fan</p><div class="entry">COMMODORE 64</div><div class="entry">COMMODORE AMIGA</div><div class="entry">COMMODORE PET</div><div class="entry">COMMODORE 64</div><div class="entry">COMMODORE AMIGA</div><div class="entry">COMMODORE PET</div></div><div class="col"><p class="lbl">tandy fan</p><div class="entry">TANDY TRS-80</div><div class="entry">TANDY 1000</div><div class="entry">TANDY COCO</div><div class="entry">TANDY TRS-80</div><div class="entry">TANDY 1000</div><div class="entry">TANDY COCO</div></div></div>
-    <p class="cap">The first 6 lines of each collection, verbatim.
-      Same architecture, three different sets of training data.</p>
+    <p class="cap">The first 6 lines of each collection.</p>
   </div>
   <!-- /FIGURE:corpus7 -->
   <aside class="notes">
@@ -1122,9 +1106,8 @@
 <section class="cue" data-timing="240" data-block="8" data-bar="COCO LLM - 8/10 YOU PLAY IT">
   <h2>Now you play it</h2>
   <p class="what">EXP-013 &middot; the game opponent that learns</p>
-  <p class="call"><span class="k">The call:</span> it starts knowing
-  nothing &mdash; not the rules, not you. Twenty-five rounds from now it
-  will have one of those cold, and be gaining on the other.</p>
+  <p class="call">It starts with no knowledge of the rules or of you. After
+  25 rounds it knows the rules and is beginning to predict you.</p>
   <aside class="notes">
     <p><strong>BLOCK 8 OF 10 - YOU PLAY IT - SLIDE 1/2</strong></p>
     <p>SWITCH to the parked EXP-013 XRoar window. Keys are on its screen: 1 ROCK, 2 SPOCK, 3 PAPER, 4 LIZARD, 5 SCISSORS. R resets. If anyone played it during setup, press R now, so it starts knowing nothing.</p>
@@ -1139,7 +1122,7 @@
      game opponent that learns: the synthetic-player sweep and the recorded
      200-round human session. -->
 <section data-timing="60" data-block="8" data-bar="COCO LLM - 8/10 YOU PLAY IT">
-  <h2>The honest number</h2>
+  <h2>Against a person</h2>
   <div class="fig">
     <div class="budget">
       <div class="brow fragment" data-fragment-index="1">
@@ -1157,10 +1140,9 @@
       </div>
     </div>
     <p class="cap fragment" data-fragment-index="3">
-      It reads a person better than chance, three sigma better, and nowhere
-      near well enough to win. <strong>A person plays like the one synthetic
-      player that had no habit.</strong> The test set encoded an assumption
-      about people, and the average hid it.
+      It predicts a person slightly better than chance, not enough to win.
+      A person plays like the one synthetic player that had no habit. The
+      test set assumed people have habits, and the average hid that.
     </p>
   </div>
   <aside class="notes">
@@ -1176,7 +1158,7 @@
 <section class="chapter" data-block="9" data-bar="COCO LLM - 9/10 A TOKEN IS A NOTE" data-background-color="var(--coco-c27)" data-timing="10">
   <p class="chnum">9</p>
   <h2>CHANGE ONE THING:<br>WHAT A TOKEN IS</h2>
-  <p class="charc">The same machine, pointed at music</p>
+  <p class="charc">The same code, on music</p>
   <aside class="notes">
     <p><strong>BLOCK 9 OF 10 - A TOKEN IS A NOTE - CHAPTER CARD</strong></p>
     <p>Last lever, and the one that gives the game away: the machine never knew it was doing words. Change what a token stands for and the same loop does music.</p>
@@ -1213,7 +1195,7 @@
         I hand it an opening figure, eight notes long. That is the only
         music a person wrote.</p>
       <p class="cap fragment" data-fragment-index="2"><span class="rname">the melody</span>
-        The same loop as all night - predict the next token, write it down,
+        The same loop as before - predict the next token, write it down,
         repeat - composes the rest, from 3,044 bytes of model that read the
         313 tunes.</p>
       <p class="cap fragment" data-fragment-index="3"><span class="rname">the band</span>
@@ -1225,9 +1207,7 @@
         into memory first, then plays it.</p>
     </div>
     <p class="cap fragment" data-fragment-index="5">
-      <strong>Nothing in the loop knows this is music. Change what a token
-      stands for, and the same machine writes tunes instead of
-      sentences.</strong>
+      Change what a token stands for and the same code writes tunes.
     </p>
   </div>
   <aside class="notes">
@@ -1255,8 +1235,8 @@
 
 <section data-timing="120" data-block="10" data-bar="COCO LLM - 10/10 WHO DECIDED">
   <h2>Who decided?</h2>
-  <p class="prose">Task. Data. Budget. Success criterion. What counts as good
-  enough.</p>
+  <p class="prose">Someone chose the task, the data, the budget, and what
+  counts as good enough.</p>
   <aside class="notes">
     <p><strong>BLOCK 10 OF 10 - WHO DECIDED</strong></p>
     <p>Not "language models are harmless" and not "no job will change." The durable claim is smaller: the mechanism is understandable, the limitations are observable, and every one of them traces back to a person who decided something.</p>
