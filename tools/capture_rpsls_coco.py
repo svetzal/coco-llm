@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -37,7 +38,7 @@ from rpsls import MOVES
 BINARY = ROOT / "build" / "coco-rpsls.bin"
 SYMBOLS = ROOT / "build" / "coco-rpsls.sym"
 DEFAULT_OUTPUT = ROOT / "experiments" / "data" / "EXP-013-captures.jsonl"
-DEFAULT_XROAR = Path("/opt/homebrew/opt/xroar/bin/xroar")
+DEFAULT_XROAR = Path(shutil.which("xroar") or "/opt/homebrew/opt/xroar/bin/xroar")
 BASIC_ROM = ROOT / "build" / "roms" / "bas11.rom"
 EXTENDED_ROM = ROOT / "build" / "roms" / "extbas10.rom"
 

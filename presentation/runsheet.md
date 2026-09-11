@@ -787,9 +787,7 @@ screen rather than only in narration. Blocks 4 and 5 fold the same shape
 into their held-and-changed figures. The generated figures:
 
 ```sh
-uv run python tools/export_deck_traces.py      # run the model, write the numbers
-uv run python tools/measure_train_vs_infer.py  # classify the image by job
-uv run python tools/make_deck_figures.py       # draw them, splice them in
+make deck-figures
 ```
 
 Block 1 is the one with no figure yet; block 7 carries the bias bars and

@@ -23,6 +23,7 @@ import filecmp
 import shutil
 import struct
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -299,7 +300,7 @@ def build_disk(disk: Disk) -> None:
         arguments += ["--file", f"{entry.name}.BIN={target}"]
     subprocess.run(
         [
-            "python3",
+            sys.executable,
             str(DSK_TOOL),
             "--output",
             str(OUT / f"{disk.name}.DSK"),

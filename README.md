@@ -92,31 +92,28 @@ assembly implementation emerged. Emulator execution is proven; physical CoCo
 
 ## Current status
 
-Eleven experiments now form one evidence trail:
+Eighteen experiments form one evidence trail. Each is a file in
+[`experiments/`](experiments/README.md) with a hypothesis, a procedure, the
+measurements, and a conclusion.
 
-- EXP-001 rejects an impractical character-level model.
-- EXP-002 establishes the small token model and fixed-point direction.
-- EXP-003 makes training-data selection and ordering bias visible.
-- EXP-004 performs bit-exact training and generation in 6809 assembly.
-- EXP-005 adds audience-selected starting phrases and marketing language.
-- EXP-006 loads an 8 KiB pretrained model into an interactive completion UI.
-- EXP-007 uses the CoCo 1 all-RAM map for a 32 KiB, 255-token,
-  punctuation-aware sentence-completion model.
-- EXP-008 tests online adaptation against a moving human target and accepts the
-  table baseline's win.
-- EXP-009 builds the fixed four-voice CoCo performer required for music work.
-- EXP-010 tests prompted melody continuation and remains in progress.
-- EXP-011 demonstrates contextual associative recall with a tiny attention
-  head; its reference, quantization, 6809 parity, UI, and real-ROM emulator
-  gates pass.
+| | | | |
+| --- | --- | --- | --- |
+| EXP-001 | the rejected character model | EXP-010 | the melody continuation |
+| EXP-002 | the token model | EXP-011 | the context-editing attention head |
+| EXP-003 | the fan-corpus bias runs | EXP-012 | the fake episode titles |
+| EXP-004 | the live training run | EXP-013 | the game opponent that learns |
+| EXP-005 | the prompted marketing completions | EXP-014 | the 6309 multiplier benchmark |
+| EXP-006 | the 8 KiB completion workbench | EXP-015 | the faster-clock listening test |
+| EXP-007 | the all-RAM sentence completer | EXP-016 | the register-resident loop |
+| EXP-008 | the rejected adaptive opponent | EXP-017 | the wavetable voices |
+| EXP-009 | the four-voice synthesizer | EXP-018 | the steady sample clock |
 
-EXP-004 through EXP-007 and EXP-011 are individually runnable from the
-presentation menu.
-The complete reference, assembly, UI, and XRoar integration suite passes on
-macOS. EXP-006, EXP-007, and EXP-011 are explicitly pretrained: the Mac trains
-and exports their weights; the CoCo performs fixed-point inference. Physical
-CoCo 1 and CoCo 3 timing and keyboard validation remain the next evidence
-boundary, not a hidden completion claim.
+The reference, assembly, UI, and XRoar integration suite passes on macOS.
+EXP-006, EXP-007 and EXP-011 are explicitly pretrained: the Mac trains and
+exports their weights; the CoCo performs fixed-point inference. Timing on the
+physical CoCo 1 is the one claim still deliberately unmade; the emulator is
+proven and the hardware sessions are recorded in EXP-014, the hardware
+session, and the sound experiments EXP-015 through EXP-018.
 
 Read [`experiments/README.md`](experiments/README.md) for the experiment index,
 [`research/model-design.md`](research/model-design.md) for the implemented
@@ -124,14 +121,65 @@ architectures, and
 [`presentation/learning-journey.md`](presentation/learning-journey.md) for the
 talk narrative.
 
-## Build and verify
+## Getting started
 
-Install the macOS toolchain and run every automated check:
+This was built and is tested on macOS on Apple silicon. Everything below is
+what that machine has; see "Platforms" for what is known about anything else.
+
+### Install
+
+| Tool | Why | macOS |
+| --- | --- | --- |
+| [uv](https://docs.astral.sh/uv/) | runs every Python step; installs Python 3.11+ and the pinned packages itself | `brew install uv` |
+| [LWTOOLS](https://www.lwtools.ca/) (`lwasm`) | the 6809 and 6309 cross-assembler | `brew install lwtools` |
+| [Rust](https://rustup.rs/) (`cargo`) | builds the pinned 6809 simulator that runs the assembly tests | `brew install rustup` then `rustup-init` |
+| [XRoar](https://www.6809.org.uk/xroar/) | whole-machine CoCo emulation, for the interactive demos and the machine-level checks | `brew install xroar` |
+
+The signage image and the exhibit cards need two more: Docker Desktop and
+Google Chrome. Neither is needed for the model, the tests, or the talk.
+
+### Build and test
 
 ```sh
-brew install lwtools xroar
 make tools
 make test
+```
+
+`make tools` checks for `lwasm` and `cargo`, then builds the
+[gorsat/6809](https://github.com/gorsat/6809) simulator at a pinned revision
+into `.tools/`. `make test` then does everything that needs no ROM images:
+it syncs the Python environment, runs the formatter and linter, runs the
+reference tests, assembles every CoCo binary, and runs the eleven assembly
+test suites in the simulator, checking the 6809 against the reference
+implementation byte for byte. It takes about twenty seconds.
+
+### ROM images
+
+The emulator targets need Tandy's ROMs, which are copyrighted and not in
+this repository. Supply your own MAME-style archives and tell `make` where
+they are:
+
+| Archive | Members | CRC32 | Variable |
+| --- | --- | --- | --- |
+| `cocoe.zip` | `bas11.rom` (Color BASIC 1.1), `extbas10.rom` (Extended Color BASIC 1.0) | `6270955A`, `6111A086` | `COCO_ROM_ARCHIVE` |
+| `coco3.zip` | `coco3.rom` (Super Extended Color BASIC) | `B4C88D6C` | `COCO3_ROM_ARCHIVE` |
+
+```sh
+make xroar-test COCO_ROM_ARCHIVE=/path/to/cocoe.zip
+```
+
+The ROMs are extracted once into the ignored `build/roms/` directory and
+their checksums are verified before every emulator check. Without an archive
+the ROM-gated targets stop with a message saying which variable to set.
+Every `xroar*`, `block*`, `stage`, and hardware-experiment target is
+ROM-gated; nothing under `make test` is.
+
+### Machine-level checks
+
+With the ROMs in place, the same binaries the table runs boot in a real-ROM
+CoCo 1 and reach their keyboard prompts:
+
+```sh
 make xroar-test
 make xroar-test-exp5
 make xroar-test-exp6
@@ -139,10 +187,52 @@ make xroar-test-exp7
 make xroar-test-attention
 ```
 
-The XRoar checks use Stacey's locally owned Tandy ROM images. See
-[`research/toolchain.md`](research/toolchain.md) for ROM locations, checksums,
-and the distinction between CPU-level, machine-level, and physical-hardware
-evidence.
+See [`research/toolchain.md`](research/toolchain.md) for the distinction
+between CPU-level, machine-level, and physical-hardware evidence.
+
+### Regenerating the deck's figures
+
+Every number on a slide comes from a run. `make deck-figures` reruns the
+reference model, exports the traces, and splices the figures into
+`presentation/deck/index.html` between its `FIGURE` markers. The splicer
+refuses to run over an uncommitted deck, because the hand-written copy lives
+in the same file; commit first.
+
+### The talk, the table, and the SD card
+
+`make stage` launches the parked emulator windows for the talk and
+`make block1` through `make block10` print each block's cues. `make sdcard`
+builds the disk images and loose files for a CoCo SDC card, and
+`make sdcard-install DEST=/Volumes/COCO` copies them to a mounted card and
+verifies every byte. The big-screen slideshow and its Raspberry Pi image are
+built from [`signage/`](signage/README.md). The talk itself is
+[`presentation/runsheet.md`](presentation/runsheet.md).
+
+### Platforms
+
+**macOS, Apple silicon** is the only platform this has run on. The Makefile
+defaults assume it: XRoar is looked up on `PATH` and then in Homebrew's keg,
+`make block1` opens the deck with `open`, and the SD card mounts under
+`/Volumes`.
+
+**Linux** should work for the model, the tests, and the emulator, and is
+untested. Every tool exists: uv and rustup install the same way, LWTOOLS
+builds from source, and XRoar is packaged by most distributions or builds
+from source. Set `XROAR=` if it is not on `PATH`, and `DEST=` for the SD
+card. The Makefile needs GNU make and `unzip`. The two places that call
+`open` are macOS-only and only affect the talk's stage commands and the
+signage preview. The signage image builder additionally needs an arm64 host
+and Docker with privileged containers, because the Pi's root filesystem is
+customised in a native chroot.
+
+**Windows** is untested and not expected to work natively: the Makefile
+assumes a POSIX shell, `unzip`, and `nohup`. WSL2 is the plausible route and
+follows the Linux notes, with the usual caveat that XRoar's window needs a
+display the WSL session can reach.
+
+**Physical hardware.** The programs load from a CoCo SDC. The CoCo 1 is a
+32K machine; the CoCo 3 needs its own ROM archive, and its 6309 builds need
+a 6309 fitted. The runsheet records which build goes on which machine.
 
 ## Run a presentation experiment
 
@@ -157,7 +247,7 @@ make present EXP=11
 ```
 
 The menu starts at EXP-004, the first complete 6809 learning loop. Run without
-`EXP` to list all five demonstrations:
+`EXP` to list all seven demonstrations:
 
 | Experiment | Demonstration | Command |
 | --- | --- | --- |
@@ -166,19 +256,17 @@ The menu starts at EXP-004, the first complete 6809 learning loop. Run without
 | EXP-006 | 8 KiB, four-word completion workbench | `make present EXP=6` |
 | EXP-007 | 32 KiB all-RAM sentence completion | `make present EXP=7` |
 | EXP-011 | Edit context without training | `make present EXP=11` |
+| EXP-012 | Sixteen invented episode titles | `make present EXP=12` |
+| EXP-013 | A game opponent that learns you | `make present EXP=13` |
 
 ## Watch it train in XRoar
 
-From Terminal:
-
 ```sh
-cd ~/Work/Projects/Personal/coco-llm
 make xroar
 ```
 
-The first run extracts Stacey's local Color BASIC 1.1 and Extended Color BASIC
-1.0 images from `~/OneDrive/CoCo/MAME/roms/cocoe.zip`. If that archive is still
-an online-only OneDrive file, download it in Finder first.
+The first run extracts Color BASIC 1.1 and Extended Color BASIC 1.0 from your
+ROM archive (see "ROM images" above) into `build/roms/`.
 
 XRoar opens as a stock-rate 32K NTSC CoCo 1 and loads the real DECB binary.
 Watch for this sequence on the CoCo screen:
@@ -226,7 +314,6 @@ make xroar-test
 Experiment 5 has its own corpus, 380-parameter model, and DECB binary:
 
 ```sh
-cd ~/Work/Projects/Personal/coco-llm
 make xroar-exp5
 ```
 

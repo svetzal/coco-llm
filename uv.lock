@@ -138,6 +138,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "music21" },
+    { name = "pillow" },
     { name = "pygame-ce" },
     { name = "pytest" },
     { name = "ruff" },
@@ -149,6 +150,7 @@ requires-dist = [{ name = "numpy", specifier = ">=2.0,<3" }]
 [package.metadata.requires-dev]
 dev = [
     { name = "music21", specifier = ">=10.5.0" },
+    { name = "pillow", specifier = ">=10" },
     { name = "pygame-ce", specifier = ">=2.5.7" },
     { name = "pytest", specifier = ">=8,<10" },
     { name = "ruff", specifier = ">=0.12,<1" },

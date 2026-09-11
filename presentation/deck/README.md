@@ -104,9 +104,12 @@ silently destroy, which has happened. Commit first (porting any
 figure-region edits into make_deck_figures.py), or pass --anyway:
 
 ```sh
-uv run python tools/export_deck_traces.py   # run the model, write the numbers
-uv run python tools/make_deck_figures.py    # draw them, splice them in
+make deck-figures
 ```
+
+which runs, in order, `tools/export_deck_traces.py` (run the model, write the
+numbers), `tools/measure_train_vs_infer.py` (classify the image by job) and
+`tools/make_deck_figures.py` (draw them, splice them in).
 
 **Every number in a figure comes from a real run.** The copy discipline says no
 sample output goes on a slide unless the machine produced it, and a figure is

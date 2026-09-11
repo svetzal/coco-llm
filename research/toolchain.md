@@ -23,9 +23,12 @@ The simulator is pinned in the `Makefile` to Git revision
 `546c8d2efc7d30cecb5afe9bc05e683a4bfbd672`. Install the development tools with:
 
 ```sh
-brew install lwtools
+brew install lwtools rustup
 make tools
 ```
+
+`make tools` needs `cargo`, because the simulator is a Rust crate installed
+from its repository at that revision.
 
 Run both reference and assembly tests with:
 
@@ -51,8 +54,9 @@ Use XRoar when behaviour depends upon the Color Computer rather than only the
 XRoar provides CoCo 1, 2, and 3 emulation, disk and cassette images, snapshots,
 and a GDB target. It requires the appropriate Tandy ROM images.
 
-This Mac has an original extended CoCo firmware set in
-`~/OneDrive/CoCo/MAME/roms/cocoe.zip`:
+The ROMs are not in the repository. The Makefile reads them from a
+MAME-style archive named by `COCO_ROM_ARCHIVE` (and `COCO3_ROM_ARCHIVE` for
+the CoCo 3), whose default is the author's own copy. The CoCo 1 set:
 
 | Firmware | Archive member | CRC32 |
 | --- | --- | --- |

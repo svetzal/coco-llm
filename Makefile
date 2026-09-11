@@ -1,7 +1,15 @@
-UV := uv
+# Tools. Every one of these can be overridden on the command line, e.g.
+# `make xroar-test XROAR=/usr/bin/xroar COCO_ROM_ARCHIVE=~/roms/cocoe.zip`.
+# See README.md, "Getting started", for what to install.
+UV ?= uv
+LWASM ?= lwasm
 SIM6809 := .tools/6809/bin/6809
 SIM6809_REV := 546c8d2efc7d30cecb5afe9bc05e683a4bfbd672
-XROAR ?= /opt/homebrew/opt/xroar/bin/xroar
+# XRoar: whatever is on PATH, else Homebrew's keg on Apple silicon.
+XROAR ?= $(or $(shell command -v xroar 2>/dev/null),/opt/homebrew/opt/xroar/bin/xroar)
+# The Tandy ROM images are copyrighted and not in this repository. Point
+# these at your own MAME-style archives (cocoe.zip holds bas11.rom and
+# extbas10.rom; coco3.zip holds coco3.rom). The defaults are the author's.
 COCO_ROM_ARCHIVE ?= $(HOME)/OneDrive/CoCo/MAME/roms/cocoe.zip
 COCO_BASIC_ROM := build/roms/bas11.rom
 COCO_EXTBASIC_ROM := build/roms/extbas10.rom
@@ -22,7 +30,7 @@ COCO_EXTBASIC_ROM := build/roms/extbas10.rom
 	exp012-titles exp012-model titles-bin titles-test xroar-titles \
 	exp013-sweep exp013-play exp013-record rpsls-bin rpsls-test xroar-rpsls \
 	present stage xroar-test-music block1 block2 block3 block4 block5 block6 block7 block8 \
-	block9 block10 sdcard sdcard-install tools
+	block9 block10 sdcard sdcard-install tools deck-figures
 
 PRESENTER := $(UV) run python tools/present_experiment.py
 6809_COMMON_SOURCES := \
@@ -253,7 +261,7 @@ music-tune: build/exp009/tune_data.inc
 
 build/coco-music.bin: src/6809/coco_music.asm src/6809/music_player.asm \
 		build/exp009/tune_data.inc
-	lwasm --6809 --format=decb --symbol-dump=build/coco-music.sym \
+	$(LWASM) --6809 --format=decb --symbol-dump=build/coco-music.sym \
 		--output=$@ $<
 
 music-bin: build/coco-music.bin
@@ -296,12 +304,12 @@ build/exp015/tune_data_6309.inc: tools/export_tune.py src/reference/coco_synth.p
 
 build/exp015/music-fast.bin: src/6809/coco_music_fast.asm \
 		src/6809/music_player.asm build/exp015/tune_data_fast.inc
-	lwasm --6809 --format=decb --symbol-dump=build/exp015/music-fast.sym \
+	$(LWASM) --6809 --format=decb --symbol-dump=build/exp015/music-fast.sym \
 		--output=$@ $<
 
 build/exp015/music-6309.bin: src/6309/coco_music_native.asm \
 		src/6809/music_player.asm build/exp015/tune_data_6309.inc
-	lwasm --6309 --format=decb --symbol-dump=build/exp015/music-6309.sym \
+	$(LWASM) --6309 --format=decb --symbol-dump=build/exp015/music-6309.sym \
 		--output=$@ $<
 
 # The three files under the names the session sheet uses, loose and on a
@@ -332,6 +340,15 @@ build/roms/.coco3-rom: $(COCO3_ROM_ARCHIVE)
 	mkdir -p build/roms
 	unzip -jo $(COCO3_ROM_ARCHIVE) coco3.rom -d build/roms
 	touch $@
+
+$(COCO3_ROM_ARCHIVE):
+	@echo "CoCo 3 ROM archive not found: $@"
+	@echo "The CoCo 3 targets need Super Extended Color BASIC (coco3.rom), which is"
+	@echo "copyrighted and not shipped here. Put your own MAME-style coco3.zip"
+	@echo "somewhere and run:"
+	@echo "    make $(MAKECMDGOALS) COCO3_ROM_ARCHIVE=/path/to/coco3.zip"
+	@echo "See README.md, \"ROM images\"."
+	@exit 1
 
 # Each build runs to the end of its tune under XRoar's CoCo 3, trapping at
 # audio_disable. That proves the tick machinery works at the new rates; it
@@ -401,7 +418,7 @@ $(EXP017)/$(1)/wave.bin: $(2) src/6809/wave_player.asm \
 	mkdir -p $(EXP017)/$(1)
 	cp $(EXP017)/table-$(4).inc $(EXP017)/$(1)/wavetable.inc
 	cp $(EXP017)/tune-$(5).inc $(EXP017)/$(1)/tune_data.inc
-	lwasm --$(3) -I $(EXP017)/$(1) --format=decb \
+	$(LWASM) --$(3) -I $(EXP017)/$(1) --format=decb \
 		--symbol-dump=$(EXP017)/$(1)/wave.sym --output=$$@ $(2)
 endef
 
@@ -510,7 +527,7 @@ define steady_build
 $(EXP018)/$(1)/steady.bin: $(2) src/6809/steady_player.asm $(EXP018)/events-$(4).inc
 	mkdir -p $(EXP018)/$(1)
 	cp $(EXP018)/events-$(4).inc $(EXP018)/$(1)/tune_events.inc
-	lwasm --$(3) -I $(EXP018)/$(1) --format=decb \
+	$(LWASM) --$(3) -I $(EXP018)/$(1) --format=decb \
 		--symbol-dump=$(EXP018)/$(1)/steady.sym --output=$$@ $(2)
 endef
 
@@ -586,7 +603,7 @@ exp012-titles:
 	$(UV) run python tools/run_exp_012.py
 
 build/coco-rpsls.bin: src/6809/coco_rpsls.asm src/6809/rpsls_game.asm
-	lwasm --6809 -I src/6809 --format=decb \
+	$(LWASM) --6809 -I src/6809 --format=decb \
 		--symbol-dump=build/coco-rpsls.sym --output=$@ $<
 
 rpsls-bin: build/coco-rpsls.bin
@@ -597,7 +614,7 @@ build/rpsls-agent.asm: src/6809/coco_rpsls.asm src/6809/rpsls_game.asm \
 	cat $< >> $@
 
 build/rpsls-agent.bin: build/rpsls-agent.asm
-	lwasm --6809 -I src/6809 --format=decb \
+	$(LWASM) --6809 -I src/6809 --format=decb \
 		--symbol-dump=build/rpsls-agent.sym --output=$@ $<
 
 build/rpsls-agent-test.asm: build/rpsls-agent.bin \
@@ -657,7 +674,7 @@ exp012-model: build/exp012/title_model.inc
 build/coco-titles.bin: src/6809/coco_titles.asm src/6809/title_generator.asm \
 		src/6809/model_forward.asm src/6809/model_storage.asm \
 		build/exp012/title_model.inc
-	lwasm --6809 --format=decb --symbol-dump=build/coco-titles.sym \
+	$(LWASM) --6809 --format=decb --symbol-dump=build/coco-titles.sym \
 		--output=$@ $<
 
 titles-bin: build/coco-titles.bin
@@ -685,7 +702,7 @@ exp010-model: build/exp010/melody_model.inc
 
 build/melody-core.bin: src/6809/coco_melody.asm \
 		src/6809/melody_inference.asm build/exp010/melody_model.inc
-	lwasm --6809 --format=raw --symbol-dump=build/melody-core.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/melody-core.sym \
 		--output=$@ $<
 
 exp010-core: build/melody-core.bin
@@ -714,24 +731,24 @@ MELODY_DEMO_SOURCES := src/6809/melody_demo.asm src/6809/melody_ui.asm \
 
 build/coco-melody-demo.bin: src/6809/coco_melody_demo.asm \
 		$(MELODY_DEMO_SOURCES) build/exp010/tune_frame.inc
-	lwasm --6809 --format=decb \
+	$(LWASM) --6809 --format=decb \
 		--symbol-dump=build/coco-melody-demo.sym --output=$@ $<
 
 # The same demo entered at demo_run: composes from the built-in figure and
 # plays with no keyboard, so the emulator can run it to the end.
 build/coco-melody-run.bin: src/6809/coco_melody_demo.asm \
 		$(MELODY_DEMO_SOURCES) build/exp010/tune_frame.inc
-	lwasm --6809 --format=decb --define=ENTRY_RUN=1 \
+	$(LWASM) --6809 --format=decb --define=ENTRY_RUN=1 \
 		--symbol-dump=build/coco-melody-run.sym --output=$@ $<
 
 build/coco-melody-demo-6309.bin: src/6309/coco_melody_demo_native.asm \
 		$(MELODY_DEMO_SOURCES) build/exp010/tune_frame_6309.inc
-	lwasm --6309 --format=decb \
+	$(LWASM) --6309 --format=decb \
 		--symbol-dump=build/coco-melody-demo-6309.sym --output=$@ $<
 
 build/coco-melody-run-6309.bin: src/6309/coco_melody_demo_native.asm \
 		$(MELODY_DEMO_SOURCES) build/exp010/tune_frame_6309.inc
-	lwasm --6309 --format=decb --define=ENTRY_RUN=1 \
+	$(LWASM) --6309 --format=decb --define=ENTRY_RUN=1 \
 		--symbol-dump=build/coco-melody-run-6309.sym --output=$@ $<
 
 exp010-demo: build/coco-melody-demo.bin build/coco-melody-run.bin \
@@ -929,7 +946,7 @@ xroar-exp7: build/coco-llm-exp7.bin build/roms/.coco1-roms
 
 build/smul8-test.bin: src/6809/tests/smul8_test.asm
 	mkdir -p build
-	lwasm --6809 --format=raw --output=$@ $<
+	$(LWASM) --6809 --format=raw --output=$@ $<
 
 build/model_data.inc: tools/generate_6809_data.py \
 		src/reference/fixed_token_lm.py src/reference/token_lm.py \
@@ -947,7 +964,7 @@ build/model_data_exp5.inc: tools/generate_6809_data.py \
 
 build/model-test.bin: src/6809/tests/model_test.asm \
 		$(6809_COMMON_SOURCES) $(6809_EXP004_SOURCES) build/model_data.inc
-	lwasm --6809 --format=raw --symbol-dump=build/model-test.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/model-test.sym \
 		--output=$@ $<
 
 build/model-test-runner.asm: build/model-test.bin \
@@ -959,7 +976,7 @@ build/model-test-runner.asm: build/model-test.bin \
 
 build/model-exp5-test.bin: src/6809/tests/model_exp5_test.asm \
 		$(6809_COMMON_SOURCES) $(6809_EXP005_SOURCES) build/model_data_exp5.inc
-	lwasm --6809 --format=raw --symbol-dump=build/model-exp5-test.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/model-exp5-test.sym \
 		--output=$@ $<
 
 build/model-exp5-test-runner.asm: build/model-exp5-test.bin \
@@ -972,7 +989,7 @@ build/model-exp5-test-runner.asm: build/model-exp5-test.bin \
 build/model-exp6-test.bin: src/6809/tests/completion_exp6_test.asm \
 		src/6809/completion_inference.asm build/exp006/model_data.inc \
 		build/exp006/weights.bin
-	lwasm --6809 --format=raw --symbol-dump=build/model-exp6-test.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/model-exp6-test.sym \
 		--output=$@ $<
 
 build/model-exp6-test-runner.asm: build/model-exp6-test.bin \
@@ -989,7 +1006,7 @@ build/model-exp6-test-runner.asm: build/model-exp6-test.bin \
 build/model-exp7-test.bin: src/6809/tests/completion_exp7_test.asm \
 		src/6809/completion_inference_exp7.asm build/exp007/model_data.inc \
 		build/exp007/weights.bin
-	lwasm --6809 --format=raw --symbol-dump=build/model-exp7-test.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/model-exp7-test.sym \
 		--output=$@ $<
 
 build/model-exp7-test-runner.asm: build/model-exp7-test.bin \
@@ -1009,7 +1026,7 @@ build/workbench-exp6-test.bin: src/6809/tests/completion_ui_exp6_test.asm \
 		src/6809/completion_inference.asm src/6809/completion_screen.asm \
 		src/6809/completion_editor.asm src/6809/completion_policy_exp6.asm \
 		build/exp006/model_data.inc
-	lwasm --6809 --format=raw --symbol-dump=build/workbench-exp6-test.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/workbench-exp6-test.sym \
 		--output=$@ $<
 
 build/workbench-exp6-test-runner.asm: build/workbench-exp6-test.bin \
@@ -1028,7 +1045,7 @@ build/workbench-exp7-test.bin: src/6809/tests/completion_ui_exp7_test.asm \
 		src/6809/completion_inference_exp7.asm \
 		src/6809/completion_screen.asm src/6809/completion_editor.asm \
 		src/6809/completion_policy_exp7.asm build/exp007/model_data.inc
-	lwasm --6809 --format=raw --symbol-dump=build/workbench-exp7-test.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/workbench-exp7-test.sym \
 		--output=$@ $<
 
 build/workbench-exp7-test-runner.asm: build/workbench-exp7-test.bin \
@@ -1067,12 +1084,12 @@ build/exp011/attention_data.inc build/exp011/weights.bin \
 build/coco-attention.bin: src/6809/coco_attention.asm \
 		src/6809/attention_inference.asm src/6809/attention_ui.asm \
 		build/exp011/attention_data.inc
-	lwasm --6809 --format=decb --output=$@ $<
+	$(LWASM) --6809 --format=decb --output=$@ $<
 
 build/coco-attention.raw build/coco-attention.sym: src/6809/coco_attention.asm \
 		src/6809/attention_inference.asm src/6809/attention_ui.asm \
 		build/exp011/attention_data.inc
-	lwasm --6809 --format=raw --symbol-dump=build/coco-attention.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/coco-attention.sym \
 		--output=build/coco-attention.raw $<
 
 build/attention-parity-test.asm: build/coco-attention.raw \
@@ -1087,11 +1104,11 @@ build/attention-ui-test.asm: build/coco-attention.raw \
 
 build/coco-llm.bin: src/6809/coco_llm.asm \
 		$(6809_COMMON_SOURCES) $(6809_EXP004_SOURCES) build/model_data.inc
-	lwasm --6809 --format=decb --output=$@ $<
+	$(LWASM) --6809 --format=decb --output=$@ $<
 
 build/coco-llm.sym: src/6809/coco_llm.asm \
 		$(6809_COMMON_SOURCES) $(6809_EXP004_SOURCES) build/model_data.inc
-	lwasm --6809 --format=raw --symbol-dump=build/coco-llm.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/coco-llm.sym \
 		--output=build/coco-llm.raw $<
 
 build/coco-llm.raw: build/coco-llm.sym
@@ -1099,11 +1116,11 @@ build/coco-llm.raw: build/coco-llm.sym
 
 build/coco-llm-exp5.bin: src/6809/coco_llm_exp5.asm \
 		$(6809_COMMON_SOURCES) $(6809_EXP005_SOURCES) build/model_data_exp5.inc
-	lwasm --6809 --format=decb --output=$@ $<
+	$(LWASM) --6809 --format=decb --output=$@ $<
 
 build/coco-llm-exp5.sym: src/6809/coco_llm_exp5.asm \
 		$(6809_COMMON_SOURCES) $(6809_EXP005_SOURCES) build/model_data_exp5.inc
-	lwasm --6809 --format=raw --symbol-dump=build/coco-llm-exp5.sym \
+	$(LWASM) --6809 --format=raw --symbol-dump=build/coco-llm-exp5.sym \
 		--output=build/coco-llm-exp5.raw $<
 
 build/coco-llm-exp6.bin: src/6809/coco_llm_exp6.asm \
@@ -1112,14 +1129,14 @@ build/coco-llm-exp6.bin: src/6809/coco_llm_exp6.asm \
 		src/6809/completion_editor.asm src/6809/completion_policy_exp6.asm \
 		build/exp006/model_data.inc \
 		build/exp006/model_image.inc
-	lwasm --6809 --format=decb --output=$@ $<
+	$(LWASM) --6809 --format=decb --output=$@ $<
 
 build/coco-llm-exp6.sym: src/6809/coco_llm_exp6.asm \
 		src/6809/experiments/experiment_006.asm \
 		src/6809/completion_inference.asm src/6809/completion_screen.asm \
 		src/6809/completion_editor.asm src/6809/completion_policy_exp6.asm \
 		build/exp006/model_data.inc
-	lwasm --6809 --define=DIRECT_TEST=1 --format=raw \
+	$(LWASM) --6809 --define=DIRECT_TEST=1 --format=raw \
 		--symbol-dump=build/coco-llm-exp6.sym \
 		--output=build/coco-llm-exp6.raw $<
 
@@ -1129,14 +1146,14 @@ build/coco-llm-exp7.bin: src/6809/coco_llm_exp7.asm \
 		src/6809/completion_screen.asm src/6809/completion_editor.asm \
 		src/6809/completion_policy_exp7.asm build/exp007/model_data.inc \
 		build/exp007/packed_model.inc
-	lwasm --6809 --format=decb --output=$@ $<
+	$(LWASM) --6809 --format=decb --output=$@ $<
 
 build/coco-llm-exp7.sym: src/6809/coco_llm_exp7.asm \
 		src/6809/experiments/experiment_007.asm \
 		src/6809/completion_inference_exp7.asm \
 		src/6809/completion_screen.asm src/6809/completion_editor.asm \
 		src/6809/completion_policy_exp7.asm build/exp007/model_data.inc
-	lwasm --6809 --define=DIRECT_TEST=1 --format=raw \
+	$(LWASM) --6809 --define=DIRECT_TEST=1 --format=raw \
 		--symbol-dump=build/coco-llm-exp7.sym \
 		--output=build/coco-llm-exp7.raw $<
 
@@ -1145,9 +1162,30 @@ build/roms/.coco1-roms: $(COCO_ROM_ARCHIVE)
 	unzip -jo $(COCO_ROM_ARCHIVE) bas11.rom extbas10.rom -d build/roms
 	touch $@
 
+# A missing archive fails here with a message rather than make's bare
+# "No rule to make target".
+$(COCO_ROM_ARCHIVE):
+	@echo "CoCo 1 ROM archive not found: $@"
+	@echo "XRoar needs Tandy Color BASIC 1.1 (bas11.rom) and Extended Color BASIC 1.0"
+	@echo "(extbas10.rom), which are copyrighted and not shipped here. Put your own"
+	@echo "MAME-style cocoe.zip somewhere and run:"
+	@echo "    make $(MAKECMDGOALS) COCO_ROM_ARCHIVE=/path/to/cocoe.zip"
+	@echo "See README.md, \"ROM images\"."
+	@exit 1
+
+# The deck's figures are generated from the exported traces; index.html is
+# hand-edited around them. Regenerate after changing a model, a corpus, or
+# a figure builder. The splicer refuses to run over an uncommitted deck.
+deck-figures:
+	$(UV) run python tools/export_deck_traces.py
+	$(UV) run python tools/measure_train_vs_infer.py
+	$(UV) run python tools/make_deck_figures.py
+
 tools:
-	@command -v lwasm >/dev/null || \
+	@command -v $(LWASM) >/dev/null || \
 		(echo "Install LWTOOLS first: brew install lwtools" && exit 1)
+	@command -v cargo >/dev/null || \
+		(echo "Install the Rust toolchain first (cargo is needed to build the 6809 simulator): https://rustup.rs" && exit 1)
 	cargo install \
 		--git https://github.com/gorsat/6809.git \
 		--rev $(SIM6809_REV) \
@@ -1168,7 +1206,7 @@ build/bench6309/bench_data.inc: tools/export_bench_data.py \
 	$(UV) run python tools/export_bench_data.py
 
 build/bench6309/bench-test.bin: src/6309/tests/bench_test.asm $(BENCH_SOURCES)
-	lwasm --6809 --format=raw \
+	$(LWASM) --6809 --format=raw \
 		--symbol-dump=build/bench6309/bench-test.sym --output=$@ $<
 
 build/bench6309/bench-test-runner.asm: build/bench6309/bench-test.bin \
@@ -1185,24 +1223,24 @@ bench-test: build/bench6309/bench-test-runner.asm $(SIM6809)
 	$(SIM6809) --ram-top 65535 --reset-vector 0x2000 --run --perf $<
 
 build/bench6309/bench6809.bin: $(BENCH_SOURCES)
-	lwasm --6809 --format=decb --output=$@ src/6309/coco_bench.asm
-	lwasm --6809 --format=raw \
+	$(LWASM) --6809 --format=decb --output=$@ src/6309/coco_bench.asm
+	$(LWASM) --6809 --format=raw \
 		--symbol-dump=build/bench6309/coco-bench.sym \
 		--output=build/bench6309/coco-bench.bin src/6309/coco_bench.asm
 
 build/bench6309/bench6309.bin: $(BENCH_SOURCES)
-	lwasm --6309 --format=decb --define=BENCH_6309=1 --define=BENCH_NATIVE=1 \
+	$(LWASM) --6309 --format=decb --define=BENCH_6309=1 --define=BENCH_NATIVE=1 \
 		--output=$@ src/6309/coco_bench.asm
-	lwasm --6309 --format=raw --define=BENCH_6309=1 --define=BENCH_NATIVE=1 \
+	$(LWASM) --6309 --format=raw --define=BENCH_6309=1 --define=BENCH_NATIVE=1 \
 		--symbol-dump=build/bench6309/coco-bench-6309.sym \
 		--output=build/bench6309/coco-bench-6309.bin src/6309/coco_bench.asm
 
 # The fallback: MULD without native mode, for the case where native-mode
 # interrupt stacking misbehaves on real silicon. MULD works in either mode.
 build/bench6309/bench6309safe.bin: $(BENCH_SOURCES)
-	lwasm --6309 --format=decb --define=BENCH_6309=1 --output=$@ \
+	$(LWASM) --6309 --format=decb --define=BENCH_6309=1 --output=$@ \
 		src/6309/coco_bench.asm
-	lwasm --6309 --format=raw --define=BENCH_6309=1 \
+	$(LWASM) --6309 --format=raw --define=BENCH_6309=1 \
 		--symbol-dump=build/bench6309/coco-bench-safe.sym \
 		--output=build/bench6309/coco-bench-safe.bin src/6309/coco_bench.asm
 
