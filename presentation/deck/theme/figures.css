@@ -602,19 +602,53 @@
 .reveal .cline.hot {
   color: var(--deck-mark); background: rgba(0, 0, 0, 0.14);
 }
-/* The register column: state after each instruction, computed from the
- * exported traces by make_deck_figures.py. Hot CoCo is fixed-width, so ch
- * aligns the column exactly; both spans refuse to shrink below content. */
-.reveal .fig.code.regs { font-size: 0.68em; }
-.reveal .fig.code.regs .cline { display: flex; }
-.reveal .fig.code.regs .cline .ct {
-  white-space: pre; flex: 0 0 auto; min-width: 34ch;
+/* The register trace: a table with one row per instruction and one column
+ * per byte, built from the exported traces by make_deck_figures.py. The two
+ * bytes of a 16-bit thing sit touching under one header (D over A and B,
+ * product over hi and lo), the cells an instruction wrote are lit, and the
+ * number the pair makes prints beside them when the walk needs it. */
+.reveal .fig.code.trace { font-size: 0.6em; }
+.reveal table.rtrace {
+  border-collapse: separate; border-spacing: 0; margin: 0 auto;
+  font-family: var(--coco-type); font-size: 1em; line-height: 1.28;
 }
-.reveal .fig.code.regs .cline .reg {
-  white-space: pre; flex: 0 0 auto; padding-left: 2ch;
-  color: var(--deck-quiet);
+.reveal table.rtrace th, .reveal table.rtrace td {
+  border: none; padding: 0.05em 0.25em; text-align: center;
+  font-weight: normal; vertical-align: middle;
 }
-.reveal .fig.code.regs .cline.hot .reg { color: var(--deck-mark); }
+.reveal table.rtrace td.ct, .reveal table.rtrace th.ct {
+  white-space: pre; text-align: left; color: var(--deck-quiet);
+  padding-left: 0.6em; padding-right: 1ch;
+}
+.reveal table.rtrace tr.hot td { background: rgba(0, 0, 0, 0.14); }
+.reveal table.rtrace tr.hot td.ct { color: var(--deck-mark); }
+.reveal table.rtrace th.grp {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.8em; letter-spacing: 0.08em; color: var(--deck-ink);
+  border-bottom: 2px solid var(--deck-ink); padding-bottom: 0.15em;
+}
+.reveal table.rtrace th.lab {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.8em; letter-spacing: 0.08em; color: var(--deck-quiet);
+  padding-top: 0.25em;
+}
+.reveal table.rtrace td.byte {
+  min-width: 3.4ch; color: var(--deck-line);
+  background: rgba(0, 0, 0, 0.08); background-clip: content-box;
+  padding: 0.12em 0;
+  box-shadow: inset 0.15em 0 0 var(--deck-bg), inset -0.15em 0 0 var(--deck-bg);
+}
+.reveal table.rtrace td.byte.w { color: var(--coco-white); background-color: var(--deck-mark); }
+.reveal table.rtrace td.val, .reveal table.rtrace th.val {
+  min-width: 2ch; text-align: left; color: var(--deck-ink);
+  padding-left: 0.5em; padding-right: 0.3em; white-space: nowrap;
+}
+.reveal table.rtrace .g0 { padding-left: 1.1em; }
+.reveal table.rtrace td.note, .reveal table.rtrace th.note {
+  font-family: var(--deck-prose); text-transform: none; text-align: left;
+  font-size: 0.85em; color: var(--deck-quiet); padding-left: 1em;
+  white-space: nowrap;
+}
 /* The omission marker lines up with the code it stands in for, not with the
  * label column. A path is also left in its real case: these are file names. */
 .reveal .cline.elide { color: var(--deck-quiet); padding-left: 2.6em; }
