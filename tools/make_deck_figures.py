@@ -785,7 +785,7 @@ def trace_sign_fix(trace: dict) -> list[tuple]:
 # The shift slide only needs the value: the next slide draws the bits and
 # the carry. One wide cell holds D as a signed number, filled after each
 # ASRA/RORB pair.
-SHIFT_GROUPS = [("D", [("d", "")], False, " wide")]
+SHIFT_GROUPS = [("D", [("d", "")], False, " plain")]
 
 
 def trace_learning_rate(shift: dict) -> list[tuple]:
@@ -801,7 +801,8 @@ def trace_learning_rate(shift: dict) -> list[tuple]:
 
 
 def figure_register_trace(
-    excerpt: dict, note: str, groups: list[tuple], rows: list[tuple]
+    excerpt: dict, note: str, groups: list[tuple], rows: list[tuple],
+    legend: bool = True,
 ) -> str:
     """One assembly excerpt beside its register trace: after every
     instruction, every byte the walk follows, with the bytes that
@@ -822,11 +823,15 @@ def figure_register_trace(
     for header, cells, value, extra in groups:
         head1 += f'<th class="grp">{esc(header)}</th>'
         labels = [f'<span class="lab">{esc(label)}</span>' for _, label in cells]
-        head2 += f'<th class="g">{register_box(labels, "", " hdr" + extra)}</th>'
+        if "plain" in extra:
+            head2 += '<th class="g"></th>'
+        else:
+            head2 += f'<th class="g">{register_box(labels, "", " hdr" + extra)}</th>'
     head1 += '<th class="note"></th>'
     head2 += (
         '<th class="note legend"><span class="byte r">read</span>'
         '<span class="byte w">written</span></th>'
+        if legend else '<th class="note"></th>'
     )
 
     # What an instruction reads lights the snapshot before it, which is the
@@ -862,6 +867,10 @@ def figure_register_trace(
             groups_here = groups
         for header, cells, value, extra in groups_here:
             bytes_ = [state.get(key) for key, _ in cells]
+            if "plain" in extra:
+                shown = "" if bytes_[0] is None else bytes_[0]
+                cells_html += f'<td class="g plain">{shown}</td>'
+                continue
             spans = [
                 '<span class="byte'
                 + (" w" if key in written else "") + (" r" if key in read else "")
@@ -1482,6 +1491,7 @@ def main() -> None:
         f"{captured['gradient']} the multiply slide made.",
         SHIFT_GROUPS,
         trace_learning_rate(shift),
+        legend=False,
     ))
     DECK.write_text(deck, encoding="utf-8")
     count = deck.count("<!-- FIGURE:")

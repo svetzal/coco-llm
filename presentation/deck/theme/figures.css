@@ -685,8 +685,13 @@
   min-height: 1.05em; color: var(--deck-ink); font-weight: 600;
   border-top: 1px solid var(--deck-quiet); background: rgba(255, 255, 255, 0.28);
 }
-.reveal .r16.wide { grid-template-columns: 6em; }
-.reveal .r16.wide .byte { color: var(--deck-ink); font-weight: 600; }
+/* A plain value column: the number as text, no box, for the slide that
+ * only needs to show a value change. */
+.reveal table.rtrace td.plain {
+  font-family: var(--deck-prose); font-variant-numeric: tabular-nums;
+  font-size: 1.2em; font-weight: 600; color: var(--deck-ink);
+  text-align: right; padding: 0.15em 0.6em; min-width: 5em;
+}
 /* A single byte with no composed value (the carry) is just the cell. */
 .reveal .r16.bare .word { display: none; }
 /* The header repeats the box shape without the box, so A and B sit over
