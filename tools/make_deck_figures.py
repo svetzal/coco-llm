@@ -782,30 +782,21 @@ def trace_sign_fix(trace: dict) -> list[tuple]:
     return rows
 
 
-SHIFT_GROUPS = [
-    ("D", [("A", "A"), ("B", "B")], True),
-    ("carry", [("c", "")], False),
-]
+# The shift slide only needs the value: the next slide draws the bits and
+# the carry. One wide cell holds D as a signed number, filled after each
+# ASRA/RORB pair.
+SHIFT_GROUPS = [("D", [("d", "")], False, " wide")]
 
 
 def trace_learning_rate(shift: dict) -> list[tuple]:
-    """Walk the captured gradient through the four shift pairs: ASRA drops
-    A's low bit into the carry, RORB collects it into B's top."""
+    """Walk the captured gradient through the four shift pairs, showing the
+    value after each pair: halved, rounding toward minus infinity."""
     steps = shift["steps"]
-    value = steps[0]["value"] & 0xFFFF
-    st = {"A": value >> 8, "B": value & 0xFF}
-    rows = [("lbsr", dict(st), {"A", "B"}, {"D"}, "the gradient", set())]
+    rows = [("lbsr", {"d": steps[0]["value"]}, {"d"}, set(), "the gradient", set())]
     for step in steps[1:]:
-        carry = st["A"] & 1
-        st["A"] = (st["A"] >> 1) | (st["A"] & 0x80)
-        st["c"] = carry
-        rows.append(("asra", dict(st), {"A", "c"}, set(), "", {"A"}))
-        dropped = st["B"] & 1
-        st["B"] = (st["B"] >> 1) | (carry << 7)
-        st["c"] = dropped
-        rows.append(("rorb", dict(st), {"B", "c"}, {"D"}, "", {"B", "c"}))
-        assert (st["A"] << 8 | st["B"]) == step["value"] & 0xFFFF, "shift drifted"
-        assert dropped == step["dropped"], "dropped bit drifted"
+        rows.append(("asra", {}, set(), set(), "", set()))
+        rows.append(("rorb", {"d": step["value"]}, {"d"}, set(), "halved", set()))
+    assert steps[-1]["value"] == steps[0]["value"] >> 4, "four halvings is >> 4"
     return rows
 
 
@@ -827,10 +818,11 @@ def figure_register_trace(
 
     head1 = '<th class="ct"></th>'
     head2 = '<th class="ct"></th>'
-    for header, cells, value in groups:
+    groups = [g if len(g) == 4 else (*g, "") for g in groups]
+    for header, cells, value, extra in groups:
         head1 += f'<th class="grp">{esc(header)}</th>'
         labels = [f'<span class="lab">{esc(label)}</span>' for _, label in cells]
-        head2 += f'<th class="g">{register_box(labels, "", " hdr")}</th>'
+        head2 += f'<th class="g">{register_box(labels, "", " hdr" + extra)}</th>'
     head1 += '<th class="note"></th>'
     head2 += (
         '<th class="note legend"><span class="byte r">read</span>'
@@ -863,12 +855,12 @@ def figure_register_trace(
             cls += " statenote"
             text = text[1]
         cells_html = ""
-        if mnemonic is None and not state:
+        if not state:
             cells_html = '<td class="g"></td>' * len(groups)
             groups_here = []
         else:
             groups_here = groups
-        for header, cells, value in groups_here:
+        for header, cells, value, extra in groups_here:
             bytes_ = [state.get(key) for key, _ in cells]
             spans = [
                 '<span class="byte'
@@ -882,7 +874,7 @@ def figure_register_trace(
                 for byte in bytes_:
                     total = (total << 8) | byte
                 word = str(signed(total, 8 * len(bytes_)))
-            cells_html += f'<td class="g">{register_box(spans, word, "" if value else " bare")}</td>'
+            cells_html += f'<td class="g">{register_box(spans, word, ("" if value else " bare") + extra)}</td>'
         body += (
             f'<tr class="{cls.strip()}"><td class="ct"><div class="code">'
             f'{esc(code)}</div></td>{cells_html}'
@@ -1485,9 +1477,9 @@ def main() -> None:
     deck = splice(deck, "shiftbits", figure_shift(shift))
     deck = splice(deck, "lrcode", figure_register_trace(
         code["learning_rate"],
-        "Shift right four times and you have divided by sixteen. That is the "
-        f"learning rate. It picks up the {captured['gradient']} the multiply "
-        "slide made.",
+        "Each ASRA and RORB pair halves the signed number. Four pairs divide "
+        "by sixteen, and that is the learning rate. It picks up the "
+        f"{captured['gradient']} the multiply slide made.",
         SHIFT_GROUPS,
         trace_learning_rate(shift),
     ))
