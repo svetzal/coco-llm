@@ -50,7 +50,7 @@ EXCERPTS = {
         "label": "multiply_s8_s16",
         "start_at": "tst     multiply_factor",
         "until": "multiply_ready",
-        "title": "and the correction that makes it signed",
+        "title": "the correction for a negative factor",
         "highlight": ["suba"],
     },
     # Where the learning rate physically is. The deck says 1/16 on the nudge

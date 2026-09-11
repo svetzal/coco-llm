@@ -882,26 +882,33 @@
   font-family: var(--coco-type); color: var(--deck-ink); font-size: 1em;
 }
 
-/* The sign-correction reveal reuses the bit cells, with an explanation column
- * instead of the decimal columns: here the interesting part is why one
- * subtraction is enough, not the sequence of values. */
-.reveal .fig.sign .bitrow { grid-template-columns: 9em 20em auto; }
-.reveal .fig.sign .plain { color: var(--deck-loud); text-align: center; }
-.reveal .fig.sign .explain {
-  font-family: var(--deck-prose); text-transform: none;
-  font-size: 0.62em; color: var(--deck-quiet); text-align: left;
+/* Why one subtraction is enough: every number in binary, split at the
+ * byte, with the register trace's two-bytes-over-a-value box beside it so
+ * the same quantity is seen three ways at once - decimal, bits, bytes. */
+.reveal .fig.sign2 { font-size: 0.5em; width: fit-content; margin: 0 auto; }
+.reveal table.signtbl { border-collapse: separate; border-spacing: 0 0.35em; margin: 0 auto; }
+.reveal table.signtbl th, .reveal table.signtbl td {
+  border: none; padding: 0 0.5em; text-align: center; vertical-align: middle; font-weight: normal;
 }
-.reveal .fig.sign .bitrow.last .explain { color: var(--deck-mark); }
-
-/* The sign bit. It is the one to watch on this figure, so it is marked. */
-.reveal .bit.sign { box-shadow: inset 0 0 0 1px var(--deck-mark); }
-/* The column marker over the sign bit: same cells as a bit row so the
- * minus lands exactly over bit fifteen, with the row's chrome removed. */
-/* The sign marker shares the header's line: it is a different kind of
- * annotation (a column marker, not a byte label), but the far-left minus
- * and the centred byte labels never collide, and stacking them costs a
- * whole row of distance between the header and the table. */
-.reveal .signrow { margin: -1.15em 0 0.05em; }
-.reveal .signrow .bit {
-  background: none; color: var(--deck-mark); line-height: 1;
+.reveal table.signtbl td.lab {
+  font-family: var(--deck-prose); font-size: 1.1em; color: var(--deck-ink);
+  text-align: right; white-space: nowrap; text-transform: none;
 }
+.reveal table.signtbl .bits { display: flex; gap: 2px; width: 22em; }
+.reveal table.signtbl .bit {
+  flex: 1; text-align: center; color: var(--deck-line); font-family: var(--deck-prose);
+  font-size: 1.1em; background: rgba(0, 0, 0, 0.08); padding: 0.05em 0;
+}
+.reveal table.signtbl .bit.on { color: var(--coco-white); background: var(--deck-mark); }
+.reveal table.signtbl .bit.gap { visibility: hidden; }
+.reveal table.signtbl .bit.edge { margin-right: 0.8em; }
+.reveal table.signtbl th .bits .bytelab {
+  flex: 1; text-align: center; font-family: var(--deck-prose);
+  text-transform: uppercase; font-size: 0.9em; letter-spacing: 0.08em; color: var(--deck-quiet);
+}
+.reveal table.signtbl th .bits .bytelab:first-child { margin-right: 0.8em; }
+.reveal table.signtbl td.note {
+  font-family: var(--deck-prose); font-size: 1.1em; color: var(--deck-quiet);
+  text-align: left; white-space: nowrap; text-transform: none;
+}
+.reveal .fig.sign2 .cap { max-width: 56em; margin-top: 0.8em; }

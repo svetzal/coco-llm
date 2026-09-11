@@ -603,48 +603,75 @@ def figure_shift(shift: dict) -> str:
   </div>"""
 
 
-def figure_sign(fix: dict) -> str:
-    """Why one subtraction turns an unsigned product into a signed one."""
+def register_box(cells: list[str], word: str, extra: str = "") -> str:
+    """One register or memory word as the trace draws it: byte cells side by
+    side, and the number they compose in a bar beneath spanning both."""
+    return (
+        f'<div class="r16{extra}" style="--n:{len(cells)}">'
+        f'{"".join(cells)}<span class="word">{word}</span></div>'
+    )
 
-    def word(value: int, cls: str = "") -> str:
-        bits = format(value, "016b")
+
+def figure_sign(fix: dict) -> str:
+    """Why one subtraction turns an unsigned product into a signed one:
+    every number on the slide in binary, split at the byte, with the same
+    two-bytes-over-a-value box the register trace uses beside it, so a
+    reader can watch a decimal become its bits and its bits become two
+    bytes."""
+
+    def bits(value: int, width: int) -> str:
+        pattern = format(value & ((1 << width) - 1), f"0{width}b")
+        pad = "".join('<span class="bit gap"></span>' for _ in range(16 - width))
         cells = "".join(
             f'<span class="bit{" on" if b == "1" else ""}'
-            f'{" edge" if i == 7 else ""}">{b}</span>'
-            for i, b in enumerate(bits)
+            f'{" edge" if i + (16 - width) == 7 else ""}">{b}</span>'
+            for i, b in enumerate(pattern)
         )
-        return f'<span class="bits {cls}">{cells}</span>'
+        return f'<span class="bits">{pad}{cells}</span>'
 
+    def box(value: int, width: int, word: str) -> str:
+        if width == 8:
+            cells = [f'<span class="byte">{value & 0xFF}</span>']
+        else:
+            cells = [f'<span class="byte">{(value >> 8) & 0xFF}</span>',
+                     f'<span class="byte">{value & 0xFF}</span>']
+        return register_box(cells, word)
+
+    factor, unsigned = fix["factor"], fix["unsigned_factor"]
+    multiplier, raw = fix["multiplier"], fix["raw"]
+    excess = (256 * multiplier) & 0xFFFF
+    corrected, answer = fix["corrected"], fix["signed"]
+
+    def row(index: int, label: str, value: int, width: int, word: str, note: str) -> str:
+        frag = f' class="fragment" data-fragment-index="{index}"' if index else ""
+        return (
+            f'<tr{frag}><td class="lab">{label}</td>'
+            f'<td class="bitcell">{bits(value, width)}</td>'
+            f'<td class="g">{box(value, width, word)}</td>'
+            f'<td class="note">{note}</td></tr>'
+        )
+
+    rows = "".join([
+        row(0, f"the factor, {factor}", factor, 8, str(factor),
+            f"MUL ignores the sign bit and reads {unsigned}"),
+        row(1, f"MUL makes {unsigned} &times; {multiplier}", raw, 16, str(raw),
+            f"too big by 256 &times; {multiplier}"),
+        row(2, f"the excess, 256 &times; {multiplier}", excess, 16, str(excess),
+            f"{multiplier} in the high byte, nothing below"),
+        row(3, f"suba takes {multiplier} off the high byte", corrected, 16, str(answer),
+            f"{factor} &times; {multiplier} = {answer}"),
+    ])
     return f"""
-  <div class="fig shifts sign">
-    <div class="bitrow">
-      <span class="steplab">the factor</span>
-      <span class="plain">{fix["factor"]}</span>
-      <span class="explain">MUL cannot take a negative, so it arrives as
-        {fix["unsigned_factor"]}, which is 256 too big</span>
-    </div>
-    <div class="bitrow fragment" data-fragment-index="1">
-      <span class="steplab">two MULs give</span>
-      {word(fix["raw"])}
-      <span class="explain">{fix["unsigned_factor"]} &times;
-        {fix["multiplier"]} = {fix["raw"]}, and wrong</span>
-    </div>
-    <div class="bitrow fragment" data-fragment-index="2">
-      <span class="steplab">too big by</span>
-      <span class="plain">256 &times; {fix["multiplier"]}</span>
-      <span class="explain">which in the low word is just
-        {fix["excess_high"]}, sitting in the high byte</span>
-    </div>
-    <div class="bitrow fragment last" data-fragment-index="3">
-      <span class="steplab">suba 1,x</span>
-      {word(fix["corrected"])}
-      <span class="explain">= {fix["signed"]}, and
-        {fix["factor"]} &times; {fix["multiplier"]} =
-        {fix["factor"] * fix["multiplier"]}</span>
-    </div>
+  <div class="fig sign2">
+    <table class="signtbl">
+      <thead><tr><th></th><th class="bitcell"><span class="bits">
+        <span class="bytelab">high byte</span><span class="bytelab">low byte</span>
+      </span></th><th class="g"><div class="r16 hdr" style="--n:2"><span class="lab">hi</span><span class="lab">lo</span><span class="word"></span></div></th><th></th></tr></thead>
+      <tbody>{rows}</tbody>
+    </table>
     <p class="cap fragment" data-fragment-index="4">
-      Compare the two bit rows: <strong>the low byte is identical.</strong>
-      Only the high half moved, because that is where the whole error was.
+      The low byte is the same before and after. The excess lived only in
+      the high byte, so one subtraction there is the whole fix.
     </p>
   </div>"""
 
@@ -798,20 +825,12 @@ def figure_register_trace(
         raise SystemExit(f"{excerpt['title']}: entry row without elided lines")
     lines = iter(excerpt["lines"])
 
-    def box(cells: list[str], word: str, extra: str = "") -> str:
-        """One register or memory word: its byte cells side by side, and
-        the number they compose in a bar beneath spanning both."""
-        return (
-            f'<div class="r16{extra}" style="--n:{len(cells)}">'
-            f'{"".join(cells)}<span class="word">{word}</span></div>'
-        )
-
     head1 = '<th class="ct"></th>'
     head2 = '<th class="ct"></th>'
     for header, cells, value in groups:
         head1 += f'<th class="grp">{esc(header)}</th>'
         labels = [f'<span class="lab">{esc(label)}</span>' for _, label in cells]
-        head2 += f'<th class="g">{box(labels, "", " hdr")}</th>'
+        head2 += f'<th class="g">{register_box(labels, "", " hdr")}</th>'
     head1 += '<th class="note"></th>'
     head2 += (
         '<th class="note legend"><span class="byte r">read</span>'
@@ -863,7 +882,7 @@ def figure_register_trace(
                 for byte in bytes_:
                     total = (total << 8) | byte
                 word = str(signed(total, 8 * len(bytes_)))
-            cells_html += f'<td class="g">{box(spans, word, "" if value else " bare")}</td>'
+            cells_html += f'<td class="g">{register_box(spans, word, "" if value else " bare")}</td>'
         body += (
             f'<tr class="{cls.strip()}"><td class="ct"><div class="code">'
             f'{esc(code)}</div></td>{cells_html}'

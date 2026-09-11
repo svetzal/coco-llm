@@ -51,7 +51,7 @@
  "sign_fix": {
   "source": "src/6809/model_forward.asm - multiply_s8_s16",
   "begins_inside": true,
-  "title": "and the correction that makes it signed",
+  "title": "the correction for a negative factor",
   "lines": [
    {
     "text": "        tst     multiply_factor",

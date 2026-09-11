@@ -508,35 +508,16 @@
 <section data-timing="50" data-block="3" data-bar="COCO LLM - 3/10 A LITTLE 6809 ASSEMBLY">
   <p class="lead">why one subtraction is enough</p>
   <!-- FIGURE:signbits -->
-  <div class="fig shifts sign">
-    <div class="bitrow">
-      <span class="steplab">the factor</span>
-      <span class="plain">-121</span>
-      <span class="explain">MUL cannot take a negative, so it arrives as
-        135, which is 256 too big</span>
-    </div>
-    <div class="bitrow fragment" data-fragment-index="1">
-      <span class="steplab">two MULs give</span>
-      <span class="bits "><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span>
-      <span class="explain">135 &times;
-        60 = 8100, and wrong</span>
-    </div>
-    <div class="bitrow fragment" data-fragment-index="2">
-      <span class="steplab">too big by</span>
-      <span class="plain">256 &times; 60</span>
-      <span class="explain">which in the low word is just
-        60, sitting in the high byte</span>
-    </div>
-    <div class="bitrow fragment last" data-fragment-index="3">
-      <span class="steplab">suba 1,x</span>
-      <span class="bits "><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span>
-      <span class="explain">= -7260, and
-        -121 &times; 60 =
-        -7260</span>
-    </div>
+  <div class="fig sign2">
+    <table class="signtbl">
+      <thead><tr><th></th><th class="bitcell"><span class="bits">
+        <span class="bytelab">high byte</span><span class="bytelab">low byte</span>
+      </span></th><th class="g"><div class="r16 hdr" style="--n:2"><span class="lab">hi</span><span class="lab">lo</span><span class="word"></span></div></th><th></th></tr></thead>
+      <tbody><tr><td class="lab">the factor, -121</td><td class="bitcell"><span class="bits"><span class="bit gap"></span><span class="bit gap"></span><span class="bit gap"></span><span class="bit gap"></span><span class="bit gap"></span><span class="bit gap"></span><span class="bit gap"></span><span class="bit gap"></span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span></span></td><td class="g"><div class="r16" style="--n:1"><span class="byte">135</span><span class="word">-121</span></div></td><td class="note">MUL ignores the sign bit and reads 135</td></tr><tr class="fragment" data-fragment-index="1"><td class="lab">MUL makes 135 &times; 60</td><td class="bitcell"><span class="bits"><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span></td><td class="g"><div class="r16" style="--n:2"><span class="byte">31</span><span class="byte">164</span><span class="word">8100</span></div></td><td class="note">too big by 256 &times; 60</td></tr><tr class="fragment" data-fragment-index="2"><td class="lab">the excess, 256 &times; 60</td><td class="bitcell"><span class="bits"><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit edge">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span></span></td><td class="g"><div class="r16" style="--n:2"><span class="byte">60</span><span class="byte">0</span><span class="word">15360</span></div></td><td class="note">60 in the high byte, nothing below</td></tr><tr class="fragment" data-fragment-index="3"><td class="lab">suba takes 60 off the high byte</td><td class="bitcell"><span class="bits"><span class="bit on">1</span><span class="bit on">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit on edge">1</span><span class="bit on">1</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span><span class="bit on">1</span><span class="bit">0</span><span class="bit">0</span></span></td><td class="g"><div class="r16" style="--n:2"><span class="byte">227</span><span class="byte">164</span><span class="word">-7260</span></div></td><td class="note">-121 &times; 60 = -7260</td></tr></tbody>
+    </table>
     <p class="cap fragment" data-fragment-index="4">
-      Compare the two bit rows: <strong>the low byte is identical.</strong>
-      Only the high half moved, because that is where the whole error was.
+      The low byte is the same before and after. The excess lived only in
+      the high byte, so one subtraction there is the whole fix.
     </p>
   </div>
   <!-- /FIGURE:signbits -->
