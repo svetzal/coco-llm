@@ -932,17 +932,12 @@ def figure_second_model(prompts: dict, first: dict, first_epochs: int) -> str:
         f'<span class="id">{index}</span>{esc(token)}</div>'
         for index, token in enumerate(prompts["tokens"])
     )
-    named = ", ".join(sorted(survivors - {"<END>"})) + ", and &lt;END&gt;"
-    old_id = first["vocabulary"].index("COMMODORE")
-    new_id = prompts["tokens"].index("COMMODORE")
     return f"""
   <div class="fig">
     <div class="vocab">{chips}</div>
     <p class="cap fragment" data-fragment-index="1">
-      Only {len(survivors)} tokens survive from the first model:
-      {named}. And COMMODORE, {old_id} there, is
-      {new_id} here. <strong>The identifier is still just a
-      name.</strong>
+      A different token model.
+      <strong>The identifier is still just a word.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="2">
       {len(first["vocabulary"])} tokens &rarr; {len(prompts["tokens"])}.
@@ -950,11 +945,10 @@ def figure_second_model(prompts: dict, first: dict, first_epochs: int) -> str:
       {prompts["parameters"]}.
       {first["examples"]} examples &rarr; {prompts["examples"]}.
       {first_epochs} epochs &rarr; {prompts["epochs"]}.
-      <strong>The machinery did not change. The reading material
-      did.</strong>
+      <strong>Different token mappings, same code.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="3">
-      {prompts["epochs"]} epochs on eight lines memorizes them:
+      {prompts["epochs"]} epochs on eight lines almost memorizes them:
       {sum(c["verbatim"] for c in prompts["completions"])} of the
       {len(prompts["completions"])} prompted completions are corpus lines,
       verbatim. Block 2 called that <strong>overfitting</strong>. Here it
@@ -1436,7 +1430,7 @@ def main() -> None:
         "These are the facts we feed it for training."))
     deck = splice(deck, "corpus4", figure_corpus(
         "EXP-005-marketing-language.txt", 8, 1,
-        "Eighty epochs over eight lines is why it memorizes them."))
+        "Eighty epochs over eight lines is why it almost memorizes them."))
     deck = splice(deck, "corpus5", figure_corpus(
         "EXP-007-sentence-training.txt", 8, 1,
         "The 248 vocabulary slots come from sentences like these."))

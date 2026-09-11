@@ -64,7 +64,7 @@ is there for questions.
 | 7 | Change one thing: the training data | 2 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
 | 8 | Now you play it | 2 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
 | 9 | A token is a note | 2 | 3 | 37 | CoCo, EXP-010 melody continuation | Delight |
-| 10 | Who decided? | 1 | 2 | 39 | Slide | Agency |
+| 10 | Wrap up | 2 | 2 | 39 | Slide | Recap and coordinates |
 | | Reserve, held for block 3 | | 2 | 41 | | |
 | | Questions | | 7 | 48 | | |
 
@@ -631,15 +631,19 @@ not been heard yet.
 The landing sets up the close: the loop never knew it was doing words, and
 what a token stands for was a person's decision.
 
-### 10. Who decided?
+### 10. Wrap up
 
 **On screen:** slides.
 
-Not "language models are harmless" and not "no job will change." The durable
-claim is smaller: the mechanism is understandable, the limitations are
-observable, and every one of them traces back to a person who decided
-something. Task, data, budget, success criterion, and what counts as good
-enough.
+Two slides. First the recap, one line per block, read at speed without
+re-explaining any of them. It lands on the last line: someone chose the task,
+the data, the budget, and what counts as good enough. Not "language models
+are harmless" and not "no job will change." The durable claim is smaller: the
+mechanism is understandable, the limitations are observable, and every one
+of them traces back to a person who decided something.
+
+Then the coordinates, left up for questions: the repository with every
+experiment and this deck, email, and the web site.
 
 Close on the table. Say what is running there and that you will be at it.
 

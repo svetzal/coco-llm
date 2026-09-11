@@ -925,3 +925,28 @@
   text-align: left; white-space: nowrap; text-transform: none;
 }
 .reveal .fig.sign2 .cap { max-width: 56em; margin-top: 0.8em; }
+
+/* --- the wrap up ----------------------------------------------------------
+ *
+ * One line per block, then the coordinates. Prose face, left-aligned, no
+ * figure: this is the only slide that is a list.
+ */
+.reveal ul.recap {
+  list-style: none; margin: 0.4em auto 0; padding: 0; max-width: 30em;
+  font-family: var(--deck-prose); font-size: 0.62em; line-height: 1.5;
+  text-align: left; color: var(--deck-ink);
+}
+.reveal ul.recap li { margin: 0.35em 0; padding-left: 1.2em; text-indent: -1.2em; }
+.reveal ul.recap li::before { content: "\2013"; color: var(--deck-quiet); padding-right: 0.6em; }
+.reveal ul.recap li:last-child { color: var(--deck-mark); margin-top: 0.9em; }
+.reveal .coords {
+  font-family: var(--deck-prose); font-size: 0.72em; text-align: left;
+  width: fit-content; margin: 0.6em auto 0; color: var(--deck-ink);
+}
+.reveal .coords p { margin: 0.25em 0; text-transform: none; }
+.reveal .coords .who { font-size: 1.25em; margin-bottom: 0.5em; }
+.reveal .coords .k {
+  display: inline-block; min-width: 9em; color: var(--deck-quiet);
+  font-size: 0.72em; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.reveal .coords .table { margin-top: 1.2em; color: var(--deck-mark); }

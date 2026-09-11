@@ -155,7 +155,7 @@ block9: build/coco-melody-demo.bin build/roms/.coco1-roms
 	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
 block10:
-	@echo "BLOCK 10 - WHO DECIDED - slides only. Close on the table."
+	@echo "BLOCK 10 - WRAP UP - slides only: the recap, the coordinates, then the table."
 
 # Everything the hardware loads, staged for an SD card: one disk image per
 # purpose plus the same files loose, and a manifest derived from the
