@@ -649,10 +649,8 @@
   <div class="fig">
     <div class="vocab"><div class="tok hot"><span class="id">0</span>&lt;END&gt;</div><div class="tok"><span class="id">1</span>1980S</div><div class="tok hot"><span class="id">2</span>64</div><div class="tok"><span class="id">3</span>A</div><div class="tok"><span class="id">4</span>ADORE</div><div class="tok"><span class="id">5</span>ARE</div><div class="tok"><span class="id">6</span>BIGGEST</div><div class="tok"><span class="id">7</span>BUY</div><div class="tok hot"><span class="id">8</span>COLOR</div><div class="tok hot"><span class="id">9</span>COMMODORE</div><div class="tok hot"><span class="id">10</span>COMPUTER</div><div class="tok"><span class="id">11</span>COMPUTERS</div><div class="tok"><span class="id">12</span>COMPUTING</div><div class="tok"><span class="id">13</span>FOR</div><div class="tok"><span class="id">14</span>GAME</div><div class="tok"><span class="id">15</span>GET</div><div class="tok"><span class="id">16</span>I</div><div class="tok"><span class="id">17</span>IN</div><div class="tok"><span class="id">18</span>JUST</div><div class="tok"><span class="id">19</span>KEEPING</div><div class="tok"><span class="id">20</span>LITTLE</div><div class="tok"><span class="id">21</span>MY</div><div class="tok"><span class="id">22</span>NAME</div><div class="tok"><span class="id">23</span>OF</div><div class="tok"><span class="id">24</span>POWER</div><div class="tok"><span class="id">25</span>PRICE</div><div class="tok"><span class="id">26</span>REST</div><div class="tok"><span class="id">27</span>START</div><div class="tok"><span class="id">28</span>THE</div><div class="tok"><span class="id">29</span>UP</div><div class="tok"><span class="id">30</span>US</div><div class="tok"><span class="id">31</span>VIDEO</div><div class="tok"><span class="id">32</span>WHY</div><div class="tok"><span class="id">33</span>WITH</div><div class="tok"><span class="id">34</span>WITHOUT</div><div class="tok"><span class="id">35</span>WONDER</div><div class="tok"><span class="id">36</span>YOU</div><div class="tok"><span class="id">37</span>YOUR</div></div>
     <p class="cap fragment" data-fragment-index="1">
-      Only 5 tokens survive from the first model:
-      64, COLOR, COMMODORE, COMPUTER, and &lt;END&gt;. And COMMODORE, 13 there, is
-      9 here. <strong>The identifier is still just a
-      name.</strong>
+      A different token model.
+      <strong>The identifier is still just a word.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="2">
       29 tokens &rarr; 38.
@@ -660,11 +658,10 @@
       380.
       58 examples &rarr; 53.
       20 epochs &rarr; 80.
-      <strong>The machinery did not change. The reading material
-      did.</strong>
+      <strong>Different token mappings, same code.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="3">
-      80 epochs on eight lines memorizes them:
+      80 epochs on eight lines almost memorizes them:
       5 of the
       6 prompted completions are corpus lines,
       verbatim. Block 2 called that <strong>overfitting</strong>. Here it
@@ -690,7 +687,7 @@
   <!-- FIGURE:corpus4 -->
   <div class="fig">
     <div class="corpus"><div class="col"><div class="entry">THE WONDER COMPUTER OF THE 1980S</div><div class="entry">GET YOUR START IN COLOR COMPUTING</div><div class="entry">I ADORE MY 64</div><div class="entry">ARE YOU KEEPING UP WITH COMMODORE</div><div class="entry">THE COMPUTER FOR THE REST OF US</div><div class="entry">POWER WITHOUT THE PRICE</div><div class="entry">THE BIGGEST NAME IN LITTLE COMPUTERS</div><div class="entry">WHY BUY JUST A VIDEO GAME</div></div></div>
-    <p class="cap">Eighty epochs over eight lines is why it memorizes them.</p>
+    <p class="cap">Eighty epochs over eight lines is why it almost memorizes them.</p>
   </div>
   <!-- /FIGURE:corpus4 -->
   <aside class="notes">
