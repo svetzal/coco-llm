@@ -81,6 +81,13 @@ HDB-DOS's `AUTOEXEC.BAS`. The first screen is the WiFi list. Pick a 2.4 GHz
 network with the arrows and `ENTER`, then type the password. `SHIFT` gives
 capitals. `H` enters a hidden network name and `R` rescans.
 
+Without WiFi, press `S` on the network list. The screen footer reads `s SKIP`
+and the CoCo CONFIG source goes straight to the Hosts screen. If the screen
+says `CONNECTING TO NETWORK` instead, `BREAK` aborts the attempt and shows the
+list. Nothing on the SD card needs a network. A `fnconfig.ini` on the card
+root with `[WiFi]` and `enabled=0` should disable WiFi at boot, since the
+firmware copies that file into flash at start-up. Untested on the CoCo build.
+
 The Hosts screen follows. Eight host slots hold `SD` and TNFS server names.
 Keys on this screen:
 
