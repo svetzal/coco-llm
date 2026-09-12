@@ -88,10 +88,21 @@ enabled flag before it scans, so it goes straight to the Hosts screen:
 ```ini
 [WiFi]
 enabled=0
+
+[Host1]
+type=SD
+name=SD
 ```
 
-The filename is lowercase. To turn WiFi back on, change it to `enabled=1`.
-Deleting the file is not enough, because the flash copy keeps the last value.
+The filename is lowercase. The file replaces the whole configuration, not
+just the keys it names, so it must declare the `SD` host slot too. A file
+with only the `[WiFi]` section leaves every host slot empty, and CONFIG then
+shows no way to reach the card. To turn WiFi back on, change it to
+`enabled=1`. Deleting the file is not enough, because the flash copy keeps
+the last value.
+
+The firmware ignores dot-files on the card, so the `._` files macOS writes
+beside every file do no harm.
 
 Firmware v1.6.1, June 2026, also added an `S` key on the network list. The
 footer reads `s SKIP`. Older firmware ignores the key. If the screen says
