@@ -18,6 +18,8 @@ inferences.
 - [`model-design.md`](model-design.md) — implemented live-training and
   pretrained inference architectures.
 - [`toolchain.md`](toolchain.md) — cross-assembly and emulation strategy.
+- [`fujinet.md`](fujinet.md) — the FujiNet cartridge, its SD card, and
+  loading the show's disk images through it.
 
 ## Starting sources
 
