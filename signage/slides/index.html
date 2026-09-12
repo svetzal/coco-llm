@@ -38,8 +38,8 @@
 <main>
 
 <section data-bar="COCO LLM">
-  <h1>This computer is teaching itself to talk</h1>
-  <p class="lead">It arrived under a Christmas tree 45 years ago. Right now it is starting from random numbers and inventing computer names that never existed.</p>
+  <h1>A 45-year-old computer, can it do modern machine learning?</h1>
+  <p class="lead">The Color Computer 1 on this table trains a small language model. It starts from random numbers and learns to write computer names.</p>
 </section>
 
 <section data-bar="COCO LLM - HOW">
@@ -50,13 +50,13 @@
     <li>Nudge.</li>
     <li>Repeat.</li>
   </ol>
-  <p class="cap">Same trick as ChatGPT.</p>
+  <p class="cap">ChatGPT learns with the same loop, at a far larger scale.</p>
 </section>
 
-<section data-bar="COCO LLM - WHAT IT READ">
-  <h1>What did it read?</h1>
+<section data-bar="COCO LLM - TRAINING DATA">
+  <h1>What is the training data?</h1>
   <div class="corpus" id="corpus"></div>
-  <p class="cap">All <span data-num="live.corpus_count"></span> lines, word for word. This is every fact it will ever meet.</p>
+  <p class="cap">These are the facts we feed it for training.</p>
 </section>
 
 <section data-bar="COCO LLM - BEFORE AND AFTER">
@@ -65,13 +65,13 @@
     <div class="screen"><span class="bar">Random weights, seed <span data-num="live.seed"></span></span><span class="row" id="before"></span></div>
     <div class="screen"><span class="bar">Learned weights, same seed</span><span class="row" id="after-first"></span></div>
   </div>
-  <p class="cap">Same dice both times. Only the <span data-num="live.parameters"></span> numbers inside it moved: <span data-num="live.corrections"></span> small corrections, <span data-num="live.epochs"></span> passes over <span data-num="live.corpus_count"></span> names.</p>
+  <p class="cap">Same random seed both times. Training adjusted the <span data-num="live.parameters"></span> weights: <span data-num="live.epochs"></span> passes over the training data, <span data-num="live.corrections"></span> small corrections.</p>
 </section>
 
 <section data-bar="COCO LLM - WHAT CAME OUT">
   <h1>Which of these were real?</h1>
   <div class="names" id="gallery"></div>
-  <p class="cap">Eleven draws from one real run, seeds <span data-num="live.seed"></span> to <span data-num="live.last_seed"></span>. <strong><span data-num="live.copied_count"></span></strong> it copied from what it read. <strong><span data-num="live.novel_count"></span></strong> never existed.</p>
+  <p class="cap">Eleven names from one run. <span data-num="live.copied_count"></span> are copied from the training data. <span data-num="live.novel_count"></span> are new.</p>
 </section>
 
 <section data-bar="COCO LLM - HOW BIG">
@@ -81,32 +81,37 @@
     <span class="val" data-num="live.weight_bytes"></span><span>bytes of weights</span>
     <span class="val" data-num="live.program_bytes"></span><span>bytes of program, in 6809 assembly</span>
     <span class="val">32K</span><span>of memory in the whole machine</span>
-    <span class="val">0.89 MHz</span><span>clock. Nothing is sped up.</span>
+    <span class="val">0.89 MHz</span><span>clock, the machine's normal speed</span>
   </div>
-  <p class="cap">The big models use a different network shape and read most of the internet. The learning loop is this one.</p>
+  <p class="cap">The big models use a different network and far more training data. The learning loop is the same.</p>
 </section>
 
 <section data-bar="COCO LLM - TRAINING DATA">
-  <h1>Same dice. Different training data.</h1>
+  <h1>What changes with different training data?</h1>
   <div class="cols three" id="fans"></div>
-  <p class="cap">Three copies of the same model, each raised on a different fan's list. Same rules, same rolls, row for row. Nothing changed but what it read.</p>
+  <p class="cap">Three copies of the same model, trained on three different lists with the same seeds.</p>
 </section>
 
 <section data-bar="COCO LLM - UNDERSTANDING">
   <h1>Does it understand?</h1>
-  <p class="big">It has never seen a computer. It does not know Commodore is a company. It knows that AMIGA often follows COMMODORE. That is all it knows.</p>
+  <p class="big">It has learned which word tends to follow which. It does not know that Commodore is a company, or what a computer is.</p>
   <p class="cap">Prediction is not understanding.</p>
 </section>
 
-<section data-bar="COCO LLM - WONDER">
-  <h1>So where is the wonder?</h1>
-  <p class="big">To the machine there is no difference between nonsense and wonder. The wonder is the people who wrote what it read.</p>
+<section data-bar="COCO LLM - DECISIONS">
+  <h1>What did I decide?</h1>
+  <ol class="steps">
+    <li>Which <span data-num="live.vocab_count"></span> words it can use.</li>
+    <li>What it trains on.</li>
+    <li>How many passes it takes.</li>
+  </ol>
+  <p class="cap">Change any one of these and the output changes.</p>
 </section>
 
 <section data-bar="COCO LLM - STEERING">
   <h1>Can two words steer it?</h1>
   <div class="pairs" id="prompts"></div>
-  <p class="cap">A second model: <span data-num="prompts.vocabulary"></span> words, eight lines of 1980s advertising. You type the first two words. <strong><span data-num="prompts.copied_count"></span></strong> of these it copied word for word. <strong><span data-num="prompts.novel_count"></span></strong> it made up. Which?</p>
+  <p class="cap">A second model, trained on eight lines of 1980s advertising. You type the first two words and it writes the rest. <span data-num="prompts.copied_count"></span> of these are copied from the training data. <span data-num="prompts.novel_count"></span> is new.</p>
 </section>
 
 <section data-bar="COCO LLM - BE THE MODEL">
@@ -117,34 +122,34 @@
     <li>Write it down. Take the next card.</li>
     <li>Stop when the roll says stop.</li>
   </ol>
-  <p class="cap">You just ran the model by hand, exactly the way it does. Keep the computer you invented.</p>
+  <p class="cap">That is the model's whole procedure, done by hand. Keep the name you made.</p>
 </section>
 
 <section data-bar="COCO LLM - TOKENS">
-  <h1>Write your name with these</h1>
+  <h1>Can it write your name?</h1>
   <div class="tokens" id="tokens"></div>
-  <p class="cap">All <span data-num="live.vocab_count"></span> words this computer has. It cannot write IPHONE either. Somebody chose these before any learning happened.</p>
+  <p class="cap">These are the <span data-num="live.vocab_count"></span> tokens the model has. I chose them before training started. It cannot write a word that is not here.</p>
 </section>
 
 <section data-bar="COCO LLM - MADE UP">
   <h1>Can it make up something that reads?</h1>
   <div class="titles" id="titles"></div>
-  <p class="cap">Star Trek episodes that were never made, from <span data-num="titles.program_bytes"></span> bytes trained on the <span data-num="titles.real_titles"></span> real titles.</p>
+  <p class="cap">Made-up Star Trek episode titles, from a model trained on the <span data-num="titles.real_titles"></span> real ones.</p>
 </section>
 
 <section data-bar="COCO LLM - PLAY IT">
   <h1>Can it learn a game, and learn you?</h1>
   <p class="big">Rock, paper, scissors, lizard, Spock. It starts knowing neither the rules nor you, and learns both while you play.</p>
   <div class="ledger">
-    <span class="val"><span data-num="game.score_percent"></span>%</span><span>against a person who was trying, over <span data-num="game.rounds"></span> rounds</span>
+    <span class="val"><span data-num="game.score_percent"></span>%</span><span>wins against a person, over <span data-num="game.rounds"></span> rounds</span>
   </div>
-  <p class="cap">A coin flip. It reads you better than chance, and not nearly well enough to win. Come and beat it.</p>
+  <p class="cap">That is about a coin flip. Come and play it.</p>
 </section>
 
 <section data-bar="COCO LLM - CONTEXT">
   <h1>Can it use a fact you give it right now?</h1>
   <div class="screen"><span class="bar">Context</span><span class="row">Before: LISA = <span data-text="context.before"></span></span><span class="row">After:  LISA = <span data-text="context.after"></span></span><span class="row">Model <span data-text="context.model"></span> did not change</span></div>
-  <p class="cap">Training moves the weights. A prompt only changes the context. Ask the same question again and the answer changes, and not one weight moved.</p>
+  <p class="cap">Training changes the weights. A prompt changes the context. Change the context, ask again, and the answer changes.</p>
 </section>
 
 <section data-bar="COCO LLM - ON THE TABLE">
@@ -155,23 +160,23 @@
       <div class="row">1981</div>
       <div class="row">6809 at 0.89 MHz</div>
       <div class="row">32K</div>
-      <div class="row quiet">Trains it live, from random numbers</div>
+      <div class="row quiet">Trains the model from random numbers</div>
     </div>
     <div>
       <div class="head">Color Computer 3</div>
       <div class="row">1986</div>
       <div class="row">Hitachi 6309 fitted</div>
-      <div class="row">Same code, bit for bit</div>
-      <div class="row quiet">The one we race</div>
+      <div class="row">Runs the same code</div>
+      <div class="row quiet">Runs the 6309 benchmark</div>
     </div>
   </div>
-  <p class="cap">The learning engine is byte-for-byte identical on both. Which one is it running on right now? Look.</p>
+  <p class="cap">The same program runs on both machines.</p>
 </section>
 
 <section data-bar="COCO LLM - FASTER">
   <h1>How much faster is the 6309?</h1>
   <div class="ledger" id="bench"></div>
-  <p class="cap">Ticks of the 60 Hz frame counter over <span data-num="bench.multiplications"></span> multiplications. Measured on the CoCo 3 on this table, <span data-text="bench.measured_on"></span>. Every row got the same answer.</p>
+  <p class="cap">Ticks of the 60 Hz frame counter over <span data-num="bench.multiplications"></span> multiplications, so fewer ticks is faster. Measured on the CoCo 3 on this table, <span data-text="bench.measured_on"></span>. All four give the same result.</p>
 </section>
 
 <section data-bar="COCO LLM - WHAT IT IS NOT">
@@ -194,10 +199,14 @@
   <p class="cap">I make mistakes for a living. I made plenty here.</p>
 </section>
 
-<section data-bar="COCO LLM">
-  <h1>Coco LLM</h1>
-  <p class="big">Definitely not large. Barely even a language model. The coolest thing I've done yet on my CoCo.</p>
-  <p class="byline">Stacey Vetzal. Everything here is open. Ask me for the code.</p>
+<section data-bar="COCO LLM - WHERE TO FIND IT">
+  <h1>Where to find it</h1>
+  <div class="coords">
+    <span class="k">repository</span><span>https://github.com/svetzal/coco-llm</span>
+    <span class="k">email</span><span>stacey@vetzal.com</span>
+    <span class="k">blog</span><span>https://stacey.vetzal.com</span>
+  </div>
+  <p class="cap">Stacey Vetzal. Every experiment is in the repository with its evidence and its conclusion.</p>
 </section>
 
 </main>

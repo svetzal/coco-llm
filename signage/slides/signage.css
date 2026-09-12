@@ -181,9 +181,14 @@ h1 {
   text-align: left;
 }
 
-/* The closing card: names the person, quietly. */
-.byline {
+/* The closing card: where the code and the person are. Addresses keep
+ * their case, so this is the sans. */
+.coords {
+  display: grid; grid-template-columns: max-content 1fr;
+  gap: 22px 48px;
   font-family: var(--sig-sans); text-transform: none;
-  font-size: 34px; color: var(--coco-ink);
-  margin: 0;
+  font-size: 44px; line-height: 1.2;
+  align-items: baseline;
+  text-align: left;
 }
+.coords .k { color: var(--sig-quiet); text-align: right; font-size: 30px; letter-spacing: 0.15em; text-transform: uppercase; }
