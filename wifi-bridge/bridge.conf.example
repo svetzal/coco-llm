@@ -1,0 +1,18 @@
+# Settings for the WOODHAVEN Wi-Fi bridge card. Shell syntax: make-image.sh
+# sources this file. Copy it to bridge.conf and fill in the Wi-Fi key;
+# bridge.conf is ignored by git because the repository is public.
+
+# The network the Pi broadcasts. Wi-Fi clients that join it are on the
+# same network segment as whatever is plugged into the Pi's Ethernet port.
+WIFI_SSID=WOODHAVEN
+WIFI_PSK=
+# 2.4 GHz channel. The FujiNet's ESP32 has no 5 GHz radio, so the access
+# point stays on 2.4 GHz.
+WIFI_CHANNEL=6
+WIFI_COUNTRY=CA
+
+# The machine. SSH is on; log in as this user at this hostname .local.
+BRIDGE_HOSTNAME=woodhaven-bridge
+BRIDGE_USER=coco
+BRIDGE_PASSWORD=cocollm
+TIMEZONE=America/Toronto
