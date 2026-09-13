@@ -36,6 +36,7 @@
   <p class="sub">A 45-year-old computer, can it do modern machine learning?</p>
   <aside class="notes">
     <p><strong>BLOCK 1 OF 10 - WATCH IT WORK</strong></p>
+    <p><strong>MACHINE: EXP-004, the live training run &middot; RUN NOW, room watching: make block1 (opens the deck, then launches XRoar training from random weights)</strong></p>
     <p>PRE-FLIGHT, before you walk on. Run: <strong>make stage</strong>. It launches the five parked XRoar windows:</p>
     <ul><li>EXP-005, block 4 (trains itself, parks at PRESS ANY KEY)</li><li>EXP-007, block 5 (parks at the completion editor)</li><li>EXP-012, block 6 (parks showing sixteen fake titles)</li><li>EXP-013, block 8 (parks at the RPSLS keys. Press R if anyone played it)</li><li>EXP-010, block 9 (parks at YOU SEED - MODEL CONTINUES; silent until Enter)</li></ul>
     <p>The windows look identical. Arrange them in block order. EXP-004 is NOT parked in advance: it starts training the moment it loads, and block 1 launches it in front of the room. Every block has a command — make block1 through block10 — and each demo block's target relaunches its window if a parked one dies.</p>
@@ -54,6 +55,7 @@
   <p class="charc">Demystifying the words and processes</p>
   <aside class="notes">
     <p><strong>BLOCK 2 OF 10 - HOW IT WORKS - CHAPTER CARD</strong></p>
+    <p><strong>MACHINE: none, slides only &middot; EXP-004, the live training run, keeps training in block 1's window &middot; make block2 only prints that reminder</strong></p>
     <p>Prep the room for a little theory</p>
   </aside>
 </section>
@@ -446,6 +448,7 @@
   <p class="charc">A peek at the important code</p>
   <aside class="notes">
     <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - CHAPTER CARD</strong></p>
+    <p><strong>MACHINE: EXP-004, the live training run, already in block 1's window &middot; RECOVERY ONLY: make block3 (a fresh run; launch is the reset)</strong></p>
     <p>The slides said what it does. The machine has been doing it since the talk started. Go and look.</p>
   </aside>
 </section>
@@ -677,6 +680,7 @@
   <p class="charc">What a prompt does</p>
   <aside class="notes">
     <p><strong>BLOCK 4 OF 10 - THE PROMPT - CHAPTER CARD</strong></p>
+    <p><strong>MACHINE: EXP-005, the prompted marketing completions &middot; parked by make stage &middot; RELAUNCH: make block4</strong></p>
     <p>The loop is proven. Now the levers, one at a time. First lever: change nothing but the prompt.</p>
   </aside>
 </section>
@@ -822,6 +826,7 @@
   <p class="charc">What a bigger model changes</p>
   <aside class="notes">
     <p><strong>BLOCK 5 OF 10 - THE SIZE - CHAPTER CARD</strong></p>
+    <p><strong>MACHINE: EXP-007, the all-RAM sentence completer &middot; parked by make stage &middot; RELAUNCH: make block5</strong></p>
     <p>Second lever: the size. What does a hundred times bigger actually buy?</p>
   </aside>
 </section>
@@ -951,6 +956,7 @@
   <p class="charc">Made-up episode titles</p>
   <aside class="notes">
     <p><strong>BLOCK 6 OF 10 - NEVER EXISTED - CHAPTER CARD</strong></p>
+    <p><strong>MACHINE: EXP-012, the fake episode titles &middot; parked by make stage &middot; RELAUNCH: make block6</strong></p>
     <p>A breath before the hard one. Sixteen things that never existed.</p>
   </aside>
 </section>
@@ -1061,6 +1067,7 @@
   <p class="charc">Where bias comes from</p>
   <aside class="notes">
     <p><strong>BLOCK 7 OF 10 - THE TRAINING DATA - CHAPTER CARD</strong></p>
+    <p><strong>MACHINE: none, slides only &middot; the bars are EXP-003, the fan-corpus bias runs, computed ahead of time &middot; make block7 only prints that reminder</strong></p>
     <p>Third lever, and the sobering one: the data it trained on.</p>
   </aside>
 </section>
@@ -1126,6 +1133,7 @@
   <p class="charc">Your turn at the keyboard</p>
   <aside class="notes">
     <p><strong>BLOCK 8 OF 10 - YOU PLAY IT - CHAPTER CARD</strong></p>
+    <p><strong>MACHINE: EXP-013, the game opponent that learns &middot; parked by make stage &middot; RELAUNCH: make block8 &middot; press R first so it has forgotten everything</strong></p>
     <p>Enough watching. Someone here is going to play it.</p>
   </aside>
 </section>
@@ -1188,6 +1196,7 @@
   <p class="charc">The same code, on music</p>
   <aside class="notes">
     <p><strong>BLOCK 9 OF 10 - A TOKEN IS A NOTE - CHAPTER CARD</strong></p>
+    <p><strong>MACHINE: EXP-010, the melody continuation, performed through EXP-018, the steady sample clock &middot; parked by make stage &middot; RELAUNCH: make block9, or make block9-6309 for the CoCo 3 with a 6309 (the stage option, say so if used)</strong></p>
     <p>Last lever, and the one that gives the game away: the machine never knew it was doing words. Change what a token stands for and the same loop does music.</p>
   </aside>
 </section>
@@ -1256,6 +1265,7 @@
   <p class="charc">What we showed, and where to find it</p>
   <aside class="notes">
     <p><strong>BLOCK 10 OF 10 - WRAP UP - CHAPTER CARD</strong></p>
+    <p><strong>MACHINE: none, slides only &middot; make block10 only prints that reminder</strong></p>
     <p>Two minutes. The recap, then the coordinates, then the table.</p>
   </aside>
 </section>
