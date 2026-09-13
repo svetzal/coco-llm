@@ -464,6 +464,67 @@ def figure_loop(trace: dict, budget: dict, split: dict, names: int) -> str:
   </div>"""
 
 
+def figure_draw(trace: dict, tokens: int) -> str:
+    """How the next token is picked: one byte against a line of 256."""
+    total = trace["total"]
+    first, second = trace["walks"]
+    ordinal = ["1st token", "2nd token", "3rd token", "4th token", "5th token", "6th token"]
+
+    def line(step: dict) -> str:
+        cells = []
+        for s in step["stretches"]:
+            width = 100 * s["share"] / total
+            # Only a stretch wide enough to hold its name gets one; the
+            # slivers are the 1-in-256 tokens and stay unlabelled but present.
+            label = esc(s["text"]) if s["share"] >= 14 else ""
+            cls = " hit" if s["hit"] else ""
+            cells.append(
+                f'<span class="dseg{cls}" style="width:{width:.3f}%">{label}</span>'
+            )
+        mark = 100 * (step["draw"] + 0.5) / total
+        return (
+            '<span class="dline">'
+            + "".join(cells)
+            + f'<span class="dmark" style="left:{mark:.3f}%">{step["draw"]}</span>'
+            + "</span>"
+        )
+
+    rows = []
+    for n, step in enumerate(first["steps"]):
+        rows.append(
+            f'<div class="drow fragment" data-fragment-index="{n + 1}">'
+            f'<span class="dlab">{ordinal[n]}</span>'
+            f"{line(step)}"
+            f'<span class="dres"><span class="dtok">{esc(step["chosen"])}</span>'
+            f'<span class="dshare">{step["share"]} of {total}</span></span>'
+            "</div>"
+        )
+    after_rows = len(first["steps"]) + 1
+    draws = lambda walk: ", ".join(str(s["draw"]) for s in walk["steps"])
+    return f"""
+  <div class="fig draw">
+    <p class="cap top">The {tokens} probabilities add up to {total}, so every token
+      owns a stretch of a line from 0 to {total - 1} as wide as its share.
+      <strong>The machine draws one byte, and the token under it is the
+      answer.</strong></p>
+    <div class="dwalk">
+      <div class="drow head"><span class="dlab"></span><span class="dline axis"><span class="dtick">0</span><span class="dtick">{total - 1}</span></span><span class="dres"></span></div>
+      {"".join(rows)}
+    </div>
+    <p class="cap rule">For the first {trace["minimum_tokens"]} tokens END's stretch is handed to the
+      favourite, so a name is never one word.</p>
+    <p class="cap fragment" data-fragment-index="{after_rows}">
+      Seed {first["seed"]} drew {draws(first)}: <strong>{esc(first["text"])}</strong>, the
+      first name on the CoCo's screen. Seed {second["seed"]} drew {draws(second)} from
+      the same table: <strong>{esc(second["text"])}</strong>.
+    </p>
+    <p class="cap fragment" data-fragment-index="{after_rows + 1}">
+      Greedy decoding skips the draw and takes the widest stretch every time.
+      That is what temperature zero means.
+    </p>
+  </div>"""
+
+
 def figure_cost(budget: dict, split: dict) -> str:
     """What the two choices cost in time and in memory."""
     return f"""
@@ -1575,6 +1636,7 @@ def main() -> None:
         ),
     )
     deck = splice(deck, "cost", figure_cost(traces["budget"], traces["split"]))
+    deck = splice(deck, "draw", figure_draw(traces["draw"], len(traces["vocabulary"]["vocabulary"])))
     deck = splice(deck, "bias", figure_bias(bias))
     deck = splice(
         deck,

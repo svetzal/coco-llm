@@ -456,7 +456,7 @@
   <p class="call">Before training, this seed produced nonsense. After
   training it should produce names.</p>
   <aside class="notes">
-    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 1/7</strong></p>
+    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 1/8</strong></p>
     <p>SWITCH to the EXP-004 window that block 1 launched. It has been training since the talk opened — measured at one to two minutes, so it is parked at PRESS ANY KEY by now. (Recovery: make block3 launches a fresh run if that window died. The launch is the reset.)</p>
     <p>THE CENTREPIECE and the reason the talk exists. The room watched this start from random weights before they knew what training was. Block 2 just explained it. Now show what ran: 58 examples, 20 epochs, 1,160 corrections, each one the nudge from the One Step slide. The machine seeded 6809 and generated once from the random weights on load — that nonsense comes back labelled RANDOM WEIGHTS on the comparison screen, which is where to read it out.</p>
     <p>Do not touch the keyboard yet. The pause is the audience's, and the code comes first: cut to the assembly that just did the work.</p>
@@ -475,7 +475,7 @@
   </div>
   <!-- /FIGURE:twomuls -->
   <aside class="notes">
-    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 2/7</strong></p>
+    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 2/8</strong></p>
     <p>FIRST CODE IN THE TALK. This is what was running behind block 2's slides, and it has just finished.</p>
     <p>The 6809 has a MUL instruction and it multiplies two UNSIGNED bytes. The model needs signed multiplication. The first version did it a bit at a time: correct, easy to explain, and 38.6 million instructions for the run.</p>
     <p>This is what replaced it. Split the 16-bit operand, two MULs, add the halves. 15.8 million instructions. The model is bit-for-bit identical: not one output changed.</p>
@@ -497,7 +497,7 @@
   </div>
   <!-- /FIGURE:signfix -->
   <aside class="notes">
-    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 3/7</strong></p>
+    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 3/8</strong></p>
     <p>OPTIONAL DEPTH. Drop this first if the run finishes early.</p>
     <p>MUL is unsigned, so if the factor was negative its unsigned form is 256 too large. Subtract the multiplier's low byte from the high byte of the result and it is correct again.</p>
     <p>Worth showing because it is the kind of detail that decides whether a thing is possible on this machine at all, and because it is five instructions.</p>
@@ -524,7 +524,7 @@
   </div>
   <!-- /FIGURE:signbits -->
   <aside class="notes">
-    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 4/7</strong></p>
+    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 4/8</strong></p>
     <p>Step it. MUL takes two unsigned bytes, so a negative factor cannot be handed to it as it is. -121 arrives as 135, and 135 is exactly 256 more than -121.</p>
     <p>So the product is too big by 256 times the multiplier. Here is the part worth pausing on: in the low sixteen bits, 256 times anything is that thing shifted into the HIGH BYTE. So the entire error is the multiplier's low byte sitting one byte up.</p>
     <p>Which is why the fix is one instruction. suba 1,x subtracts that byte from the high half and the answer is correct: -7260, and -121 times 60 is -7260.</p>
@@ -546,7 +546,7 @@
   </div>
   <!-- /FIGURE:lrcode -->
   <aside class="notes">
-    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 5/7</strong></p>
+    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 5/8</strong></p>
     <p>CALLBACK to the nudge slide. We said the learning rate is 1/16. Here it is.</p>
     <p>Four asra/rorb pairs shift the 16-bit gradient right by four, which divides it by sixteen. That is the whole of the learning rate.</p>
     <p>The register column starts at -6344 because the multiply slide just made it — same captured update, picked up where that walk ended. And it shows the carry doing the ferrying: each ASRA parks A's low bit in the carry, each RORB collects it into the top of B. That is the gap the next slide draws in bits.</p>
@@ -603,7 +603,7 @@
   </div>
   <!-- /FIGURE:shiftbits -->
   <aside class="notes">
-    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 6/7</strong></p>
+    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 6/8</strong></p>
     <p>WHAT THOSE EIGHT INSTRUCTIONS DO, on a real weight update taken out of training: SINCLAIR's third weight at epoch 5, error -244 times context 26.</p>
     <p>D is two registers side by side, A and B, and the gap on screen is that boundary. ASRA shifts A right, KEEPS THE TOP BIT, and drops the bottom one into the carry. RORB rotates that carry into the top of B. Together they move all sixteen bits one place right.</p>
     <p>SAY THE CONVENTION BEFORE RELYING ON IT: two's complement, a leading 1 means negative. Do not assume the room knows.</p>
@@ -623,12 +623,50 @@
   <h2>Back to the machine</h2>
   <p class="what">EXP-004 &middot; the comparison</p>
   <aside class="notes">
-    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 7/7</strong></p>
+    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 7/8</strong></p>
     <p>SWITCH back to the EXP-004 XRoar window launched at block 1, parked at PRESS ANY KEY since somewhere in block 2.</p>
     <p>Pause at PRESS ANY KEY and let SOMEONE IN THE ROOM decide when inference begins. That is the whole reason the pause exists.</p>
     <p>Then the controlled comparison: same generation seed 6809, run again. RANDOM WEIGHTS above the first output, LEARNED WEIGHTS above the second. Architecture, initial weights, budget, vocabulary and sampling seed all held; only training differs.</p>
     <p>Eleven trained samples stay on screen so they see a distribution rather than one lucky output.</p>
     <p>If it did not improve, say so and inspect the evidence together. A recorded run is a labelled comparison, never a substitute.</p>
+  </aside>
+</section>
+
+<section data-timing="45" data-block="3" data-bar="COCO LLM - 3/10 A LITTLE 6809 ASSEMBLY">
+  <h2>How it picks the next token</h2>
+  <!-- FIGURE:draw -->
+  <div class="fig draw">
+    <p class="cap top">The 29 probabilities add up to 256, so every token
+      owns a stretch of a line from 0 to 255 as wide as its share.
+      <strong>The machine draws one byte, and the token under it is the
+      answer.</strong></p>
+    <div class="dwalk">
+      <div class="drow head"><span class="dlab"></span><span class="dline axis"><span class="dtick">0</span><span class="dtick">255</span></span><span class="dres"></span></div>
+      <div class="drow fragment" data-fragment-index="1"><span class="dlab">1st token</span><span class="dline"><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:3.516%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:5.078%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:6.641%">ATARI</span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg hit" style="width:10.547%">COMMODORE</span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:14.453%">SINCLAIR</span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:51.172%">TANDY</span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dmark" style="left:19.727%">50</span></span><span class="dres"><span class="dtok">COMMODORE</span><span class="dshare">27 of 256</span></span></div><div class="drow fragment" data-fragment-index="2"><span class="dlab">2nd token</span><span class="dline"><span class="dseg" style="width:0.781%"></span><span class="dseg hit" style="width:6.641%">128</span><span class="dseg" style="width:4.688%"></span><span class="dseg" style="width:6.641%">64</span><span class="dseg" style="width:5.469%">800</span><span class="dseg" style="width:0.781%"></span><span class="dseg" style="width:7.031%">AMIGA</span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:3.906%"></span><span class="dseg" style="width:0.781%"></span><span class="dseg" style="width:3.906%"></span><span class="dseg" style="width:4.688%"></span><span class="dseg" style="width:0.781%"></span><span class="dseg" style="width:0.781%"></span><span class="dseg" style="width:4.688%"></span><span class="dseg" style="width:4.688%"></span><span class="dseg" style="width:4.688%"></span><span class="dseg" style="width:0.781%"></span><span class="dseg" style="width:4.297%"></span><span class="dseg" style="width:9.766%">PET</span><span class="dseg" style="width:0.781%"></span><span class="dseg" style="width:0.781%"></span><span class="dseg" style="width:4.688%"></span><span class="dseg" style="width:0.781%"></span><span class="dseg" style="width:4.688%"></span><span class="dseg" style="width:4.297%"></span><span class="dseg" style="width:3.906%"></span><span class="dseg" style="width:3.906%"></span><span class="dmark" style="left:4.883%">12</span></span><span class="dres"><span class="dtok">128</span><span class="dshare">17 of 256</span></span></div><div class="drow fragment" data-fragment-index="3"><span class="dlab">3rd token</span><span class="dline"><span class="dseg hit" style="width:89.062%">&lt;END&gt;</span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dseg" style="width:0.391%"></span><span class="dmark" style="left:46.680%">119</span></span><span class="dres"><span class="dtok">&lt;END&gt;</span><span class="dshare">228 of 256</span></span></div>
+    </div>
+    <p class="cap rule">For the first 2 tokens END's stretch is handed to the
+      favourite, so a name is never one word.</p>
+    <p class="cap fragment" data-fragment-index="4">
+      Seed 6809 drew 50, 12, 119: <strong>COMMODORE 128</strong>, the
+      first name on the CoCo's screen. Seed 6810 drew 177, 110, 29 from
+      the same table: <strong>TANDY COMPUTER</strong>.
+    </p>
+    <p class="cap fragment" data-fragment-index="5">
+      Greedy decoding skips the draw and takes the widest stretch every time.
+      That is what temperature zero means.
+    </p>
+  </div>
+  <!-- /FIGURE:draw -->
+  <aside class="notes">
+    <p><strong>BLOCK 3 OF 10 - A LITTLE 6809 ASSEMBLY - SLIDE 8/8</strong></p>
+    <p>THE ROOM JUST WATCHED COMMODORE 128 appear as the first trained name. This slide is the three bytes that chose it. The scores from One Step add up to 256, so every token owns a stretch of a line as wide as its share. The CoCo draws one byte, 0 to 255, and whatever stretch it lands on is the token.</p>
+    <p>STEP THE ROWS. Draw 50 lands on COMMODORE, 27 of 256. POINT AT TANDY: it owns half the line, 131 of 256, and lost. That is the whole difference between sampling and picking the best, and it is where the "new" column on the epoch slide comes from.</p>
+    <p>Draw 12 lands on 128. Draw 119 lands on END, which owns nearly the whole line by now: the model is sure the name is over. COMMODORE 128 is a real name; the corpus has it.</p>
+    <p>SEED 6810 draws 177, 110, 29 from the same table: TANDY COMPUTER. Same weights, same rows, different bytes. The eleven names on the CoCo's screen are eleven paths through the same table.</p>
+    <p>THE RULE, name it: for the first two tokens END's stretch is handed to the favourite, so a name is never one word. That is in the code, not in the weights.</p>
+    <p>GREEDY, last fragment: skip the draw, take the widest stretch. Temperature zero. Block 4's prompt demo is greedy, which is why the same prompt always gives the same answer there.</p>
+    <p>If asked where the byte comes from: xorshift16, the same 16-bit generator that seeded the weights, low byte of each state. Not hardware noise. The seed is the whole reason the run repeats.</p>
+    <p>If asked about temperature: it rescales the scores before they become shares. Higher temperature narrows the fat stretch and widens the thin ones; lower does the reverse, and zero is greedy. Same line, cut differently.</p>
   </aside>
 </section>
 

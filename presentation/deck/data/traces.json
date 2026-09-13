@@ -1056,6 +1056,1275 @@
   },
   "parameter_count": 290
  },
+ "draw": {
+  "epochs": 20,
+  "minimum_tokens": 2,
+  "total": 256,
+  "walks": [
+   {
+    "seed": 6809,
+    "text": "COMMODORE 128",
+    "steps": [
+     {
+      "draw": 50,
+      "chosen": "COMMODORE",
+      "share": 27,
+      "favourite": "TANDY",
+      "favourite_share": 131,
+      "floored": true,
+      "stretches": [
+       {
+        "text": "100",
+        "share": 1,
+        "start": 0,
+        "end": 1,
+        "hit": false
+       },
+       {
+        "text": "128",
+        "share": 1,
+        "start": 1,
+        "end": 2,
+        "hit": false
+       },
+       {
+        "text": "400",
+        "share": 1,
+        "start": 2,
+        "end": 3,
+        "hit": false
+       },
+       {
+        "text": "64",
+        "share": 1,
+        "start": 3,
+        "end": 4,
+        "hit": false
+       },
+       {
+        "text": "800",
+        "share": 1,
+        "start": 4,
+        "end": 5,
+        "hit": false
+       },
+       {
+        "text": "ACORN",
+        "share": 9,
+        "start": 5,
+        "end": 14,
+        "hit": false
+       },
+       {
+        "text": "AMIGA",
+        "share": 1,
+        "start": 14,
+        "end": 15,
+        "hit": false
+       },
+       {
+        "text": "APPLE",
+        "share": 13,
+        "start": 15,
+        "end": 28,
+        "hit": false
+       },
+       {
+        "text": "ARCHIMEDES",
+        "share": 1,
+        "start": 28,
+        "end": 29,
+        "hit": false
+       },
+       {
+        "text": "ATARI",
+        "share": 17,
+        "start": 29,
+        "end": 46,
+        "hit": false
+       },
+       {
+        "text": "BBC",
+        "share": 1,
+        "start": 46,
+        "end": 47,
+        "hit": false
+       },
+       {
+        "text": "COLOR",
+        "share": 1,
+        "start": 47,
+        "end": 48,
+        "hit": false
+       },
+       {
+        "text": "COMMODORE",
+        "share": 27,
+        "start": 48,
+        "end": 75,
+        "hit": true
+       },
+       {
+        "text": "COMPUTER",
+        "share": 1,
+        "start": 75,
+        "end": 76,
+        "hit": false
+       },
+       {
+        "text": "II",
+        "share": 1,
+        "start": 76,
+        "end": 77,
+        "hit": false
+       },
+       {
+        "text": "LISA",
+        "share": 1,
+        "start": 77,
+        "end": 78,
+        "hit": false
+       },
+       {
+        "text": "MACINTOSH",
+        "share": 1,
+        "start": 78,
+        "end": 79,
+        "hit": false
+       },
+       {
+        "text": "MICRO",
+        "share": 1,
+        "start": 79,
+        "end": 80,
+        "hit": false
+       },
+       {
+        "text": "MODEL",
+        "share": 1,
+        "start": 80,
+        "end": 81,
+        "hit": false
+       },
+       {
+        "text": "PET",
+        "share": 1,
+        "start": 81,
+        "end": 82,
+        "hit": false
+       },
+       {
+        "text": "SINCLAIR",
+        "share": 37,
+        "start": 82,
+        "end": 119,
+        "hit": false
+       },
+       {
+        "text": "SPECTRUM",
+        "share": 1,
+        "start": 119,
+        "end": 120,
+        "hit": false
+       },
+       {
+        "text": "ST",
+        "share": 1,
+        "start": 120,
+        "end": 121,
+        "hit": false
+       },
+       {
+        "text": "TANDY",
+        "share": 131,
+        "start": 121,
+        "end": 252,
+        "hit": false
+       },
+       {
+        "text": "TRS-80",
+        "share": 1,
+        "start": 252,
+        "end": 253,
+        "hit": false
+       },
+       {
+        "text": "ZX",
+        "share": 1,
+        "start": 253,
+        "end": 254,
+        "hit": false
+       },
+       {
+        "text": "ZX80",
+        "share": 1,
+        "start": 254,
+        "end": 255,
+        "hit": false
+       },
+       {
+        "text": "ZX81",
+        "share": 1,
+        "start": 255,
+        "end": 256,
+        "hit": false
+       }
+      ]
+     },
+     {
+      "draw": 12,
+      "chosen": "128",
+      "share": 17,
+      "favourite": "PET",
+      "favourite_share": 25,
+      "floored": true,
+      "stretches": [
+       {
+        "text": "100",
+        "share": 2,
+        "start": 0,
+        "end": 2,
+        "hit": false
+       },
+       {
+        "text": "128",
+        "share": 17,
+        "start": 2,
+        "end": 19,
+        "hit": true
+       },
+       {
+        "text": "400",
+        "share": 12,
+        "start": 19,
+        "end": 31,
+        "hit": false
+       },
+       {
+        "text": "64",
+        "share": 17,
+        "start": 31,
+        "end": 48,
+        "hit": false
+       },
+       {
+        "text": "800",
+        "share": 14,
+        "start": 48,
+        "end": 62,
+        "hit": false
+       },
+       {
+        "text": "ACORN",
+        "share": 2,
+        "start": 62,
+        "end": 64,
+        "hit": false
+       },
+       {
+        "text": "AMIGA",
+        "share": 18,
+        "start": 64,
+        "end": 82,
+        "hit": false
+       },
+       {
+        "text": "APPLE",
+        "share": 1,
+        "start": 82,
+        "end": 83,
+        "hit": false
+       },
+       {
+        "text": "ARCHIMEDES",
+        "share": 10,
+        "start": 83,
+        "end": 93,
+        "hit": false
+       },
+       {
+        "text": "ATARI",
+        "share": 2,
+        "start": 93,
+        "end": 95,
+        "hit": false
+       },
+       {
+        "text": "BBC",
+        "share": 10,
+        "start": 95,
+        "end": 105,
+        "hit": false
+       },
+       {
+        "text": "COLOR",
+        "share": 12,
+        "start": 105,
+        "end": 117,
+        "hit": false
+       },
+       {
+        "text": "COMMODORE",
+        "share": 2,
+        "start": 117,
+        "end": 119,
+        "hit": false
+       },
+       {
+        "text": "COMPUTER",
+        "share": 2,
+        "start": 119,
+        "end": 121,
+        "hit": false
+       },
+       {
+        "text": "II",
+        "share": 12,
+        "start": 121,
+        "end": 133,
+        "hit": false
+       },
+       {
+        "text": "LISA",
+        "share": 12,
+        "start": 133,
+        "end": 145,
+        "hit": false
+       },
+       {
+        "text": "MACINTOSH",
+        "share": 12,
+        "start": 145,
+        "end": 157,
+        "hit": false
+       },
+       {
+        "text": "MICRO",
+        "share": 2,
+        "start": 157,
+        "end": 159,
+        "hit": false
+       },
+       {
+        "text": "MODEL",
+        "share": 11,
+        "start": 159,
+        "end": 170,
+        "hit": false
+       },
+       {
+        "text": "PET",
+        "share": 25,
+        "start": 170,
+        "end": 195,
+        "hit": false
+       },
+       {
+        "text": "SINCLAIR",
+        "share": 2,
+        "start": 195,
+        "end": 197,
+        "hit": false
+       },
+       {
+        "text": "SPECTRUM",
+        "share": 2,
+        "start": 197,
+        "end": 199,
+        "hit": false
+       },
+       {
+        "text": "ST",
+        "share": 12,
+        "start": 199,
+        "end": 211,
+        "hit": false
+       },
+       {
+        "text": "TANDY",
+        "share": 2,
+        "start": 211,
+        "end": 213,
+        "hit": false
+       },
+       {
+        "text": "TRS-80",
+        "share": 12,
+        "start": 213,
+        "end": 225,
+        "hit": false
+       },
+       {
+        "text": "ZX",
+        "share": 11,
+        "start": 225,
+        "end": 236,
+        "hit": false
+       },
+       {
+        "text": "ZX80",
+        "share": 10,
+        "start": 236,
+        "end": 246,
+        "hit": false
+       },
+       {
+        "text": "ZX81",
+        "share": 10,
+        "start": 246,
+        "end": 256,
+        "hit": false
+       }
+      ]
+     },
+     {
+      "draw": 119,
+      "chosen": "<END>",
+      "share": 228,
+      "favourite": "<END>",
+      "favourite_share": 228,
+      "floored": false,
+      "stretches": [
+       {
+        "text": "<END>",
+        "share": 228,
+        "start": 0,
+        "end": 228,
+        "hit": true
+       },
+       {
+        "text": "100",
+        "share": 1,
+        "start": 228,
+        "end": 229,
+        "hit": false
+       },
+       {
+        "text": "128",
+        "share": 1,
+        "start": 229,
+        "end": 230,
+        "hit": false
+       },
+       {
+        "text": "400",
+        "share": 1,
+        "start": 230,
+        "end": 231,
+        "hit": false
+       },
+       {
+        "text": "64",
+        "share": 1,
+        "start": 231,
+        "end": 232,
+        "hit": false
+       },
+       {
+        "text": "800",
+        "share": 1,
+        "start": 232,
+        "end": 233,
+        "hit": false
+       },
+       {
+        "text": "ACORN",
+        "share": 1,
+        "start": 233,
+        "end": 234,
+        "hit": false
+       },
+       {
+        "text": "AMIGA",
+        "share": 1,
+        "start": 234,
+        "end": 235,
+        "hit": false
+       },
+       {
+        "text": "APPLE",
+        "share": 1,
+        "start": 235,
+        "end": 236,
+        "hit": false
+       },
+       {
+        "text": "ARCHIMEDES",
+        "share": 1,
+        "start": 236,
+        "end": 237,
+        "hit": false
+       },
+       {
+        "text": "ATARI",
+        "share": 1,
+        "start": 237,
+        "end": 238,
+        "hit": false
+       },
+       {
+        "text": "BBC",
+        "share": 1,
+        "start": 238,
+        "end": 239,
+        "hit": false
+       },
+       {
+        "text": "COLOR",
+        "share": 1,
+        "start": 239,
+        "end": 240,
+        "hit": false
+       },
+       {
+        "text": "COMMODORE",
+        "share": 1,
+        "start": 240,
+        "end": 241,
+        "hit": false
+       },
+       {
+        "text": "COMPUTER",
+        "share": 1,
+        "start": 241,
+        "end": 242,
+        "hit": false
+       },
+       {
+        "text": "II",
+        "share": 1,
+        "start": 242,
+        "end": 243,
+        "hit": false
+       },
+       {
+        "text": "LISA",
+        "share": 1,
+        "start": 243,
+        "end": 244,
+        "hit": false
+       },
+       {
+        "text": "MACINTOSH",
+        "share": 1,
+        "start": 244,
+        "end": 245,
+        "hit": false
+       },
+       {
+        "text": "MICRO",
+        "share": 1,
+        "start": 245,
+        "end": 246,
+        "hit": false
+       },
+       {
+        "text": "MODEL",
+        "share": 1,
+        "start": 246,
+        "end": 247,
+        "hit": false
+       },
+       {
+        "text": "PET",
+        "share": 1,
+        "start": 247,
+        "end": 248,
+        "hit": false
+       },
+       {
+        "text": "SINCLAIR",
+        "share": 1,
+        "start": 248,
+        "end": 249,
+        "hit": false
+       },
+       {
+        "text": "SPECTRUM",
+        "share": 1,
+        "start": 249,
+        "end": 250,
+        "hit": false
+       },
+       {
+        "text": "ST",
+        "share": 1,
+        "start": 250,
+        "end": 251,
+        "hit": false
+       },
+       {
+        "text": "TANDY",
+        "share": 1,
+        "start": 251,
+        "end": 252,
+        "hit": false
+       },
+       {
+        "text": "TRS-80",
+        "share": 1,
+        "start": 252,
+        "end": 253,
+        "hit": false
+       },
+       {
+        "text": "ZX",
+        "share": 1,
+        "start": 253,
+        "end": 254,
+        "hit": false
+       },
+       {
+        "text": "ZX80",
+        "share": 1,
+        "start": 254,
+        "end": 255,
+        "hit": false
+       },
+       {
+        "text": "ZX81",
+        "share": 1,
+        "start": 255,
+        "end": 256,
+        "hit": false
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "seed": 6810,
+    "text": "TANDY COMPUTER",
+    "steps": [
+     {
+      "draw": 177,
+      "chosen": "TANDY",
+      "share": 131,
+      "favourite": "TANDY",
+      "favourite_share": 131,
+      "floored": true,
+      "stretches": [
+       {
+        "text": "100",
+        "share": 1,
+        "start": 0,
+        "end": 1,
+        "hit": false
+       },
+       {
+        "text": "128",
+        "share": 1,
+        "start": 1,
+        "end": 2,
+        "hit": false
+       },
+       {
+        "text": "400",
+        "share": 1,
+        "start": 2,
+        "end": 3,
+        "hit": false
+       },
+       {
+        "text": "64",
+        "share": 1,
+        "start": 3,
+        "end": 4,
+        "hit": false
+       },
+       {
+        "text": "800",
+        "share": 1,
+        "start": 4,
+        "end": 5,
+        "hit": false
+       },
+       {
+        "text": "ACORN",
+        "share": 9,
+        "start": 5,
+        "end": 14,
+        "hit": false
+       },
+       {
+        "text": "AMIGA",
+        "share": 1,
+        "start": 14,
+        "end": 15,
+        "hit": false
+       },
+       {
+        "text": "APPLE",
+        "share": 13,
+        "start": 15,
+        "end": 28,
+        "hit": false
+       },
+       {
+        "text": "ARCHIMEDES",
+        "share": 1,
+        "start": 28,
+        "end": 29,
+        "hit": false
+       },
+       {
+        "text": "ATARI",
+        "share": 17,
+        "start": 29,
+        "end": 46,
+        "hit": false
+       },
+       {
+        "text": "BBC",
+        "share": 1,
+        "start": 46,
+        "end": 47,
+        "hit": false
+       },
+       {
+        "text": "COLOR",
+        "share": 1,
+        "start": 47,
+        "end": 48,
+        "hit": false
+       },
+       {
+        "text": "COMMODORE",
+        "share": 27,
+        "start": 48,
+        "end": 75,
+        "hit": false
+       },
+       {
+        "text": "COMPUTER",
+        "share": 1,
+        "start": 75,
+        "end": 76,
+        "hit": false
+       },
+       {
+        "text": "II",
+        "share": 1,
+        "start": 76,
+        "end": 77,
+        "hit": false
+       },
+       {
+        "text": "LISA",
+        "share": 1,
+        "start": 77,
+        "end": 78,
+        "hit": false
+       },
+       {
+        "text": "MACINTOSH",
+        "share": 1,
+        "start": 78,
+        "end": 79,
+        "hit": false
+       },
+       {
+        "text": "MICRO",
+        "share": 1,
+        "start": 79,
+        "end": 80,
+        "hit": false
+       },
+       {
+        "text": "MODEL",
+        "share": 1,
+        "start": 80,
+        "end": 81,
+        "hit": false
+       },
+       {
+        "text": "PET",
+        "share": 1,
+        "start": 81,
+        "end": 82,
+        "hit": false
+       },
+       {
+        "text": "SINCLAIR",
+        "share": 37,
+        "start": 82,
+        "end": 119,
+        "hit": false
+       },
+       {
+        "text": "SPECTRUM",
+        "share": 1,
+        "start": 119,
+        "end": 120,
+        "hit": false
+       },
+       {
+        "text": "ST",
+        "share": 1,
+        "start": 120,
+        "end": 121,
+        "hit": false
+       },
+       {
+        "text": "TANDY",
+        "share": 131,
+        "start": 121,
+        "end": 252,
+        "hit": true
+       },
+       {
+        "text": "TRS-80",
+        "share": 1,
+        "start": 252,
+        "end": 253,
+        "hit": false
+       },
+       {
+        "text": "ZX",
+        "share": 1,
+        "start": 253,
+        "end": 254,
+        "hit": false
+       },
+       {
+        "text": "ZX80",
+        "share": 1,
+        "start": 254,
+        "end": 255,
+        "hit": false
+       },
+       {
+        "text": "ZX81",
+        "share": 1,
+        "start": 255,
+        "end": 256,
+        "hit": false
+       }
+      ]
+     },
+     {
+      "draw": 110,
+      "chosen": "COMPUTER",
+      "share": 2,
+      "favourite": "MODEL",
+      "favourite_share": 17,
+      "floored": true,
+      "stretches": [
+       {
+        "text": "100",
+        "share": 2,
+        "start": 0,
+        "end": 2,
+        "hit": false
+       },
+       {
+        "text": "128",
+        "share": 11,
+        "start": 2,
+        "end": 13,
+        "hit": false
+       },
+       {
+        "text": "400",
+        "share": 11,
+        "start": 13,
+        "end": 24,
+        "hit": false
+       },
+       {
+        "text": "64",
+        "share": 11,
+        "start": 24,
+        "end": 35,
+        "hit": false
+       },
+       {
+        "text": "800",
+        "share": 11,
+        "start": 35,
+        "end": 46,
+        "hit": false
+       },
+       {
+        "text": "ACORN",
+        "share": 3,
+        "start": 46,
+        "end": 49,
+        "hit": false
+       },
+       {
+        "text": "AMIGA",
+        "share": 14,
+        "start": 49,
+        "end": 63,
+        "hit": false
+       },
+       {
+        "text": "APPLE",
+        "share": 3,
+        "start": 63,
+        "end": 66,
+        "hit": false
+       },
+       {
+        "text": "ARCHIMEDES",
+        "share": 12,
+        "start": 66,
+        "end": 78,
+        "hit": false
+       },
+       {
+        "text": "ATARI",
+        "share": 3,
+        "start": 78,
+        "end": 81,
+        "hit": false
+       },
+       {
+        "text": "BBC",
+        "share": 11,
+        "start": 81,
+        "end": 92,
+        "hit": false
+       },
+       {
+        "text": "COLOR",
+        "share": 15,
+        "start": 92,
+        "end": 107,
+        "hit": false
+       },
+       {
+        "text": "COMMODORE",
+        "share": 3,
+        "start": 107,
+        "end": 110,
+        "hit": false
+       },
+       {
+        "text": "COMPUTER",
+        "share": 2,
+        "start": 110,
+        "end": 112,
+        "hit": true
+       },
+       {
+        "text": "II",
+        "share": 11,
+        "start": 112,
+        "end": 123,
+        "hit": false
+       },
+       {
+        "text": "LISA",
+        "share": 11,
+        "start": 123,
+        "end": 134,
+        "hit": false
+       },
+       {
+        "text": "MACINTOSH",
+        "share": 13,
+        "start": 134,
+        "end": 147,
+        "hit": false
+       },
+       {
+        "text": "MICRO",
+        "share": 2,
+        "start": 147,
+        "end": 149,
+        "hit": false
+       },
+       {
+        "text": "MODEL",
+        "share": 17,
+        "start": 149,
+        "end": 166,
+        "hit": false
+       },
+       {
+        "text": "PET",
+        "share": 13,
+        "start": 166,
+        "end": 179,
+        "hit": false
+       },
+       {
+        "text": "SINCLAIR",
+        "share": 4,
+        "start": 179,
+        "end": 183,
+        "hit": false
+       },
+       {
+        "text": "SPECTRUM",
+        "share": 2,
+        "start": 183,
+        "end": 185,
+        "hit": false
+       },
+       {
+        "text": "ST",
+        "share": 12,
+        "start": 185,
+        "end": 197,
+        "hit": false
+       },
+       {
+        "text": "TANDY",
+        "share": 6,
+        "start": 197,
+        "end": 203,
+        "hit": false
+       },
+       {
+        "text": "TRS-80",
+        "share": 16,
+        "start": 203,
+        "end": 219,
+        "hit": false
+       },
+       {
+        "text": "ZX",
+        "share": 13,
+        "start": 219,
+        "end": 232,
+        "hit": false
+       },
+       {
+        "text": "ZX80",
+        "share": 12,
+        "start": 232,
+        "end": 244,
+        "hit": false
+       },
+       {
+        "text": "ZX81",
+        "share": 12,
+        "start": 244,
+        "end": 256,
+        "hit": false
+       }
+      ]
+     },
+     {
+      "draw": 29,
+      "chosen": "<END>",
+      "share": 224,
+      "favourite": "<END>",
+      "favourite_share": 224,
+      "floored": false,
+      "stretches": [
+       {
+        "text": "<END>",
+        "share": 224,
+        "start": 0,
+        "end": 224,
+        "hit": true
+       },
+       {
+        "text": "100",
+        "share": 2,
+        "start": 224,
+        "end": 226,
+        "hit": false
+       },
+       {
+        "text": "128",
+        "share": 1,
+        "start": 226,
+        "end": 227,
+        "hit": false
+       },
+       {
+        "text": "400",
+        "share": 1,
+        "start": 227,
+        "end": 228,
+        "hit": false
+       },
+       {
+        "text": "64",
+        "share": 1,
+        "start": 228,
+        "end": 229,
+        "hit": false
+       },
+       {
+        "text": "800",
+        "share": 1,
+        "start": 229,
+        "end": 230,
+        "hit": false
+       },
+       {
+        "text": "ACORN",
+        "share": 1,
+        "start": 230,
+        "end": 231,
+        "hit": false
+       },
+       {
+        "text": "AMIGA",
+        "share": 1,
+        "start": 231,
+        "end": 232,
+        "hit": false
+       },
+       {
+        "text": "APPLE",
+        "share": 1,
+        "start": 232,
+        "end": 233,
+        "hit": false
+       },
+       {
+        "text": "ARCHIMEDES",
+        "share": 1,
+        "start": 233,
+        "end": 234,
+        "hit": false
+       },
+       {
+        "text": "ATARI",
+        "share": 1,
+        "start": 234,
+        "end": 235,
+        "hit": false
+       },
+       {
+        "text": "BBC",
+        "share": 1,
+        "start": 235,
+        "end": 236,
+        "hit": false
+       },
+       {
+        "text": "COLOR",
+        "share": 1,
+        "start": 236,
+        "end": 237,
+        "hit": false
+       },
+       {
+        "text": "COMMODORE",
+        "share": 1,
+        "start": 237,
+        "end": 238,
+        "hit": false
+       },
+       {
+        "text": "COMPUTER",
+        "share": 2,
+        "start": 238,
+        "end": 240,
+        "hit": false
+       },
+       {
+        "text": "II",
+        "share": 1,
+        "start": 240,
+        "end": 241,
+        "hit": false
+       },
+       {
+        "text": "LISA",
+        "share": 1,
+        "start": 241,
+        "end": 242,
+        "hit": false
+       },
+       {
+        "text": "MACINTOSH",
+        "share": 1,
+        "start": 242,
+        "end": 243,
+        "hit": false
+       },
+       {
+        "text": "MICRO",
+        "share": 2,
+        "start": 243,
+        "end": 245,
+        "hit": false
+       },
+       {
+        "text": "MODEL",
+        "share": 1,
+        "start": 245,
+        "end": 246,
+        "hit": false
+       },
+       {
+        "text": "PET",
+        "share": 1,
+        "start": 246,
+        "end": 247,
+        "hit": false
+       },
+       {
+        "text": "SINCLAIR",
+        "share": 1,
+        "start": 247,
+        "end": 248,
+        "hit": false
+       },
+       {
+        "text": "SPECTRUM",
+        "share": 2,
+        "start": 248,
+        "end": 250,
+        "hit": false
+       },
+       {
+        "text": "ST",
+        "share": 1,
+        "start": 250,
+        "end": 251,
+        "hit": false
+       },
+       {
+        "text": "TANDY",
+        "share": 1,
+        "start": 251,
+        "end": 252,
+        "hit": false
+       },
+       {
+        "text": "TRS-80",
+        "share": 1,
+        "start": 252,
+        "end": 253,
+        "hit": false
+       },
+       {
+        "text": "ZX",
+        "share": 1,
+        "start": 253,
+        "end": 254,
+        "hit": false
+       },
+       {
+        "text": "ZX80",
+        "share": 1,
+        "start": 254,
+        "end": 255,
+        "hit": false
+       },
+       {
+        "text": "ZX81",
+        "share": 1,
+        "start": 255,
+        "end": 256,
+        "hit": false
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
  "why_three": {
   "widths": [
    {

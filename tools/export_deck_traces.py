@@ -19,6 +19,9 @@ Three traces, matching the blocks that need them:
               including which weights moved and by how much.
   loop        block 3. Loss per epoch, and what the model generates at
               checkpoints along the way.
+  draw        block 3. How the trained model picks each token: the byte it
+              draws, the stretch of 0..255 every token owns, and which one
+              the byte landed on, for the first two seeds the CoCo shows.
 """
 
 from __future__ import annotations
@@ -32,7 +35,9 @@ import numpy as np
 ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT / "src" / "reference"))
 
+from fixed_token_lm import FixedTokenLanguageModel, XorShift16
 from token_lm import (
+    BOUNDARY,
     ModelConfig,
     TokenLanguageModel,
     assess_samples,
@@ -524,6 +529,83 @@ def main() -> None:
         "measured_max": 11_408,
     }
 
+    # --- how the next token is picked ----------------------------------------
+    # The CoCo does not take the best token. It draws one byte from xorshift16
+    # and walks the vocabulary adding up shares of 256 until the running total
+    # passes the byte. That is a number line from 0 to 255 cut into 29
+    # stretches, and the figure draws exactly that, from the integer model the
+    # CoCo runs, so the bytes and the stretches are the ones behind the first
+    # names on its screen. The walk is checked against the model's own
+    # generate() so the figure cannot describe a different procedure.
+    fixed = FixedTokenLanguageModel(config, vocabulary)
+    fixed.train(contexts, targets, epochs=CHOSEN_EPOCHS)
+    boundary = token_by_text[BOUNDARY]
+    MINIMUM_TOKENS = 2
+
+    def walk(seed: int) -> dict:
+        random = XorShift16(seed)
+        context = [boundary] * config.context
+        produced: list[str] = []
+        steps = []
+        for _ in range(6):
+            _, shares = fixed._forward(np.asarray(context, dtype=np.int64))
+            shares = shares.copy()
+            # For the first two tokens END's stretch is handed to the
+            # favourite, so a name is never one word. A rule in the code,
+            # not in the weights, and the slide says so.
+            floored = len(produced) < MINIMUM_TOKENS
+            if floored:
+                moved = int(shares[boundary])
+                shares[boundary] = 0
+                shares[int(np.argmax(shares))] += moved
+            assert int(np.sum(shares)) == 256
+            draw = random.next() & 0xFF
+            stretches, running, chosen = [], 0, None
+            for token, share in enumerate(shares):
+                share = int(share)
+                if share:
+                    stretches.append(
+                        {
+                            "text": vocabulary[token],
+                            "share": share,
+                            "start": running,
+                            "end": running + share,
+                            "hit": chosen is None and draw < running + share,
+                        }
+                    )
+                    if stretches[-1]["hit"]:
+                        chosen = token
+                running += share
+            favourite = int(np.argmax(shares))
+            steps.append(
+                {
+                    "draw": draw,
+                    "chosen": vocabulary[chosen],
+                    "share": int(shares[chosen]),
+                    "favourite": vocabulary[favourite],
+                    "favourite_share": int(shares[favourite]),
+                    "floored": floored,
+                    "stretches": stretches,
+                }
+            )
+            if chosen == boundary:
+                break
+            produced.append(vocabulary[chosen])
+            context = context[1:] + [chosen]
+        text = " ".join(produced)
+        assert text == fixed.generate(random_seed=seed), (
+            "the walk must reproduce generate(); otherwise the slide describes "
+            "a procedure the machine does not run"
+        )
+        return {"seed": seed, "text": text, "steps": steps}
+
+    draw_trace = {
+        "epochs": CHOSEN_EPOCHS,
+        "minimum_tokens": MINIMUM_TOKENS,
+        "total": 256,
+        "walks": [walk(config.seed), walk(config.seed + 1)],
+    }
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps(
@@ -538,6 +620,7 @@ def main() -> None:
                 "vocabulary": vocabulary_trace,
                 "step": step_trace,
                 "loop": loop_trace,
+                "draw": draw_trace,
                 "why_three": why_three,
                 "parameters": parameters,
                 "budget": budget,

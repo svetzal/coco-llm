@@ -57,15 +57,15 @@ is there for questions.
 | --- | --- | ---: | ---: | ---: | --- | --- |
 | 1 | Watch it work | 1 | 1 | 1 | Slide + EXP-004 launched live | Mystery |
 | 2 | How it works, on slides | 9 | 4 | 5 | Slides | Mechanism |
-| 3 | A little 6809 assembly | 7 | 9 | 14 | EXP-004 live training | Mechanism |
-| 4 | Change one thing: the prompt | 4 | 3 | 17 | CoCo, EXP-005 prompted completions | Mechanism |
-| 5 | Change one thing: the size | 4 | 5 | 22 | CoCo, EXP-007 all-RAM completion | Mechanism |
-| 6 | A screen of things that never existed | 3 | 3 | 25 | CoCo, EXP-012 fake titles | Delight |
-| 7 | Change one thing: the training data | 2 | 4 | 29 | Slide, EXP-003 fan-corpus bias | Limitation |
-| 8 | Now you play it | 2 | 5 | 34 | CoCo, EXP-013 game opponent | Agency |
-| 9 | A token is a note | 2 | 3 | 37 | CoCo, EXP-010 melody continuation | Delight |
-| 10 | Wrap up | 2 | 2 | 39 | Slide | Recap and coordinates |
-| | Reserve, held for block 3 | | 2 | 41 | | |
+| 3 | A little 6809 assembly | 8 | 10 | 15 | EXP-004 live training | Mechanism |
+| 4 | Change one thing: the prompt | 4 | 3 | 18 | CoCo, EXP-005 prompted completions | Mechanism |
+| 5 | Change one thing: the size | 4 | 5 | 23 | CoCo, EXP-007 all-RAM completion | Mechanism |
+| 6 | A screen of things that never existed | 3 | 3 | 26 | CoCo, EXP-012 fake titles | Delight |
+| 7 | Change one thing: the training data | 2 | 4 | 30 | Slide, EXP-003 fan-corpus bias | Limitation |
+| 8 | Now you play it | 2 | 5 | 35 | CoCo, EXP-013 game opponent | Agency |
+| 9 | A token is a note | 2 | 3 | 38 | CoCo, EXP-010 melody continuation | Delight |
+| 10 | Wrap up | 2 | 2 | 40 | Slide | Recap and coordinates |
+| | Reserve, held for block 3 | | 1 | 41 | | |
 | | Questions | | 7 | 48 | | |
 
 **The music block books 3 minutes the 45 did not have.** The table above now
@@ -77,7 +77,7 @@ Blocks 2 and 3 were one block when this file was written. Building the figures
 split them: eight slides now carry the explanation that used to be narrated
 over the training run.
 
-**Block 3 now holds 9 minutes and there are 2 more in reserve behind it.**
+**Block 3 now holds 10 minutes and there is 1 more in reserve behind it.**
 That is more room than the run needs. Wall-clocked under XRoar at
 `-ratelimit` on 2026-08-29, launch to `PRESS ANY KEY` took **49 seconds**
 windowed and 96 headless — emulator measurements, labelled as such, with the
@@ -293,7 +293,7 @@ say so.
 **On screen:** the EXP-004 window that block 1 launched, now parked at the
 training boundary, then three assembly reveals, then the comparison.
 
-Seven slides, nine minutes. The run started in front of the room at block 1
+Eight slides, ten minutes. The run started in front of the room at block 1
 and trained while block 2 explained it — measured at one to two minutes, it
 is parked at `PRESS ANY KEY` by now. Nobody narrated a progress counter,
 and nobody had to.
@@ -307,6 +307,7 @@ and nobody had to.
 | The learning rate, in eight instructions | 40 | Callback: the 1/16 from block 2, physically |
 | Divide by two, four times over | 50 | The bits, then the landing: four halvings is the 0.0625 from One step |
 | Back to the machine | 180 | The pause, the audience's choice, the comparison |
+| How it picks the next token | 45 | The byte, the line of 256, the stretch it lands on: seed 6809's three draws, the name the room just saw |
 
 The three code slides are the deck's only assembly, and they are extracted
 from the source that assembles by `tools/extract_code_excerpts.py` rather than

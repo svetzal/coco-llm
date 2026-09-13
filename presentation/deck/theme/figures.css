@@ -778,6 +778,57 @@
   font-size: 0.55em; letter-spacing: 0.1em; color: var(--deck-mark);
 }
 
+/* --- how the next token is picked -----------------------------------------
+ *
+ * One number line per token drawn, 0 to 255, cut into a stretch per token as
+ * wide as its share of 256. The byte the machine drew is a marker dropped on
+ * the line, and the stretch it lands on is inked. Slivers are the 1-in-256
+ * tokens: present, unlabelled, honest.
+ */
+.reveal .fig.draw { font-size: 0.62em; }
+.reveal .drow {
+  display: grid; grid-template-columns: 6em 1fr 12em;
+  gap: 0 1em; align-items: center; margin: 1.6em 0 0.6em;
+}
+.reveal .drow.head { margin: 0.4em 0 0; }
+.reveal .drow .dlab {
+  font-family: var(--deck-prose); text-transform: uppercase;
+  font-size: 0.62em; letter-spacing: 0.08em; color: var(--deck-quiet);
+  text-align: right;
+}
+.reveal .dline {
+  position: relative; display: flex; height: 1.6em;
+}
+.reveal .dline.axis {
+  height: auto; justify-content: space-between;
+  font-family: var(--deck-prose); font-size: 0.55em; color: var(--deck-quiet);
+}
+.reveal .dseg {
+  box-sizing: border-box; border-right: 1px solid var(--deck-bg);
+  background: var(--deck-quiet); color: var(--deck-bg);
+  font-family: var(--deck-prose); font-size: 0.55em; line-height: 2.9;
+  text-align: center; overflow: hidden; white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+.reveal .dseg.hit { background: var(--deck-mark); color: var(--coco-bg); }
+.reveal .dmark {
+  position: absolute; top: -1.7em; transform: translateX(-50%);
+  font-family: var(--deck-prose); font-size: 0.72em; line-height: 1;
+  color: var(--deck-mark); text-align: center;
+}
+.reveal .dmark::after {
+  content: ""; display: block; margin: 0.15em auto 0; width: 0; height: 0;
+  border-left: 0.45em solid transparent; border-right: 0.45em solid transparent;
+  border-top: 0.55em solid var(--deck-mark);
+}
+.reveal .drow .dres { white-space: nowrap; }
+.reveal .drow .dtok { color: var(--deck-mark); }
+.reveal .drow .dshare {
+  font-family: var(--deck-prose); font-size: 0.6em; color: var(--deck-quiet);
+  margin-left: 0.7em;
+}
+.reveal .fig.draw .cap.rule { color: var(--deck-quiet); font-size: 0.8em; margin-top: 0.4em; }
+
 /* --- changed exactly one thing --------------------------------------------
  *
  * The controls run as one line above the change, because a before-and-after
