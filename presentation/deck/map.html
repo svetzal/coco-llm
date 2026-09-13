@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CoCo LLM - the map</title>
+<link rel="stylesheet" href="../coco-palette.css">
+<link rel="stylesheet" href="../coco-type.css">
+<style>
+/* The concept map: the arithmetic of predicting a token along the top,
+ * the arithmetic of correcting it along the bottom, and the three black
+ * boxes that are the only state. Every chip links into index.html.
+ *
+ * Colours come from coco-palette.css and are never written literally here.
+ * Type is Hot CoCo for box names, folded to uppercase because the MC6847
+ * has no lowercase; a real sans for the words and chips, which are read. */
+:root {
+  --ink: var(--coco-ink);
+  --bg: var(--coco-bg);
+  --mark: var(--coco-c13);   /* navy, as in the deck */
+  --quiet: var(--coco-c03);
+  --line: var(--coco-c02);
+  --prose: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --b1: var(--coco-white); --b2: var(--coco-amber); --b3: var(--coco-orange);
+  --b4: var(--coco-tie); --b5: var(--coco-cyan); --b6: var(--coco-magenta);
+  --b7: var(--coco-loss); --b8: var(--coco-c53); --b9: var(--coco-c27);
+  --b10: var(--coco-win);
+  --blk: var(--coco-white);
+}
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+body { overflow: hidden; font-family: var(--prose); }
+
+.bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  height: 5.4vh; line-height: 5.4vh;
+  background: var(--coco-c00); color: var(--coco-bar);
+  font-family: var(--coco-type); font-size: 2.7vh; text-transform: uppercase;
+  padding: 0 1.6vh; letter-spacing: 0.06em; -webkit-font-smoothing: antialiased;
+}
+.band { position: fixed; top: 5.4vh; left: 0; right: 0; z-index: 40; height: 1vh; background: var(--blk); }
+
+/* A 1280 by 720 canvas, scaled to the window the way reveal scales a slide. */
+.canvas {
+  position: absolute; left: 50%; top: 50%;
+  width: 1280px; height: 720px; transform-origin: 0 0;
+  box-sizing: border-box; padding: 60px 24px 14px;
+}
+
+.map { display: grid; height: 100%;
+  grid-template-columns: 150px 1fr;
+  grid-template-rows: 22px minmax(0, 1.15fr) 88px minmax(0, 0.85fr) 20px;
+  column-gap: 18px; }
+.store-col { grid-column: 1; grid-row: 2 / 5; display: flex; align-items: center; }
+.loopback { grid-column: 2; grid-row: 1; position: relative; }
+.row { grid-column: 2; display: flex; align-items: stretch; gap: 0; }
+.row.predict { grid-row: 2; }
+.row.middle { grid-row: 3; position: relative; }
+.row.correct { grid-row: 4; }
+.rail { grid-column: 1 / 3; grid-row: 5; position: relative; }
+.hline { position: absolute; height: 2px; background: var(--ink); }
+.vline.plain::after { display: none; }
+
+/* A box of arithmetic: outlined on the green. A store: the machine's own
+ * screen, black with green text, because it is memory and not a step. */
+.blk {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column;
+  border: 2px solid var(--ink); padding: 6px 7px 5px; box-sizing: border-box; overflow: hidden;
+  background: rgba(255, 255, 255, 0.16);
+  transition: opacity 0.15s;
+}
+.blk h3 {
+  margin: 0 0 4px; font-family: var(--coco-type); font-weight: normal;
+  font-size: 18px; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.02em;
+}
+.blk .say { margin: 0 0 4px; font-size: 11px; line-height: 1.24; color: var(--ink); }
+.blk .math { margin: 0 0 4px; font-size: 11px; line-height: 1.24; color: var(--mark); display: none; }
+.blk .math b { font-weight: 600; }
+body.math .blk .math { display: block; }
+body.math .blk .say { display: none; }
+.blk .dial { margin: auto 0 0; font-size: 10.5px; color: var(--quiet); }
+.blk .dial::before { content: "decided by a person: "; }
+.store { background: var(--coco-c00); color: var(--coco-bar); border-color: var(--coco-c00); }
+.store h3 { color: var(--coco-bar); }
+.store h3::before { content: "state "; font-size: 11px; color: var(--coco-c19); letter-spacing: 0.1em; display: block; }
+.store .say, .store .dial { color: var(--coco-bar); }
+.store .math { color: var(--coco-c35); }
+.store .dial { color: var(--coco-c19); }
+.store-col .blk { width: 100%; height: 100%; }
+
+/* Arrows between boxes: a rule with a head, drawn in CSS. */
+.arr { flex: 0 0 26px; position: relative; }
+.arr::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: var(--ink); }
+.arr::after { content: ""; position: absolute; top: 50%; margin-top: -6px; border: 6px solid transparent; }
+.predict .arr::after { right: -2px; border-left: 9px solid var(--ink); }
+.correct .arr::after { left: -2px; border-right: 9px solid var(--ink); }
+.arr.in { flex: 0 0 18px; }
+
+/* The return path along the top: the picked token becomes context. */
+.loopback .path {
+  position: absolute; top: 10px; height: 14px;
+  border: 2px solid var(--ink); border-bottom: none;
+}
+.loopback .path::before { /* head, pointing down into CONTEXT WINDOW */
+  content: ""; position: absolute; left: -8px; bottom: -8px;
+  border: 6px solid transparent; border-top: 9px solid var(--ink);
+}
+.loopback .lbl {
+  position: absolute; top: -2px; font-size: 11px; color: var(--ink);
+  background: var(--bg); padding: 0 6px; transform: translateX(-50%);
+}
+
+/* The middle row: WEIGHTS under EMBED and SCORE, read upward, written from
+ * below; and a plain label where the training row hands the next example
+ * back. Everything is positioned in sixths of the row, one per box. */
+.middle .weights { position: absolute; top: 12px; bottom: 12px; }
+.middle .weights .blk { height: 100%; flex-direction: row; align-items: flex-start; gap: 10px; padding: 5px 8px 3px; }
+.middle .weights .blk > div { flex: 1 1 auto; min-width: 0; }
+.middle .weights .say { margin-bottom: 3px; }
+.middle .weights .chips { margin-top: 3px; }
+.middle .weights h3 { margin: 0; }
+.middle .weights .say, .middle .weights .math { margin: 0; }
+.vline { position: absolute; width: 2px; background: var(--ink); }
+.vline::after { content: ""; position: absolute; left: -5px; border: 6px solid transparent; }
+.vline.up::after { top: -2px; border-bottom: 9px solid var(--ink); }
+.vline.down::after { bottom: -2px; border-top: 9px solid var(--ink); }
+.vlbl { position: absolute; font-size: 10.5px; color: var(--ink); background: var(--bg); padding: 0 4px; }
+
+/* Chips: one per slide or experiment, coloured by its talk block. */
+.chips { display: flex; flex-wrap: wrap; gap: 1px 2px; margin-top: 3px; }
+.chip {
+  display: inline-block; font-size: 9.5px; line-height: 1.2; padding: 1px 5px 1px 5px;
+  border-left: 5px solid var(--c, var(--coco-grey)); background: rgba(255, 255, 255, 0.34);
+  color: var(--ink); text-decoration: none; letter-spacing: 0.01em;
+}
+.chip:hover { background: rgba(255, 255, 255, 0.7); }
+.store .chip { background: rgba(255, 255, 255, 0.12); color: var(--coco-bar); }
+.store .chip:hover { background: rgba(255, 255, 255, 0.3); }
+.chip.exp { border-left-style: dotted; }
+.chip .n { color: var(--quiet); }
+.store .chip .n { color: var(--coco-c19); }
+.chip.b1 { --c: var(--b1); } .chip.b2 { --c: var(--b2); } .chip.b3 { --c: var(--b3); }
+.chip.b4 { --c: var(--b4); } .chip.b5 { --c: var(--b5); } .chip.b6 { --c: var(--b6); }
+.chip.b7 { --c: var(--b7); } .chip.b8 { --c: var(--b8); } .chip.b9 { --c: var(--b9); }
+.chip.b10 { --c: var(--b10); }
+
+/* Lit mode: one talk block's boxes at full strength, the rest dimmed. */
+body.lit .blk { opacity: 0.28; }
+body.lit .blk.on { opacity: 1; }
+body.lit .blk.on .chip { opacity: 0.35; }
+body.lit .blk.on .chip.on { opacity: 1; }
+
+.bar .keys { float: right; font-family: var(--prose); font-size: 1.5vh; text-transform: none; letter-spacing: 0; opacity: 0.75; }
+</style>
+</head>
+<body>
+<div class="bar"><span id="bar">COCO LLM - THE MAP</span><span class="keys">keys 1-9, 0 light a talk block &middot; A all &middot; M the arithmetic &middot; ?block=N ?math=1</span></div>
+<div class="band" id="band"></div>
+
+<div class="canvas" id="canvas">
+<div class="map">
+
+  <div class="store-col">
+    <div class="blk store" data-blocks="2 4 5 6 7 9">
+      <h3>Training data</h3>
+      <p class="say">The facts we feed it. Eighteen names become 58 examples of two tokens and the one that came next.</p>
+      <p class="math">18 names, 58 (context, next) pairs</p>
+      <div class="chips">
+        <a class="chip b2" data-block="2" href="index.html#/2"><span class="n">2 ·</span> Training data</a>
+        <a class="chip b7" data-block="7" href="index.html#/36"><span class="n">7 ·</span> Change one thing: the training data</a>
+        <a class="chip b7 exp" data-block="7" href="../../experiments/EXP-003-training-data-bias.md"><span class="n">EXP-003 ·</span> the fan-corpus bias runs</a>
+        <a class="chip b4" data-block="4" href="index.html#/22"><span class="n">4 ·</span> What it read</a>
+        <a class="chip b5" data-block="5" href="index.html#/26"><span class="n">5 ·</span> What it read</a>
+        <a class="chip b6" data-block="6" href="index.html#/31"><span class="n">6 ·</span> What it read</a>
+        <a class="chip b9" data-block="9" href="index.html#/42"><span class="n">9 ·</span> What it read</a>
+      </div>
+      <p class="dial">which text</p>
+    </div>
+  </div>
+
+  <div class="loopback" id="loopback">
+    <div class="path" id="looppath"></div>
+    <span class="lbl" id="looplbl">the picked token becomes the newest context</span>
+  </div>
+
+  <div class="row predict">
+    <div class="arr"></div>
+    <div class="blk" data-blocks="2 5 6 9">
+      <h3>Tokenize</h3>
+      <p class="say">Cut the text into pieces a machine can count. Here a token is a whole word.</p>
+      <p class="math">word → id, <b>29</b> ids</p>
+      <div class="chips">
+        <a class="chip b2" data-block="2" href="index.html#/3"><span class="n">2 ·</span> What is a word?</a>
+        <a class="chip b5" data-block="5" href="index.html#/27"><span class="n">5 ·</span> One byte of vocabulary</a>
+        <a class="chip b9" data-block="9" href="index.html#/40"><span class="n">9 ·</span> A token is a note</a>
+        <a class="chip b9 exp" data-block="9" href="../../experiments/EXP-010-melody-continuation.md"><span class="n">EXP-010 ·</span> the melody continuation</a>
+        <a class="chip b6 exp" data-block="6" href="../../experiments/EXP-012-episode-titles.md"><span class="n">EXP-012 ·</span> the fake episode titles</a>
+        <a class="chip b2 exp" data-block="2" href="../../experiments/EXP-001-model-feasibility.md"><span class="n">EXP-001 ·</span> the rejected character model</a>
+      </div>
+      <p class="dial">what a token is</p>
+    </div>
+    <div class="arr"></div>
+    <div class="blk store" data-blocks="2 4 5 8">
+      <h3>Context window</h3>
+      <p class="say">The last two tokens. It slides, and the rest is gone. A prompt is written here.</p>
+      <p class="math">(t1, t2) · 2 bytes</p>
+      <div class="chips">
+        <a class="chip b2" data-block="2" href="index.html#/3"><span class="n">2 ·</span> What is a word?</a>
+        <a class="chip b4" data-block="4" href="index.html#/20"><span class="n">4 ·</span> Change one thing: the prompt</a>
+        <a class="chip b4 exp" data-block="4" href="../../experiments/EXP-005-prompted-marketing-language.md"><span class="n">EXP-005 ·</span> the prompted marketing completions</a>
+        <a class="chip b8" data-block="8" href="index.html#/38"><span class="n">8 ·</span> Now you play it: the last move</a>
+        <a class="chip b5 exp" data-block="5" href="../../experiments/EXP-007-all-ram-sentence-completion.md"><span class="n">EXP-007 ·</span> five tokens</a>
+        <a class="chip exp" href="../../experiments/EXP-011-contextual-associative-recall.md"><span class="n">EXP-011 ·</span> the context-editing attention head (table)</a>
+      </div>
+      <p class="dial">how wide</p>
+    </div>
+    <div class="arr"></div>
+    <div class="blk" data-blocks="2 5">
+      <h3>Embed</h3>
+      <p class="say">One stored row of three numbers per position and token. Look up two rows, add them.</p>
+      <p class="math">c = E[1][t1] + E[2][t2] · <b>174</b> parameters</p>
+      <div class="chips">
+        <a class="chip b2" data-block="2" href="index.html#/4"><span class="n">2 ·</span> Thirteen doesn't mean anything</a>
+        <a class="chip b2" data-block="2" href="index.html#/5"><span class="n">2 ·</span> Where do the numbers live?</a>
+        <a class="chip b2" data-block="2" href="index.html#/6"><span class="n">2 ·</span> Why three?</a>
+        <a class="chip b2" data-block="2" href="index.html#/7"><span class="n">2 ·</span> What is a parameter?</a>
+        <a class="chip b5" data-block="5" href="index.html#/29"><span class="n">5 ·</span> Eighty-five times bigger</a>
+        <a class="chip b2 exp" data-block="2" href="../../experiments/EXP-002-token-model-feasibility.md"><span class="n">EXP-002 ·</span> the token model</a>
+      </div>
+      <p class="dial">how many numbers per token</p>
+    </div>
+    <div class="arr"></div>
+    <div class="blk" data-blocks="3 4 9">
+      <h3>Score</h3>
+      <p class="say">A score for every token. This is where the multiplies are.</p>
+      <p class="math">z = W c + b · <b>87 + 29</b> parameters, <b>87</b> multiplies</p>
+      <div class="chips">
+        <a class="chip b3" data-block="3" href="index.html#/13"><span class="n">3 ·</span> One signed multiply</a>
+        <a class="chip b4" data-block="4" href="index.html#/23"><span class="n">4 ·</span> The same arithmetic, again</a>
+        <a class="chip b9" data-block="9" href="index.html#/44"><span class="n">9 ·</span> The chip in my CoCo 3</a>
+        <a class="chip b9 exp" data-block="9" href="../../experiments/EXP-014-6309-multiplier.md"><span class="n">EXP-014 ·</span> the 6309 multiplier benchmark</a>
+      </div>
+    </div>
+    <div class="arr"></div>
+    <div class="blk" data-blocks="3">
+      <h3>Softmax</h3>
+      <p class="say">The scores become shares of 100%.</p>
+      <p class="math">p(i) = e<sup>z(i)</sup> / Σ e<sup>z(j)</sup> · a 256-entry table stands in for e<sup>x</sup></p>
+      <div class="chips">
+        <a class="chip b3" data-block="3" href="index.html#/19"><span class="n">3 ·</span> How it picks the next token</a>
+        <a class="chip" href="../table-exercises.md"><span class="n">TABLE ·</span> Be the model: roll a d20</a>
+      </div>
+    </div>
+    <div class="arr"></div>
+    <div class="blk" data-blocks="1 3 6 9">
+      <h3>Pick</h3>
+      <p class="say">Draw a token from the shares, or take the biggest. It goes back into the context window.</p>
+      <p class="math">sample p at a temperature, or argmax</p>
+      <div class="chips">
+        <a class="chip b1" data-block="1" href="index.html#/0"><span class="n">1 ·</span> Watch it work</a>
+        <a class="chip b3" data-block="3" href="index.html#/19"><span class="n">3 ·</span> How it picks the next token</a>
+        <a class="chip b6" data-block="6" href="index.html#/33"><span class="n">6 ·</span> Improved with simple rules</a>
+        <a class="chip b9" data-block="9" href="index.html#/43"><span class="n">9 ·</span> It composes, then it performs</a>
+        <a class="chip exp" href="../../experiments/EXP-006-pretrained-tab-completion.md"><span class="n">EXP-006 ·</span> the 8 KiB completion workbench</a>
+      </div>
+      <p class="dial">temperature, or greedy</p>
+    </div>
+  </div>
+
+  <div class="row middle" id="middle">
+    <div class="weights" id="weights">
+      <div class="blk store" data-blocks="2 4 5">
+        <h3>Weights</h3>
+        <div>
+          <p class="say">The 290 numbers training is allowed to change.</p>
+          <p class="math">E, W, b · <b>290</b> parameters · 580 bytes</p>
+          <div class="chips">
+            <a class="chip b2" data-block="2" href="index.html#/7"><span class="n">2 ·</span> What is a parameter?</a>
+            <a class="chip b4" data-block="4" href="index.html#/21"><span class="n">4 ·</span> A second model</a>
+            <a class="chip b5" data-block="5" href="index.html#/28"><span class="n">5 ·</span> The Mac trained it</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vline up" id="v-read1"></div>
+    <div class="vline up" id="v-read2"></div>
+    <span class="vlbl" id="l-read">read</span>
+    <div class="vline up" id="v-write"></div>
+    <span class="vlbl" id="l-write">write</span>
+    <div class="vline down" id="v-read3"></div>
+    <span class="vlbl" id="l-read3">read</span>
+    <div class="vline down" id="v-shares"></div>
+    <span class="vlbl" id="l-shares">the shares it gave</span>
+  </div>
+
+  <div class="row correct">
+    <div class="arr"></div>
+    <div class="blk" data-blocks="2 3">
+      <h3>Repeat</h3>
+      <p class="say">Every example, every epoch. Loss keeps falling after the names stop improving.</p>
+      <p class="math">58 examples × 20 epochs = <b>1,160</b> updates</p>
+      <div class="chips">
+        <a class="chip b2" data-block="2" href="index.html#/9"><span class="n">2 ·</span> Do it again. And again.</a>
+        <a class="chip b2" data-block="2" href="index.html#/10"><span class="n">2 ·</span> What did it cost?</a>
+        <a class="chip b3" data-block="3" href="index.html#/12"><span class="n">3 ·</span> Watch it learn</a>
+        <a class="chip b3" data-block="3" href="index.html#/18"><span class="n">3 ·</span> Back to the machine</a>
+        <a class="chip b3 exp" data-block="3" href="../../experiments/EXP-004-complete-6809-training.md"><span class="n">EXP-004 ·</span> the live training run</a>
+        <a class="chip exp" href="../../experiments/EXP-007-epoch-sweep.md"><span class="n">EXP-007 ·</span> the epoch sweep</a>
+      </div>
+      <p class="dial">how many epochs</p>
+    </div>
+    <div class="arr"></div>
+    <div class="blk" data-blocks="3 8">
+      <h3>Update</h3>
+      <p class="say">Nudge every weight against its contribution, a sixteenth of the way.</p>
+      <p class="math">w ← w − (1/16) · dw · four shift pairs; Q4.12 kept, Q4.4 used</p>
+      <div class="chips">
+        <a class="chip b3" data-block="3" href="index.html#/16"><span class="n">3 ·</span> The learning rate</a>
+        <a class="chip b3" data-block="3" href="index.html#/17"><span class="n">3 ·</span> Divide by two, four times over</a>
+        <a class="chip b8" data-block="8" href="index.html#/38"><span class="n">8 ·</span> Now you play it</a>
+        <a class="chip b8 exp" data-block="8" href="../../experiments/EXP-013-rpsls-opponent.md"><span class="n">EXP-013 ·</span> the game opponent that learns, by counting</a>
+        <a class="chip exp" href="../../experiments/EXP-008-adaptive-opponent.md"><span class="n">EXP-008 ·</span> the rejected adaptive opponent</a>
+      </div>
+      <p class="dial">the learning rate</p>
+    </div>
+    <div class="arr"></div>
+    <div class="blk" data-blocks="2 3">
+      <h3>Gradient</h3>
+      <p class="say">What each weight contributed to being wrong.</p>
+      <p class="math">dW = e ⊗ c · db = e · dc = Wᵀe · <b>174</b> multiplies</p>
+      <div class="chips">
+        <a class="chip b2" data-block="2" href="index.html#/8"><span class="n">2 ·</span> Training weights one step at a time</a>
+        <a class="chip b3" data-block="3" href="index.html#/14"><span class="n">3 ·</span> The correction for a negative factor</a>
+        <a class="chip b3" data-block="3" href="index.html#/15"><span class="n">3 ·</span> Why one subtraction is enough</a>
+      </div>
+    </div>
+    <div class="arr"></div>
+    <div class="blk" data-blocks="2">
+      <h3>Compare</h3>
+      <p class="say">How wrong it was: the share it gave the right answer, minus 100%.</p>
+      <p class="math">e = p − onehot(t*) · loss = −log p(t*)</p>
+      <div class="chips">
+        <a class="chip b2" data-block="2" href="index.html#/8"><span class="n">2 ·</span> Training weights one step at a time</a>
+        <a class="chip b2" data-block="2" href="index.html#/9"><span class="n">2 ·</span> Do it again. And again.</a>
+      </div>
+    </div>
+    <div class="arr"></div>
+    <div class="blk" data-blocks="2 7">
+      <h3>Target</h3>
+      <p class="say">The token that actually came next in the training data.</p>
+      <p class="math">t*</p>
+      <div class="chips">
+        <a class="chip b2" data-block="2" href="index.html#/8"><span class="n">2 ·</span> Training weights one step at a time</a>
+        <a class="chip b7" data-block="7" href="index.html#/36"><span class="n">7 ·</span> Change one thing: the training data</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="rail" id="rail">
+    <div class="vline plain" id="v-td"></div>
+    <div class="hline" id="rail-h"></div>
+    <div class="vline up" id="v-target"></div>
+    <span class="vlbl" id="l-target">the token that actually came next</span>
+  </div>
+
+</div>
+</div>
+
+
+<script>
+// Scale the 1280x720 canvas to the window, as reveal scales a slide.
+(function () {
+  var c = document.getElementById('canvas');
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    c.style.transform = 'translate(-640px,-360px) scale(' + s + ')';
+    c.style.left = '50%'; c.style.top = '50%';
+    c.style.transformOrigin = '640px 360px';
+  }
+  window.addEventListener('resize', fit); fit();
+})();
+
+// Position the connectors against the boxes they join.
+(function () {
+  var mid = document.getElementById('middle');
+  var rail = document.getElementById('rail');
+  var predict = document.querySelectorAll('.predict .blk');
+  var correct = document.querySelectorAll('.correct .blk');
+  var training = document.querySelector('.store-col .blk');
+  function scale() { return document.getElementById('canvas').getBoundingClientRect().width / 1280; }
+  function rel(el, cont) {
+    var r = el.getBoundingClientRect(), c = cont.getBoundingClientRect(), k = scale();
+    return { l: (r.left - c.left) / k, t: (r.top - c.top) / k, w: r.width / k, h: r.height / k };
+  }
+  function v(id, cx, top, bottom) {
+    var e = document.getElementById(id);
+    e.style.left = (cx - 1) + 'px'; e.style.top = top + 'px'; e.style.height = (bottom - top) + 'px';
+  }
+  function l(id, cx, top) {
+    var e = document.getElementById(id);
+    e.style.left = cx + 'px'; e.style.top = top + 'px'; e.style.transform = 'translateX(-50%)';
+  }
+  function place() {
+    var ctx = predict[1], embed = predict[2], score = predict[3], softmax = predict[4], pick = predict[5];
+    var update = correct[1], gradient = correct[2], compare = correct[3], target = correct[4];
+    var h = rel(mid, mid).h, top = 12, bot = h - 12;
+    var E = rel(embed, mid), S = rel(score, mid), U = rel(update, mid), G = rel(gradient, mid), SM = rel(softmax, mid);
+    var wts = document.getElementById('weights');
+    // It borrows the width of the arrows either side; nothing else uses that space in this row.
+    wts.style.left = (E.l - 22) + 'px'; wts.style.width = (S.l + S.w - E.l + 44) + 'px';
+    // WEIGHTS is read by EMBED and SCORE above, read by GRADIENT below, and
+    // written by UPDATE below. Nothing on the top row can write it.
+    v('v-read1', E.l + E.w / 2, -1, top);
+    v('v-read2', S.l + S.w / 2, -1, top);
+    l('l-read', S.l + S.w / 2 + 26, 1);
+    v('v-write', U.l + U.w / 2, bot, h + 1);
+    l('l-write', U.l + U.w / 2 - 28, h - 14);
+    v('v-read3', G.l + G.w / 2, bot, h + 1);
+    l('l-read3', G.l + G.w / 2 + 26, h - 14);
+    // COMPARE takes the shares SOFTMAX produced.
+    v('v-shares', SM.l + SM.w / 2, -1, h + 1);
+    l('l-shares', SM.l + SM.w / 2, h / 2 - 7);
+    // The return path on top: from PICK's centre back into CONTEXT WINDOW.
+    var lb = document.getElementById('loopback');
+    var C = rel(ctx, lb), P = rel(pick, lb);
+    var pathL = C.l + C.w / 2, pathR = P.l + P.w / 2;
+    var path = document.getElementById('looppath');
+    path.style.left = pathL + 'px'; path.style.width = (pathR - pathL) + 'px';
+    document.getElementById('looplbl').style.left = ((pathL + pathR) / 2) + 'px';
+    // The rail: TARGET takes its token from TRAINING DATA, along the bottom.
+    var R = rel(rail, rail), TD = rel(training, rail), T = rel(target, rail);
+    var tdx = TD.l + TD.w / 2, tx = T.l + T.w / 2, y = R.h / 2 + 4;
+    v('v-td', tdx, 0, y);
+    var hl = document.getElementById('rail-h');
+    hl.style.left = (tdx - 1) + 'px'; hl.style.width = (tx - tdx + 2) + 'px'; hl.style.top = (y - 1) + 'px';
+    v('v-target', tx, -1, y);
+    l('l-target', (tdx + tx) / 2, y - 8);
+  }
+  window.addEventListener('resize', place); window.addEventListener('load', place); place();
+})();
+
+// Lit mode: ?block=N or keys 1-9, 0. A lights all. M toggles the arithmetic.
+(function () {
+  var bars = {
+    1: ['1/10 WATCH IT WORK', 'b1'], 2: ['2/10 HOW IT WORKS', 'b2'],
+    3: ['3/10 A LITTLE 6809 ASSEMBLY', 'b3'], 4: ['4/10 THE PROMPT', 'b4'],
+    5: ['5/10 THE SIZE', 'b5'], 6: ['6/10 NEVER EXISTED', 'b6'],
+    7: ['7/10 THE TRAINING DATA', 'b7'], 8: ['8/10 YOU PLAY IT', 'b8'],
+    9: ['9/10 A TOKEN IS A NOTE', 'b9'], 10: ['10/10 WRAP UP', 'b10']
+  };
+  function light(n) {
+    var body = document.body;
+    document.querySelectorAll('.blk, .chip').forEach(function (e) { e.classList.remove('on'); });
+    if (!n) {
+      body.classList.remove('lit');
+      document.getElementById('bar').textContent = 'COCO LLM - THE MAP';
+      document.documentElement.style.setProperty('--blk', 'var(--coco-white)');
+      return;
+    }
+    body.classList.add('lit');
+    document.querySelectorAll('.blk').forEach(function (b) {
+      var s = (b.getAttribute('data-blocks') || '').split(' ');
+      if (s.indexOf(String(n)) >= 0) b.classList.add('on');
+    });
+    document.querySelectorAll('.chip[data-block="' + n + '"]').forEach(function (c) { c.classList.add('on'); });
+    document.getElementById('bar').textContent = 'COCO LLM - ' + bars[n][0];
+    document.documentElement.style.setProperty('--blk', 'var(--' + bars[n][1] + ')');
+  }
+  var q = new URLSearchParams(location.search);
+  if (q.get('math') === '1') document.body.classList.add('math');
+  var b = parseInt(q.get('block') || '0', 10);
+  if (b >= 1 && b <= 10) light(b);
+  if (b === 10) { light(0); }
+  window.addEventListener('keydown', function (ev) {
+    var k = ev.key;
+    if (k >= '1' && k <= '9') light(parseInt(k, 10));
+    else if (k === '0') light(0);
+    else if (k === 'a' || k === 'A') light(0);
+    else if (k === 'm' || k === 'M') document.body.classList.toggle('math');
+  });
+})();
+</script>
+</body>
+</html>

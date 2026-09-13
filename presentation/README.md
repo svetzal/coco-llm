@@ -17,6 +17,10 @@ record.
 Supporting presentation material includes:
 
 - [`exhibit-copy.md`](exhibit-copy.md) — approved abstract, bio, and table copy;
+- [`concept-map.md`](concept-map.md) — the model as a block diagram, predict
+  along the top and correct along the bottom, with every talk block and
+  experiment hung on the box it changes; [`deck/map.html`](deck/map.html) is
+  the same map as a page whose chips link into the deck;
 - [`table-exercises.md`](table-exercises.md) — the audience's hands-on
   next-token exercise;
 - [`demo-rehearsal-notes.md`](demo-rehearsal-notes.md) — glanceable cues for
