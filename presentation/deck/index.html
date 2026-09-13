@@ -639,8 +639,9 @@
   <h2>How it picks the next token</h2>
   <!-- FIGURE:draw -->
   <div class="fig draw">
-    <p class="cap top">The 29 probabilities add up to 256, so every token
-      owns a stretch of a line from 0 to 255 as wide as its share.
+    <p class="cap top">The softmax turns the 29 scores into probabilities that add up
+      to 256, so every token owns a stretch of a line from 0 to 255 as
+      wide as its share.
       <strong>The machine draws one byte, and the token under it is the
       answer.</strong></p>
     <div class="dwalk">
@@ -1196,7 +1197,7 @@
   <p class="charc">The same code, on music</p>
   <aside class="notes">
     <p><strong>BLOCK 9 OF 10 - A TOKEN IS A NOTE - CHAPTER CARD</strong></p>
-    <p><strong>MACHINE: EXP-010, the melody continuation, performed through EXP-018, the steady sample clock &middot; parked by make stage &middot; RELAUNCH: make block9, or make block9-6309 for the CoCo 3 with a 6309 (the stage option, say so if used)</strong></p>
+    <p><strong>MACHINE: EXP-010, the melody continuation, performed through EXP-018, the steady sample clock, on the 6309 build: a CoCo 3 in native mode at the fast clock, and the chip slide says so &middot; parked by make stage &middot; RELAUNCH: make block9 &middot; CoCo 1 fallback: make block9-coco1</strong></p>
     <p>Last lever, and the one that gives the game away: the machine never knew it was doing words. Change what a token stands for and the same loop does music.</p>
   </aside>
 </section>
@@ -1214,9 +1215,59 @@
   </div>
   <!-- /FIGURE:melodycorpus -->
   <aside class="notes">
-    <p><strong>BLOCK 9 OF 10 - A TOKEN IS A NOTE - SLIDE 1/2</strong></p>
+    <p><strong>BLOCK 9 OF 10 - A TOKEN IS A NOTE - SLIDE 1/3</strong></p>
     <p>The recurring slide, one last time. 376 public-domain fiddle tunes from 1883, cut to a grid where every row is a sixteenth note. It read 313 of them; 63 were held back to test it, same as the first model's holdout.</p>
     <p>Read one line aloud: the number says how far above the home note the pitch sits, a dot holds the note, an R is a rest. That is the whole alphabet - 34 tokens. The second model had 29 words; this one has 34 notes. Nothing else about the machine changed.</p>
+  </aside>
+</section>
+
+<section data-timing="40" data-block="9" data-bar="COCO LLM - 9/10 A TOKEN IS A NOTE">
+  <h2>The chip in the CoCo 3</h2>
+  <p class="lead">A Hitachi 6309. It runs 6809 code as it is, and in its own
+  native mode it has instructions the 6809 does not. One of them is
+  <strong>MULD</strong>, a signed multiply.</p>
+  <!-- FIGURE:chip -->
+  <div class="fig why chip">
+    <div class="wtable">
+      <div class="wrow head">
+        <span class="c what">what ran</span>
+        <span class="c">ticks</span>
+        <span class="c">cycles per<br>multiply</span>
+        <span class="c">against<br>the 6809</span>
+      </div>
+      <div class="wrow"><span class="c what">6809 code, run as a 6809</span><span class="c n">519</span><span class="c">134</span><span class="c n">1.00x</span></div><div class="wrow"><span class="c what">same code, 6309 native mode</span><span class="c n">442</span><span class="c">114</span><span class="c n">1.17x</span></div><div class="wrow"><span class="c what">the 6309&#x27;s MULD instruction</span><span class="c n">338</span><span class="c">87</span><span class="c n">1.54x</span></div><div class="wrow"><span class="c what">MULD at double clock</span><span class="c n">168</span><span class="c">43</span><span class="c n">3.09x</span></div>
+    </div>
+    <p class="cap">Ticks of the 60 Hz frame counter over 58,000
+      multiplies of the trained model's own weights, measured on the
+      CoCo 3 on 5 September 2026. Every row computed the same
+      checksum as the reference.</p>
+    <p class="cap fragment" data-fragment-index="1">
+      The sign correction from block 3 is not faster on the 6309. It is gone.
+      MULD multiplies signed numbers, so 16 instructions
+      and 93 cycles become 5 and
+      43.
+    </p>
+    <p class="cap fragment" data-fragment-index="2">
+      Its extra registers were worth about 5%
+      on the music loop, so that rewrite was never built.
+      <strong>The instruction mattered. The registers did not.</strong>
+    </p>
+    <p class="cap fragment" data-fragment-index="3">
+      This demo runs on that chip, in native mode at 1.79 MHz:
+      11,188 samples a second. The CoCo 1 build plays the same tune at
+      4,566.
+    </p>
+  </div>
+  <!-- /FIGURE:chip -->
+  <aside class="notes">
+    <p><strong>BLOCK 9 OF 10 - A TOKEN IS A NOTE - SLIDE 2/3</strong></p>
+    <p>THE MACHINE AT THE TABLE is a CoCo 3, and the chip in it is a Hitachi 6309: a 6809 that also has a native mode with more instructions and more registers. The demo on the next slide runs in that mode at the fast clock. SAY SO, here, before it plays: the staging rule is that nothing runs faster than the machine without being named.</p>
+    <p>THE TABLE is EXP-014, the 6309 multiplier benchmark, measured on that CoCo 3 on 5 September: 58,000 multiplies of the trained model's own weights, ticks of the frame counter, so fewer is faster. Walk the rows. Native mode alone buys 1.17x. MULD buys 1.54x. Double the clock and it is 3.09x against the stock CoCo 1.</p>
+    <p>CALLBACK to block 3, first fragment: the room spent two slides on the sign correction. On this chip it does not exist. MULD is signed. Sixteen instructions and 93 cycles become five and 43.</p>
+    <p>SECOND FRAGMENT, the honest half: the extra registers were worked out for the music loop and bought six percent, so that rewrite was never built. EXP-016, the register-resident loop, rejected on arithmetic. Nobody made this chip faster at everything. They made it faster at one operation, which is the operation this workload spends its time inside. That is what an accelerator is, and a GPU is that decision repeated until it fills a building.</p>
+    <p>THIRD FRAGMENT sets up the demo: 11,188 samples a second on this chip against 4,566 on the CoCo 1. The CoCo 1 build exists and plays the same tune; it is the fallback, make block9-coco1.</p>
+    <p>DO NOT QUOTE A WHOLE-RUN SPEEDUP. Only the multiply was timed. The full twenty-epoch training run has not been measured on the 6309, and the multiply is not the whole run.</p>
+    <p>If asked why the CoCo 1 is not here: no cable for its video today. It ran; the photo in block 1 is it. The emulator on the projector is a CoCo 1 at its own clock for every block but this one.</p>
   </aside>
 </section>
 
@@ -1247,13 +1298,13 @@
     </p>
   </div>
   <aside class="notes">
-    <p><strong>BLOCK 9 OF 10 - A TOKEN IS A NOTE - SLIDE 2/2</strong></p>
-    <p>SWITCH to the parked EXP-010 XRoar window, at YOU SEED - MODEL CONTINUES. (Recovery: make block9 relaunches it.) Keys are on its screen:</p>
+    <p><strong>BLOCK 9 OF 10 - A TOKEN IS A NOTE - SLIDE 3/3</strong></p>
+    <p>SWITCH to the parked EXP-010 XRoar window, at YOU SEED - MODEL CONTINUES. It is the 6309 build, a CoCo 3 in native mode at the fast clock, named on the slide before this one. (Recovery: make block9 relaunches it; make block9-coco1 is the CoCo 1 build.) Keys are on its screen:</p>
     <ul><li>1 to 7: a note, as a scale degree. Eight of them is the figure.</li><li>- holds the last note, . is a rest, 0 erases one.</li><li>M flips major and minor. S steps the speed.</li><li>Enter: THINKING is the composer, PLAYING is the tune.</li></ul>
     <p>Enter the figure yourself or hand the room the keys - a wrong note is impossible, the keys are degrees. Press Enter, then let a full phrase play before talking over it.</p>
     <p>Step the split like the title machine's: seed, melody, band, performance. The melody line is the model; everything else is written rules. Same shape as the fake titles - learning where learning pays, rules where a person knows better.</p>
     <p>WHY COMPOSE FIRST: the player eats every cycle the 6809 has - the sample loop IS the machine while it runs, and since EXP-018, the steady sample clock, every sample costs exactly the same. So it thinks, then performs. No modern machine hides this from you; it just does it faster.</p>
-    <p>IF THIS IS THE 6309 BUILD (make block9-6309): say so. It is a CoCo 3 in fast mode, and the staging rule is that nothing runs faster than the machine without being named.</p>
+    <p>THE STAGING RULE: this is a CoCo 3 in fast mode, and nothing runs faster than the machine without being named. The chip slide named it. If the fallback CoCo 1 build is running instead, say that too: 4,566 samples a second, not 11,188.</p>
     <p>THE LANDING, and it sets up the close: the loop never knew it was doing words. A token stood for a word, then a note. What it stands for was a decision - a person's decision - which is the next slide.</p>
   </aside>
 </section>
@@ -1274,8 +1325,8 @@
   <h2>What we showed</h2>
   <ul class="recap">
     <li>We started with tiny 290-parameter language model</li>
-    <li>Some common language defined: training data, tokens, embeddings, context window, parameters and weights, prediction and error, gradient, learning rate, epoch, overfitting, quantization</li>
-    <li>How good at math the machine is with the 6809's MUL instruction, and 6309's extra instructions/registers</li>
+    <li>Some common language defined: training data, tokens, embeddings, context window, parameters and weights, prediction and error, gradient, learning rate, epoch, overfitting, quantization, softmax, sampling and temperature</li>
+    <li>How good at math the machine is with the 6809's MUL instruction, and what the 6309's MULD instruction buys</li>
     <li>Some bigger language models, using CoCo to run models trained on faster hardware</li>
     <li>Some of the things to watch out for around training bias</li>
     <li>Real time cumulative learning (Rock Paper Scissors Lizard Spock)</li>

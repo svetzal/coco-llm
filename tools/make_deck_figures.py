@@ -503,8 +503,9 @@ def figure_draw(trace: dict, tokens: int) -> str:
     draws = lambda walk: ", ".join(str(s["draw"]) for s in walk["steps"])
     return f"""
   <div class="fig draw">
-    <p class="cap top">The {tokens} probabilities add up to {total}, so every token
-      owns a stretch of a line from 0 to {total - 1} as wide as its share.
+    <p class="cap top">The softmax turns the {tokens} scores into probabilities that add up
+      to {total}, so every token owns a stretch of a line from 0 to {total - 1} as
+      wide as its share.
       <strong>The machine draws one byte, and the token under it is the
       answer.</strong></p>
     <div class="dwalk">
@@ -521,6 +522,51 @@ def figure_draw(trace: dict, tokens: int) -> str:
     <p class="cap fragment" data-fragment-index="{after_rows + 1}">
       Greedy decoding skips the draw and takes the widest stretch every time.
       That is what temperature zero means.
+    </p>
+  </div>"""
+
+
+def figure_chip(trace: dict) -> str:
+    """What the 6309 measured: EXP-014's rows on silicon, and what they cost."""
+    rows = "".join(
+        f'<div class="wrow"><span class="c what">{esc(r["what"])}</span>'
+        f'<span class="c n">{r["ticks"]}</span>'
+        f'<span class="c">{r["cycles_each"]:.0f}</span>'
+        f'<span class="c n">{r["speedup"]:.2f}x</span></div>'
+        for r in trace["rows"]
+    )
+    k = trace["kernel"]
+    r1, r3 = trace["rates"]["coco1"], trace["rates"]["coco3"]
+    return f"""
+  <div class="fig why chip">
+    <div class="wtable">
+      <div class="wrow head">
+        <span class="c what">what ran</span>
+        <span class="c">ticks</span>
+        <span class="c">cycles per<br>multiply</span>
+        <span class="c">against<br>the 6809</span>
+      </div>
+      {rows}
+    </div>
+    <p class="cap">Ticks of the 60 Hz frame counter over {trace["multiplications"]:,}
+      multiplies of the trained model's own weights, measured on the
+      {trace["machine"]} on {trace["measured_on"]}. Every row computed the same
+      checksum as the reference.</p>
+    <p class="cap fragment" data-fragment-index="1">
+      The sign correction from block 3 is not faster on the 6309. It is gone.
+      MULD multiplies signed numbers, so {k["6809_instructions"]} instructions
+      and {k["6809_cycles"]} cycles become {k["6309_instructions"]} and
+      {k["6309_cycles"]}.
+    </p>
+    <p class="cap fragment" data-fragment-index="2">
+      Its extra registers were worth about {trace["registers_gain_percent"]}%
+      on the music loop, so that rewrite was never built.
+      <strong>The instruction mattered. The registers did not.</strong>
+    </p>
+    <p class="cap fragment" data-fragment-index="3">
+      This demo runs on that chip, in native mode at {r3["clock"]}:
+      {r3["hz"]:,} samples a second. The CoCo 1 build plays the same tune at
+      {r1["hz"]:,}.
     </p>
   </div>"""
 
@@ -1637,6 +1683,7 @@ def main() -> None:
     )
     deck = splice(deck, "cost", figure_cost(traces["budget"], traces["split"]))
     deck = splice(deck, "draw", figure_draw(traces["draw"], len(traces["vocabulary"]["vocabulary"])))
+    deck = splice(deck, "chip", figure_chip(traces["chip"]))
     deck = splice(deck, "bias", figure_bias(bias))
     deck = splice(
         deck,

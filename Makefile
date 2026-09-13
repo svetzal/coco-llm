@@ -55,9 +55,10 @@ present:
 # `make present EXP=4`. Arrange the four windows in block order once they
 # are up; XRoar windows are otherwise indistinguishable.
 STAGE_BINARIES := build/coco-llm-exp5.bin \
-	build/coco-titles.bin build/coco-rpsls.bin build/coco-melody-demo.bin
+	build/coco-titles.bin build/coco-rpsls.bin
 
-stage: $(STAGE_BINARIES) build/coco-llm-exp7.bin build/roms/.coco1-roms
+stage: $(STAGE_BINARIES) build/coco-llm-exp7.bin build/coco-melody-demo-6309.bin \
+		build/roms/.coco1-roms build/roms/.coco3-rom
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
 	@for binary in $(STAGE_BINARIES); do \
@@ -68,8 +69,10 @@ stage: $(STAGE_BINARIES) build/coco-llm-exp7.bin build/roms/.coco1-roms
 	@nohup $(XROAR) -machine cocous -ram 64 \
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
 		-ratelimit -run build/coco-llm-exp7.bin >/dev/null 2>&1 &
+	@nohup $(XROAR) -machine coco3h -extbas $(COCO3_ROM) \
+		-ratelimit -run build/coco-melody-demo-6309.bin >/dev/null 2>&1 &
 	@echo "Parked: EXP-005 (block 4), EXP-007 (block 5)," \
-		"EXP-012 (block 6), EXP-013 (block 8), EXP-010 (block 9)."
+		"EXP-012 (block 6), EXP-013 (block 8), EXP-010 on the 6309 (block 9)."
 	@echo "The windows detach from this terminal; quit them from XRoar itself."
 	@echo "Block 3 launches live: make block3"
 
@@ -151,12 +154,25 @@ block8: build/coco-rpsls.bin build/roms/.coco1-roms
 		-ratelimit -run build/coco-rpsls.bin >/dev/null 2>&1 &
 	@echo "Detached. Quit it from XRoar; nothing here can kill it."
 
-block9: build/coco-melody-demo.bin build/roms/.coco1-roms
+# Block 9 is the 6309 build: a CoCo 3 in native mode at the fast clock,
+# 11,188 Hz with a steady clock, which is the machine at the table. The chip
+# slide names it. block9-coco1 is the CoCo 1 build, the fallback.
+block9: build/coco-melody-demo-6309.bin build/roms/.coco3-rom
 	@test -x "$(XROAR)" || \
 		(echo "Install XRoar first: brew install xroar" && exit 1)
-	@echo "BLOCK 9 - A TOKEN IS A NOTE - EXP-010 parks at YOU SEED -"
-	@echo "MODEL CONTINUES. 1-7 enter notes, - holds, . rests, 0 erases,"
-	@echo "Enter composes, then performs. Let a phrase play before talking."
+	@echo "BLOCK 9 - A TOKEN IS A NOTE - EXP-010 on a 6309 CoCo 3, named on"
+	@echo "the chip slide. Parks at YOU SEED - MODEL CONTINUES. 1-7 enter"
+	@echo "notes, - holds, . rests, 0 erases, Enter composes, then performs"
+	@echo "at 11,188 Hz. Let a phrase play before talking."
+	@nohup $(XROAR) -machine coco3h -extbas $(COCO3_ROM) \
+		-ratelimit -run build/coco-melody-demo-6309.bin >/dev/null 2>&1 &
+	@echo "Detached. Quit it from XRoar; nothing here can kill it."
+
+block9-coco1: build/coco-melody-demo.bin build/roms/.coco1-roms
+	@test -x "$(XROAR)" || \
+		(echo "Install XRoar first: brew install xroar" && exit 1)
+	@echo "BLOCK 9 - A TOKEN IS A NOTE - the CoCo 1 build, 4,566 Hz. The"
+	@echo "fallback: say so if it is the one playing. Same keys as block9."
 	@nohup $(XROAR) -machine cocous -ram 32 \
 		-bas $(COCO_BASIC_ROM) -extbas $(COCO_EXTBASIC_ROM) \
 		-ratelimit -run build/coco-melody-demo.bin >/dev/null 2>&1 &
@@ -788,16 +804,8 @@ build/exp010/MELODY10.DSK: build/coco-melody-demo.bin build/coco-melody-demo-630
 
 melody-dsk: build/exp010/MELODY10.DSK
 
-# Block 9 on a CoCo 3 with a 6309: the performer in native mode at the
-# fast clock, 11,188 Hz with a steady clock. The stage option.
-block9-6309: build/coco-melody-demo-6309.bin build/roms/.coco3-rom
-	@test -x "$(XROAR)" || \
-		(echo "Install XRoar first: brew install xroar" && exit 1)
-	@echo "BLOCK 9 - A TOKEN IS A NOTE - EXP-010 on a 6309 CoCo 3: say so."
-	@echo "Same keys as block9; Enter composes, then performs at 11,188 Hz."
-	@nohup $(XROAR) -machine coco3h -extbas $(COCO3_ROM) \
-		-ratelimit -run build/coco-melody-demo-6309.bin >/dev/null 2>&1 &
-	@echo "Detached. Quit it from XRoar; nothing here can kill it."
+# The old name for the 6309 build, kept for hands that learned it.
+block9-6309: block9
 
 xroar-melody-6309: build/coco-melody-demo-6309.bin build/roms/.coco3-rom
 	$(XROAR) -machine coco3h -extbas $(COCO3_ROM) -ratelimit -run $<

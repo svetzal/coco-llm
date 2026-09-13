@@ -22,6 +22,9 @@ Three traces, matching the blocks that need them:
   draw        block 3. How the trained model picks each token: the byte it
               draws, the stretch of 0..255 every token owns, and which one
               the byte landed on, for the first two seeds the CoCo shows.
+  chip        block 9. What the 6309 in the CoCo 3 measured: EXP-014's ticks
+              on silicon with the ratios derived here, the kernel it deletes,
+              and the sample rates the two builds of the music demo play at.
 """
 
 from __future__ import annotations
@@ -606,6 +609,58 @@ def main() -> None:
         "walks": [walk(config.seed), walk(config.seed + 1)],
     }
 
+    # --- what the 6309 buys ----------------------------------------------------
+    # Measurements, not computations, so the sources are named. EXP-014, the
+    # 6309 multiplier benchmark, ran on the physical CoCo 3 on 2026-09-05
+    # (experiments/EXP-014-6309-multiplier.md): ticks of the 60 Hz frame
+    # counter over 58,000 multiplications of the trained model's own weights,
+    # every row ending SUM MATCHES THE REFERENCE. The ratios and cycles are
+    # derived from the ticks here rather than typed, so a corrected tick
+    # count corrects the slide.
+    BENCH_MULTIPLICATIONS = 58_000
+    bench_rows = [
+        ("6809 code, run as a 6809", 519),
+        ("same code, 6309 native mode", 442),
+        ("the 6309's MULD instruction", 338),
+        ("MULD at double clock", 168),
+    ]
+    stock_ticks = bench_rows[0][1]
+    chip = {
+        "measured_on": "5 September 2026",
+        "machine": "CoCo 3",
+        "multiplications": BENCH_MULTIPLICATIONS,
+        "rows": [
+            {
+                "what": what,
+                "ticks": ticks,
+                "seconds": round(ticks / 60, 2),
+                "cycles_each": round(
+                    ticks / 60 * CLOCK_HZ / BENCH_MULTIPLICATIONS, 1
+                ),
+                "speedup": round(stock_ticks / ticks, 2),
+            }
+            for what, ticks in bench_rows
+        ],
+        # The signed 8-by-16 kernel, negative operand, from the same
+        # experiment's instruction table: what the sign correction costs on
+        # the 6809 and what replaces it on the 6309.
+        "kernel": {
+            "6809_instructions": 16,
+            "6809_cycles": 93,
+            "6309_instructions": 5,
+            "6309_cycles": 43,
+        },
+        # EXP-016, the register-resident loop: the best rewrite around the
+        # 6309's extra registers was 117 cycles against 123, rejected unbuilt.
+        "registers_gain_percent": round(100 * (1 - 117 / 123)),
+        # EXP-018, the steady sample clock: the two builds of the block 9
+        # performer, cycles per sample and the rate that gives.
+        "rates": {
+            "coco1": {"cycles": 196, "hz": 4566, "clock": "0.89 MHz"},
+            "coco3": {"cycles": 160, "hz": 11188, "clock": "1.79 MHz"},
+        },
+    }
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps(
@@ -621,6 +676,7 @@ def main() -> None:
                 "step": step_trace,
                 "loop": loop_trace,
                 "draw": draw_trace,
+                "chip": chip,
                 "why_three": why_three,
                 "parameters": parameters,
                 "budget": budget,

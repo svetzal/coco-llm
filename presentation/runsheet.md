@@ -63,10 +63,10 @@ is there for questions.
 | 6 | A screen of things that never existed | 3 | 3 | 26 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the training data | 2 | 4 | 30 | Slide, EXP-003 fan-corpus bias | Limitation |
 | 8 | Now you play it | 2 | 5 | 35 | CoCo, EXP-013 game opponent | Agency |
-| 9 | A token is a note | 2 | 3 | 38 | CoCo, EXP-010 melody continuation | Delight |
-| 10 | Wrap up | 2 | 2 | 40 | Slide | Recap and coordinates |
-| | Reserve, held for block 3 | | 1 | 41 | | |
-| | Questions | | 7 | 48 | | |
+| 9 | A token is a note | 3 | 4 | 39 | CoCo, EXP-010 melody continuation | Delight |
+| 10 | Wrap up | 2 | 2 | 41 | Slide | Recap and coordinates |
+| | Reserve, held for block 3 | | 1 | 42 | | |
+| | Questions | | 7 | 49 | | |
 
 **The music block books 3 minutes the 45 did not have.** The table above now
 sums to 48. Something gives: three minutes out of questions, a minute each
@@ -610,8 +610,8 @@ why there is no model here at all.
 melody continuation, performed by EXP-018, the steady sample clock, since
 2026-09-06).
 
-`make stage` parks the demo at `YOU SEED - MODEL CONTINUES`; `make block9`
-relaunches it. It waits for a figure: keys 1 to 7 enter scale degrees, `-`
+`make stage` parks the 6309 build at `YOU SEED - MODEL CONTINUES`; `make
+block9` relaunches it. It waits for a figure: keys 1 to 7 enter scale degrees, `-`
 holds, `.` rests, `0` erases, `M` flips major and minor, `S` steps the
 speed, and Enter composes and then performs. Enter the eight-note figure
 yourself, or hand the keys to the room. THINKING is the composer and takes a
@@ -622,12 +622,16 @@ back. The explainer steps the same split as the fake titles - the seed a
 person wrote, the melody the 3,044-byte model composes, the band that is
 rules, and the compose-then-perform shape the four-voice player forces.
 
-The stage build is the CoCo 1 one at 4,566 Hz. `make block9-6309` launches
-the same demo in 6309 native mode at 11,188 Hz, which is what the CoCo 3 at
-the table plays; if it is used on stage, say so, because the staging rule
-above forbids a CoCo 3 in fast mode without saying so. The steady-clock
-performer has been heard on the CoCo 3 and preferred; on the CoCo 1 it has
-not been heard yet.
+The stage build is the 6309 one: `make stage` parks it and `make block9`
+relaunches it, a CoCo 3 in native mode at 11,188 Hz, which is the machine at
+the table (the CoCo 1 has no video cable for this show, so it is not on the
+booth). The staging rule above forbids a CoCo 3 in fast mode without saying
+so, and the new middle slide, "The chip in the CoCo 3", says so before the
+demo plays: EXP-014's measured rows, the sign correction that MULD deletes,
+the registers that bought six percent and were not built, and the two sample
+rates. `make block9-coco1` is the CoCo 1 build at 4,566 Hz, the fallback; if
+it is the one playing, say that instead. The steady-clock performer has been
+heard on the CoCo 3 and preferred; on the CoCo 1 it has not been heard yet.
 
 The landing sets up the close: the loop never knew it was doing words, and
 what a token stands for was a person's decision.

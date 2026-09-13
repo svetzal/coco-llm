@@ -2325,6 +2325,60 @@
    }
   ]
  },
+ "chip": {
+  "measured_on": "5 September 2026",
+  "machine": "CoCo 3",
+  "multiplications": 58000,
+  "rows": [
+   {
+    "what": "6809 code, run as a 6809",
+    "ticks": 519,
+    "seconds": 8.65,
+    "cycles_each": 133.5,
+    "speedup": 1.0
+   },
+   {
+    "what": "same code, 6309 native mode",
+    "ticks": 442,
+    "seconds": 7.37,
+    "cycles_each": 113.7,
+    "speedup": 1.17
+   },
+   {
+    "what": "the 6309's MULD instruction",
+    "ticks": 338,
+    "seconds": 5.63,
+    "cycles_each": 86.9,
+    "speedup": 1.54
+   },
+   {
+    "what": "MULD at double clock",
+    "ticks": 168,
+    "seconds": 2.8,
+    "cycles_each": 43.2,
+    "speedup": 3.09
+   }
+  ],
+  "kernel": {
+   "6809_instructions": 16,
+   "6809_cycles": 93,
+   "6309_instructions": 5,
+   "6309_cycles": 43
+  },
+  "registers_gain_percent": 5,
+  "rates": {
+   "coco1": {
+    "cycles": 196,
+    "hz": 4566,
+    "clock": "0.89 MHz"
+   },
+   "coco3": {
+    "cycles": 160,
+    "hz": 11188,
+    "clock": "1.79 MHz"
+   }
+  }
+ },
  "why_three": {
   "widths": [
    {

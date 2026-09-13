@@ -778,6 +778,12 @@
   font-size: 0.55em; letter-spacing: 0.1em; color: var(--deck-mark);
 }
 
+/* The chip in the CoCo 3: the same table, with a wide left column for what
+ * ran, because the rows are sentences rather than counts. */
+.reveal .fig.chip .wrow { grid-template-columns: 21em 5em 8em 8em; }
+.reveal .fig.chip .wrow .c.what { text-align: left; color: var(--deck-ink); }
+.reveal .fig.chip .wrow.head .c.what { color: var(--deck-quiet); }
+
 /* --- how the next token is picked -----------------------------------------
  *
  * One number line per token drawn, 0 to 255, cut into a stretch per token as
