@@ -63,7 +63,7 @@ is there for questions.
 | 6 | A screen of things that never existed | 3 | 3 | 26 | CoCo, EXP-012 fake titles | Delight |
 | 7 | Change one thing: the training data | 2 | 4 | 30 | Slide, EXP-003 fan-corpus bias | Limitation |
 | 8 | Now you play it | 2 | 5 | 35 | CoCo, EXP-013 game opponent | Agency |
-| 9 | A token is a note | 3 | 4 | 39 | CoCo, EXP-010 melody continuation | Delight |
+| 9 | A token is a note | 4 | 4 | 39 | CoCo, EXP-010 melody continuation | Delight |
 | 10 | Wrap up | 2 | 2 | 41 | Slide | Recap and coordinates |
 | | Reserve, held for block 3 | | 1 | 42 | | |
 | | Questions | | 7 | 49 | | |
@@ -626,10 +626,11 @@ The stage build is the 6309 one: `make stage` parks it and `make block9`
 relaunches it, a CoCo 3 in native mode at 11,188 Hz, which is the machine at
 the table (the CoCo 1 has no video cable for this show, so it is not on the
 booth). The staging rule above forbids a CoCo 3 in fast mode without saying
-so, and the new middle slide, "The chip in the CoCo 3", says so before the
-demo plays: EXP-014's measured rows, the sign correction that MULD deletes,
-the registers that bought six percent and were not built, and the two sample
-rates. `make block9-coco1` is the CoCo 1 build at 4,566 Hz, the fallback; if
+so: name it in one sentence at the switch, and the block's closing slide,
+"The chip in the CoCo 3", then shows what that chip measured: EXP-014's rows,
+the sign correction that MULD deletes, the registers that bought six percent
+and were not built, and the two sample rates. The block opens on the book's
+own 1883 title page, one beat, before the corpus slide. `make block9-coco1` is the CoCo 1 build at 4,566 Hz, the fallback; if
 it is the one playing, say that instead. The steady-clock performer has been
 heard on the CoCo 3 and preferred; on the CoCo 1 it has not been heard yet.
 

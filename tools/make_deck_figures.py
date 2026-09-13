@@ -564,7 +564,7 @@ def figure_chip(trace: dict) -> str:
       <strong>The instruction mattered. The registers did not.</strong>
     </p>
     <p class="cap fragment" data-fragment-index="3">
-      This demo runs on that chip, in native mode at {r3["clock"]}:
+      What you just heard ran on that chip, in native mode at {r3["clock"]}:
       {r3["hz"]:,} samples a second. The CoCo 1 build plays the same tune at
       {r1["hz"]:,}.
     </p>

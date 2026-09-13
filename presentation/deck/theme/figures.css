@@ -784,6 +784,17 @@
 .reveal .fig.chip .wrow .c.what { text-align: left; color: var(--deck-ink); }
 .reveal .fig.chip .wrow.head .c.what { color: var(--deck-quiet); }
 
+/* --- the book -------------------------------------------------------------
+ *
+ * Ryan's Mammoth Collection's own title page, shown as the page it is: a
+ * white sheet on the green, sized to leave room for the title above and one
+ * line below. */
+.reveal .fig.cover { text-align: center; }
+.reveal .fig.cover img {
+  max-height: 64vh; width: auto; max-width: 90%;
+  border: 3px solid var(--deck-ink); background: #fff;
+}
+
 /* --- how the next token is picked -----------------------------------------
  *
  * One number line per token drawn, 0 to 255, cut into a stretch per token as
