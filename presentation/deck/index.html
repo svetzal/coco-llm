@@ -169,6 +169,7 @@
     <p>Point at COMMODORE in both columns. Same word, two different rows. THAT is what "positional" means, and it is why COMMODORE AMIGA and AMIGA COMMODORE are not the same thing to the machine. If anyone asks how it knows about word order, this slide is the answer.</p>
     <p>The context is &lt;END&gt; then COMMODORE, so it fetches the top row of the left table and the COMMODORE row of the right one, and adds them. No arithmetic beyond the addition.</p>
     <p>These numbers are random right now. Training is what makes them mean something.</p>
+    <p>IF ASKED WHAT FORMAT THEY ARE IN: on the CoCo each one is a signed 16-bit word in Q4.12, the real value times 4,096, so a word can hold -8 to +8 in steps of 1/4096. They start well inside -1 to +1 (the CoCo's own random draw is within 0.125 of zero), so at this moment the four integer bits are all empty. Training fills them: by epoch 20 a bias reaches nearly 4, and by epoch 60 a weight pins at -8, the format's edge. The decimals on this slide are the floating-point reference's starting draw, not the CoCo's; same size, different numbers.</p>
   </aside>
 </section>
 
