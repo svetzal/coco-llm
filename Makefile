@@ -184,7 +184,7 @@ block10:
 # Everything the hardware loads, staged for an SD card: one disk image per
 # purpose plus the same files loose, and a manifest derived from the
 # binaries. tools/make_sdcard.py owns the list. DEST is the mounted card.
-SDCARD_BINARIES := build/coco-llm.bin build/coco-llm-exp5.bin \
+SDCARD_BINARIES := build/coco-rpsls-graphics.bin build/coco-llm.bin build/coco-llm-exp5.bin \
 	build/coco-llm-exp6.bin build/coco-llm-exp7.bin \
 	build/coco-titles.bin build/coco-rpsls.bin \
 	build/coco-melody-demo.bin build/coco-melody-demo-6309.bin \
@@ -1287,3 +1287,38 @@ bench-xroar-6309: build/bench6309/bench6309.bin build/roms/.coco1-roms
 bench: bench-test bench-bin bench-xroar-6809 bench-xroar-6309
 
 .PHONY: bench bench-test bench-bin bench-xroar-6809 bench-xroar-6309
+
+# EXP-019, the graphical hand game. Same opponent, CG6 play interface.
+RPSLS_GRAPHICS_SOURCES := src/6809/coco_rpsls_graphics.asm \
+	src/6809/rpsls_graphics.asm src/6809/rpsls_game.asm src/6809/text_screen.asm
+
+build/exp019/assets.stamp: tools/build_rpsls_graphics.py \
+		src/reference/rpsls_graphics.py assets/rpsls/hand-concept.png
+	$(UV) run python tools/build_rpsls_graphics.py
+	touch $@
+
+build/coco-rpsls-graphics.bin: $(RPSLS_GRAPHICS_SOURCES) build/exp019/assets.stamp
+	$(LWASM) --6809 -I src/6809 --format=decb \
+		--symbol-dump=build/coco-rpsls-graphics.sym --output=$@ $<
+
+rpsls-graphics-bin: build/coco-rpsls-graphics.bin
+
+xroar-rpsls-graphics: build/coco-rpsls-graphics.bin build/roms/.coco1-roms
+	$(XROAR) -machine cocous -ram 32 -bas $(COCO_BASIC_ROM) \
+		-extbas $(COCO_EXTBASIC_ROM) -ratelimit -run $<
+
+xroar-test-rpsls-graphics: build/coco-rpsls-graphics.bin build/roms/.coco1-roms
+	$(UV) run python tools/test_xroar.py --xroar $(XROAR) \
+		--binary $< --symbols build/coco-rpsls-graphics.sym \
+		--basic-rom $(COCO_BASIC_ROM) --extended-basic-rom $(COCO_EXTBASIC_ROM) \
+		--ram-init set --trap-symbol gfx_ready
+
+.PHONY: rpsls-graphics-bin xroar-rpsls-graphics xroar-test-rpsls-graphics
+
+build/exp019/RPSLS.DSK: build/coco-rpsls-graphics.bin tools/make_rsdos_dsk.py
+	$(UV) run python tools/make_rsdos_dsk.py --output $@ \
+		--file RPSLS.BIN=build/coco-rpsls-graphics.bin
+
+rpsls-graphics-dsk: build/exp019/RPSLS.DSK
+
+.PHONY: rpsls-graphics-dsk

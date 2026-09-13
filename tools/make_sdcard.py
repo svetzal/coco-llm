@@ -56,6 +56,23 @@ class Disk:
 
 DISKS = (
     Disk(
+        "RPSLS",
+        "EXP-019, the graphical hand game",
+        (
+            Entry(
+                "RPSLS",
+                BUILD / "coco-rpsls-graphics.bin",
+                "EXP-019, the graphical hand game (table)",
+                "CoCo 1, 32K or more; 6809, normal clock",
+                "1 Rock, 2 Paper, 3 Scissors, 4 Lizard, 5 Spock. "
+                "Your wins are on the left, CoCo's on the right; ties score "
+                "nothing. R starts a new game. Disk-load tested in XRoar; "
+                "physical hardware verification pending.",
+            ),
+        ),
+        sheet="experiments/EXP-019-graphical-rpsls.md",
+    ),
+    Disk(
         "COCOLLM",
         "The talk and the table",
         (
