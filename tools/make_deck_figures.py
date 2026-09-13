@@ -370,7 +370,7 @@ def figure_parameters(trace: dict) -> str:
   </div>"""
 
 
-def figure_loop(trace: dict, budget: dict, split: dict) -> str:
+def figure_loop(trace: dict, budget: dict, split: dict, names: int) -> str:
     """What it makes as the loop runs, and what the loop was budgeted to cost."""
 
     # Caption figures are computed, never typed, so they cannot disagree with
@@ -444,8 +444,9 @@ def figure_loop(trace: dict, budget: dict, split: dict) -> str:
       {"".join(rows)}
     </div>
     <p class="cap rubric">
-      Right shape means two to four tokens starting with one of the six makers
-      in the corpus.
+      New means the whole name is not one of the {names} in the corpus, word
+      for word. Right shape means two to four tokens starting with one of the
+      six makers in the corpus.
     </p>
     <p class="cap invent fragment" data-fragment-index="5">
       Epoch by epoch, same arithmetic, same {split["weights"]} bytes of weights.
@@ -1564,7 +1565,14 @@ def main() -> None:
     deck = splice(deck, "why", figure_why_three(traces["why_three"]))
     deck = splice(deck, "params", figure_parameters(traces["parameters"]))
     deck = splice(
-        deck, "loop", figure_loop(traces["loop"], traces["budget"], traces["split"])
+        deck,
+        "loop",
+        figure_loop(
+            traces["loop"],
+            traces["budget"],
+            traces["split"],
+            traces["vocabulary"]["names"],
+        ),
     )
     deck = splice(deck, "cost", figure_cost(traces["budget"], traces["split"]))
     deck = splice(deck, "bias", figure_bias(bias))
