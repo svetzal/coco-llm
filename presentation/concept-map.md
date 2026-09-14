@@ -47,7 +47,7 @@ names the decision a person made there.
 | TRAINING DATA | the facts we feed it | 18 names, 58 examples of (context, next token) | 200 bytes of text | which text |
 | TOKENIZE | cut the text into pieces a machine can count | word to id, 29 ids | a table lookup | what a token is |
 | CONTEXT WINDOW | the last 2 tokens; slides, and everything before it is gone | (t1, t2) | 2 bytes | how wide |
-| EMBED | one stored row of 3 numbers per position and token; add them | c = E[1][t1] + E[2][t2]. 174 parameters | 6 signed adds in Q4.4 | how many numbers per token |
+| EMBED | one stored row of 3 numbers per position and token; add them | c = E₁[t₁] + E₂[t₂]. 174 parameters | 6 signed adds in Q4.4 | how many numbers per token |
 | SCORE | a score for every token | z = W c + b. 87 + 29 parameters, 87 multiplies | MUL, 11 cycles each; MULD on a 6309 | |
 | SOFTMAX | scores become shares of 100% | p(i) = exp(z(i)) / sum of exp(z(j)) | a 256-entry table stands in for exp; shares in 1/256 | |
 | PICK | draw a token from the shares, or take the biggest | sample p, or argmax | xorshift16 | temperature, or greedy |
@@ -95,6 +95,119 @@ The map is honest about this model. It is not a picture of a transformer.
 - **EXP-013, the game opponent that learns, has no gradient.** Its UPDATE is a
   count in a 75-byte table. It sits on UPDATE because that is the job it does
   while a person plays, and its chip says so.
+
+## For readers who know the classic form
+
+Some people arrive knowing this material as matrices and gradients. The map
+holds for them too; this is the same table in that notation, then a list of
+what a classic reader will look for and not find, and what they will find
+under another name.
+
+### The model, in the usual symbols
+
+Vocabulary size V = 29, context length k = 2, embedding width d = 3.
+Parameters θ = (E₁, E₂, W, b) with E_p ∈ ℝ^(V×d), W ∈ ℝ^(V×d), b ∈ ℝ^V,
+so |θ| = kVd + Vd + V = 290.
+
+| Block | Classic form |
+| --- | --- |
+| TRAINING DATA | 𝒟 = {(x⁽ⁿ⁾, y⁽ⁿ⁾)}, N = 58, from 18 names |
+| TOKENIZE | t ∈ {0, …, V−1}; x_p = onehot(t_p) ∈ ℝ^V |
+| CONTEXT WINDOW | x = (t₁, t₂) |
+| EMBED | h = Σ_p E_pᵀ x_p = E₁[t₁] + E₂[t₂] ∈ ℝ^d |
+| SCORE | z = W h + b ∈ ℝ^V |
+| SOFTMAX | p = softmax(z), p_i = e^(z_i) / Σ_j e^(z_j), computed as e^(z_i − max z) |
+| PICK | t ~ Categorical(softmax(z / T)), or argmax z |
+| TARGET | y = onehot(t*) |
+| COMPARE | L = −yᵀ log p = −log p_(t*) |
+| GRADIENT | ∂L/∂z = p − y; ∂L/∂W = (p − y) hᵀ; ∂L/∂b = p − y; ∂L/∂h = Wᵀ(p − y); ∂L/∂E_p[t_p] = ∂L/∂h |
+| UPDATE | θ ← θ − η ∇_θ L, η = 2⁻⁴, one example per step |
+| REPEAT | 20 epochs over 𝒟 in a fixed order; the loss reported is the epoch mean |
+
+Two things in that table are the whole of block 2 and block 3 restated.
+The first is ∂L/∂z = p − y: the softmax and the cross-entropy cancel into
+"the share it gave the right answer, minus 100%," which is why the deck can
+show the error as one subtraction and why the assembly does it with one
+`subd #256`. The second is that ∂L/∂W = (p − y) hᵀ is an outer product, so
+each weight's change is its own row's error times its own column's input,
+which is the slide's "rate × how wrong × what this weight contributed."
+
+### This is backpropagation, one layer deep
+
+The backward pass is the chain rule from L to θ, and it is present in full.
+It is short because the network is short. From the loss to the logits is one
+step, p − y. From the logits back to the context vector is one more,
+Wᵀ(p − y), and that vector is handed straight to the two embedding rows that
+were read. There is no hidden layer, so there is no Jacobian of a
+nonlinearity to pass through and no second matrix to propagate across. A
+reader expecting a δ at every layer will find exactly two, and both are on
+the map: COMPARE produces the first and GRADIENT the second.
+
+The model has a classic name. It is a log-bilinear language model in the
+sense of Mnih and Hinton (2007), with the per-position context matrices
+folded into position-specific input tables and the output embeddings W
+untied from the input side. Its direct ancestor with a hidden layer is the
+neural probabilistic language model of Bengio, Ducharme, Vincent and Jauvin
+(2003); remove that paper's tanh layer and this is what remains.
+
+### What a classic reader will look for and not find
+
+- **Hidden layers and activations.** Nothing sits between EMBED and SCORE.
+  There is no ReLU, GELU or tanh anywhere in the 290 parameters.
+- **Attention.** No queries, keys or values in the main model. EXP-011, the
+  context-editing attention head, has them, below.
+- **Layer normalisation, residual connections, dropout, weight decay.** None.
+- **Additive positional encodings.** Position is handled by giving each
+  window position its own table, not by adding a position vector to a shared
+  token embedding.
+- **Mini-batches, momentum, Adam, learning-rate schedules.** The update is
+  plain SGD with a batch of one and a constant η. The rate is a power of two
+  because the CoCo applies it with shifts.
+- **Tied input and output embeddings.** W is its own table.
+- **Beam search, top-k, nucleus sampling, a KV cache.** Generation is
+  ancestral sampling at a temperature, or greedy.
+- **Held-out validation.** The stopping rule came from a quality rubric on
+  samples, not from validation loss. EXP-007, the epoch sweep, is the one
+  place validation-style measurement appears, and it shows training loss
+  still falling after held-out quality peaks.
+
+### What they will find under another name
+
+- **The max-subtraction trick.** The assembly measures every score as a
+  distance below the best score before looking up the exponential. That is
+  softmax(z − max z), the standard numerically stable form, done for the
+  same reason: the table only has to cover one direction.
+- **Mixed precision.** Master weights are kept in Q4.12 and the forward pass
+  reads their high bytes as Q4.4. Fixed point rather than floating, but the
+  structure is the fp32-master, low-precision-operand pattern, and it exists
+  for the same reason: an update of 1/16 of a small error would otherwise
+  round to nothing.
+- **Post-training quantization.** EXP-006 and EXP-007, the Mac-trained
+  completers, train in floating point and ship signed Q4.4 weights, with the
+  accuracy lost to quantization measured and reported.
+- **Temperature.** The reference divides log p by T before renormalising,
+  which is softmax(z / T).
+- **Scaled dot-product attention.** EXP-011, the context-editing attention
+  head, is q = Q[query], k_m = K[key_m], s_m = q · k_m / √d, α = softmax(s),
+  and the answer is the value stored at argmax s. The value path has no
+  parameters; only Q and K are learned, by cross-entropy over the slots. It
+  is one head, with no output projection, and no value matrix, which is the
+  smallest thing that is still attention.
+- **A count model.** EXP-013, the game opponent that learns, is a maximum
+  likelihood table conditioned on the last move and the last outcome, the
+  same object as a bigram count, updated by incrementing. No gradient exists
+  because there is nothing to differentiate.
+- **Cross-entropy in bits.** EXP-010, the melody continuation, reports its
+  margin over a count baseline as bits per row, which is the log-loss
+  difference in base 2.
+
+### Where this goes
+
+Not on stage. The talk names softmax, gradient and learning rate where the
+mechanism is already on screen, and stops there. This section is for the
+table, for the written record, and for the one person in the room who asks
+"is that really backprop." A single backup slide could carry the notation
+table above; it should not enter the running order.
 
 ## Where each block of the talk lands
 
@@ -169,9 +282,9 @@ slide it names, or to the experiment's file.
 - `?block=N` lights block N's chips and dims the rest, and sets the title bar
   and band to that block. This is the chapter-card version. Keys `1` to `9`
   and `0` do the same in the page; `A` lights everything.
-- `?math=1` shows the arithmetic line under each box. Key `M` toggles it. It
-  is off by default: the words carry the primary path and the arithmetic is
-  optional depth.
+- `?math=1` swaps each box's words for its arithmetic, and `?math=2` for the
+  classic notation above. Key `M` cycles words, arithmetic, classic. Words are
+  the default: they carry the primary path and the notation is optional depth.
 
 Nothing on the page is generated from a run, because nothing on it is a
 measurement. The counts it quotes are the ones already on the slides.
