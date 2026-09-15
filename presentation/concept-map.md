@@ -149,7 +149,7 @@ which is the slide's "rate × how wrong × what this weight contributed."
 
 ### This is backpropagation, one layer deep
 
-The backward pass is the chain rule from L to θ, and it is present in full.
+The backward pass is the chain rule from $`L`$ to $`\theta`$, and it is present in full.
 It is short because the network is short. From the loss to the logits is one
 step, $`p - y`$. From the logits back to the context vector is one more,
 $`W^{\mathsf T}(p - y)`$, and that vector is handed straight to the two embedding rows that
