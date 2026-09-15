@@ -124,6 +124,29 @@ so |θ| = kVd + Vd + V = 290.
 | UPDATE | θ ← θ − η ∇_θ L, η = 2⁻⁴, one example per step |
 | REPEAT | 20 epochs over 𝒟 in a fixed order; the loss reported is the epoch mean |
 
+The same thing typeset, forward then backward. GitHub renders these blocks;
+a plain reader sees the LaTeX, which is why the table above stays in Unicode.
+
+```math
+\begin{aligned}
+h &= \sum_{p=1}^{k} E_p^{\mathsf T} x_p = E_1[t_1] + E_2[t_2] &&\in \mathbb{R}^{d} \\
+z &= W h + b &&\in \mathbb{R}^{V} \\
+p_i &= \frac{e^{\,z_i - \max z}}{\sum_{j} e^{\,z_j - \max z}} \\
+L &= -\,y^{\mathsf T} \log p = -\log p_{t^*}
+\end{aligned}
+```
+
+```math
+\begin{aligned}
+\frac{\partial L}{\partial z} &= p - y \\
+\frac{\partial L}{\partial W} &= (p - y)\, h^{\mathsf T}, \qquad
+\frac{\partial L}{\partial b} = p - y \\
+\frac{\partial L}{\partial h} &= W^{\mathsf T} (p - y), \qquad
+\frac{\partial L}{\partial E_p[t_p]} = \frac{\partial L}{\partial h} \quad (p = 1, 2) \\
+\theta &\leftarrow \theta - \eta\, \nabla_{\theta} L, \qquad \eta = 2^{-4}
+\end{aligned}
+```
+
 Two things in that table are the whole of block 2 and block 3 restated.
 The first is ∂L/∂z = p − y: the softmax and the cross-entropy cancel into
 "the share it gave the right answer, minus 100%," which is why the deck can
