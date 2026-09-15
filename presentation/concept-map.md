@@ -105,36 +105,28 @@ under another name.
 
 ### The model, in the usual symbols
 
-Vocabulary size V = 29, context length k = 2, embedding width d = 3.
-Parameters θ = (E₁, E₂, W, b) with E_p ∈ ℝ^(V×d), W ∈ ℝ^(V×d), b ∈ ℝ^V,
-so |θ| = kVd + Vd + V = 290.
+Vocabulary size $`V = 29`$, context length $`k = 2`$, embedding width
+$`d = 3`$. Parameters $`\theta = (E_1, E_2, W, b)`$ with
+$`E_p \in \mathbb{R}^{V \times d}`$, $`W \in \mathbb{R}^{V \times d}`$,
+$`b \in \mathbb{R}^{V}`$, so $`|\theta| = kVd + Vd + V = 290`$.
 
 | Block | Classic form |
 | --- | --- |
-| TRAINING DATA | 𝒟 = {(x⁽ⁿ⁾, y⁽ⁿ⁾)}, N = 58, from 18 names |
-| TOKENIZE | t ∈ {0, …, V−1}; x_p = onehot(t_p) ∈ ℝ^V |
-| CONTEXT WINDOW | x = (t₁, t₂) |
-| EMBED | h = Σ_p E_pᵀ x_p = E₁[t₁] + E₂[t₂] ∈ ℝ^d |
-| SCORE | z = W h + b ∈ ℝ^V |
-| SOFTMAX | p = softmax(z), p_i = e^(z_i) / Σ_j e^(z_j), computed as e^(z_i − max z) |
-| PICK | t ~ Categorical(softmax(z / T)), or argmax z |
-| TARGET | y = onehot(t*) |
-| COMPARE | L = −yᵀ log p = −log p_(t*) |
-| GRADIENT | ∂L/∂z = p − y; ∂L/∂W = (p − y) hᵀ; ∂L/∂b = p − y; ∂L/∂h = Wᵀ(p − y); ∂L/∂E_p[t_p] = ∂L/∂h |
-| UPDATE | θ ← θ − η ∇_θ L, η = 2⁻⁴, one example per step |
-| REPEAT | 20 epochs over 𝒟 in a fixed order; the loss reported is the epoch mean |
+| TRAINING DATA | $`\mathcal{D} = \{(x^{(n)}, y^{(n)})\}_{n=1}^{N},\ N = 58`$, from 18 names |
+| TOKENIZE | $`t \in \{0, \dots, V-1\}`$; $`x_p = \mathrm{onehot}(t_p) \in \mathbb{R}^{V}`$ |
+| CONTEXT WINDOW | $`x = (t_1, t_2)`$ |
+| EMBED | $`h = \sum_{p=1}^{k} E_p^{\mathsf T} x_p = E_1[t_1] + E_2[t_2] \in \mathbb{R}^{d}`$ |
+| SCORE | $`z = W h + b \in \mathbb{R}^{V}`$ |
+| SOFTMAX | $`p = \mathrm{softmax}(z)`$, $`p_i = e^{z_i - \max z} \big/ \sum_j e^{z_j - \max z}`$ |
+| PICK | $`t \sim \mathrm{Categorical}(\mathrm{softmax}(z / T))`$, or $`\arg\max z`$ |
+| TARGET | $`y = \mathrm{onehot}(t^*)`$ |
+| COMPARE | $`L = -y^{\mathsf T} \log p = -\log p_{t^*}`$ |
+| GRADIENT | $`\partial L/\partial z = p - y`$; $`\partial L/\partial W = (p - y)\, h^{\mathsf T}`$; $`\partial L/\partial b = p - y`$; $`\partial L/\partial h = W^{\mathsf T}(p - y)`$; $`\partial L/\partial E_p[t_p] = \partial L/\partial h`$ |
+| UPDATE | $`\theta \leftarrow \theta - \eta\, \nabla_{\theta} L`$, $`\eta = 2^{-4}`$, one example per step |
+| REPEAT | 20 epochs over $`\mathcal{D}`$ in a fixed order; the loss reported is the epoch mean |
 
-The same thing typeset, forward then backward. GitHub renders these blocks;
-a plain reader sees the LaTeX, which is why the table above stays in Unicode.
-
-```math
-\begin{aligned}
-h &= \sum_{p=1}^{k} E_p^{\mathsf T} x_p = E_1[t_1] + E_2[t_2] &&\in \mathbb{R}^{d} \\
-z &= W h + b &&\in \mathbb{R}^{V} \\
-p_i &= \frac{e^{\,z_i - \max z}}{\sum_{j} e^{\,z_j - \max z}} \\
-L &= -\,y^{\mathsf T} \log p = -\log p_{t^*}
-\end{aligned}
-```
+The backward pass in sequence, as the chain rule from the loss to the
+parameters:
 
 ```math
 \begin{aligned}
@@ -148,10 +140,10 @@ L &= -\,y^{\mathsf T} \log p = -\log p_{t^*}
 ```
 
 Two things in that table are the whole of block 2 and block 3 restated.
-The first is ∂L/∂z = p − y: the softmax and the cross-entropy cancel into
+The first is $`\partial L/\partial z = p - y`$: the softmax and the cross-entropy cancel into
 "the share it gave the right answer, minus 100%," which is why the deck can
 show the error as one subtraction and why the assembly does it with one
-`subd #256`. The second is that ∂L/∂W = (p − y) hᵀ is an outer product, so
+`subd #256`. The second is that $`\partial L/\partial W = (p - y)\, h^{\mathsf T}`$ is an outer product, so
 each weight's change is its own row's error times its own column's input,
 which is the slide's "rate × how wrong × what this weight contributed."
 
@@ -159,16 +151,16 @@ which is the slide's "rate × how wrong × what this weight contributed."
 
 The backward pass is the chain rule from L to θ, and it is present in full.
 It is short because the network is short. From the loss to the logits is one
-step, p − y. From the logits back to the context vector is one more,
-Wᵀ(p − y), and that vector is handed straight to the two embedding rows that
+step, $`p - y`$. From the logits back to the context vector is one more,
+$`W^{\mathsf T}(p - y)`$, and that vector is handed straight to the two embedding rows that
 were read. There is no hidden layer, so there is no Jacobian of a
 nonlinearity to pass through and no second matrix to propagate across. A
-reader expecting a δ at every layer will find exactly two, and both are on
+reader expecting a $`\delta`$ at every layer will find exactly two, and both are on
 the map: COMPARE produces the first and GRADIENT the second.
 
 The model has a classic name. It is a log-bilinear language model in the
 sense of Mnih and Hinton (2007), with the per-position context matrices
-folded into position-specific input tables and the output embeddings W
+folded into position-specific input tables and the output embeddings $`W`$
 untied from the input side. Its direct ancestor with a hidden layer is the
 neural probabilistic language model of Bengio, Ducharme, Vincent and Jauvin
 (2003); remove that paper's tanh layer and this is what remains.
@@ -184,9 +176,9 @@ neural probabilistic language model of Bengio, Ducharme, Vincent and Jauvin
   window position its own table, not by adding a position vector to a shared
   token embedding.
 - **Mini-batches, momentum, Adam, learning-rate schedules.** The update is
-  plain SGD with a batch of one and a constant η. The rate is a power of two
+  plain SGD with a batch of one and a constant $`\eta`$. The rate is a power of two
   because the CoCo applies it with shifts.
-- **Tied input and output embeddings.** W is its own table.
+- **Tied input and output embeddings.** $`W`$ is its own table.
 - **Beam search, top-k, nucleus sampling, a KV cache.** Generation is
   ancestral sampling at a temperature, or greedy.
 - **Held-out validation.** The stopping rule came from a quality rubric on
@@ -198,7 +190,7 @@ neural probabilistic language model of Bengio, Ducharme, Vincent and Jauvin
 
 - **The max-subtraction trick.** The assembly measures every score as a
   distance below the best score before looking up the exponential. That is
-  softmax(z − max z), the standard numerically stable form, done for the
+  $`\mathrm{softmax}(z - \max z)`$, the standard numerically stable form, done for the
   same reason: the table only has to cover one direction.
 - **Mixed precision.** Master weights are kept in Q4.12 and the forward pass
   reads their high bytes as Q4.4. Fixed point rather than floating, but the
@@ -209,11 +201,12 @@ neural probabilistic language model of Bengio, Ducharme, Vincent and Jauvin
   completers, train in floating point and ship signed Q4.4 weights, with the
   accuracy lost to quantization measured and reported.
 - **Temperature.** The reference divides log p by T before renormalising,
-  which is softmax(z / T).
+  which is $`\mathrm{softmax}(z / T)`$.
 - **Scaled dot-product attention.** EXP-011, the context-editing attention
-  head, is q = Q[query], k_m = K[key_m], s_m = q · k_m / √d, α = softmax(s),
-  and the answer is the value stored at argmax s. The value path has no
-  parameters; only Q and K are learned, by cross-entropy over the slots. It
+  head, is $`q = Q[\text{query}]`$, $`k_m = K[\text{key}_m]`$,
+  $`s_m = q \cdot k_m / \sqrt{d}`$, $`\alpha = \mathrm{softmax}(s)`$, and the
+  answer is the value stored at $`\arg\max s`$. The value path has no
+  parameters; only $`Q`$ and $`K`$ are learned, by cross-entropy over the slots. It
   is one head, with no output projection, and no value matrix, which is the
   smallest thing that is still attention.
 - **A count model.** EXP-013, the game opponent that learns, is a maximum
