@@ -222,8 +222,9 @@ neural probabilistic language model of Bengio, Ducharme, Vincent and Jauvin
 Not on stage. The talk names softmax, gradient and learning rate where the
 mechanism is already on screen, and stops there. This section is for the
 table, for the written record, and for the one person in the room who asks
-"is that really backprop." A single backup slide could carry the notation
-table above; it should not enter the running order.
+"is that really backprop." One backup slide carries the notation table
+above, as a vertical slide under the deck's last slide so the down arrow
+reaches it and the running order never does.
 
 ## Where each block of the talk lands
 
@@ -299,7 +300,7 @@ slide it names, or to the experiment's file.
   and band to that block. This is the chapter-card version. Keys `1` to `9`
   and `0` do the same in the page; `A` lights everything.
 - `?math=1` swaps each box's words for its arithmetic, and `?math=2` for the
-  classic notation above. Key `M` cycles words, arithmetic, classic. Words are
+  classic notation above, typeset by the MathJax vendored beside reveal. Key `M` cycles words, arithmetic, classic. Words are
   the default: they carry the primary path and the notation is optional depth.
 
 Nothing on the page is generated from a run, because nothing on it is a

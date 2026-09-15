@@ -5,6 +5,12 @@
 <title>CoCo LLM - the map</title>
 <link rel="stylesheet" href="../coco-palette.css">
 <link rel="stylesheet" href="../coco-type.css">
+<script>
+// MathJax for the classic register, vendored beside reveal. It typesets
+// every \( \) span once at load; the register is shown and hidden by CSS.
+window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]] }, svg: { fontCache: "global" } };
+</script>
+<script src="vendor/mathjax/tex-svg.js" async></script>
 <style>
 /* The concept map: the arithmetic of predicting a token along the top,
  * the arithmetic of correcting it along the bottom, and the three black
@@ -46,7 +52,7 @@ body { overflow: hidden; font-family: var(--prose); }
 }
 
 .map { display: grid; height: 100%;
-  grid-template-columns: 150px 1fr;
+  grid-template-columns: 150px minmax(0, 1fr);
   grid-template-rows: 22px minmax(0, 1.15fr) 88px minmax(0, 0.85fr) 20px;
   column-gap: 18px; }
 .store-col { grid-column: 1; grid-row: 2 / 5; display: flex; align-items: center; }
@@ -76,7 +82,9 @@ body { overflow: hidden; font-family: var(--prose); }
 .blk .math b { font-weight: 600; }
 body.math .blk .math { display: block; }
 body.math .blk .say { display: none; }
-.blk .classic { margin: 0 0 4px; font-size: 11px; line-height: 1.24; color: var(--mark); display: none; font-family: "STIX Two Text", "Cambria Math", "Times New Roman", serif; font-size: 12px; }
+.blk .classic { margin: 0 0 4px; font-size: 11.5px; line-height: 1.3; color: var(--mark); display: none; }
+.blk .classic mjx-container { font-size: 1em; margin: 0 !important; }
+.blk .classic { word-spacing: 0.1em; }
 body.classic .blk .classic { display: block; }
 body.classic .blk .say { display: none; }
 .store .classic { color: var(--coco-c35); }
@@ -167,7 +175,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Training data</h3>
       <p class="say">The facts we feed it. Eighteen names become 58 examples of two tokens and the one that came next.</p>
       <p class="math">18 names, 58 (context, next) pairs</p>
-      <p class="classic">𝒟 = {(x⁽ⁿ⁾, y⁽ⁿ⁾)}, N = 58, from 18 names</p>
+      <p class="classic">\(\mathcal{D} = \{(x^{(n)}, y^{(n)})\}_{n=1}^{58}\), from 18 names</p>
       <div class="chips">
         <a class="chip b2" data-block="2" href="index.html#/2"><span class="n">2 ·</span> Training data</a>
         <a class="chip b7" data-block="7" href="index.html#/36"><span class="n">7 ·</span> Change one thing: the training data</a>
@@ -192,7 +200,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Tokenize</h3>
       <p class="say">Cut the text into pieces a machine can count. Here a token is a whole word.</p>
       <p class="math">word → id, <b>29</b> ids</p>
-      <p class="classic">t ∈ {0, …, V−1}, V = 29; x<sub>p</sub> = onehot(t<sub>p</sub>) ∈ ℝ<sup>V</sup></p>
+      <p class="classic">\(t \in \{0, \dots, V-1\}\), \(V = 29\); \(x_p = \mathrm{onehot}(t_p) \in \mathbb{R}^{V}\)</p>
       <div class="chips">
         <a class="chip b2" data-block="2" href="index.html#/3"><span class="n">2 ·</span> What is a word?</a>
         <a class="chip b5" data-block="5" href="index.html#/27"><span class="n">5 ·</span> One byte of vocabulary</a>
@@ -208,7 +216,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Context window</h3>
       <p class="say">The last two tokens. It slides, and the rest is gone. A prompt is written here.</p>
       <p class="math">(t1, t2) · 2 bytes</p>
-      <p class="classic">x = (t₁, t₂), k = 2</p>
+      <p class="classic">\(x = (t_1, t_2)\), \(k = 2\)</p>
       <div class="chips">
         <a class="chip b2" data-block="2" href="index.html#/3"><span class="n">2 ·</span> What is a word?</a>
         <a class="chip b4" data-block="4" href="index.html#/20"><span class="n">4 ·</span> Change one thing: the prompt</a>
@@ -224,7 +232,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Embed</h3>
       <p class="say">One stored row of three numbers per position and token. Look up two rows, add them.</p>
       <p class="math">c = E[1][t1] + E[2][t2] · <b>174</b> parameters</p>
-      <p class="classic">h = Σ<sub>p</sub> E<sub>p</sub><sup>T</sup> x<sub>p</sub> = E₁[t₁] + E₂[t₂] ∈ ℝ<sup>d</sup>, d = 3</p>
+      <p class="classic">\(h = \sum_{p} E_p^{\mathsf T} x_p\) \(= E_1[t_1] + E_2[t_2]\) \(\in \mathbb{R}^{d}\), \(d = 3\)</p>
       <div class="chips">
         <a class="chip b2" data-block="2" href="index.html#/4"><span class="n">2 ·</span> Thirteen doesn't mean anything</a>
         <a class="chip b2" data-block="2" href="index.html#/5"><span class="n">2 ·</span> Where do the numbers live?</a>
@@ -240,7 +248,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Score</h3>
       <p class="say">A score for every token. This is where the multiplies are.</p>
       <p class="math">z = W c + b · <b>87 + 29</b> parameters, <b>87</b> multiplies</p>
-      <p class="classic">z = W h + b, W ∈ ℝ<sup>V×d</sup>, b ∈ ℝ<sup>V</sup></p>
+      <p class="classic">\(z = W h + b\), \(W \in \mathbb{R}^{V \times d}\), \(b \in \mathbb{R}^{V}\)</p>
       <div class="chips">
         <a class="chip b3" data-block="3" href="index.html#/13"><span class="n">3 ·</span> One signed multiply</a>
         <a class="chip b4" data-block="4" href="index.html#/23"><span class="n">4 ·</span> The same arithmetic, again</a>
@@ -253,7 +261,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Softmax</h3>
       <p class="say">The scores become shares of 100%.</p>
       <p class="math">p(i) = e<sup>z(i)</sup> / Σ e<sup>z(j)</sup> · a 256-entry table stands in for e<sup>x</sup></p>
-      <p class="classic">p = softmax(z), p<sub>i</sub> = e<sup>z<sub>i</sub> − max z</sup> / Σ<sub>j</sub> e<sup>z<sub>j</sub> − max z</sup></p>
+      <p class="classic">\(p_i = e^{\,z_i - \max z} / Z\), \(Z = \textstyle\sum_j e^{\,z_j - \max z}\)</p>
       <div class="chips">
         <a class="chip b3" data-block="3" href="index.html#/19"><span class="n">3 ·</span> How it picks the next token</a>
         <a class="chip" href="../table-exercises.md"><span class="n">TABLE ·</span> Be the model: roll a d20</a>
@@ -264,7 +272,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Pick</h3>
       <p class="say">Draw a token from the shares, or take the biggest. It goes back into the context window.</p>
       <p class="math">sample p at a temperature, or argmax</p>
-      <p class="classic">t ~ Categorical(softmax(z / T)), or argmax z</p>
+      <p class="classic">\(t \sim \mathrm{softmax}(z / T)\), or \(\arg\max z\)</p>
       <div class="chips">
         <a class="chip b1" data-block="1" href="index.html#/0"><span class="n">1 ·</span> Watch it work</a>
         <a class="chip b3" data-block="3" href="index.html#/19"><span class="n">3 ·</span> How it picks the next token</a>
@@ -283,7 +291,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
         <div>
           <p class="say">The 290 numbers training is allowed to change.</p>
           <p class="math">E, W, b · <b>290</b> parameters · 580 bytes</p>
-      <p class="classic">θ = (E₁, E₂, W, b), |θ| = kVd + Vd + V = 290</p>
+      <p class="classic">\(\theta = (E_1, E_2, W, b)\), \(|\theta| = 290\)</p>
           <div class="chips">
             <a class="chip b2" data-block="2" href="index.html#/7"><span class="n">2 ·</span> What is a parameter?</a>
             <a class="chip b4" data-block="4" href="index.html#/21"><span class="n">4 ·</span> A second model</a>
@@ -309,7 +317,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Repeat</h3>
       <p class="say">Every example, every epoch. Loss keeps falling after the names stop improving.</p>
       <p class="math">58 examples × 20 epochs = <b>1,160</b> updates</p>
-      <p class="classic">for epoch in 1..20, for n in 1..N: one SGD step; report mean L</p>
+      <p class="classic">for epoch in 1..20, for n in 1..N: one SGD step; report mean \(L\)</p>
       <div class="chips">
         <a class="chip b2" data-block="2" href="index.html#/9"><span class="n">2 ·</span> Do it again. And again.</a>
         <a class="chip b2" data-block="2" href="index.html#/10"><span class="n">2 ·</span> What did it cost?</a>
@@ -325,7 +333,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Update</h3>
       <p class="say">Nudge every weight against its contribution, a sixteenth of the way.</p>
       <p class="math">w ← w − (1/16) · dw · four shift pairs; Q4.12 kept, Q4.4 used</p>
-      <p class="classic">θ ← θ − η ∇<sub>θ</sub>L, η = 2⁻⁴, batch size 1</p>
+      <p class="classic">\(\theta \leftarrow \theta - \eta\, \nabla_{\theta} L\), \(\eta = 2^{-4}\), batch size 1</p>
       <div class="chips">
         <a class="chip b3" data-block="3" href="index.html#/16"><span class="n">3 ·</span> The learning rate</a>
         <a class="chip b3" data-block="3" href="index.html#/17"><span class="n">3 ·</span> Divide by two, four times over</a>
@@ -340,7 +348,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Gradient</h3>
       <p class="say">What each weight contributed to being wrong.</p>
       <p class="math">dW = e ⊗ c · db = e · dc = Wᵀe · <b>174</b> multiplies</p>
-      <p class="classic">∂L/∂W = (p − y) h<sup>T</sup>; ∂L/∂b = p − y; ∂L/∂h = W<sup>T</sup>(p − y) → E<sub>p</sub>[t<sub>p</sub>]</p>
+      <p class="classic">\(\partial L/\partial W = (p - y)\, h^{\mathsf T}\); \(\partial L/\partial b = p - y\); \(\partial L/\partial h = W^{\mathsf T}(p - y)\) \(\to E_p[t_p]\)</p>
       <div class="chips">
         <a class="chip b2" data-block="2" href="index.html#/8"><span class="n">2 ·</span> Training weights one step at a time</a>
         <a class="chip b3" data-block="3" href="index.html#/14"><span class="n">3 ·</span> The correction for a negative factor</a>
@@ -352,7 +360,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Compare</h3>
       <p class="say">How wrong it was: the share it gave the right answer, minus 100%.</p>
       <p class="math">e = p − onehot(t*) · loss = −log p(t*)</p>
-      <p class="classic">L = −y<sup>T</sup> log p = −log p<sub>t*</sub>; ∂L/∂z = p − y</p>
+      <p class="classic">\(L = -y^{\mathsf T} \log p = -\log p_{t^*}\); \(\partial L/\partial z = p - y\)</p>
       <div class="chips">
         <a class="chip b2" data-block="2" href="index.html#/8"><span class="n">2 ·</span> Training weights one step at a time</a>
         <a class="chip b2" data-block="2" href="index.html#/9"><span class="n">2 ·</span> Do it again. And again.</a>
@@ -363,7 +371,7 @@ body.lit .blk.on .chip.on { opacity: 1; }
       <h3>Target</h3>
       <p class="say">The token that actually came next in the training data.</p>
       <p class="math">t*</p>
-      <p class="classic">y = onehot(t*)</p>
+      <p class="classic">\(y = \mathrm{onehot}(t^*)\)</p>
       <div class="chips">
         <a class="chip b2" data-block="2" href="index.html#/8"><span class="n">2 ·</span> Training weights one step at a time</a>
         <a class="chip b7" data-block="7" href="index.html#/36"><span class="n">7 ·</span> Change one thing: the training data</a>

@@ -1354,6 +1354,7 @@
   </aside>
 </section>
 
+<section>
 <section data-timing="60" data-block="10" data-bar="COCO LLM - 10/10 WRAP UP">
   <h2>Where to find it</h2>
   <div class="coords">
@@ -1371,12 +1372,41 @@
   </aside>
 </section>
 
+<!-- Backup, not in the running order. A vertical slide under the last one,
+     reached with the down arrow, for the person who asks whether it is
+     really backpropagation. The formulas are TeX, typeset by the vendored
+     MathJax; nothing on the running order uses it. -->
+<section data-timing="0" data-block="10" data-bar="COCO LLM - BACKUP - THE USUAL SYMBOLS">
+  <h2>The same thing, in the usual symbols</h2>
+  <div class="fig notation">
+    <div class="nrow"><span class="nbox">Tokenize</span><span class="nfm">\(t \in \{0, \dots, V-1\},\quad V = 29\)</span></div>
+    <div class="nrow"><span class="nbox">Context window</span><span class="nfm">\(x = (t_1, t_2)\)</span></div>
+    <div class="nrow"><span class="nbox">Embed</span><span class="nfm">\(h = E_1[t_1] + E_2[t_2] \in \mathbb{R}^{3}\)</span></div>
+    <div class="nrow"><span class="nbox">Score</span><span class="nfm">\(z = W h + b \in \mathbb{R}^{29}\)</span></div>
+    <div class="nrow"><span class="nbox">Softmax</span><span class="nfm">\(p_i = e^{\,z_i - \max z} \big/ \textstyle\sum_j e^{\,z_j - \max z}\)</span></div>
+    <div class="nrow"><span class="nbox">Pick</span><span class="nfm">\(t \sim \mathrm{softmax}(z / T)\), or \(\arg\max z\)</span></div>
+    <div class="nrow"><span class="nbox">Compare</span><span class="nfm">\(L = -\log p_{t^*},\qquad \partial L / \partial z = p - y\)</span></div>
+    <div class="nrow"><span class="nbox">Gradient</span><span class="nfm">\(\partial L / \partial W = (p - y)\, h^{\mathsf T},\quad \partial L / \partial b = p - y,\quad \partial L / \partial h = W^{\mathsf T} (p - y)\)</span></div>
+    <div class="nrow"><span class="nbox">Update</span><span class="nfm">\(\theta \leftarrow \theta - 2^{-4}\, \nabla_{\theta} L\)</span></div>
+    <div class="nrow"><span class="nbox">Weights</span><span class="nfm">\(\theta = (E_1, E_2, W, b),\qquad |\theta| = 290\)</span></div>
+    <p class="cap">One lookup, one linear layer, softmax, cross-entropy, plain SGD. The chain rule runs two steps because there are two.</p>
+  </div>
+  <aside class="notes">
+    <p><strong>BACKUP - NOT IN THE RUNNING ORDER - DOWN ARROW FROM THE LAST SLIDE</strong></p>
+    <p>Only if someone asks whether it is really backprop, or wants the matrices. It is the map's classic register on one slide; the written version with the derivation is presentation/concept-map.md.</p>
+    <p>The answer to "is it backprop": yes, one layer deep. Loss to logits is p minus y. Logits back to the context vector is W transposed times that, handed to the two embedding rows that were read. There is no hidden layer, so there is nothing else to pass through.</p>
+    <p>If they know the literature: a log-bilinear language model (Mnih and Hinton, 2007), with position-specific input tables and untied output embeddings. Bengio 2003 with the tanh layer removed.</p>
+  </aside>
+</section>
+</section>
+
 </div>
 </div>
 
 <script src="vendor/reveal/dist/reveal.js"></script>
 <script src="vendor/reveal/dist/plugin/notes.js"></script>
 <script src="vendor/reveal/dist/plugin/highlight.js"></script>
+<script src="vendor/reveal/dist/plugin/math.js"></script>
 <script>
 Reveal.initialize({
   width: 1280,
@@ -1392,7 +1422,17 @@ Reveal.initialize({
   totalTime: 2160,
   transition: "none", // a 1981 machine does not dissolve
   backgroundTransition: "none", // and neither do its chapter cards
-  plugins: [RevealNotes, RevealHighlight],
+  // MathJax for the one backup slide with formulas. Vendored, never the CDN:
+  // the deck opens from a file with the network off. Inline math is \( \)
+  // only, so a dollar sign in the notes is a dollar sign; the notes asides
+  // are skipped besides.
+  mathjax3: {
+    mathjax: "vendor/mathjax/tex-svg.js",
+    tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] },
+    options: { skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code", "aside"] },
+    svg: { fontCache: "global" },
+  },
+  plugins: [RevealNotes, RevealHighlight, RevealMath.MathJax3],
 });
 
 // The title bar and block band, pinned to the browser viewport. They cannot

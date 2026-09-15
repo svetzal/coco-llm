@@ -1018,3 +1018,24 @@
   font-size: 0.72em; letter-spacing: 0.08em; text-transform: uppercase;
 }
 .reveal .coords .table { margin-top: 1.2em; color: var(--deck-mark); }
+
+/* --- the backup: the usual symbols ----------------------------------------
+ *
+ * Not in the running order: a vertical slide under the last one. The box
+ * names wear the machine's face; the formulas are MathJax SVG, which reveal's
+ * uppercase fold cannot touch because they are paths, not text.
+ */
+.reveal .fig.notation {
+  font-size: 0.62em; width: fit-content; margin: 0.3em auto 0; text-align: left;
+}
+.reveal .fig.notation .nrow {
+  display: grid; grid-template-columns: 9em 1fr; align-items: baseline;
+  gap: 0 1.4em; padding: 0.24em 0; border-bottom: 1px solid var(--deck-line);
+}
+.reveal .fig.notation .nrow:last-of-type { border-bottom: none; }
+.reveal .fig.notation .nbox { color: var(--deck-ink); }
+.reveal .fig.notation .nfm {
+  font-family: var(--deck-prose); text-transform: none; color: var(--deck-mark);
+  font-size: 1.05em; white-space: nowrap;
+}
+.reveal .fig.notation .cap { max-width: 44em; margin-top: 0.9em; }

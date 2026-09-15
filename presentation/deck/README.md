@@ -198,6 +198,14 @@ network. A conference room is the wrong place to discover a missing dependency.
 Only the parts in use were extracted: the core, the notes plugin, and the
 highlight plugin.
 
+`vendor/mathjax/` holds MathJax 3.2.2's single-file `tex-svg.js`, Apache 2.0,
+with its `LICENSE`. It is the SVG build, so no font files travel with it, and
+2 MB is the price of typesetting with the network off. `dist/plugin/math.js`
+is reveal's own math plugin from the same 6.0.1 release, pointed at that file
+instead of its default CDN. Nothing on the running order uses it: the one
+slide with formulas is the backup under the last slide, reached with the
+down arrow, and `map.html`'s classic register is typeset by the same file.
+
 ## Regenerating
 
 Three steps, in order. The middle one depends on the assembled 6809 build, so
