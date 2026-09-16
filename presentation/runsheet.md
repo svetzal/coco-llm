@@ -55,7 +55,7 @@ is there for questions.
 
 | # | Block | Slides | Min | Cum | Surface | Arc |
 | --- | --- | ---: | ---: | ---: | --- | --- |
-| 1 | Watch it work | 1 | 1 | 1 | Slide + EXP-004 launched live | Mystery |
+| 1 | Watch it work | 2 | 1 | 1 | Slides + EXP-004 launched live | Mystery |
 | 2 | How it works, on slides | 9 | 4 | 5 | Slides | Mechanism |
 | 3 | A little 6809 assembly | 8 | 10 | 15 | EXP-004 live training | Mechanism |
 | 4 | Change one thing: the prompt | 4 | 3 | 18 | CoCo, EXP-005 prompted completions | Mechanism |
@@ -183,7 +183,8 @@ says where you are.
 ### 1. Watch it work
 
 **On screen:** the block 1 launch, then a photograph of the physical CoCo 1
-showing a real trained run, full screen, no explanation.
+at the exhibit table with a screen of EXP-012's fake episode titles, full
+screen, no explanation.
 
 Open by launching the experiment the next block explains: `make block1`
 opens the deck in the browser and starts EXP-004, the live training run,
@@ -195,10 +196,10 @@ corrections the same seed will draw names — then switch to the deck and
 press `S` for the speaker view. It trains, at the 1981 clock rate, while
 block 2 explains exactly what it is doing.
 
-Then the photograph. Say the names. Say that none of them were ever made.
-Say the machine is from 1981, has 32 kilobytes, and started from random
-numbers about three minutes before that photograph was taken — and that the
-one behind this window started from random numbers a few seconds ago.
+Then the photograph. Read three titles. Say that none of them were ever
+filmed, that the machine is from 1981 and has 32 kilobytes, and that the Mac
+trained this one while the one behind this window started from random
+numbers a few seconds ago. The Mac's part is said, not hidden.
 
 Then make the promise: by the end of this you will know exactly how it did
 that, and you will be unimpressed by it in precisely the right way.
@@ -768,7 +769,7 @@ missing figures, and the physical-world items.
 
 ## Deck state
 
-Thirty-five content slides plus nine chapter cards. The speaker view's
+Thirty-six content slides plus nine chapter cards. The speaker view's
 total is the 36 minutes of content, and the per-slide timings sum to 42.5
 minutes, which is the budget table's 39 plus the cards and a little air; the
 music block's three minutes are still the open question above. Six of the

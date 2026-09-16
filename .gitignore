@@ -9,3 +9,4 @@ __pycache__/
 build/
 experiments/results/*.tmp
 wifi-bridge/bridge.conf
+artifacts/
