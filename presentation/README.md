@@ -17,6 +17,9 @@ record.
 Supporting presentation material includes:
 
 - [`exhibit-copy.md`](exhibit-copy.md) — approved abstract, bio, and table copy;
+- [`series-outline.md`](series-outline.md) — the talk as seventeen blog posts
+  and videos in the concept map's order, one experiment and one runnable
+  command each;
 - [`concept-map.md`](concept-map.md) — the model as a block diagram, predict
   along the top and correct along the bottom, with every talk block and
   experiment hung on the box it changes; [`deck/map.html`](deck/map.html) is
