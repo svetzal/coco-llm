@@ -2,8 +2,11 @@
 
 ## Status
 
-**Built, bit-exact against its reference, emulator-checked, awaiting the
-CoCo 3 and the 1703.** Four builds exist and play their tune to the end
+**Heard on the CoCo 3 through the 1703, 2026-09-06: the square was
+preferred.** The triangle differed only slightly and the square's
+harmonics were the sound wanted, so hypothesis 3 is refuted for this tune,
+the CoCo 1 player keeps its square, and the wavetable player stays as a
+verified capability. Four builds exist and play their tune to the end
 under XRoar with hostile RAM. The reference and the 6809 agree on every
 phase, the noise register and the DAC byte after 200 samples, and a
 square-table build reproduces EXP-009's player exactly.

@@ -90,8 +90,11 @@ Current experiments:
 - [`EXP-015-faster-clock-listening-test.md`](EXP-015-faster-clock-listening-test.md)
   — the faster-clock listening test: the EXP-009 player at 5.7, 11.4 and a
   predicted 14.4 kHz on the CoCo 3, to hear what sample rate buys before
-  any 6309 rewrite of the loop. Built and emulator-checked; the listening
-  is pending. Found and fixed the standalone player's missing row hook.
+  any 6309 rewrite of the loop. Heard on the CoCo 3 through the 1703 on
+  2026-09-06: the higher rates were audibly better, the drum track most of
+  all, and the melody voice's warble found there is what EXP-018 tests.
+  Pitch and length were not recorded. Found and fixed the standalone
+  player's missing row hook.
 - [`EXP-016-register-resident-loop.md`](EXP-016-register-resident-loop.md) —
   the register-resident loop: rejected by arithmetic before building. The
   best 6309 register rewrite of the sample loop saves six percent, and the
@@ -101,15 +104,17 @@ Current experiments:
   wavetable voices: each tone voice's masked bit replaced by a table lookup
   at the same cost, so a triangle or a sine where there was a square. Bit-
   exact against its reference, a square-table build reproduces EXP-009's
-  player, four builds run to the end under XRoar with hostile RAM; the
-  listening is pending. Found a second uninitialised cell in the frozen
-  player, its tempo. On the 1703 the square was preferred.
+  player, four builds run to the end under XRoar with hostile RAM. Heard
+  on the 1703 on 2026-09-06: the square was preferred, so the CoCo 1
+  player keeps it and the wavetable stays as a verified capability. Found
+  a second uninitialised cell in the frozen player, its tempo.
 - [`EXP-018-steady-sample-clock.md`](EXP-018-steady-sample-clock.md) — the
   steady sample clock: the tune compiled into an event stream and applied
   one byte per sample through a path padded to cost what idling costs, so
   the sample clock never stretches. Tests whether the 8 Hz warble heard on
   the melody voice is the row-change stall EXP-009 accepted. Costs a fifth
-  of the rate. Built and emulator-checked; the listening is pending.
+  of the rate. Supported on the CoCo 3 on 2026-09-06: the warble is gone
+  and the steady build is preferred.
 
 ## Presentation commands
 

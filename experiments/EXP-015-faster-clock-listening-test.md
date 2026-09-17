@@ -2,10 +2,13 @@
 
 ## Status
 
-**Built, emulator-checked, awaiting the CoCo 3.** Three builds of the
-EXP-009 four-voice player exist and each plays its tune to the end under
-XRoar. What they sound like on the physical CoCo 3 through the Commodore
-1703 is the experiment, and it has not been run.
+**Heard on the CoCo 3 through the 1703, 2026-09-06.** The higher rates
+were audibly better, the drum track most of all, so hypothesis 3's first
+half holds on hardware. The session also found a warble on the melody
+voice, which EXP-018, the steady sample clock, traced to the row-change
+stall and removed. Pitch and tune length against `MUSIC09` were not
+recorded, so hypotheses 1 and 2 stay open. The dated section below has
+the session.
 
 Building it found that the standalone player had been silently broken
 since 2026-08-02. That is recorded in EXP-009's addendum and fixed; the

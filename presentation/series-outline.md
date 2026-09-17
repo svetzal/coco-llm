@@ -260,7 +260,10 @@ has been answered on camera.
   in the CoCo 3 and what MULD buys.
 - Say plainly: a wrong note is impossible by construction, because the token
   is a scale degree conditioned on mode, metre, beat and chord. The
-  listening tests for the performer are still pending.
+  performer was heard on the CoCo 3 through the 1703 on 2026-09-06: the
+  higher rates were better, the square stayed, and the steady clock
+  removed the warble. Pitch and length against the old player were not
+  recorded.
 - Surface: video first. Sound is the point.
 
 ### 16. The same thing, in the usual symbols
