@@ -12,9 +12,9 @@ tags:
   - learning
 ---
 
-Last Sunday I stood beside my Tandy Color Computer at an exhibit table and watched people read its screen. Sixteen lines of green text. Star Trek episode titles, none of which were ever filmed. The machine arrived under a Christmas tree 45 years ago, has 32 kilobytes of memory, and was making them up as fast as anyone could press a key.
+Last Sunday I spent the day at an exhibit table with my Tandy Color Computers, rotating through demos: a rock-paper-scissors game that learns how you play, a sentence completer, a melody that finishes the bar you give it. The one I could have left up all day was a screen of sixteen Star Trek episode titles, none of which were ever filmed. I could tell who the Star Trek fans were. They'd stop, read TRIBBLES OF ARCHONS off the green screen, and laugh.
 
-The talk I gave that afternoon opened with a promise, and I'll make it again here: by the end of this series you will know exactly how it does that, and you will be unimpressed by it in precisely the right way.
+Every one of those demos is the same small piece of arithmetic, running on a machine that arrived under a Christmas tree 45 years ago with 32 kilobytes of memory. The talk I gave that afternoon opened with a promise, and I'll make it again here: by the end of this series you will know exactly how it does that, and you will be unimpressed by it in precisely the right way.
 
 This is post one of five. It covers the training data, what the model's input is at any one moment, and what happens when you let it run. The arithmetic comes next time.
 
@@ -115,7 +115,7 @@ The names on that screen aren't the wonder. The wonder is that eighteen names wr
 <!--
 Voice check, remove before publishing.
 Tone: first person throughout, conversational, opens on the exhibit table
-(a real place, from the delivered talk) and pivots to the question under
+(her own account of the day: rotating demos, the Star Trek fans) and pivots to the question under
 the questions. Stance: she built this on purpose to see the loop; the CoCo
 and assembly are stated as decisions, not luck. Structure: hook, four short
 sections each opening on a claim, a closing that lands the argument (the
