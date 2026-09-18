@@ -19,7 +19,7 @@ takes the system font list and Hot CoCo falls back to Helvetica.
 S=$(mktemp -d)
 { printf '<!doctype html><meta charset="utf-8"><style>@font-face{font-family:"Hot CoCo";src:url("file://%s/presentation/fonts/HotCoCo.ttf")}html,body{margin:0}</style>' "$PWD"; cat presentation/posts/images/two-words-at-a-time.svg; } > "$S/fig.html"
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu --hide-scrollbars \
-  --window-size=1536,900 --force-device-scale-factor=1 --screenshot="$S/fig.png" "file://$S/fig.html"
+  --window-size=1536,980 --force-device-scale-factor=1 --screenshot="$S/fig.png" "file://$S/fig.html"
 cp "$S/fig.png" presentation/posts/images/two-words-at-a-time.png
 ```
 

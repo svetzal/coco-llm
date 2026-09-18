@@ -1,58 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="900" viewBox="0 0 1536 900">
-<rect width="1536" height="900" fill="#44C532"/>
-<text x="768.0" y="96" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">COMMODORE AMIGA BECOMES 3 TRAINING EXAMPLES</text>
-<text x="348" y="178" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">THE NAME, WITH THE END MARKER ON BOTH SIDES</text>
-<rect x="348" y="200" width="150" height="76" fill="none" stroke="#000000" stroke-width="3"/>
-<text x="423.0" y="248.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<rect x="518" y="200" width="150" height="76" fill="none" stroke="#000000" stroke-width="3"/>
-<text x="593.0" y="248.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<rect x="688" y="200" width="250" height="76" fill="none" stroke="#000000" stroke-width="3"/>
-<text x="813.0" y="248.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">COMMODORE</text>
-<rect x="958" y="200" width="180" height="76" fill="none" stroke="#000000" stroke-width="3"/>
-<text x="1048.0" y="248.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">AMIGA</text>
-<rect x="1158" y="200" width="150" height="76" fill="none" stroke="#000000" stroke-width="3"/>
-<text x="1233.0" y="248.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<rect x="336" y="346" width="344" height="104" fill="#FAE53D" stroke="#064787" stroke-width="4"/>
-<rect x="348" y="360" width="150" height="76" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
-<text x="423.0" y="408.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<rect x="518" y="360" width="150" height="76" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
-<text x="593.0" y="408.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<rect x="688" y="360" width="250" height="76" fill="#000000"/>
-<text x="813.0" y="408.0" font-family="Hot CoCo" font-size="26" fill="#8EFF48" text-anchor="middle" letter-spacing="0">COMMODORE</text>
-<text x="813.0" y="330" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#064787" text-anchor="middle" letter-spacing="3">PREDICTS</text>
-<rect x="958" y="360" width="180" height="76" fill="none" stroke="#106019" stroke-width="3"/>
-<text x="1048.0" y="408.0" font-family="Hot CoCo" font-size="26" fill="#106019" text-anchor="middle" letter-spacing="0">AMIGA</text>
-<rect x="1158" y="360" width="150" height="76" fill="none" stroke="#106019" stroke-width="3"/>
-<text x="1233.0" y="408.0" font-family="Hot CoCo" font-size="26" fill="#106019" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<text x="304" y="406.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="end" letter-spacing="2">EXAMPLE 1</text>
-<rect x="506" y="522" width="444" height="104" fill="#FAE53D" stroke="#064787" stroke-width="4"/>
-<rect x="348" y="536" width="150" height="76" fill="none" stroke="#000000" stroke-width="3"/>
-<text x="423.0" y="584.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<rect x="518" y="536" width="150" height="76" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
-<text x="593.0" y="584.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<rect x="688" y="536" width="250" height="76" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
-<text x="813.0" y="584.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">COMMODORE</text>
-<rect x="958" y="536" width="180" height="76" fill="#000000"/>
-<text x="1048.0" y="584.0" font-family="Hot CoCo" font-size="26" fill="#8EFF48" text-anchor="middle" letter-spacing="0">AMIGA</text>
-<text x="1048.0" y="506" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#064787" text-anchor="middle" letter-spacing="3">PREDICTS</text>
-<rect x="1158" y="536" width="150" height="76" fill="none" stroke="#106019" stroke-width="3"/>
-<text x="1233.0" y="584.0" font-family="Hot CoCo" font-size="26" fill="#106019" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<text x="304" y="582.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="end" letter-spacing="2">EXAMPLE 2</text>
-<rect x="676" y="698" width="474" height="104" fill="#FAE53D" stroke="#064787" stroke-width="4"/>
-<rect x="348" y="712" width="150" height="76" fill="none" stroke="#000000" stroke-width="3"/>
-<text x="423.0" y="760.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<rect x="518" y="712" width="150" height="76" fill="none" stroke="#000000" stroke-width="3"/>
-<text x="593.0" y="760.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<rect x="688" y="712" width="250" height="76" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
-<text x="813.0" y="760.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">COMMODORE</text>
-<rect x="958" y="712" width="180" height="76" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
-<text x="1048.0" y="760.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">AMIGA</text>
-<rect x="1158" y="712" width="150" height="76" fill="#000000"/>
-<text x="1233.0" y="760.0" font-family="Hot CoCo" font-size="26" fill="#8EFF48" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
-<text x="1233.0" y="682" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#064787" text-anchor="middle" letter-spacing="3">PREDICTS</text>
-<text x="304" y="758.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="end" letter-spacing="2">EXAMPLE 3</text>
-<rect x="348" y="840" width="64" height="34" fill="#FAE53D" stroke="#064787" stroke-width="4"/>
-<text x="432" y="864" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">THE CONTEXT WINDOW, 2 TOKENS WIDE</text>
-<rect x="968" y="840" width="64" height="34" fill="#000000"/>
-<text x="1052" y="864" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">THE TOKEN THAT CAME NEXT</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="980" viewBox="0 0 1536 980">
+<rect width="1536" height="980" fill="#44C532"/>
+<text x="768.0" y="92" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">COMMODORE AMIGA BECOMES 3 TRAINING EXAMPLES</text>
+<text x="288" y="172" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">THE NAME, WITH THE END MARKER ON BOTH SIDES</text>
+<rect x="288" y="194" width="150" height="76" fill="none" stroke="#000000" stroke-width="3"/>
+<text x="363.0" y="242.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
+<rect x="458" y="194" width="150" height="76" fill="none" stroke="#000000" stroke-width="3"/>
+<text x="533.0" y="242.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
+<rect x="628" y="194" width="250" height="76" fill="none" stroke="#000000" stroke-width="3"/>
+<text x="753.0" y="242.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">COMMODORE</text>
+<rect x="898" y="194" width="180" height="76" fill="none" stroke="#000000" stroke-width="3"/>
+<text x="988.0" y="242.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">AMIGA</text>
+<rect x="1098" y="194" width="150" height="76" fill="none" stroke="#000000" stroke-width="3"/>
+<text x="1173.0" y="242.0" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle" letter-spacing="0">&lt;END&gt;</text>
+<text x="458" y="322" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">WHAT THE MODEL GETS: TWO NUMBERS. THE WORDS ARE FOR YOU.</text>
+<rect x="446" y="388" width="444" height="132" fill="#FAE53D" stroke="#064787" stroke-width="4"/>
+<rect x="458" y="402" width="200" height="104" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
+<text x="558.0" y="454" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">0</text>
+<text x="558.0" y="486" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">(&lt;END&gt;)</text>
+<rect x="678" y="402" width="200" height="104" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
+<text x="778.0" y="454" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">0</text>
+<text x="778.0" y="486" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">(&lt;END&gt;)</text>
+<text x="1058.0" y="372" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#064787" text-anchor="middle" letter-spacing="3">PREDICTS</text>
+<rect x="958" y="402" width="200" height="104" fill="#000000"/>
+<text x="1058.0" y="454" font-family="Hot CoCo" font-size="34" fill="#8EFF48" text-anchor="middle" letter-spacing="0">13</text>
+<text x="1058.0" y="486" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#8EFF48" text-anchor="middle" letter-spacing="1.5">(COMMODORE)</text>
+<text x="414" y="432.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="end" letter-spacing="2">EXAMPLE 1</text>
+<rect x="446" y="564" width="444" height="132" fill="#FAE53D" stroke="#064787" stroke-width="4"/>
+<rect x="458" y="578" width="200" height="104" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
+<text x="558.0" y="630" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">0</text>
+<text x="558.0" y="662" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">(&lt;END&gt;)</text>
+<rect x="678" y="578" width="200" height="104" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
+<text x="778.0" y="630" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">13</text>
+<text x="778.0" y="662" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">(COMMODORE)</text>
+<text x="1058.0" y="548" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#064787" text-anchor="middle" letter-spacing="3">PREDICTS</text>
+<rect x="958" y="578" width="200" height="104" fill="#000000"/>
+<text x="1058.0" y="630" font-family="Hot CoCo" font-size="34" fill="#8EFF48" text-anchor="middle" letter-spacing="0">7</text>
+<text x="1058.0" y="662" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#8EFF48" text-anchor="middle" letter-spacing="1.5">(AMIGA)</text>
+<text x="414" y="598.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="end" letter-spacing="2">EXAMPLE 2</text>
+<rect x="446" y="740" width="444" height="132" fill="#FAE53D" stroke="#064787" stroke-width="4"/>
+<rect x="458" y="754" width="200" height="104" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
+<text x="558.0" y="806" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">13</text>
+<text x="558.0" y="838" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">(COMMODORE)</text>
+<rect x="678" y="754" width="200" height="104" fill="#FAE53D" stroke="#000000" stroke-width="3"/>
+<text x="778.0" y="806" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">7</text>
+<text x="778.0" y="838" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">(AMIGA)</text>
+<text x="1058.0" y="724" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#064787" text-anchor="middle" letter-spacing="3">PREDICTS</text>
+<rect x="958" y="754" width="200" height="104" fill="#000000"/>
+<text x="1058.0" y="806" font-family="Hot CoCo" font-size="34" fill="#8EFF48" text-anchor="middle" letter-spacing="0">0</text>
+<text x="1058.0" y="838" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#8EFF48" text-anchor="middle" letter-spacing="1.5">(&lt;END&gt;)</text>
+<text x="414" y="764.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="end" letter-spacing="2">EXAMPLE 3</text>
+<rect x="288" y="930" width="64" height="34" fill="#FAE53D" stroke="#064787" stroke-width="4"/>
+<text x="372" y="954" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">THE CONTEXT WINDOW, 2 TOKENS WIDE</text>
+<rect x="908" y="930" width="64" height="34" fill="#000000"/>
+<text x="992" y="954" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">THE TOKEN THAT CAME NEXT</text>
 </svg>
