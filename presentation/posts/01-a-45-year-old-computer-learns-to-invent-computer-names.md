@@ -20,7 +20,7 @@ This is post one of five. It covers the training data, what the model's input is
 
 ## Same trick as ChatGPT
 
-I've spent the last year helping people at work figure out what to do with large language models, and the question under most of the other questions is the same one: what is it actually doing in there?
+I've spent three and a half years helping people at work figure out what to do with large language models, ever since I started tinkering with them to automate and improve how we do software engineering. The question under most of the other questions is the same one: what is it actually doing in there?
 
 Here's the whole answer. Guess the next word. Measure how wrong you were. Nudge every number a little in the direction that would have made you less wrong. Repeat.
 
