@@ -1213,7 +1213,7 @@ def corpus_columns(lines: list[str], columns: int) -> str:
 
 def figure_shape(dealt: list[str]) -> str:
     """One title's walk through the frame model, so "the shape" is a picture
-    before it is a ledger row: a real title the model read, the shape left
+    before it is a ledger row: a real title from the training data, the shape left
     behind when the names lift out, and a dealt title where dictionary names
     fill the gaps. Both titles are real - the read row is a corpus line and
     the dealt row is on the demo screen - so the figure asserts them."""
@@ -1238,7 +1238,7 @@ def figure_shape(dealt: list[str]) -> str:
     rows = "".join(
         [
             row(
-                "it read",
+                "training title",
                 f"{name('BALANCE')} OF {name('TERROR')}",
                 "a real title, straight from the corpus",
             ),
@@ -1282,7 +1282,7 @@ def figure_corpus(filename: str, shown: int, columns: int, note: str) -> str:
 
 
 def figure_melody_corpus() -> str:
-    """The dance tunes as the melody model reads them: a token per sixteenth
+    """The dance tunes as the melody model takes them: a token per sixteenth
     note. Drawn straight from the committed corpus file - title, mode and
     metre from the record, then the first bar's tokens with the demo's own
     glosses: a dot holds the note (token 32), R is a rest (token 33)."""
@@ -1313,7 +1313,7 @@ def figure_melody_corpus() -> str:
     <div class="tunes">{rows}</div>
     <p class="cap">The first sixteen tokens of {len(shown)} of {len(tunes)}
       tunes: the number is how far the pitch sits above the home note, a dot
-      holds it, R is a rest. It read {trained}; the other
+      holds it, R is a rest. {trained} trained it; the other
       {len(tunes) - trained} were held back to test it.</p>
   </div>"""
 
@@ -1480,7 +1480,7 @@ def figure_bias(trace: dict) -> str:
     header = (
         '<div class="brun bhead">'
         '<span class="blab"></span>'
-        '<span class="bh">what it read</span>'
+        '<span class="bh">training data</span>'
         f'<span class="bh">the {trace["samples"]} names it wrote, '
         "by first word</span>"
         '<span class="bh">one of the 20</span>'
@@ -1622,7 +1622,7 @@ def main() -> None:
             "EXP-002-tokenized-computer-names.txt",
             18,
             2,
-            "These are the facts we feed it for training.",
+            "This is the training data.",
         ),
     )
     deck = splice(

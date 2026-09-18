@@ -481,7 +481,7 @@ Launch with `make present EXP=12`. The screen fills with sixteen titles on
 load. Any key deals another sixteen.
 
 > This is the one place we leave the vintage computers for a few minutes. This
-> model read the titles of every original Star Trek episode. All 79 of them.
+> model was trained on the titles of every original Star Trek episode. All 79 of them.
 > Every title on this screen is fake.
 
 Deal one fresh screen in front of them, so the room watches the invention
@@ -518,7 +518,7 @@ after dealing.
 
 ### Transition to the bias slide (stage) or the table
 
-> Everything so far came out of what the model read. So what happens when two
+> Everything so far came out of the training data. So what happens when two
 > models read different things? Or the same things, in a different order?
 
 ### EXP-012 recovery
@@ -644,7 +644,7 @@ wrong note:
 > them is the model's.
 
 Enter the figure yourself, or hand the keys to someone in the front row.
-Call it before Enter: the model read 313 fiddle tunes and will continue in
+Call it before Enter: the model was trained on 313 fiddle tunes and will continue in
 their idiom, whatever the figure was.
 
 ### During the tune

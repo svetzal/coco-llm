@@ -2,8 +2,8 @@
 title: "A 45-year-old computer learns to invent computer names"
 date: 2026-09-20
 published: false
-image: "images/coco1-at-the-table.jpg"
-imageAlt: "A Tandy Color Computer 1 on a black tablecloth, its green CRT showing sixteen lines of invented Star Trek episode titles, with a second vintage machine glowing blue behind it"
+image: "images/coco1-banner.png" # to be generated: a real CoCo 1, not the table photo, which shows the CoCo 3
+imageAlt: "A Tandy Color Computer 1 from 1981, its green screen showing invented computer names"
 description: "My Tandy Color Computer from 1981 starts from random numbers and, a minute later, invents computer names that never existed. Post one of five on how it does that."
 tags:
   - ai
@@ -16,7 +16,7 @@ Last Sunday I stood beside my Tandy Color Computer at an exhibit table and watch
 
 The talk I gave that afternoon opened with a promise, and I'll make it again here: by the end of this series you will know exactly how it does that, and you will be unimpressed by it in precisely the right way.
 
-This is post one of five. It covers what the machine reads, what it sees at any one moment, and what happens when you let it run. The arithmetic comes next time.
+This is post one of five. It covers the training data, what the model's input is at any one moment, and what happens when you let it run. The arithmetic comes next time.
 
 ## Same trick as ChatGPT
 
@@ -28,9 +28,9 @@ That's it. That's the trick. Everything the big models do rides on that loop, ru
 
 The model on it has 290 numbers. Not 290 million. Two hundred and ninety, and every one of them is accounted for.
 
-## What it read
+## The training data
 
-Before any arithmetic, there's a question I like better: what did we feed it?
+Before any arithmetic, there's a question I like better: what is the training data?
 
 Eighteen names of vintage computers. All of them:
 
@@ -44,7 +44,7 @@ ATARI 400             SINCLAIR ZX80
 ATARI 800             SINCLAIR ZX81
 ```
 
-That is an absurdly small education, and that's the point. Big models differ from this one by diet, not by kind.
+That is an absurdly small training set, and that's the point. Big models differ from this one by the amount of training data, not by kind.
 
 A computer doesn't have words. It has numbers. So the first thing I had to decide was how to cut those names into pieces it could count. The pieces are called tokens, and here a token is a whole word, because I decided it would be. Split the eighteen names into words, sort them, number them, and you get 29 tokens, counting one extra that means "the name ends here."
 
@@ -65,7 +65,7 @@ Try asking this model for a word that isn't on that list. There is no graceful a
 
 ## Two words at a time
 
-The model never sees a whole name. It sees a window, two tokens wide, and its only job is to guess what comes next.
+The model's input is never a whole name. It is a window, two tokens wide, and the model's only job is to guess what comes next.
 
 Take COMMODORE AMIGA. The window starts empty, which I write as two END markers, and the first thing to guess is COMMODORE. Then the window slides one step: END, COMMODORE, and the thing to guess is AMIGA. Slide again: COMMODORE, AMIGA, and the right answer is END, the name is over.
 

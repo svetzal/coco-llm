@@ -45,18 +45,18 @@
   </aside>
 </section>
 
-<!-- The photograph: the physical CoCo 1 at the exhibit table, dealing
+<!-- The photograph: the CoCo 3 at the exhibit table, a Commodore 64 Ultimate behind it, dealing
      EXP-012's fake episode titles. Full screen, no words on it. The
      picture is a temporal average of a Live Photo's frames, so the CRT's
      scan bands cancel; nothing on the screen was altered. -->
 <section data-timing="30" data-block="1" data-bar="COCO LLM - 1/10 WATCH IT WORK"
-  data-background-image="images/coco1-at-the-table.jpg"
+  data-background-image="images/coco3-at-the-table.jpg"
   data-background-size="auto 90%" data-background-position="center 96%">
   <aside class="notes">
     <p><strong>BLOCK 1 OF 10 - WATCH IT WORK - SLIDE 2/2</strong></p>
-    <p>My CoCo 1, at the exhibit table, with sixteen Star Trek episode titles on its screen. Read three out loud. None of them were ever filmed.</p>
+    <p>My CoCo 3 at the exhibit table, a Commodore 64 Ultimate behind it, with sixteen Star Trek episode titles on its screen. Read three out loud. None of them were ever filmed.</p>
     <p>Say what it is and where the work happened, because the rule is never to hide it: this is EXP-012, the fake episode titles, running on the real machine. The Mac trained this one; the CoCo is dealing them. Block 6 comes back to it.</p>
-    <p>The machine is from 1981 and has 32K. The one behind this window is the same machine, and it started from random numbers a few seconds ago; that one trains itself.</p>
+    <p>The CoCo 1, from 1981 with 32K, is the machine behind this window. It started from random numbers a few seconds ago, and that one trains itself.</p>
     <p>The promise: by the end you will know exactly how it did that, and be unimpressed by it in precisely the right way.</p>
     <p>Then the disclosure, once, and never again: that machine is at table N, what I project is its emulator at its clock speed, nothing is sped up.</p>
   </aside>
@@ -80,13 +80,13 @@
   <!-- FIGURE:corpus2 -->
   <div class="fig">
     <div class="corpus"><div class="col"><div class="entry">ACORN ARCHIMEDES</div><div class="entry">ACORN BBC MICRO</div><div class="entry">APPLE II</div><div class="entry">APPLE LISA</div><div class="entry">APPLE MACINTOSH</div><div class="entry">ATARI 400</div><div class="entry">ATARI 800</div><div class="entry">ATARI ST</div><div class="entry">COMMODORE 64</div></div><div class="col"><div class="entry">COMMODORE 128</div><div class="entry">COMMODORE AMIGA</div><div class="entry">COMMODORE PET</div><div class="entry">SINCLAIR ZX80</div><div class="entry">SINCLAIR ZX81</div><div class="entry">SINCLAIR ZX SPECTRUM</div><div class="entry">TANDY COLOR COMPUTER</div><div class="entry">TANDY TRS-80</div><div class="entry">TANDY MODEL 100</div></div></div>
-    <p class="cap">These are the facts we feed it for training.</p>
+    <p class="cap">This is the training data.</p>
   </div>
   <!-- /FIGURE:corpus2 -->
   <aside class="notes">
     <p><strong>BLOCK 2 OF 10 - HOW IT WORKS - SLIDE 1/9</strong></p>
-    <p>THE INPUT, before any mechanism. Read three or four out loud. This is every fact the model will ever meet — everything this block explains is arithmetic over exactly these lines, and nothing else ever enters.</p>
-    <p>Worth one beat: eighteen names is an absurdly small education, and that is the point of the whole talk. Big models differ from this by diet, not by kind.</p>
+    <p>THE TRAINING DATA, before any mechanism. Read three or four out loud. Everything this block explains is arithmetic over exactly these lines, and nothing else ever enters.</p>
+    <p>Worth one beat: eighteen names is an absurdly small training set, and that is the point of the whole talk. Big models differ from this by the amount of training data, not by kind.</p>
   </aside>
 </section>
 
@@ -741,7 +741,7 @@
 </section>
 
 <section data-timing="25" data-block="4" data-bar="COCO LLM - 4/10 THE PROMPT">
-  <h2>What it read</h2>
+  <h2>The training data</h2>
   <p class="lead">The eight lines it trained on.</p>
   <!-- FIGURE:corpus4 -->
   <div class="fig">
@@ -847,7 +847,7 @@
 </section>
 
 <section data-timing="25" data-block="5" data-bar="COCO LLM - 5/10 THE SIZE">
-  <h2>What it read</h2>
+  <h2>The training data</h2>
   <p class="lead">Sentences about this computer.</p>
   <!-- FIGURE:corpus5 -->
   <div class="fig">
@@ -977,7 +977,7 @@
 </section>
 
 <section data-timing="25" data-block="6" data-bar="COCO LLM - 6/10 NEVER EXISTED">
-  <h2>What it read</h2>
+  <h2>The training data</h2>
   <p class="lead">Real Star Trek episode titles.</p>
   <!-- FIGURE:corpus6 -->
   <div class="fig">
@@ -1015,7 +1015,7 @@
        readable" section, counterexamples included. -->
   <!-- FIGURE:shape -->
   <div class="fig">
-    <div class="shape"><span class="slab">it read</span><span class="stitle"><span class="name">BALANCE</span> OF <span class="name">TERROR</span></span><span class="snote">a real title, straight from the corpus</span><span class="slab">it kept</span><span class="stitle"><span class="gap">BALANCE</span> OF <span class="gap">TERROR</span></span><span class="snote">the names lift out. the shape stays</span><span class="slab">it dealt</span><span class="stitle"><span class="name">BALANCE</span> OF <span class="name">BABEL</span></span><span class="snote">two dictionary names fill the gaps</span></div>
+    <div class="shape"><span class="slab">training title</span><span class="stitle"><span class="name">BALANCE</span> OF <span class="name">TERROR</span></span><span class="snote">a real title, straight from the corpus</span><span class="slab">it kept</span><span class="stitle"><span class="gap">BALANCE</span> OF <span class="gap">TERROR</span></span><span class="snote">the names lift out. the shape stays</span><span class="slab">it dealt</span><span class="stitle"><span class="name">BALANCE</span> OF <span class="name">BABEL</span></span><span class="snote">two dictionary names fill the gaps</span></div>
     <p class="cap">Every word is real &mdash; BABEL was lifted from JOURNEY
       TO BABEL, another real title. <strong>The title itself never
       existed.</strong></p>
@@ -1065,7 +1065,7 @@
   </div>
   <aside class="notes">
     <p><strong>BLOCK 6 OF 10 - NEVER EXISTED - SLIDE 3/3</strong></p>
-    <p>WALK THE PICTURE FIRST, top to bottom: it read BALANCE OF TERROR, it kept blank-OF-blank, it dealt BALANCE OF BABEL. Point at the gaps — that underline is the shape. BABEL came from JOURNEY TO BABEL, so every word is real and the title is not.</p>
+    <p>WALK THE PICTURE FIRST, top to bottom: the training title BALANCE OF TERROR, the frame it kept, blank-OF-blank, and the title it dealt, BALANCE OF BABEL. Point at the gaps — that underline is the shape. BABEL came from JOURNEY TO BABEL, so every word is real and the title is not.</p>
     <p>THE EXPLAINER, after the titles are dealt. Step the split: 400 bytes of model hold the shape, 1,333 hold the dictionary, 258 hold the rules — and no learning ever touched the last two.</p>
     <p>THE RULES ARE THE FUN, and each one has a failure worth saying out loud. Without rule 1 it writes TRISKELION THE MAN TRAP. Without rule 2 it writes A TRIBBLES. Rule 3 exists because a machine advertised as inventing titles must never quietly deal a real one.</p>
     <p>Say what the rules are made of: simple lookups in small tables, and every one is a check a person decided to write. Three more decisions for the last slide.</p>
@@ -1088,7 +1088,7 @@
 </section>
 
 <section data-timing="25" data-block="7" data-bar="COCO LLM - 7/10 THE TRAINING DATA">
-  <h2>What they read</h2>
+  <h2>Three training sets</h2>
   <p class="lead">Three training sets, one per fan.</p>
   <!-- FIGURE:corpus7 -->
   <div class="fig">
@@ -1107,7 +1107,7 @@
   <p class="changed">We changed one thing:<br><span class="one">the training data</span></p>
   <!-- FIGURE:bias -->
   <div class="fig bias">
-    <div class="brun bhead"><span class="blab"></span><span class="bh">what it read</span><span class="bh">the 20 names it wrote, by first word</span><span class="bh">one of the 20</span><span class="bh"></span></div>
+    <div class="brun bhead"><span class="blab"></span><span class="bh">training data</span><span class="bh">the 20 names it wrote, by first word</span><span class="bh">one of the 20</span><span class="bh"></span></div>
     <p class="lbl">one collection each</p>
     <div class="brun fragment" data-fragment-index="1"><span class="blab">apple fan</span><span class="bbar"><span class="seg mk-a" style="width:100.00%">APPLE 18</span></span><span class="bbar"><span class="seg mk-a" style="width:80.00%">APPLE 16</span><span class="seg mk-o" style="width:20.00%">NONE 4</span></span><span class="bsample">APPLE MACINTOSH</span><span class="bnote2"></span></div><div class="brun fragment" data-fragment-index="2"><span class="blab">commodore fan</span><span class="bbar"><span class="seg mk-c" style="width:100.00%">COMMODORE 18</span></span><span class="bbar"><span class="seg mk-c" style="width:75.00%">COMMODORE 15</span><span class="seg mk-o" style="width:25.00%">NONE 5</span></span><span class="bsample">COMMODORE AMIGA</span><span class="bnote2"></span></div><div class="brun fragment" data-fragment-index="3"><span class="blab">tandy fan</span><span class="bbar"><span class="seg mk-t" style="width:100.00%">TANDY 18</span></span><span class="bbar"><span class="seg mk-c" style="width:5.00%">1</span><span class="seg mk-t" style="width:70.00%">TANDY 14</span><span class="seg mk-o" style="width:25.00%">NONE 5</span></span><span class="bsample">TANDY COCO</span><span class="bnote2"></span></div>
     <p class="lbl blip fragment" data-fragment-index="3">The thin slice in what the tandy fan wrote: 1 draw of 20 came out COMMODORE anyway. The bias is a lean, not a wall, the words were in the vocabulary.</p>
@@ -1127,7 +1127,7 @@
   <!-- /FIGURE:bias -->
   <aside class="notes">
     <p><strong>BLOCK 7 OF 10 - THE TRAINING DATA - SLIDE 2/2</strong></p>
-    <p>WALK THE COLUMNS FIRST, left to right, in the header's own words: what it read, then the 20 names it wrote counted by first word, then one of the 20 verbatim. Input on the left, output on the right, the same colours in both — so the lean is visible as it forms.</p>
+    <p>WALK THE COLUMNS FIRST, left to right, in the header's own words: training data, then the 20 names it wrote counted by first word, then one of the 20 verbatim. Input on the left, output on the right, the same colours in both — so the lean is visible as it forms.</p>
     <p>The bar counts where the first generated token came from, over 20 draws. Segments label themselves, so there is no legend to explain. NONE is the draws that opened with some other vocabulary word instead of a maker's name — the vocabulary holds model words too.</p>
     <p>FIRST THREE: same architecture, same starting numbers, same budget, same vocabulary, same sampling seeds. One collection each. Each model comes out a fan of whoever wrote its data. 16 of 20, 15 of 20, 14 of 20.</p>
     <p>THE BLIP: the tandy fan said COMMODORE once in 20 draws, and the slide says so. Training on Tandy names made the other makers unlikely, not impossible — nothing in the weights fences a word off. The bias is a lean, not a wall, and that lean is the whole slide in miniature.</p>
@@ -1231,20 +1231,20 @@
 </section>
 
 <section data-timing="25" data-block="9" data-bar="COCO LLM - 9/10 A TOKEN IS A NOTE">
-  <h2>What it read</h2>
+  <h2>The training data</h2>
   <p class="lead">Ryan's Mammoth Collection, 1883. A token is a sixteenth note.</p>
   <!-- FIGURE:melodycorpus -->
   <div class="fig">
     <div class="tunes"><div class="tune"><span class="tname">42D HIGHLAND REGIMENT</span><span class="tkey">minor 4/4</span><span class="ttok">19 &middot; 15 12 &middot; &middot; 12 &middot; 14 &middot; 15 12 &middot; &middot; 12 &middot;</span></div><div class="tune"><span class="tname">7TH REGIMENT</span><span class="tkey">major 2/4</span><span class="ttok">12 &middot; 12 16 19 12 16 19 24 16 19 24 28 &middot; 26 24</span></div><div class="tune"><span class="tname">A&#x27;WILLIE, WE HAVE MISS&#x27;D YOU</span><span class="tkey">major 4/4</span><span class="ttok">31 &middot; 28 21 &middot; &middot; 28 &middot; 26 &middot; 28 21 &middot; &middot; 21 &middot;</span></div><div class="tune"><span class="tname">ABITHA MUGGINS&#x27; FAVORITE</span><span class="tkey">minor 2/4</span><span class="ttok">10 7 7 &middot; 5 7 10 7 3 7 10 14 15 &middot; 14 15</span></div></div>
     <p class="cap">The first sixteen tokens of 4 of 376
       tunes: the number is how far the pitch sits above the home note, a dot
-      holds it, R is a rest. It read 313; the other
+      holds it, R is a rest. 313 trained it; the other
       63 were held back to test it.</p>
   </div>
   <!-- /FIGURE:melodycorpus -->
   <aside class="notes">
     <p><strong>BLOCK 9 OF 10 - A TOKEN IS A NOTE - SLIDE 2/4</strong></p>
-    <p>The recurring slide, one last time. 376 public-domain fiddle tunes from 1883, cut to a grid where every row is a sixteenth note. It read 313 of them; 63 were held back to test it, same as the first model's holdout.</p>
+    <p>The recurring slide, one last time. 376 public-domain fiddle tunes from 1883, cut to a grid where every row is a sixteenth note. 313 of them are the training data; 63 were held back to test it, same as the first model's holdout.</p>
     <p>Read one line aloud: the number says how far above the home note the pitch sits, a dot holds the note, an R is a rest. That is the whole alphabet - 34 tokens. The second model had 29 words; this one has 34 notes. Nothing else about the machine changed.</p>
   </aside>
 </section>

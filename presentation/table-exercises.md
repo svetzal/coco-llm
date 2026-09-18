@@ -152,7 +152,7 @@ Identical rules, identical layout, identical dice.
 
 The sign underneath needs one line:
 
-> Same dice. Same rules. Same rolls. Nothing changed but what it read.
+> Same dice. Same rules. Same rolls. Nothing changed but the training data.
 
 Anyone who wants more gets the follow-up: mix the two corpora and the ordering
 still shows up in the output. Interleaving fixes what concatenating does not.

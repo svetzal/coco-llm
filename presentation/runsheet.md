@@ -182,7 +182,7 @@ says where you are.
 
 ### 1. Watch it work
 
-**On screen:** the block 1 launch, then a photograph of the physical CoCo 1
+**On screen:** the block 1 launch, then a photograph of the CoCo 3
 at the exhibit table with a screen of EXP-012's fake episode titles, full
 screen, no explanation.
 
@@ -197,9 +197,9 @@ press `S` for the speaker view. It trains, at the 1981 clock rate, while
 block 2 explains exactly what it is doing.
 
 Then the photograph. Read three titles. Say that none of them were ever
-filmed, that the machine is from 1981 and has 32 kilobytes, and that the Mac
-trained this one while the one behind this window started from random
-numbers a few seconds ago. The Mac's part is said, not hidden.
+filmed, that the Mac trained this one, and that the CoCo 1 behind this
+window, from 1981 with 32 kilobytes, started from random numbers a few
+seconds ago. The Mac's part is said, not hidden.
 
 Then make the promise: by the end of this you will know exactly how it did
 that, and you will be unimpressed by it in precisely the right way.
@@ -555,7 +555,7 @@ Concatenated, it comes out a Tandy fan at 14 of 20, indistinguishable from the
 model that only ever saw Tandy machines. (The thin slice in what the tandy fan
 wrote is explained on the slide itself: one draw of twenty came out COMMODORE —
 the bias is a lean, not a wall, the words were in the vocabulary.) Each row now
-pairs two bars in the same maker colours — what it read, then the 20 names it
+pairs two bars in the same maker colours — the training data, then the 20 names it
 wrote by first word — so the training composition and the output composition
 sit side by side: solid colour in, solid colour out; three blocks end to end
 in, one colour out; fifty-four stripes in, a spread out. Tandy went last, and last is what
@@ -773,7 +773,7 @@ Thirty-six content slides plus nine chapter cards. The speaker view's
 total is the 36 minutes of content, and the per-slide timings sum to 42.5
 minutes, which is the budget table's 39 plus the cards and a little air; the
 music block's three minutes are still the open question above. Six of the
-slides are one recurring slide, "What it read": each
+slides are one recurring slide, "The training data": each
 model's training corpus quoted verbatim from its data file by the figure
 tool, in one shared style — the 18 names, the 8 advertising lines, the
 EXP-007 sentences, the real episode titles, and, plural for the first

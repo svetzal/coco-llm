@@ -44,7 +44,7 @@ names the decision a person made there.
 
 | Block | In words | Arithmetic, in this model | On the CoCo | Decision |
 | --- | --- | --- | --- | --- |
-| TRAINING DATA | the facts we feed it | 18 names, 58 examples of (context, next token) | 200 bytes of text | which text |
+| TRAINING DATA | the training data | 18 names, 58 examples of (context, next token) | 200 bytes of text | which text |
 | TOKENIZE | cut the text into pieces a machine can count | word to id, 29 ids | a table lookup | what a token is |
 | CONTEXT WINDOW | the last 2 tokens; slides, and everything before it is gone | (t1, t2) | 2 bytes | how wide |
 | EMBED | one stored row of 3 numbers per position and token; add them | c = E₁[t₁] + E₂[t₂]. 174 parameters | 6 signed adds in Q4.4 | how many numbers per token |

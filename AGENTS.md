@@ -49,6 +49,12 @@ Keep these distinctions explicit:
 - this model shares the learning objective of modern generative language
   models, but not their transformer architecture or scale.
 
+Call the training data the training data. The machine does not read, get fed,
+or meet anything, and it has no diet or education. Those words are confusing
+because they are false: the model is arithmetic over the training data, and a
+sentence that says so is clearer than one that says the machine read it. The
+same applies to any other verb that lends the machine a mind it does not have.
+
 ## Never write a bare EXP number
 
 `EXP-004` names nothing. A reader who does not already hold thirteen experiment

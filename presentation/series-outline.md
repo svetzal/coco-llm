@@ -198,7 +198,7 @@ has been answered on camera.
 - Show: Apple, Commodore and Tandy fans; the same examples concatenated and
   interleaved. Everything held but the data.
 - Say plainly: fine-tuning is more training on chosen data. The wonder is
-  the people who wrote what it read.
+  the people who wrote the training data.
 - Surface: post first.
 
 ## Part five: the same machinery, elsewhere
