@@ -20,19 +20,19 @@ This is post one of five. It covers the training data, what the model's input is
 
 ## Same trick as ChatGPT
 
-I've spent three and a half years helping people at work figure out what to do with large language models, ever since I started tinkering with them to automate and improve how we do software engineering. The question under most of the other questions is the same one: what is it actually doing in there?
+I've spent the past few years helping people at work figure out what to do with large language models, ever since I started tinkering with them to automate and improve how we do software engineering. The question under most of the other questions is the same one: what is it actually doing in there?
 
 Here's the whole answer. Guess the next word. Measure how wrong you were. Nudge every number a little in the direction that would have made you less wrong. Repeat.
 
 That's it. That's the trick. Everything the big models do rides on that loop, run on a great deal more text with a great many more numbers. So I wanted to see the loop with my own eyes, at a scale where I could point at every part of it, on a machine where nothing could hide. The CoCo was the obvious candidate (it's fair to say it's responsible for my entire career), and 6809 assembly language was the only way it was going to fit.
 
-The model on it has 290 numbers. Not 290 million. Two hundred and ninety, and every one of them is accounted for.
+The model on it has 290 numbers. Not 290 million, or billion. Two hundred and ninety.
 
 ## The training data
 
-Before any arithmetic, there's a question I like better: what is the training data?
+Let's take a look at the training data...
 
-Eighteen names of vintage computers. All of them:
+Eighteen names of vintage computers:
 
 ```text
 ACORN ARCHIMEDES      ATARI ST              SINCLAIR ZX SPECTRUM
@@ -44,9 +44,9 @@ ATARI 400             SINCLAIR ZX80
 ATARI 800             SINCLAIR ZX81
 ```
 
-That is an absurdly small training set, and that's the point. Big models differ from this one by the amount of training data, not by kind.
+That is an absurdly small training set, and it's still useful. Big models differ from this one by the amount of training data, not by kind.
 
-A computer doesn't have words. It has numbers. So the first thing I had to decide was how to cut those names into pieces it could count. The pieces are called tokens, and here a token is a whole word, because I decided it would be. Split the eighteen names into words, sort them, number them, and you get 29 tokens, counting one extra that means "the name ends here."
+A computer doesn't have words. It has numbers. So the first thing I had to decide was how to turn those names into numbered pieces. The pieces are called tokens, and here a token is a whole word, because I decided that would suit us to start. Split the eighteen names into words, sort them, number them, and you get 29 tokens, counting one extra that stands in for nothing - indicating empty spaces, and the end of a name.
 
 ```text
  0 <END>       8 APPLE       16 LISA        24 TANDY
@@ -59,7 +59,7 @@ A computer doesn't have words. It has numbers. So the first thing I had to decid
  7 AMIGA      15 II          23 ST
 ```
 
-COMMODORE is 13. Why? Because it's thirteenth in the alphabet. That is all thirteen means. It's a name, not a quantity, and there's nothing to be learned from doing arithmetic on it. (Next post is about what the model does instead.)
+COMMODORE is 13. Why? Because it's thirteenth when we put the list in alphabetical order. That is all thirteen means. It's a reference, not a quantity, and there's nothing to be learned from doing arithmetic on it. (Next post is about what the model does instead.)
 
 Try asking this model for a word that isn't on that list. There is no graceful answer, because there's no number for it. When a much bigger model gets a word it has never seen, the same thing is happening, just less visibly.
 
