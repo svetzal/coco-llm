@@ -126,5 +126,5 @@ authorship, curiosity over hype. Every sample and number is from
 presentation/deck/data/traces.json or EXP-004; the runtime is labelled as
 the emulator's and the hardware stopwatch is declared missing rather than
 implied. Tells swept: no "not just X but Y", no significance inflation, no
-bolded reveals, two em dashes total.
+bolded reveals, no em dashes.
 -->
