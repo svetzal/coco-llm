@@ -1,14 +1,14 @@
 ---
 title: "A 45-year-old computer learns to invent computer names"
-date: 2026-09-20
-published: false
+date: 2026-09-19
+published: true
 image: "images/coco1-banner.png"
 imageAlt: "An illustration: a silver-haired woman in a dark blazer sits at a night-time workbench lit by neon, one hand on the keyboard of a worn 1981 Radio Shack Color Computer, the other holding a twenty-sided die, smiling at a small green-phosphor monitor whose text is a soft unreadable glow"
 description: "My Tandy Color Computer from 1981 starts from random numbers and, a minute later, invents computer names that never existed. Post one of five on how it does that."
 tags:
   - ai
   - coco
-  - 6809
+  - "6809"
   - learning
 ---
 
@@ -26,7 +26,7 @@ Here's the whole answer. Guess the next word. Measure how wrong you were. Nudge 
 
 That's it. That's the trick. Everything the big models do rides on that loop, run on a great deal more text with a great many more numbers. So I wanted to see the loop with my own eyes, at a scale where I could point at every part of it, on a machine where nothing could hide. The CoCo was the obvious candidate (it's fair to say it's responsible for my entire career), and 6809 assembly language was the only way it was going to fit.
 
-The model on it has 290 numbers. Not 290 million, or billion. Two hundred and ninety.
+The model has 290 parameters, numbers that we can change to fit it to a purpose.
 
 ## The training data
 
@@ -87,7 +87,7 @@ ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR
 
 Nonsense, and the particular kind of nonsense you'd expect from throwing dice: words repeated, no maker at the front, no end in sight.
 
-Then it trains. Fifty-eight examples, twenty times through, which is 1,160 corrections, each one a guess, a measurement of how wrong the guess was, and a nudge. Under the emulator, running at the real machine's clock rate, that takes under a minute. Then I ask for names again, same seed, same request:
+Then it trains. Fifty-eight examples, twenty times through, which is 1,160 corrections, each one a guess, a measurement of how wrong the guess was, and a nudge. Under the emulator, running at the real machine's clock rate, that takes a little over a minute. Then I ask for names again, same seed, same request:
 
 ```text
 SINCLAIR AMIGA
@@ -99,6 +99,25 @@ TANDY ARCHIMEDES
 Sinclair never made an Amiga. Commodore never made an Atari. But it's interesting to think, if they had how would it be different? Out of 200 draws at that point, 179 were both new (not one of the eighteen, word for word) and the right shape (two to four words, starting with a maker). The machine has no idea what any of those words mean. It knows which tokens tend to follow which, and that turns out to be enough to make something that reads like a product line.
 
 Sit with that for a minute. Is that impressive? Yes. Is it understanding? No. It's the same distance from understanding as the big models are, and here the distance is short enough to walk.
+
+## Why stop at twenty?
+
+Twenty times through the examples is a number I chose, and it's worth saying why, because the obvious move is to keep going. The training loop reports a number called the loss, which measures how wrong the guesses are, and it keeps falling well past twenty. At twenty it's 1.83. At sixty it's 1.27. By that measure the model is still getting better.
+
+So why not run it for sixty? Here's what it draws at sixty, same seed, same request:
+
+```text
+SINCLAIR BBC
+SINCLAIR II
+COMMODORE 64
+TANDY MODEL COMPUTER
+```
+
+COMMODORE 64 is in the training data. At sixty, so are 143 of the 200 draws, word for word. The model has stopped inventing and started reciting. At twenty, 18 of the 200 were copies. Same 290 parameters, same arithmetic. The only thing that moved was how long I let it run, and it slid from making things up to handing back what it was given.
+
+That has a name: overfitting. The model has fit the training data so closely that the training data is most of what comes out. And I only know it happened because I measured the thing I actually cared about, new names with the right shape, rather than the number the training loop hands me. The loss said keep going. The names said stop.
+
+There's a trap at the other end too. At epoch zero, before any training, every draw is new, and not one of them is a name. New is easy. New and shaped is the whole game, and twenty was where this model had the most of both: 179 of 200 draws that were not in the training data and still looked like a computer.
 
 ## Try it yourself
 
