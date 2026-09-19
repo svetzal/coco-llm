@@ -117,7 +117,7 @@ COMMODORE 64 is in the training data. At sixty, so are 143 of the 200 draws, wor
 
 That has a name: overfitting. The model has fit the training data so closely that the training data is most of what comes out. And I only know it happened because I measured the thing I actually cared about, new names with the right shape, rather than the number the training loop hands me. The loss said keep going. The names said stop.
 
-There's a trap at the other end too. At epoch zero, before any training, every draw is new, and not one of them is a name. New is easy. New and shaped is the whole game, and twenty was where this model had the most of both: 179 of 200 draws that were not in the training data and still looked like a computer.
+There's a trap at the other end too. At epoch zero, before any training, every draw is new, and not one of them is a name. Look back at those first three draws: every one is exactly six words long, because six is where I cut it off. The end marker is a token like any other, and the model hasn't learned when to produce it, so it doesn't know when to stop. Knowing when a name is over is something it has to learn, and it does, early. New is easy. New and shaped and finished is the whole game, and twenty was where this model had the most of it: 179 of 200 draws that were not in the training data and still looked like a computer.
 
 ## Try it yourself
 
