@@ -77,7 +77,7 @@ When people talk about a model with a 200,000-token context window, it's the sam
 
 ## Watch it work
 
-When the program loads, the 290 numbers are random. I ask it for a name and it draws from those random numbers, and here is what came out, unedited:
+When the program loads, the 290 parameters are random. I ask it for a name and it draws from those random parameters, and here is what came out, unedited:
 
 ```text
 II APPLE COMMODORE ACORN 64 II
