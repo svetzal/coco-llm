@@ -73,7 +73,7 @@ Three guesses from one two-word name. Do that for all eighteen and you have 58 e
 
 ![A diagram on the CoCo's green screen, in its blocky pixel type, titled COMMODORE AMIGA BECOMES 3 TRAINING EXAMPLES. Across the top, the name as five boxes: END, END, COMMODORE, AMIGA, END. Below, a caption reads: what the model gets, two numbers; the words are for you. Then three rows labelled example 1, 2 and 3. Each row has an amber box with a navy edge holding two cells, and a black cell to the right with PREDICTS written above it. Every cell shows a token number in large type with its word in small type beneath: example 1 holds 0 (END) and 0 (END) and predicts 13 (COMMODORE); example 2 holds 0 (END) and 13 (COMMODORE) and predicts 7 (AMIGA); example 3 holds 13 (COMMODORE) and 7 (AMIGA) and predicts 0 (END). A legend reads: the context window, 2 tokens wide; the token that came next.](images/two-words-at-a-time.png)
 
-Everything before the window is gone. When people talk about a model with a 200,000-token context window, that is this, wider. And if you've ever had a long chat where the model seemed to forget how the conversation started, you've watched the window slide.
+When people talk about a model with a 200,000-token context window, it's the same thing, just wider. And if you've ever had a long chat where the model seemed to forget details from the beginning of the conversation, you've watched the window slide.
 
 ## Watch it work
 
@@ -85,7 +85,7 @@ LISA ATARI ATARI COLOR MACINTOSH TANDY
 ARCHIMEDES ARCHIMEDES ARCHIMEDES 400 SINCLAIR COLOR
 ```
 
-Nonsense, and the particular kind of nonsense you'd expect from a die: words repeated, no maker at the front, no end in sight.
+Nonsense, and the particular kind of nonsense you'd expect from throwing dice: words repeated, no maker at the front, no end in sight.
 
 Then it trains. Fifty-eight examples, twenty times through, which is 1,160 corrections, each one a guess, a measurement of how wrong the guess was, and a nudge. Under the emulator, running at the real machine's clock rate, that takes under a minute. Then I ask for names again, same seed, same request:
 
@@ -108,25 +108,6 @@ Everything is on GitHub, at [svetzal/coco-llm](https://github.com/svetzal/coco-l
 make present EXP=4
 ```
 
-It trains at the 1981 clock rate, parks when it's done, and draws names when you press a key. Nothing is sped up. The real machine does the same job on the same bytes, and my rule for the whole project is that no runtime goes into print until I've measured it on the hardware, so I'll give you the stopwatch number when I have one.
+It trains at the 1981 clock rate, parks when it's done, and draws names when you press a key. Nothing is sped up.
 
-Next post: where the 290 numbers live, why every word gets three of them, and how a score becomes a probability you could roll on a twenty-sided die.
-
-The names on that screen aren't the wonder. The wonder is that eighteen names written by people at Acorn, Apple, Atari, Commodore, Sinclair and Tandy carried enough of a shape that 290 numbers could catch it. Every plausible thing the machine says, somebody said first.
-
-<!--
-Voice check, remove before publishing.
-Tone: first person throughout, conversational, opens on the exhibit table
-(her own account of the day: rotating demos, the Star Trek fans) and pivots to the question under
-the questions. Stance: she built this on purpose to see the loop; the CoCo
-and assembly are stated as decisions, not luck. Structure: hook, four short
-sections each opening on a claim, a closing that lands the argument (the
-people wrote the names) with a callback to the screen. Rhythm: short lines
-after long ones ("That's it. That's the trick."). Rhetorical questions in
-each section. One parenthetical aside. Values: demystifying, human
-authorship, curiosity over hype. Every sample and number is from
-presentation/deck/data/traces.json or EXP-004; the runtime is labelled as
-the emulator's and the hardware stopwatch is declared missing rather than
-implied. Tells swept: no "not just X but Y", no significance inflation, no
-bolded reveals, no em dashes.
--->
+Next post: the training weights, why every word gets three of them, and why it's useful to think in probabilities.
