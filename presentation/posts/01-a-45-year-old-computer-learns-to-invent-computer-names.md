@@ -2,8 +2,8 @@
 title: "A 45-year-old computer learns to invent computer names"
 date: 2026-09-20
 published: false
-image: "images/coco1-banner.png" # to be generated: a real CoCo 1, not the table photo, which shows the CoCo 3
-imageAlt: "A Tandy Color Computer 1 from 1981, its green screen showing invented computer names"
+image: "images/coco1-banner.png"
+imageAlt: "An illustration: a silver-haired woman in a dark blazer sits at a night-time workbench lit by neon, one hand on the keyboard of a worn 1981 Radio Shack Color Computer, the other holding a twenty-sided die, smiling at a small green-phosphor monitor whose text is a soft unreadable glow"
 description: "My Tandy Color Computer from 1981 starts from random numbers and, a minute later, invents computer names that never existed. Post one of five on how it does that."
 tags:
   - ai
@@ -96,7 +96,7 @@ COMMODORE ATARI
 TANDY ARCHIMEDES
 ```
 
-Sinclair never made an Amiga. Commodore never made an Atari. But you can feel why they could have. Out of 200 draws at that point, 179 were both new (not one of the eighteen, word for word) and the right shape (two to four words, starting with a maker). The machine has no idea what any of those words mean. It knows which tokens tend to follow which, and that turns out to be enough to make something that reads like a product line.
+Sinclair never made an Amiga. Commodore never made an Atari. But it's interesting to think, if they had how would it be different? Out of 200 draws at that point, 179 were both new (not one of the eighteen, word for word) and the right shape (two to four words, starting with a maker). The machine has no idea what any of those words mean. It knows which tokens tend to follow which, and that turns out to be enough to make something that reads like a product line.
 
 Sit with that for a minute. Is that impressive? Yes. Is it understanding? No. It's the same distance from understanding as the big models are, and here the distance is short enough to walk.
 

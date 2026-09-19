@@ -1,0 +1,178 @@
+{
+  "ImageType": "banner",
+  "AspectRatio": "16:9",
+  "Size": "1536x1024",
+  "Character": {
+    "Description": "A highly competent, focused woman coder and systems thinker",
+    "Age": "Middle-aged, experienced",
+    "Ethnicity": "Eastern European build",
+    "Build": {
+      "Type": "Size 16, feminine",
+      "UpperBody": "Broad shoulders",
+      "LowerBody": "Slim hips"
+    },
+    "Face": {
+      "Complexion": "Light",
+      "Eyes": "Blue-grey",
+      "Expression": "Quiet delight, a half-smile at the screen",
+      "Makeup": "Bold, pinks or purples, with a touch of shimmer"
+    },
+    "Hair": {
+      "Color": "Grey/silver",
+      "Length": "Long",
+      "Style": "Flowing, big wavy curls"
+    },
+    "Wardrobe": {
+      "Base": [
+        {
+          "Name": "Dark blazer",
+          "Description": "Professional dark blazer over tech-casual attire, sleeves pushed up",
+          "Context": "Always present"
+        }
+      ]
+    }
+  },
+  "Style": {
+    "Genre": "Cyberpunk / Tech Noir",
+    "Rendering": "High-detail digital painting, photorealistic, concept art quality",
+    "Lighting": {
+      "Type": "Dramatic, high-contrast, cinematic",
+      "Sources": [
+        "Green phosphor glow from a CRT as the dominant light",
+        "Cyan and magenta neon rim light from the room"
+      ],
+      "Shadows": "Sharp, emphasizing the worn texture of the old machine"
+    },
+    "ColorPalette": {
+      "Primary": [
+        "Phosphor green",
+        "Cyan",
+        "Electric Blue",
+        "Magenta"
+      ],
+      "Accents": [
+        "Silver",
+        "Warm yellowed plastic",
+        "Metallic purples"
+      ],
+      "Treatment": "High saturation, strong contrast between the warm old plastic and the cool neon"
+    },
+    "Atmosphere": {
+      "Effects": [
+        "Bokeh",
+        "Atmospheric haze",
+        "Neon glow",
+        "Reflections on the CRT glass"
+      ],
+      "Mood": "Electric, patient, a little mischievous"
+    }
+  },
+  "Situation": {
+    "Name": "The Old Machine Learns",
+    "Setting": "A dim home workshop at night. A 1981 Radio Shack TRS-80 Color Computer sits on the desk in the foreground, keyboard toward the viewer, with a small green-phosphor CRT monitor beside it. The room behind is out of focus, lit by cyan and magenta neon.",
+    "Camera": "Mid-shot, slightly low angle across the desk. The computer fills the lower third of the frame in sharp focus; the character sits behind it, off-centre to the right, looking at the CRT.",
+    "CharacterPose": {
+      "Expression": "Quiet delight, eyebrows slightly raised, half-smile lit green by the screen",
+      "BodyPosition": "Seated behind the desk, leaning in toward the machine",
+      "Gesture": "One hand resting on the CoCo's keyboard, the other holding a twenty-sided die between finger and thumb"
+    },
+    "Props": {
+      "Character": [
+        {
+          "Name": "Dark blazer",
+          "Description": "Sleeves pushed up",
+          "Application": "Worn"
+        }
+      ],
+      "Article": [
+        {
+          "Name": "Stacey's CoCo 1",
+          "ReferenceImage": "coco1-reference.jpg",
+          "Description": "The exact Radio Shack TRS-80 Color Computer in the reference photo: a wide, low silver-grey case, scuffed and worn from forty-five years of use, with a black recessed keyboard well, small yellowed chiclet keys with dark legends, a red reset key at the top right, a Radio Shack badge with the red, green and blue stripe above the keys, and ventilation slots along the sides. Do not modernise it, clean it, or change its proportions.",
+          "Application": "Foreground, keyboard toward the viewer, sharp focus, its worn plastic catching the green screen light",
+          "SymbolicMeaning": "The whole mechanism, small enough to see, on a machine that cannot hide anything"
+        },
+        {
+          "Name": "Green phosphor CRT",
+          "Description": "A small vintage monochrome monitor with a curved glass screen, glowing green. The screen shows lines of soft, out-of-focus green text: a glow with rows of blurred characters, no readable words or letters at all.",
+          "Application": "On the desk beside the computer, angled toward the character, the main light source",
+          "SymbolicMeaning": "The output, seen but not read"
+        },
+        {
+          "Name": "Twenty-sided die",
+          "Description": "A translucent amber d20 catching the neon",
+          "Application": "Held lightly in the character's free hand",
+          "SymbolicMeaning": "The roll that picks the next word"
+        }
+      ],
+      "Environment": [
+        {
+          "Name": "Workshop shelves",
+          "Description": "Out-of-focus shelves with old hardware, tools and cables, neon reflections. No posters, no signs, no labels.",
+          "Application": "Background bokeh"
+        },
+        {
+          "Name": "Coiled cables",
+          "Description": "A few old grey cables on the desk",
+          "Application": "Desk clutter, foreground edges"
+        },
+        {
+          "Name": "Plain coffee mug",
+          "Description": "A plain dark ceramic mug with nothing printed on it",
+          "Application": "On the desk, edge of frame"
+        }
+      ]
+    },
+    "KeyDetails": [
+      "The computer is unmistakably the worn 1981 machine from the reference photo, not a generic retro computer",
+      "The CRT's text is a soft green glow, deliberately unreadable",
+      "Green screen light on her face and hands against cyan and magenta from the room",
+      "NO WORDS ANYWHERE IN THE IMAGE: no signs, posters, slogans, neon lettering, book titles, mug slogans, labels or captions. The only text-like element is the unreadable glow on the CRT.",
+      "No smartwatch, no modern devices, no phone; the only technology in focus is the 1981 machine and its monitor"
+    ],
+    "LightingFocus": "Green phosphor glow from the CRT on the character and the keyboard; neon rim light separates her from the dark room",
+    "ThematicTags": [
+      "retrocomputing",
+      "machine-learning",
+      "demystifying-ai",
+      "6809"
+    ]
+  },
+  "ArticleContext": {
+    "Title": "A 45-year-old computer learns to invent computer names",
+    "Tags": [
+      "ai",
+      "coco",
+      "6809",
+      "learning"
+    ],
+    "Themes": [
+      "a language model small enough to see",
+      "the training loop",
+      "human authorship of what the machine says"
+    ],
+    "Mood": "optimistic"
+  },
+  "PromptKeywords": [
+    "highly detailed",
+    "digital painting",
+    "concept art",
+    "cyberpunk",
+    "neon light",
+    "cinematic lighting",
+    "high contrast",
+    "16:9 aspect ratio",
+    "wide shot",
+    "banner composition"
+  ],
+  "NegativeConstraints": [
+    "no text",
+    "no lettering",
+    "no signage",
+    "no slogans",
+    "no book spines with titles",
+    "no smartwatch",
+    "no modern gadgets",
+    "no clean or modernised computer"
+  ]
+}
