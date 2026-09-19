@@ -102,7 +102,7 @@ Sit with that for a minute. Is that impressive? Yes. Is it understanding? No. It
 
 ## Why stop at twenty?
 
-Twenty times through the examples is a number I chose, and it's worth saying why, because the obvious move is to keep going. The training loop reports a number called the loss, which measures how wrong the guesses are, and it keeps falling well past twenty. At twenty it's 1.83. At sixty it's 1.27. By that measure the model is still getting better.
+Why not keep going? Why did I choose twenty? The training loop reports a number called the loss, which measures how wrong the guesses are, and it keeps falling well past twenty. At twenty it's 1.83. At sixty it's 1.27. By that measure the model is still getting better.
 
 So why not run it for sixty? Here's what it draws at sixty, same seed, same request:
 
@@ -113,13 +113,15 @@ COMMODORE 64
 TANDY MODEL COMPUTER
 ```
 
-COMMODORE 64 is in the training data. At sixty, so are 143 of the 200 draws, word for word. The model has stopped inventing and started reciting. At twenty, 18 of the 200 were copies. Same 290 parameters, same arithmetic. The only thing that moved was how long I let it run, and it slid from making things up to handing back what it was given.
+COMMODORE 64 is in the training data. At sixty, so are 143 of the 200 draws, word for word. The model has stopped inventing and started reciting. At twenty, 18 of the 200 were copies. The longer I let it run, the more it slid from making things up to handing back the same training data it was given.
 
-That has a name: overfitting. The model has fit the training data so closely that the training data is most of what comes out. And I only know it happened because I measured the thing I actually cared about, new names with the right shape, rather than the number the training loop hands me. The loss said keep going. The names said stop.
+That has a name: overfitting.
 
-There's a trap at the other end too. At epoch zero, before any training, every draw is new, and not one of them is a name. Look back at those first three draws: every one is exactly six words long, because six is where I cut it off. The end marker is a token like any other, and the model hasn't learned when to produce it, so it doesn't know when to stop. Knowing when a name is over is something it has to learn, and it does, early. New is easy. New and shaped and finished is the whole game, and twenty was where this model had the most of it: 179 of 200 draws that were not in the training data and still looked like a computer.
+There's a trap at the other end too. At epoch zero, before any training, every draw is new, and every one is exactly six words long because six is where I stopped it. The end marker is a token like any other, and the model hasn't learned when to produce it. Twenty was where this model had the most of it: 179 of 200 draws that were not in the training data and still looked like a plausible computer name.
 
 ## Try it yourself
+
+(Sorry non-mac folks, don't have an option for you right now, happy to take PRs to get other platforms working! If I get a strong response, I can toss the clankers at it too.)
 
 Everything is on GitHub, at [svetzal/coco-llm](https://github.com/svetzal/coco-llm). With the XRoar emulator installed, one command starts the run from random numbers:
 
@@ -128,5 +130,13 @@ make present EXP=4
 ```
 
 It trains at the 1981 clock rate, parks when it's done, and draws names when you press a key. Nothing is sped up.
+
+## Watch it work, start to finish
+
+Here's the whole thing, about two minutes, recorded from the emulator running at the real machine's clock rate. Nothing is sped up. Twenty times through the examples, then PRESS ANY KEY, then the same seed drawn before training and after it, one name at a time. The pause between names is the 6809 doing 29 multiplies and a softmax for every token.
+
+<video controls preload="metadata" playsinline style="width: 100%; max-width: 640px; display: block; margin: 0 auto; image-rendering: pixelated;" src="/2026/images/coco-llm-1-live-training.mp4">
+The emulator training for two minutes and then drawing names.
+</video>
 
 Next post: the training weights, why every word gets three of them, and why it's useful to think in probabilities.
