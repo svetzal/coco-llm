@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="900" viewBox="0 0 1536 900">
+<rect width="1536" height="900" fill="#44C532"/>
+<text x="768.0" y="78" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0" font-weight="normal">TWO TABLES, ONE PER WINDOW POSITION</text>
+<text x="768.0" y="116" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5" font-weight="normal">29 TOKENS, 3 NUMBERS EACH. THE WINDOW HOLDS &lt;END&gt; COMMODORE, SO ONE ROW IS FETCHED FROM EACH.</text>
+<text x="140" y="168" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="3" font-weight="normal">POSITION 1</text>
+<rect x="130" y="172" width="590" height="34" fill="#FAE53D" stroke="#064787" stroke-width="3"/>
+<text x="140" y="196" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">&lt;END&gt;</text>
+<text x="440" y="196" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0286</text>
+<text x="550" y="196" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0187</text>
+<text x="660" y="196" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0583</text>
+<text x="140" y="230" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">100</text>
+<text x="440" y="230" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0635</text>
+<text x="550" y="230" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0202</text>
+<text x="660" y="230" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0332</text>
+<text x="140" y="264" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">128</text>
+<text x="440" y="264" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1014</text>
+<text x="550" y="264" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0341</text>
+<text x="660" y="264" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0630</text>
+<text x="140" y="298" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">64</text>
+<text x="440" y="298" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0523</text>
+<text x="550" y="298" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.1913</text>
+<text x="660" y="298" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1560</text>
+<text x="140" y="332" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">ACORN</text>
+<text x="440" y="332" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0600</text>
+<text x="550" y="332" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0990</text>
+<text x="660" y="332" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0720</text>
+<text x="140" y="366" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">AMIGA</text>
+<text x="440" y="366" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0647</text>
+<text x="550" y="366" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1912</text>
+<text x="660" y="366" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0508</text>
+<text x="140" y="400" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">APPLE</text>
+<text x="440" y="400" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0032</text>
+<text x="550" y="400" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1665</text>
+<text x="660" y="400" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0075</text>
+<text x="140" y="434" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">ATARI</text>
+<text x="440" y="434" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1305</text>
+<text x="550" y="434" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0189</text>
+<text x="660" y="434" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0234</text>
+<text x="140" y="468" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">COMMODORE</text>
+<text x="440" y="468" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0781</text>
+<text x="550" y="468" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0250</text>
+<text x="660" y="468" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0173</text>
+<text x="140" y="502" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">PET</text>
+<text x="440" y="502" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0548</text>
+<text x="550" y="502" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0391</text>
+<text x="660" y="502" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0656</text>
+<text x="140" y="536" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">SINCLAIR</text>
+<text x="440" y="536" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0021</text>
+<text x="550" y="536" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0136</text>
+<text x="660" y="536" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1279</text>
+<text x="140" y="570" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">TANDY</text>
+<text x="440" y="570" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0372</text>
+<text x="550" y="570" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1312</text>
+<text x="660" y="570" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0075</text>
+<text x="140" y="604" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">ZX81</text>
+<text x="440" y="604" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0074</text>
+<text x="550" y="604" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0266</text>
+<text x="660" y="604" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.1091</text>
+<text x="140" y="644" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="start" letter-spacing="0" font-weight="normal">...</text>
+<text x="800" y="168" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="3" font-weight="normal">POSITION 2</text>
+<text x="800" y="196" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">&lt;END&gt;</text>
+<text x="1100" y="196" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0842</text>
+<text x="1210" y="196" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.2132</text>
+<text x="1320" y="196" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0314</text>
+<text x="800" y="230" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">100</text>
+<text x="1100" y="230" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0067</text>
+<text x="1210" y="230" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0758</text>
+<text x="1320" y="230" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0644</text>
+<text x="800" y="264" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">128</text>
+<text x="1100" y="264" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0101</text>
+<text x="1210" y="264" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1105</text>
+<text x="1320" y="264" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.1618</text>
+<text x="800" y="298" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">64</text>
+<text x="1100" y="298" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1471</text>
+<text x="1210" y="298" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0131</text>
+<text x="1320" y="298" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0539</text>
+<text x="800" y="332" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">ACORN</text>
+<text x="1100" y="332" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0089</text>
+<text x="1210" y="332" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0320</text>
+<text x="1320" y="332" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0020</text>
+<text x="800" y="366" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">AMIGA</text>
+<text x="1100" y="366" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0401</text>
+<text x="1210" y="366" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0560</text>
+<text x="1320" y="366" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0994</text>
+<text x="800" y="400" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">APPLE</text>
+<text x="1100" y="400" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0183</text>
+<text x="1210" y="400" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0322</text>
+<text x="1320" y="400" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0159</text>
+<text x="800" y="434" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">ATARI</text>
+<text x="1100" y="434" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0339</text>
+<text x="1210" y="434" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0056</text>
+<text x="1320" y="434" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0270</text>
+<rect x="790" y="444" width="590" height="34" fill="#FAE53D" stroke="#064787" stroke-width="3"/>
+<text x="800" y="468" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">COMMODORE</text>
+<text x="1100" y="468" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0009</text>
+<text x="1210" y="468" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0266</text>
+<text x="1320" y="468" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0168</text>
+<text x="800" y="502" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">PET</text>
+<text x="1100" y="502" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.1085</text>
+<text x="1210" y="502" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0127</text>
+<text x="1320" y="502" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0790</text>
+<text x="800" y="536" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">SINCLAIR</text>
+<text x="1100" y="536" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0732</text>
+<text x="1210" y="536" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0944</text>
+<text x="1320" y="536" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0297</text>
+<text x="800" y="570" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">TANDY</text>
+<text x="1100" y="570" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0509</text>
+<text x="1210" y="570" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0189</text>
+<text x="1320" y="570" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.2089</text>
+<text x="800" y="604" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">ZX81</text>
+<text x="1100" y="604" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0811</text>
+<text x="1210" y="604" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">-0.0204</text>
+<text x="1320" y="604" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="end" letter-spacing="0" font-weight="normal">+0.0529</text>
+<text x="800" y="644" font-family="Hot CoCo" font-size="22" fill="#106019" text-anchor="start" letter-spacing="0" font-weight="normal">...</text>
+<text x="140" y="700" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" fill="#1D4A13" text-anchor="start" letter-spacing="3" font-weight="normal">FETCHED</text>
+<text x="200" y="740" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">POSITION 1  &lt;END&gt;</text>
+<text x="828.0" y="740" font-family="Hot CoCo" font-size="24" fill="#000000" text-anchor="middle" letter-spacing="0" font-weight="normal">-0.0286</text>
+<text x="1008.0" y="740" font-family="Hot CoCo" font-size="24" fill="#000000" text-anchor="middle" letter-spacing="0" font-weight="normal">-0.0187</text>
+<text x="1188.0" y="740" font-family="Hot CoCo" font-size="24" fill="#000000" text-anchor="middle" letter-spacing="0" font-weight="normal">+0.0583</text>
+<text x="200" y="782" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">POSITION 2  COMMODORE</text>
+<text x="828.0" y="782" font-family="Hot CoCo" font-size="24" fill="#000000" text-anchor="middle" letter-spacing="0" font-weight="normal">-0.0009</text>
+<text x="1008.0" y="782" font-family="Hot CoCo" font-size="24" fill="#000000" text-anchor="middle" letter-spacing="0" font-weight="normal">-0.0266</text>
+<text x="1188.0" y="782" font-family="Hot CoCo" font-size="24" fill="#000000" text-anchor="middle" letter-spacing="0" font-weight="normal">-0.0168</text>
+<line x1="718.0" y1="800" x2="1298.0" y2="800" stroke="#000000" stroke-width="3"/>
+<text x="628.0" y="840" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle" letter-spacing="0" font-weight="normal">+</text>
+<text x="200" y="840" font-family="Hot CoCo" font-size="22" fill="#000000" text-anchor="start" letter-spacing="0" font-weight="normal">ADD THEM</text>
+<rect x="736.0" y="813" width="164" height="38" fill="#000000"/>
+<text x="828.0" y="840" font-family="Hot CoCo" font-size="24" fill="#8EFF48" text-anchor="middle" letter-spacing="0" font-weight="normal">-0.0295</text>
+<rect x="916.0" y="813" width="164" height="38" fill="#000000"/>
+<text x="1008.0" y="840" font-family="Hot CoCo" font-size="24" fill="#8EFF48" text-anchor="middle" letter-spacing="0" font-weight="normal">-0.0453</text>
+<rect x="1096.0" y="813" width="164" height="38" fill="#000000"/>
+<text x="1188.0" y="840" font-family="Hot CoCo" font-size="24" fill="#8EFF48" text-anchor="middle" letter-spacing="0" font-weight="normal">+0.0415</text>
+<text x="768.0" y="890" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5" font-weight="normal">THESE THREE NUMBERS ARE ALL THE MODEL KNOWS ABOUT ITS CONTEXT. NO ARITHMETIC BEYOND THE ADDITION.</text>
+</svg>
