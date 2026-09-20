@@ -69,7 +69,7 @@
   },
   "Situation": {
     "Name": "The Old Machine Learns",
-    "Setting": "A dim home workshop at night. A 1981 Radio Shack TRS-80 Color Computer sits on the desk in the foreground, keyboard toward the viewer, with a small green-phosphor CRT monitor beside it. The room behind is out of focus, lit by cyan and magenta neon.",
+    "Setting": "A dim home workshop at night. A 1981 Radio Shack TRS-80 Color Computer sits on the desk in the foreground, keyboard toward the viewer, with a Commodore 1702 monitor beside it showing a green screen. The room behind is out of focus, lit by cyan and magenta neon.",
     "Camera": "Mid-shot, slightly low angle across the desk. The computer fills the lower third of the frame in sharp focus; the character sits behind it, off-centre to the right, looking at the CRT.",
     "CharacterPose": {
       "Expression": "Quiet delight, eyebrows slightly raised, half-smile lit green by the screen",
@@ -93,10 +93,11 @@
           "SymbolicMeaning": "The whole mechanism, small enough to see, on a machine that cannot hide anything"
         },
         {
-          "Name": "Green phosphor CRT",
-          "Description": "A small vintage monochrome monitor with a curved glass screen, glowing green. The screen shows lines of soft, out-of-focus green text: a glow with rows of blurred characters, no readable words or letters at all.",
+          "Name": "Commodore 1702 monitor",
+          "Description": "The exact monitor in the reference photo: a beige Commodore 1702 video monitor with a deep, rounded CRT face set well back inside a dark rectangular bezel, a lighter frame around it, a row of small control knobs and a brand strip along the bottom edge. Its screen is the CoCo's own picture: a bright green raster with a dark green tint at the edges, showing rows of soft, out-of-focus text; no readable words or letters. Do not modernise the monitor or change its proportions.",
           "Application": "On the desk beside the computer, angled toward the character, the main light source",
-          "SymbolicMeaning": "The output, seen but not read"
+          "SymbolicMeaning": "The output, seen but not read",
+          "ReferenceImage": "coco1-monitor-reference.jpg"
         },
         {
           "Name": "Twenty-sided die",
@@ -124,7 +125,7 @@
       ]
     },
     "KeyDetails": [
-      "The computer is unmistakably the worn 1981 machine from the reference photo, not a generic retro computer",
+      "The computer and the monitor are unmistakably the machines from their reference photos, not generic retro equipment",
       "The CRT's text is a soft green glow, deliberately unreadable",
       "Green screen light on her face and hands against cyan and magenta from the room",
       "NO WORDS ANYWHERE IN THE IMAGE: no signs, posters, slogans, neon lettering, book titles, mug slogans, labels or captions. The only text-like element is the unreadable glow on the CRT.",
