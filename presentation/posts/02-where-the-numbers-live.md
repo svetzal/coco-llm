@@ -94,11 +94,11 @@ In this computer field, we seem to get quickly obsessed with scale, buying the b
 
 ## A score for every token
 
-The second table on that list is the scoreboard: a row of three numbers for every token the model might predict, plus that token's starting nudge. To score a token, multiply the three context numbers by the token's three weights and add the nudge. Do it 29 times and every token has a score.
+The 87 and the 29 in that count are the scoreboard: for every token the model might predict, three numbers called its weights, plus its starting nudge. To score a token, multiply the three context numbers by the token's three weights and add the nudge. Do it 29 times and every token has a score.
 
 That's 87 multiplies. Next post shows the 6809 doing one.
 
-Before training the tables are random and small, so the scores are all near zero. Here are the shares they turn into for the window END, COMMODORE, where the right answer is AMIGA:
+Before training all 290 numbers are random and small, so the scores are all near zero. Here are the shares they turn into for the window END, COMMODORE, where the right answer is AMIGA:
 
 ```text
 TRS-80   3.49%    <- the largest share, barely
@@ -129,7 +129,7 @@ Back to the window END, COMMODORE, where the right answer is AMIGA and the model
 
 AMIGA should have had 100% and got 3.45%, so the model was wrong by 0.9655. Every weight's change is that, times a rate, times what the weight contributed.
 
-Take AMIGA's row in the scoreboard, its three weights. They were multiplied by the three context numbers, minus 0.0295, minus 0.0453 and plus 0.0415, to make AMIGA's score. Each weight's contribution was its own context number, so each gets nudged by that number, scaled:
+Take AMIGA's three weights from the scoreboard. To make AMIGA's score, each was multiplied by one of the three context numbers, minus 0.0295, minus 0.0453 and plus 0.0415, the sum of the two rows fetched from the tables at the top of this post. Each weight's contribution was its own context number, so each gets nudged by that number, scaled:
 
 ```text
 context numbers      -0.0295   -0.0453   +0.0415
