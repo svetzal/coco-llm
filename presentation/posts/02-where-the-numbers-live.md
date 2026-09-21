@@ -4,7 +4,7 @@ date: 2026-09-27
 published: false
 image: "images/coco-llm-2-banner.png"
 imageAlt: "An illustration: to be generated"
-description: "COMMODORE is token 13, and thirteen means nothing. Post two of five: the two tables where the model's numbers live, why each word gets three, what a parameter is, and how a score becomes something you can roll a die on."
+description: "COMMODORE is token 13, and thirteen means nothing. Post two of five: the two tables where the model's numbers live, why each word gets three, what a parameter is, what one step of training changes, and how a score becomes something you can roll a die on."
 tags:
   - ai
   - coco
@@ -33,7 +33,7 @@ add them                -0.0295   -0.0453   +0.0415
 
 ![Two tables side by side on the CoCo's green screen, in its pixel type, titled TWO TABLES, ONE PER WINDOW POSITION. Each lists tokens with three signed numbers beside them. In the position 1 table the END row is highlighted in amber; in the position 2 table the COMMODORE row is. Below, the two fetched rows are written out and added, with the sum in three black cells: minus 0.0295, minus 0.0453, plus 0.0415. A caption reads: these three numbers are all the model knows about its context, no arithmetic beyond the addition.](images/where-the-numbers-live.png)
 
-Those are the real rows, exported from the model before training. No arithmetic beyond the addition. The three numbers at the bottom are what the training step in the next post works on, and now you know where they came from.
+Those are the real rows, exported from the model before training. No arithmetic beyond the addition. The three numbers at the bottom are what the training step, further down, works on, and now you know where they came from.
 
 Each row of three is a word's embedding. That's the word everyone has heard, and this is all it means here: the numbers a token owns. When a vector database sells you "embeddings", it is selling rows like these, longer.
 
@@ -95,7 +95,7 @@ ATARI    3.48%
 AMIGA    3.45%    <- the right answer, in the middle of the pack
 ```
 
-Twenty-nine tokens, each near one in twenty-nine. The model has no opinion yet. Training is the process of giving it one.
+Twenty-nine tokens, each near one in twenty-nine. The model has no opinion yet. Training is the process of giving it one, and it's coming up.
 
 ## Scores become shares
 
@@ -109,9 +109,40 @@ And here's the thing softmax does not do: it doesn't choose. It hands you shares
 
 On the CoCo the shares add up to 256 instead of 100, so that every token owns a stretch of a line from 0 to 255 as wide as its share. Then the machine draws one byte, and whatever stretch the byte lands on is the next token. That's the die.
 
+## Training is a nudge
+
+Now the part you've been waiting for since the two tables: what training actually changes.
+
+Remember the window END, COMMODORE, where the right answer is AMIGA. The model gave AMIGA 3.45%, one in twenty-nine, no opinion. Training is one step, done over and over: score, compare with the right answer, nudge every weight a little in the direction that would have raised the right answer's share. Here is the one step, with the real numbers.
+
+How wrong was it? AMIGA should have had 100% and got 3.45%, so it was wrong by 0.9655. That number is the correction's size, and every weight's change is that, times a rate, times what the weight contributed.
+
+Take AMIGA's row in the scoreboard, its three weights. They were multiplied by the three context numbers, minus 0.0295, minus 0.0453 and plus 0.0415, to make AMIGA's score. Each weight's contribution was its own context number, so each gets nudged by that number, scaled:
+
+```text
+context numbers      -0.0295   -0.0453   +0.0415
+
+AMIGA's weights
+  before             +0.1214   -0.0705   +0.0325
+  change             -0.0017   -0.0027   +0.0025
+  after              +0.1197   -0.0732   +0.0350
+
+change = 0.0625  x  0.9655  x  the context number above
+         a rate     how wrong   what this weight contributed
+         I chose    it was
+```
+
+Look at the signs. Where the context number was negative the weight went down, and where it was positive the weight went up. Every weight moves the way that would have raised AMIGA's score, and the sign of each change is the sign of its incoming number. That is the whole rule.
+
+The rate, 0.0625, is a sixteenth. I chose it, and I chose it because dividing by sixteen is four shift instructions on a 6809, which is why it isn't something tidier like a tenth.
+
+The same step reaches back into the two tables, too. The END row in position 1 and the COMMODORE row in position 2 both get nudged, by how much each of the three context numbers contributed to every score that came out wrong. After the step, fetch and add those rows again and you get minus 0.0118, minus 0.0561, plus 0.0477. Those rows started random. Nudges like this are what make them mean something.
+
+The result of all that: AMIGA now has 3.68%. Up from 3.45. That is the honest size of one step, and there are 1,160 of them in a run. Every one of the 290 parameters moves by this rule, and nothing else ever touches them.
+
 ## Roll it
 
-Here is the die being rolled, from the run you watched last time, after training. Seed 6809 drew three bytes: 50, 12, 119.
+Here is the die being rolled, from the run you watched last time, after all 1,160 of those steps. Seed 6809 drew three bytes: 50, 12, 119.
 
 The first draw, 50, landed on COMMODORE, which owned 27 of the 256. TANDY owned 131, more than half the line, and lost. The second draw, 12, landed on 128, which owned 17; the favourite there was PET with 25. The third draw, 119, landed on END, which by then owned 228 of 256. The model was sure the name was over.
 
@@ -127,4 +158,4 @@ This is why I said it's useful to think in probabilities. The model never answer
 
 Two hundred and ninety numbers. A hundred and seventy-four of them are a lookup table, a hundred and sixteen are a scoreboard, and a byte from a die picks the word. That's the whole of using it.
 
-Next post: one step of training, with the real numbers. The nudge that moved AMIGA from 3.45% to 3.68%, and the 6809 instructions that did it.
+Next post: what 1,160 of those nudges do, epoch by epoch, and the 6809 instructions that do one of them.
