@@ -1,0 +1,30 @@
+{
+  "Style": {
+    "Genre": "1981 home-computer screen / composite-video CRT illustration",
+    "Rendering": "Flat, pixel-precise illustration as if drawn by an MC6847 video chip: a 32-by-16 text grid of blocky 8-by-12 pixel glyphs, hard edges, no anti-aliasing, no gradients, no painterly texture. A faint CRT curvature and phosphor glow are allowed at the edges only.",
+    "Lighting": {
+      "Type": "Self-lit phosphor, flat",
+      "Sources": ["The green phosphor field itself"],
+      "Shadows": "None; the only dark areas are black ink on the field"
+    },
+    "ColorPalette": {
+      "Primary": ["Composite screen green #44C532", "Black ink #000000"],
+      "Accents": ["Amber #FAE53D for the one thing that changed", "Navy #064787 for emphasis and arrows", "Bar green #8EFF48 for inverse-video text on black"],
+      "Treatment": "Black on green as the body. Amber marks the single element the viewer should look at; navy marks arrows and labels of emphasis; nothing else is coloured. Never red on green."
+    },
+    "Atmosphere": {
+      "Effects": ["Slight CRT barrel curvature at the frame edges", "Faint scanline texture", "Soft phosphor bloom around bright areas"],
+      "Mood": "Plain, exact, a machine showing its work"
+    }
+  },
+  "TypeRules": {
+    "Case": "Uppercase only. The MC6847 has no lowercase; lowercase renders as inverse-video blocks.",
+    "Face": "Blocky pixel glyphs on an 8-by-12 cell, like the CoCo's character ROM. Never a smooth or serif face.",
+    "Text": "Any words on screen are either supplied by a reference image or absent. The generator must not invent words, numbers or labels; where a label is needed and no reference supplies it, ask for a blank cell instead."
+  },
+  "PromptKeywords": [
+    "1981 home computer screen", "MC6847 text mode", "green phosphor", "black on green",
+    "pixel grid", "hard edges", "flat", "no gradients", "no readable text unless referenced",
+    "amber highlight on one element", "navy arrows", "retro CRT", "exact"
+  ]
+}

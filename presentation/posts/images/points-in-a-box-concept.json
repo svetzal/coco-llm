@@ -1,0 +1,95 @@
+{
+  "Layout": {
+    "SlidevLayout": "image",
+    "AspectRatio": "3:2",
+    "TextSafeZone": "none",
+    "FocalPoint": "center",
+    "NegativeSpace": "moderate"
+  },
+  "PresentationContext": {
+    "TalkTitle": "CoCo LLM",
+    "Themes": [
+      "a language model small enough to see",
+      "the training data",
+      "arithmetic over tokens"
+    ],
+    "Mood": "analytical",
+    "VisualContinuity": "Every graphic in the series is a CoCo screen: black on green, amber for the one thing that changed, navy for emphasis, uppercase blocky type."
+  },
+  "Style": {
+    "Genre": "1981 home-computer screen / composite-video CRT illustration",
+    "Rendering": "Flat, pixel-precise illustration as if drawn by an MC6847 video chip: a 32-by-16 text grid of blocky 8-by-12 pixel glyphs, hard edges, no anti-aliasing, no gradients, no painterly texture. A faint CRT curvature and phosphor glow are allowed at the edges only.",
+    "Lighting": {
+      "Type": "Self-lit phosphor, flat",
+      "Sources": [
+        "The green phosphor field itself"
+      ],
+      "Shadows": "None; the only dark areas are black ink on the field"
+    },
+    "ColorPalette": {
+      "Primary": [
+        "Composite screen green #44C532",
+        "Black ink #000000"
+      ],
+      "Accents": [
+        "Amber #FAE53D for the one thing that changed",
+        "Navy #064787 for emphasis and arrows",
+        "Bar green #8EFF48 for inverse-video text on black"
+      ],
+      "Treatment": "Black on green as the body. Amber marks the single element the viewer should look at; navy marks arrows and labels of emphasis; nothing else is coloured. Never red on green."
+    },
+    "Atmosphere": {
+      "Effects": [
+        "Slight CRT barrel curvature at the frame edges",
+        "Faint scanline texture",
+        "Soft phosphor bloom around bright areas"
+      ],
+      "Mood": "Plain, exact, a machine showing its work"
+    }
+  },
+  "PromptKeywords": [
+    "1981 home computer screen",
+    "MC6847 text mode",
+    "green phosphor",
+    "black on green",
+    "pixel grid",
+    "hard edges",
+    "flat",
+    "no gradients",
+    "no readable text unless referenced",
+    "amber highlight on one element",
+    "navy arrows",
+    "retro CRT",
+    "exact"
+  ],
+  "ImageRole": "concept",
+  "ContentDescription": "A wireframe box drawn in thin black lines on a green CoCo screen, in a simple oblique view, containing about thirty small round points. Six of the points are larger and amber and sit close together in one region; the rest are black and spread through another region, with three or four black points high up on their own. Each point has a dashed drop line to the floor of the box. No labels, no words, no numbers.",
+  "CompositionNotes": "The amber cluster is the subject; keep it clearly separate from the black points. Thin black wireframe, dashed navy drop lines, nothing else. Any words on screen are either supplied by a reference image or absent. The generator must not invent words, numbers or labels; where a label is needed and no reference supplies it, ask for a blank cell instead.",
+  "Situation": {
+    "Name": "Tokens as points",
+    "Setting": "A CoCo text screen",
+    "Camera": "Straight on, the box filling most of the screen",
+    "Props": {
+      "Conceptual": [
+        {
+          "Name": "A real CoCo screen",
+          "ReferenceImage": "coco-screen-reference.png",
+          "Description": "The emulator's own raster from a recorded run: the exact green, the black border, the 32-by-16 grid of blocky uppercase glyphs. Match this look exactly.",
+          "Application": "Style reference for the whole image"
+        },
+        {
+          "Name": "Wireframe box",
+          "Description": "A cuboid in oblique projection, thin black edges",
+          "Application": "Centre of the screen",
+          "SymbolicMeaning": "The three-number embedding space"
+        },
+        {
+          "Name": "Points",
+          "Description": "About thirty round points, six larger amber ones grouped together, the rest small and black",
+          "Application": "Inside the box, each with a dashed drop line to the floor",
+          "SymbolicMeaning": "Tokens whose rows are close are treated alike"
+        }
+      ]
+    }
+  }
+}

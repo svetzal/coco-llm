@@ -64,7 +64,7 @@ Every extra number is another 29 by 3 multiplies per example, and on the CoCo a 
 
 Those times are the multiply instructions alone. The run you watched last time took two minutes.
 
-Six would have fit my budget of three minutes of training on stage. I chose three to see how small a model could be and still be useful, with a rule to widen it only when the evidence said quality was insufficient. It never did.
+Six would have fit my budget of three minutes of training on stage. Three was enough for the job. Every name in the training data is two or three tokens, so the two-token window sees most of a name at once, and three numbers per token told 29 tokens apart well enough that widening never earned its cost. I kept a rule to widen only when the evidence said quality was insufficient, and it never did. Sentences are a different job: the sentence completer in a later post has 255 tokens, a window five tokens wide and more numbers per token, because a sentence has more to keep track of than a name.
 
 The other choice I priced was the one I built first and threw away. Make a token a single character instead of a whole word and the model has to predict every letter: 12,859,560 multiplies, 158 seconds of multiply instructions against a 180-second budget, before any of the code around them.
 
