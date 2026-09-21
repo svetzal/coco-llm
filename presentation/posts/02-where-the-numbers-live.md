@@ -29,19 +29,21 @@ position 2, COMMODORE   -0.0009   -0.0266   -0.0168
 add them                -0.0295   -0.0453   +0.0415
 ```
 
-![Two tables side by side on the CoCo's green screen, in its pixel type, titled TWO TABLES, ONE PER WINDOW POSITION. Each lists tokens with three signed numbers beside them. In the position 1 table the END row is highlighted in amber; in the position 2 table the COMMODORE row is. Below, the two fetched rows are written out and added, with the sum in three black cells: minus 0.0295, minus 0.0453, plus 0.0415. A caption reads: these three numbers are all the model knows about its context, no arithmetic beyond the addition.](images/where-the-numbers-live.png)
+![Two tables side by side on the CoCo's green screen, in its pixel type, titled TWO TABLES, ONE PER WINDOW POSITION. Each lists tokens with three signed numbers beside them. In the position 1 table the END row is highlighted in amber; in the position 2 table the COMMODORE row is. Below, the two fetched rows are written out and added, with the sum in three black cells: minus 0.0295, minus 0.0453, plus 0.0415. A caption reads: these three numbers are the model's whole input, no arithmetic beyond the addition.](images/where-the-numbers-live.png)
 
 Those are the real rows, exported from the model before training. The three numbers at the bottom are what the training step works on.
 
-Each row of three is a word's embedding: the numbers a token owns. A vector database sells rows like these, longer.
+Each row of three is a token's embedding, and the word is worth having because of what the row does: it places the token among the other tokens. One number would put every token on a line, more of one thing or less. Three put them in a space, so a token can be near another in more than one way at once, and after training, tokens whose rows are close are tokens the arithmetic treats alike. COMMODORE and TANDY can end up near each other because both are followed by a model name, without anything in the numbers saying what a maker is.
 
-COMMODORE has a different row in each table. In position 1 its row is +0.0781, +0.0250, +0.0173. In position 2 it's the row above. That is why COMMODORE AMIGA and AMIGA COMMODORE are different to the machine.
+COMMODORE also has a different row in each table. In position 1 its row is +0.0781, +0.0250, +0.0173. In position 2 it's the row above. So the row places the token among the others and by where it sits relative to the token before it: the embedding is the token in its context. That is why the two words are everywhere in this field. A name becomes a position, and the position is where all the arithmetic happens.
+
+A vector database sells rows like these, longer.
 
 Two positions, 29 tokens, three numbers each: 174 numbers, most of the model.
 
 ## Why three?
 
-One number would put a word on a line: more of one thing, or less. Three put it in a space, so words can be near each other in more than one way at once. GPT-3's embedding is 12,288 numbers long where ours is three. Same idea, more room.
+GPT-3's embedding is 12,288 numbers long where ours is three. Same idea, more room.
 
 Every extra number is another 29 by 3 multiplies per example, and on the CoCo a multiply costs 11 cycles at 0.89 MHz. I priced the widths before choosing:
 
@@ -85,7 +87,7 @@ That's 87 multiplies. Next post shows the 6809 doing one.
 Before training the tables are random and small, so the scores are all near zero. Here are the shares they turn into for the window END, COMMODORE, where the right answer is AMIGA:
 
 ```text
-TRS-80   3.49%    <- the model's favourite, barely
+TRS-80   3.49%    <- the largest share, barely
 128      3.48%
 ZX80     3.48%
 ATARI    3.48%
@@ -93,7 +95,7 @@ ATARI    3.48%
 AMIGA    3.45%    <- the right answer, in the middle of the pack
 ```
 
-Twenty-nine tokens, each near one in twenty-nine. The model has no opinion yet.
+Twenty-nine tokens, each near one in twenty-nine. Nothing stands out yet.
 
 ## Scores become shares
 
@@ -140,7 +142,7 @@ AMIGA now has 3.68%, up from 3.45. That is the size of one step, and there are 1
 
 Here is the die being rolled, from the run you watched last time, after all 1,160 of those steps. Seed 6809 drew three bytes: 50, 12, 119.
 
-The first draw, 50, landed on COMMODORE, which owned 27 of the 256. TANDY owned 131, more than half the line, and lost. The second draw, 12, landed on 128, which owned 17; the favourite there was PET with 25. The third draw, 119, landed on END, which by then owned 228 of 256. The model was sure the name was over.
+The first draw, 50, landed on COMMODORE, which owned 27 of the 256. TANDY owned 131, more than half the line, and was not drawn. The second draw, 12, landed on 128, which owned 17; the widest stretch there was PET's, 25. The third draw, 119, landed on END, which by then owned 228 of 256.
 
 ![Three horizontal lines from 0 to 255 on the CoCo's green screen, titled SEED 6809 DREW 50, 12, 119. Each line is divided into stretches, one per token, as wide as its share. On the first line a navy arrow at 50 lands on COMMODORE's stretch, highlighted amber, while TANDY's stretch covers half the line. On the second, an arrow at 12 lands on 128. On the third, an arrow at 119 lands on END, which covers almost the whole line. The bottom reads: THE NAME: COMMODORE 128.](images/roll-it.png)
 
@@ -148,7 +150,7 @@ COMMODORE 128. A real name; it's in the training data. It's also the first name 
 
 Seed 6810 drew 177, 110 and 29 from the same table, and got TANDY COMPUTER. Same weights, same rows, different bytes. The eleven names on that screen are eleven paths through one table.
 
-Two things about the die. For the first two tokens, END's stretch is handed to the favourite, so a name is never one word long; that rule is in the code, not the weights. And you don't have to roll. Take the widest stretch every time and you get the same name every time: greedy decoding, which is what temperature zero means. Temperature rescales the scores before they become shares. Higher narrows the fat stretch and widens the thin ones, lower does the reverse, and zero is greedy.
+Two things about the die. For the first two tokens, END's stretch is handed to the widest, so a name is never one word long; that rule is in the code, not the weights. And you don't have to roll. Take the widest stretch every time and you get the same name every time: greedy decoding, which is what temperature zero means. Temperature rescales the scores before they become shares. Higher narrows the fat stretch and widens the thin ones, lower does the reverse, and zero is greedy.
 
 This is why it's useful to think in probabilities. The model never answers. It hands over shares, and a draw picks. Take the biggest every time and you get one answer forever; draw, and you get variety, and now and then TANDY ZX80. It's the die.
 
