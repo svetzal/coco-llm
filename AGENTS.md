@@ -22,8 +22,8 @@ and how people can use them with practical expectations.
 - Keep platform display and I/O code outside the learning engine.
 - Record uncertain ideas as experiments rather than quietly turning them into
   architecture.
-- If a word, a statement, or a paragraph, contributes nothing to understanding
-  the concepts at hand, drop it.
+- If a word, a statement, or a paragraph, contributes nothing to the reader
+  understanding the concepts at hand, drop it.
 
 ## Evidence loop
 
@@ -56,6 +56,8 @@ or meet anything, and it has no diet or education. Those words are confusing
 because they are false: the model is arithmetic over the training data, and a
 sentence that says so is clearer than one that says the machine read it. The
 same applies to any other verb that lends the machine a mind it does not have.
+
+Do not anthropomorphize any algorithms or machine learning concepts.
 
 ## Never write a bare EXP number
 
