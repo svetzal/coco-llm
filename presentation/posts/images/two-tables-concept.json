@@ -36,7 +36,7 @@
         "Navy #064787 for emphasis and arrows",
         "Bar green #8EFF48 for inverse-video text on black"
       ],
-      "Treatment": "Black on green as the body. Amber marks the single element the viewer should look at; navy marks arrows and labels of emphasis; nothing else is coloured. Never red on green."
+      "Treatment": "The field is bright green and everything on it is black; the screen is never dark. Amber marks the single element the viewer should look at; navy marks arrows and signs; nothing else is coloured. Never red on green."
     },
     "Atmosphere": {
       "Effects": [
@@ -56,15 +56,16 @@
     "hard edges",
     "flat",
     "no gradients",
-    "no readable text unless referenced",
     "amber highlight on one element",
     "navy arrows",
     "retro CRT",
-    "exact"
+    "exact",
+    "render only the supplied words",
+    "no invented text"
   ],
   "ImageRole": "concept",
-  "ContentDescription": "Two tall tables side by side on a green CoCo screen, each a column of blank cells with a narrow label cell at the left, like two lookup tables. One row in the left table and one row in the right table are filled amber. Beneath them, the two amber rows are shown again, one above the other, with a navy plus sign and a bar, and a single row of three black cells under the bar as their sum. No readable words or numbers anywhere; every cell is blank.",
-  "CompositionNotes": "Uppercase blocky type only if any appears; prefer none. Amber marks exactly two rows and nothing else. Navy is used only for the plus sign and the bar. Everything else is black on green. Any words on screen are either supplied by a reference image or absent. The generator must not invent words, numbers or labels; where a label is needed and no reference supplies it, ask for a blank cell instead.",
+  "ContentDescription": "The whole image is a CoCo text screen: a bright green field, the green of the reference image, with everything drawn on it in black. Never a dark or black background. Two tall tables side by side, headed POSITION 1 and POSITION 2 in blocky uppercase black letters. Each table is a column of about a dozen rows; each row has a label cell at the left and three empty cells to its right, all outlined in black on the green. In the left table one row is filled amber and its label cell reads <END>, with both angle brackets. In the right table one row is filled amber and its label cell reads COMMODORE, spelled C-O-M-M-O-D-O-R-E. Every other label cell is empty. Below the tables, one short block: the <END> row and the COMMODORE row shown again, one above the other, a navy plus sign to their left, a black bar under them, and under the bar a single row of three cells filled solid black, with the words ADD THEM to its left. Along the bottom of the screen, one caption line in black uppercase: ONE ROW FROM EACH TABLE. ADD THEM. THAT IS THE MODEL'S INPUT.",
+  "CompositionNotes": "Bright green field, black ink, as in the reference image; the screen is never dark. The words to render, and only these, spelled exactly: POSITION 1, POSITION 2, <END>, COMMODORE, ADD THEM, and the caption ONE ROW FROM EACH TABLE. ADD THEM. THAT IS THE MODEL'S INPUT. All other cells are empty. No numbers anywhere. Amber fills exactly two rows. Navy is used only for the plus sign. ",
   "Situation": {
     "Name": "Two tables, one row fetched from each",
     "Setting": "A CoCo text screen",
@@ -74,20 +75,26 @@
         {
           "Name": "A real CoCo screen",
           "ReferenceImage": "coco-screen-reference.png",
-          "Description": "The emulator's own raster from a recorded run: the exact green, the black border, the 32-by-16 grid of blocky uppercase glyphs. Match this look exactly.",
-          "Application": "Style reference for the whole image"
+          "Description": "The emulator's own raster from a recorded run: the exact green, the black border, the 32-by-16 grid of blocky uppercase glyphs. Match this look and this lettering exactly.",
+          "Application": "Style and lettering reference for the whole image"
         },
         {
           "Name": "Two lookup tables",
-          "Description": "Two columns of rectangular cells, about a dozen rows each, one row per table filled amber",
+          "Description": "Two columns of cells headed POSITION 1 and POSITION 2, one amber row each, labelled <END> and COMMODORE",
           "Application": "Upper two thirds of the screen",
           "SymbolicMeaning": "One table per window position"
         },
         {
           "Name": "The sum",
-          "Description": "The two amber rows restated and added into one row of three black cells",
-          "Application": "Bottom third",
+          "Description": "The two amber rows restated and added into one row of three black cells, labelled ADD THEM",
+          "Application": "Lower third",
           "SymbolicMeaning": "The context vector"
+        },
+        {
+          "Name": "The caption",
+          "Description": "ONE ROW FROM EACH TABLE. ADD THEM. THAT IS THE MODEL'S INPUT.",
+          "Application": "Bottom line of the screen",
+          "SymbolicMeaning": "The lesson, so the image stands alone"
         }
       ]
     }

@@ -16,10 +16,13 @@ An image model does not reproduce numbers or words reliably, and the
 project's rule is that nothing appears on a screen unless the machine
 produced it. So:
 
-- **Generate** conceptual graphics: the shape of an idea with no values in
-  it. Two tables with one row lit in each. Points in a box with some near
-  each other. A window sliding along a row of cells. Ask for blank cells
-  where labels would go, or supply the words through a reference image.
+- **Generate** conceptual graphics: the shape of an idea, with the words
+  that carry its lesson. Two tables with one row lit in each, labelled with
+  the tokens that were fetched. Points in a box with the makers named and
+  clustered. Each scene supplies its own words, names of things and one
+  caption stating the lesson, and the generator renders those and invents
+  none. Every illustration should stand alone: someone who sees only the
+  image should get the point.
 - **Draw from data** any figure that carries a value: a table of real rows,
   a share of 256, a distance, a count. Those are generated from the trace
   files by a script, as the post figures under `posts/images/*.svg` are, and
@@ -39,3 +42,10 @@ source ~/.secrets.sh && node ~/.claude/skills/presentation-image-generator/scrip
 Scenes live beside the image they produce, as the blog does with its
 banners. `two-tables-concept.json` and `points-in-a-box-concept.json` are
 the worked examples.
+
+## Look at every output
+
+Two failure modes showed up in the first runs and will again. The generator
+sometimes inverts the palette to green on black, and it sometimes misspells
+a supplied word or drops a bracket. Both are visible at a glance; roll
+again with the wording tightened rather than accept either.

@@ -56,15 +56,16 @@
     "hard edges",
     "flat",
     "no gradients",
-    "no readable text unless referenced",
     "amber highlight on one element",
     "navy arrows",
     "retro CRT",
-    "exact"
+    "exact",
+    "render only the supplied words",
+    "no invented text"
   ],
   "ImageRole": "concept",
-  "ContentDescription": "A wireframe box drawn in thin black lines on a green CoCo screen, in a simple oblique view, containing about thirty small round points. Six of the points are larger and amber and sit close together in one region; the rest are black and spread through another region, with three or four black points high up on their own. Each point has a dashed drop line to the floor of the box. No labels, no words, no numbers.",
-  "CompositionNotes": "The amber cluster is the subject; keep it clearly separate from the black points. Thin black wireframe, dashed navy drop lines, nothing else. Any words on screen are either supplied by a reference image or absent. The generator must not invent words, numbers or labels; where a label is needed and no reference supplies it, ask for a blank cell instead.",
+  "ContentDescription": "A wireframe box drawn in thin black lines on a green CoCo screen, in a simple oblique view, containing about thirty small round points, each with a dashed drop line to the floor of the box. Six of the points are larger and amber, sit close together in one region, and are labelled in blocky uppercase: ACORN, APPLE, ATARI, COMMODORE, SINCLAIR, TANDY. The rest are small black points spread through another region, unlabelled, with three or four black points high up on their own. Along the bottom of the screen, one caption line in uppercase: TOKENS THAT ARE FOLLOWED BY THE SAME KIND OF TOKEN END UP NEAR EACH OTHER.",
+  "CompositionNotes": "The words to render, and only these: the six maker names beside their amber points, and the caption TOKENS THAT ARE FOLLOWED BY THE SAME KIND OF TOKEN END UP NEAR EACH OTHER. No numbers, no axis labels, no other words. The amber cluster is the subject; keep it clearly apart from the black points. Each scene supplies the words it needs: the names of things, a short caption that states the lesson. Render exactly those words, in uppercase blocky glyphs, and invent no others. Never invent numbers or model output; a value appears only if the scene supplies it from a run.",
   "Situation": {
     "Name": "Tokens as points",
     "Setting": "A CoCo text screen",
@@ -74,8 +75,8 @@
         {
           "Name": "A real CoCo screen",
           "ReferenceImage": "coco-screen-reference.png",
-          "Description": "The emulator's own raster from a recorded run: the exact green, the black border, the 32-by-16 grid of blocky uppercase glyphs. Match this look exactly.",
-          "Application": "Style reference for the whole image"
+          "Description": "The emulator's own raster from a recorded run: the exact green, the black border, the 32-by-16 grid of blocky uppercase glyphs. Match this look and this lettering exactly.",
+          "Application": "Style and lettering reference for the whole image"
         },
         {
           "Name": "Wireframe box",
@@ -84,10 +85,22 @@
           "SymbolicMeaning": "The three-number embedding space"
         },
         {
-          "Name": "Points",
-          "Description": "About thirty round points, six larger amber ones grouped together, the rest small and black",
-          "Application": "Inside the box, each with a dashed drop line to the floor",
-          "SymbolicMeaning": "Tokens whose rows are close are treated alike"
+          "Name": "The makers",
+          "Description": "Six larger amber points close together, labelled ACORN, APPLE, ATARI, COMMODORE, SINCLAIR, TANDY",
+          "Application": "One region of the box",
+          "SymbolicMeaning": "Tokens followed by the same kind of token"
+        },
+        {
+          "Name": "The model names",
+          "Description": "About two dozen small black points, unlabelled, spread through another region",
+          "Application": "The rest of the box",
+          "SymbolicMeaning": "The other tokens"
+        },
+        {
+          "Name": "The caption",
+          "Description": "TOKENS THAT ARE FOLLOWED BY THE SAME KIND OF TOKEN END UP NEAR EACH OTHER",
+          "Application": "Bottom line of the screen",
+          "SymbolicMeaning": "The lesson, so the image stands alone"
         }
       ]
     }
