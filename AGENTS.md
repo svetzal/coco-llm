@@ -22,6 +22,8 @@ and how people can use them with practical expectations.
 - Keep platform display and I/O code outside the learning engine.
 - Record uncertain ideas as experiments rather than quietly turning them into
   architecture.
+- If a word, a statement, or a paragraph, contributes nothing to understanding
+  the concepts at hand, drop it.
 
 ## Evidence loop
 
