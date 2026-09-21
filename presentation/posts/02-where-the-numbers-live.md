@@ -72,7 +72,9 @@ Every extra number is another 87 multiplies per example: 29 to score the tokens 
 
 The run you watched last time took about 100 seconds to reach PRESS ANY KEY, and 45 of them were multiplies. The rest is the softmax, the updates and the display.
 
-Six would probably still have fit my three-minute budget. Three was enough for the job. Every name in the training data is two or three tokens, so the two-token window sees most of a name at once, and three numbers per token told 29 tokens apart well enough that widening never earned its cost. I kept a rule to widen only when the evidence said quality was insufficient, and it never did. Sentences are a different job: the sentence completer in a later post has 255 tokens, a window five tokens wide and more numbers per token, because a sentence has more to keep track of than a name.
+Six would probably still have fit my three-minute budget. Three was enough: three numbers per token told 29 tokens apart well enough that widening never earned its cost. I kept a rule to widen only when the evidence said quality was insufficient, and it never did.
+
+This three is not the window. The window is two tokens wide for a different reason: no name in the training data is longer than three tokens, so two tokens of context are enough to say what comes next. Sentences are a different job. The sentence completer in a later post has 255 tokens, a window five tokens wide and more numbers per token, because a sentence has more to keep track of than a name.
 
 The other choice I priced was the one I built first and threw away. Make a token a single character instead of a whole word and the model has to predict every letter: 12,859,560 multiplies. At eleven cycles each, the cost of the bare MUL instruction and the floor I priced it at, that is 158 seconds against a 180-second budget. At what a multiply costs in practice, it is half an hour.
 
