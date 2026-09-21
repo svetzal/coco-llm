@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1000" viewBox="0 0 1536 1000">
+<rect width="1536" height="1000" fill="#44C532"/>
+<text x="768.0" y="64.0" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">28 TOKENS AS 28 POINTS</text>
+<text x="768.0" y="100.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">THE POSITION 2 TABLE AFTER 20 EPOCHS. EACH ROW OF THREE NUMBERS IS ONE POINT. THE MAKERS ARE THE AMBER ONES.</text>
+<line x1="240.0" y1="820.0" x2="940.0" y2="820.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="240.0" y1="820.0" x2="540.0" y2="630.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="240.0" y1="820.0" x2="240.0" y2="300.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="1240.0" y1="110.0" x2="540.0" y2="110.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="1240.0" y1="110.0" x2="940.0" y2="300.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="1240.0" y1="110.0" x2="1240.0" y2="630.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="940.0" y1="820.0" x2="1240.0" y2="630.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="940.0" y1="820.0" x2="940.0" y2="300.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="540.0" y1="630.0" x2="1240.0" y2="630.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="540.0" y1="630.0" x2="540.0" y2="110.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="240.0" y1="300.0" x2="940.0" y2="300.0" stroke="#106019" stroke-width="1.5"/>
+<line x1="240.0" y1="300.0" x2="540.0" y2="110.0" stroke="#106019" stroke-width="1.5"/>
+<text x="590.0" y="854.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="middle" letter-spacing="2">FIRST NUMBER</text>
+<text x="1266.0" y="731.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="start" letter-spacing="2">SECOND</text>
+<text x="222.0" y="560.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="end" letter-spacing="2">THIRD</text>
+<line x1="869.5" y1="185.4" x2="869.5" y2="643.4" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="869.5" cy="643.4" r="2.5" fill="#106019"/>
+<circle cx="869.5" cy="185.4" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="880.5" y="190.4" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">ZX</text>
+<line x1="767.0" y1="281.5" x2="767.0" y2="660.9" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="767.0" cy="660.9" r="2.5" fill="#106019"/>
+<circle cx="767.0" cy="281.5" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="778.0" y="286.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">MODEL</text>
+<line x1="837.7" y1="633.7" x2="837.7" y2="673.9" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="837.7" cy="673.9" r="2.5" fill="#106019"/>
+<circle cx="837.7" cy="633.7" r="9" fill="#FAE53D" stroke="#064787" stroke-width="2.5"/>
+<text x="821.7" y="639.7" font-family="Hot CoCo" font-size="18" fill="#000000" text-anchor="end" letter-spacing="0">TANDY</text>
+<line x1="776.0" y1="240.5" x2="776.0" y2="679.9" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="776.0" cy="679.9" r="2.5" fill="#106019"/>
+<circle cx="776.0" cy="240.5" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="787.0" y="245.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">BBC</text>
+<line x1="703.8" y1="207.6" x2="703.8" y2="687.5" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="703.8" cy="687.5" r="2.5" fill="#106019"/>
+<circle cx="703.8" cy="207.6" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="714.8" y="212.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">COLOR</text>
+<line x1="731.6" y1="521.0" x2="731.6" y2="712.8" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="731.6" cy="712.8" r="2.5" fill="#106019"/>
+<circle cx="731.6" cy="521.0" r="9" fill="#FAE53D" stroke="#064787" stroke-width="2.5"/>
+<text x="715.6" y="527.0" font-family="Hot CoCo" font-size="18" fill="#000000" text-anchor="end" letter-spacing="0">SINCLAIR</text>
+<line x1="901.3" y1="663.9" x2="901.3" y2="726.5" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="901.3" cy="726.5" r="2.5" fill="#106019"/>
+<circle cx="901.3" cy="663.9" r="9" fill="#FAE53D" stroke="#064787" stroke-width="2.5"/>
+<text x="917.3" y="685.9" font-family="Hot CoCo" font-size="18" fill="#000000" text-anchor="start" letter-spacing="0">ACORN</text>
+<line x1="508.0" y1="542.6" x2="508.0" y2="729.1" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="508.0" cy="729.1" r="2.5" fill="#106019"/>
+<circle cx="508.0" cy="542.6" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="519.0" y="547.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">AMIGA</text>
+<line x1="479.2" y1="569.6" x2="479.2" y2="729.9" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="479.2" cy="729.9" r="2.5" fill="#106019"/>
+<circle cx="479.2" cy="569.6" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="475.7" y1="586.2" x2="475.7" y2="731.6" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="475.7" cy="731.6" r="2.5" fill="#106019"/>
+<circle cx="475.7" cy="586.2" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="486.7" y="591.2" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">PET</text>
+<line x1="563.8" y1="603.9" x2="563.8" y2="735.6" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="563.8" cy="735.6" r="2.5" fill="#106019"/>
+<circle cx="563.8" cy="603.9" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="574.8" y="608.9" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">II</text>
+<line x1="956.1" y1="525.2" x2="956.1" y2="736.1" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="956.1" cy="736.1" r="2.5" fill="#106019"/>
+<circle cx="956.1" cy="525.2" r="9" fill="#FAE53D" stroke="#064787" stroke-width="2.5"/>
+<text x="942.1" y="505.2" font-family="Hot CoCo" font-size="18" fill="#000000" text-anchor="end" letter-spacing="0">APPLE</text>
+<line x1="542.1" y1="600.3" x2="542.1" y2="737.0" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="542.1" cy="737.0" r="2.5" fill="#106019"/>
+<circle cx="542.1" cy="600.3" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="534.6" y1="621.6" x2="534.6" y2="742.0" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="534.6" cy="742.0" r="2.5" fill="#106019"/>
+<circle cx="534.6" cy="621.6" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="508.9" y1="558.2" x2="508.9" y2="746.2" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="508.9" cy="746.2" r="2.5" fill="#106019"/>
+<circle cx="508.9" cy="558.2" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="499.5" y1="624.2" x2="499.5" y2="748.8" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="499.5" cy="748.8" r="2.5" fill="#106019"/>
+<circle cx="499.5" cy="624.2" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="440.6" y1="600.3" x2="440.6" y2="749.3" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="440.6" cy="749.3" r="2.5" fill="#106019"/>
+<circle cx="440.6" cy="600.3" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="430.8" y1="611.8" x2="430.8" y2="751.3" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="430.8" cy="751.3" r="2.5" fill="#106019"/>
+<circle cx="430.8" cy="611.8" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="425.4" y1="563.6" x2="425.4" y2="751.7" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="425.4" cy="751.7" r="2.5" fill="#106019"/>
+<circle cx="425.4" cy="563.6" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="436.4" y="568.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">64</text>
+<line x1="936.9" y1="528.8" x2="936.9" y2="752.0" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="936.9" cy="752.0" r="2.5" fill="#106019"/>
+<circle cx="936.9" cy="528.8" r="9" fill="#FAE53D" stroke="#064787" stroke-width="2.5"/>
+<text x="952.9" y="554.8" font-family="Hot CoCo" font-size="18" fill="#000000" text-anchor="start" letter-spacing="0">ATARI</text>
+<line x1="454.6" y1="536.4" x2="454.6" y2="753.6" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="454.6" cy="753.6" r="2.5" fill="#106019"/>
+<circle cx="454.6" cy="536.4" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="450.5" y1="570.7" x2="450.5" y2="754.9" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="450.5" cy="754.9" r="2.5" fill="#106019"/>
+<circle cx="450.5" cy="570.7" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="397.1" y1="609.2" x2="397.1" y2="755.2" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="397.1" cy="755.2" r="2.5" fill="#106019"/>
+<circle cx="397.1" cy="609.2" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="408.1" y="614.2" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">ZX81</text>
+<line x1="393.1" y1="682.8" x2="393.1" y2="757.4" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="393.1" cy="757.4" r="2.5" fill="#106019"/>
+<circle cx="393.1" cy="682.8" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="404.1" y="687.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">TRS-80</text>
+<line x1="446.9" y1="598.5" x2="446.9" y2="758.7" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="446.9" cy="758.7" r="2.5" fill="#106019"/>
+<circle cx="446.9" cy="598.5" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="496.8" y1="589.5" x2="496.8" y2="758.8" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="496.8" cy="758.8" r="2.5" fill="#106019"/>
+<circle cx="496.8" cy="589.5" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<line x1="403.2" y1="646.0" x2="403.2" y2="759.2" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="403.2" cy="759.2" r="2.5" fill="#106019"/>
+<circle cx="403.2" cy="646.0" r="5.5" fill="#000000" stroke="#000000" stroke-width="2.5"/>
+<text x="414.2" y="651.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" fill="#1D4A13" text-anchor="start" letter-spacing="0">ARCHIMEDES</text>
+<line x1="906.9" y1="637.4" x2="906.9" y2="806.6" stroke="#106019" stroke-width="1" stroke-dasharray="3,4"/>
+<circle cx="906.9" cy="806.6" r="2.5" fill="#106019"/>
+<circle cx="906.9" cy="637.4" r="9" fill="#FAE53D" stroke="#064787" stroke-width="2.5"/>
+<text x="922.9" y="643.4" font-family="Hot CoCo" font-size="18" fill="#000000" text-anchor="start" letter-spacing="0">COMMODORE</text>
+<text x="1170.0" y="170.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" fill="#1D4A13" text-anchor="start" letter-spacing="1.5">STRAIGHT-LINE DISTANCES</text>
+<text x="1170.0" y="206.0" font-family="Hot CoCo" font-size="16" fill="#064787" text-anchor="start" letter-spacing="0">APPLE TO ATARI</text>
+<text x="1510.0" y="206.0" font-family="Hot CoCo" font-size="16" fill="#064787" text-anchor="end" letter-spacing="0">0.12</text>
+<text x="1170.0" y="240.0" font-family="Hot CoCo" font-size="16" fill="#064787" text-anchor="start" letter-spacing="0">COMMODORE TO ATARI</text>
+<text x="1510.0" y="240.0" font-family="Hot CoCo" font-size="16" fill="#064787" text-anchor="end" letter-spacing="0">0.44</text>
+<text x="1170.0" y="274.0" font-family="Hot CoCo" font-size="16" fill="#064787" text-anchor="start" letter-spacing="0">COMMODORE TO 64</text>
+<text x="1510.0" y="274.0" font-family="Hot CoCo" font-size="16" fill="#064787" text-anchor="end" letter-spacing="0">1.13</text>
+<text x="1170.0" y="308.0" font-family="Hot CoCo" font-size="16" fill="#064787" text-anchor="start" letter-spacing="0">COMMODORE TO TANDY</text>
+<text x="1510.0" y="308.0" font-family="Hot CoCo" font-size="16" fill="#064787" text-anchor="end" letter-spacing="0">1.16</text>
+<text x="1170.0" y="370.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" fill="#1D4A13" text-anchor="start" letter-spacing="1">&lt;END&gt; IS LEFT OUT. ITS POINT IS AT</text>
+<text x="1170.0" y="390.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" fill="#1D4A13" text-anchor="start" letter-spacing="1">-0.64, +1.61, +2.44, FAR ABOVE THIS BOX.</text>
+<text x="1170.0" y="410.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" fill="#1D4A13" text-anchor="start" letter-spacing="1">IT IS THE START OF A NAME, LIKE NO OTHER TOKEN.</text>
+<text x="768.0" y="946.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">NOTHING IN THE NUMBERS SAYS WHAT A MAKER IS. THE MAKERS ARE NEAR EACH OTHER BECAUSE THE SAME KIND OF TOKEN FOLLOWS THEM.</text>
+<text x="768.0" y="974.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">THE SMALLER POINTS ARE THE MODEL NAMES; THE CROWDED ONES ARE LEFT UNLABELLED.</text>
+</svg>
