@@ -33,7 +33,7 @@ add them                -0.0295   -0.0453   +0.0415
 
 Those are the real rows, exported from the model before training. The three numbers at the bottom are what the training step works on.
 
-Each row of three is a token's embedding, and the word is worth having because of what the row does: it places the token among the other tokens. One number would put every token on a line, more of one thing or less. Three put them in a space, so a token can be near another in more than one way at once, and after training, tokens whose rows are close are tokens the arithmetic treats alike. COMMODORE and TANDY can end up near each other because both are followed by a model name, without anything in the numbers saying what a maker is.
+Each row of three is a token's embedding, placing it among other tokens according to their proximity. Using just one number in isolation wouldn't help the model decide what should come next. Three tokens put it in a space, and after training, tokens whose rows are close are tokens the arithmetic treats alike. COMMODORE and TANDY can end up near each other because both are followed by a model name, without anything in the numbers saying what a maker is.
 
 COMMODORE also has a different row in each table. In position 1 its row is +0.0781, +0.0250, +0.0173. In position 2 it's the row above. So the row places the token among the others and by where it sits relative to the token before it: the embedding is the token in its context. That is why the two words are everywhere in this field. A name becomes a position, and the position is where all the arithmetic happens.
 
