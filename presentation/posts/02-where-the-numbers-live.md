@@ -12,11 +12,9 @@ tags:
   - learning
 ---
 
-Last time I left you holding one fact: COMMODORE is token 13, because it's thirteenth when the words are sorted, and that is all thirteen means. ZX80 is 27 and ZX81 is 28, next to each other and genuinely related, which is a coincidence. APPLE is 8 and ARCHIMEDES is 9, just as close, and one is Apple and the other is Acorn. There is nothing to learn from doing arithmetic on a name.
+Last time I left you holding one fact: COMMODORE is token 13, because it's thirteenth when the words are sorted, and that is all thirteen means. There is nothing to learn from doing arithmetic on a name.
 
 So what does the model do arithmetic on?
-
-When I built the slide that shows one training step, it showed three numbers arriving from nowhere. The figure asserted them and couldn't say where they came from, and that is exactly the kind of thing this whole project exists to not do. So I built the slide before it, the one this post is about. Give every token some numbers that *can* be compared, and show where they live.
 
 ## Two tables
 
