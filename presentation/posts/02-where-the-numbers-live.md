@@ -59,22 +59,22 @@ Two positions, 29 tokens, three numbers each: 174 numbers, most of the model.
 
 GPT-3's embedding is 12,288 numbers long where ours is three. Same idea, more room.
 
-Every extra number is another 29 by 3 multiplies per example, and on the CoCo a multiply costs 11 cycles at 0.89 MHz. I priced the widths before choosing:
+Every extra number is another 87 multiplies per example: 29 to score the tokens and 58 more in the training step. The 6809 has no multiply for numbers this size, so each one is a routine built from its 8-bit MUL instruction, and I measured that routine on the machine at 133 cycles, about 150 microseconds. I priced the widths before choosing:
 
-| numbers per word | parameters | multiplies to train | MUL time alone |
-| ---------------: | ---------: | ------------------: | -------------: |
-| 1 | 116 | 100,920 | 1.2 s |
-| 2 | 203 | 201,840 | 2.5 s |
-| 3 | 290 | 302,760 | 3.7 s |
-| 4 | 377 | 403,680 | 5.0 s |
-| 5 | 464 | 504,600 | 6.2 s |
-| 6 | 551 | 605,520 | 7.4 s |
+| numbers per word | parameters | multiplies to train | time in multiplies |
+| ---------------: | ---------: | ------------------: | -----------------: |
+| 1 | 116 | 100,920 | 15 s |
+| 2 | 203 | 201,840 | 30 s |
+| 3 | 290 | 302,760 | 45 s |
+| 4 | 377 | 403,680 | 60 s |
+| 5 | 464 | 504,600 | 75 s |
+| 6 | 551 | 605,520 | 90 s |
 
-Those times are the multiply instructions alone. The run you watched last time took two minutes.
+The run you watched last time took about 100 seconds to reach PRESS ANY KEY, and 45 of them were multiplies. The rest is the softmax, the updates and the display.
 
-Six would have fit my budget of three minutes of training on stage. Three was enough for the job. Every name in the training data is two or three tokens, so the two-token window sees most of a name at once, and three numbers per token told 29 tokens apart well enough that widening never earned its cost. I kept a rule to widen only when the evidence said quality was insufficient, and it never did. Sentences are a different job: the sentence completer in a later post has 255 tokens, a window five tokens wide and more numbers per token, because a sentence has more to keep track of than a name.
+Six would probably still have fit my three-minute budget. Three was enough for the job. Every name in the training data is two or three tokens, so the two-token window sees most of a name at once, and three numbers per token told 29 tokens apart well enough that widening never earned its cost. I kept a rule to widen only when the evidence said quality was insufficient, and it never did. Sentences are a different job: the sentence completer in a later post has 255 tokens, a window five tokens wide and more numbers per token, because a sentence has more to keep track of than a name.
 
-The other choice I priced was the one I built first and threw away. Make a token a single character instead of a whole word and the model has to predict every letter: 12,859,560 multiplies, 158 seconds of multiply instructions against a 180-second budget, before any of the code around them.
+The other choice I priced was the one I built first and threw away. Make a token a single character instead of a whole word and the model has to predict every letter: 12,859,560 multiplies. At eleven cycles each, the cost of the bare MUL instruction and the floor I priced it at, that is 158 seconds against a 180-second budget. At what a multiply costs in practice, it is half an hour.
 
 ## What is a parameter?
 
