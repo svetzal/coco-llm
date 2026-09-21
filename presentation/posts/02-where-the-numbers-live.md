@@ -72,15 +72,13 @@ Every extra number is another 87 multiplies per example: 29 to score the tokens 
 
 The run you watched last time took about 100 seconds to reach PRESS ANY KEY, and 45 of them were multiplies. The rest is computing probabilities, the updates and the display.
 
-Six would probably still have fit my three-minute budget. Three was enough: three numbers per token told 29 tokens apart well enough that widening never earned its cost. I kept a rule to widen only when the evidence said quality was insufficient, and it never did.
-
-This three is not the window. The window is two tokens wide for a different reason: no name in the training data is longer than three tokens, so two tokens of context are enough to say what comes next. Sentences are a different job. The sentence completer in a later post has 255 tokens, a window five tokens wide and more numbers per token, because a sentence has more to keep track of than a name.
+Six would probably still have fit my three-minute budget, but three was enough. Three numbers per token told 29 tokens apart well enough that the extra width never earned its cost.
 
 The other choice I priced was the one I built first and threw away. Make a token a single character instead of a whole word and the model has to predict every letter: 12,859,560 multiplies. At eleven cycles each, the cost of the bare MUL instruction and the floor I priced it at, that is 158 seconds against a 180-second budget. At what a multiply costs in practice, it is half an hour.
 
 ## What is a parameter?
 
-Count them.
+It's just something that can change in the model.
 
 ```text
  2 window positions x 29 tokens x 3 numbers  =  174   the two tables
@@ -90,9 +88,9 @@ Count them.
                                                 290
 ```
 
-A parameter is one number that training is allowed to change. This model has 290. GPT-3 had 175 billion; DeepSeek-V3 has 671 billion. Same word, same meaning.
+This model has 290. GPT-3 had 175 billion; DeepSeek-V3 has 671 billion. But the thing I enjoyed most about doing all this was seeing what I could do at the very small end of the scale.
 
-Every term in that sum is a decision somebody made: how wide the window is, how many tokens exist, how many numbers describe each one.
+In this computer field, we seem to get quickly obsessed with scale, buying the biggest computer, the biggest graphics card, training the biggest model. I enjoy using this old hardware because I think it's easy to become wasteful these days, and there's no challenge in that. Constraints make me more creative, teach me more about how things can work.
 
 ## A score for every token
 
