@@ -23,6 +23,10 @@ S=$(mktemp -d)
 cp "$S/fig.png" presentation/posts/images/two-words-at-a-time.png
 ```
 
+Every figure ends with two full-canvas overlays, a faint scanline pattern and a
+radial darkening at the corners, so the drawn figures and the generated
+illustrations read as the same screen.
+
 Everything in Hot CoCo is uppercase, because the MC6847 has no lowercase and
 the font renders lowercase as inverse-video blocks. Small explanatory labels
 use a real sans, uppercase and letterspaced, as the deck's chapter cards do.

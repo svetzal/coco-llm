@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1536" height="980" viewBox="0 0 1536 980">
+<defs><pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="2" fill="#000" fill-opacity="0.07"/></pattern><radialGradient id="vig" cx="50%" cy="50%" r="72%"><stop offset="80%" stop-color="#44C532" stop-opacity="0"/><stop offset="100%" stop-color="#0a2a08" stop-opacity="0.85"/></radialGradient></defs>
 <rect width="1536" height="980" fill="#44C532"/>
 <text x="768.0" y="92" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle" letter-spacing="0">COMMODORE AMIGA BECOMES 3 TRAINING EXAMPLES</text>
 <text x="288" y="172" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">THE NAME, WITH THE END MARKER ON BOTH SIDES</text>
@@ -53,4 +54,5 @@
 <text x="372" y="954" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">THE CONTEXT WINDOW, 2 TOKENS WIDE</text>
 <rect x="908" y="930" width="64" height="34" fill="#000000"/>
 <text x="992" y="954" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" fill="#1D4A13" text-anchor="start" letter-spacing="2">THE TOKEN THAT CAME NEXT</text>
+<rect width="1536" height="980" fill="url(#scan)"/><rect width="1536" height="980" fill="url(#vig)"/>
 </svg>
