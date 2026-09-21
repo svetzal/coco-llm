@@ -70,7 +70,7 @@ Every extra number is another 87 multiplies per example: 29 to score the tokens 
 | 5 | 464 | 504,600 | 75 s |
 | 6 | 551 | 605,520 | 90 s |
 
-The run you watched last time took about 100 seconds to reach PRESS ANY KEY, and 45 of them were multiplies. The rest is the softmax, the updates and the display.
+The run you watched last time took about 100 seconds to reach PRESS ANY KEY, and 45 of them were multiplies. The rest is turning scores into shares, the updates and the display.
 
 Six would probably still have fit my three-minute budget. Three was enough: three numbers per token told 29 tokens apart well enough that widening never earned its cost. I kept a rule to widen only when the evidence said quality was insufficient, and it never did.
 
