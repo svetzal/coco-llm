@@ -41,9 +41,9 @@ add them                -0.0295   -0.0453   +0.0415
 
 Those are the real rows, exported from the model before training. The three numbers at the bottom are what the training step works on.
 
-Each row of three is a token's embedding, placing it among other tokens according to their proximity. Using just one number in isolation wouldn't help the model decide what should come next. Three numbers put it in a space. They are coordinates: the first number is how far along one axis the token sits, the second another, the third the third, so each token is a point in a box, and near means near. After training, tokens whose points are close are tokens the arithmetic treats alike.
+Each row of three is a token's embedding, placing it among other tokens according to their proximity. Using just one number in isolation wouldn't help the model decide what should come next. Three numbers put it in a space. Think of them like coordinates in 3D space, so each token is a point in a box. To start they appear at random positions.
 
-Here is the second table after the 20 epochs, as points in a box:
+Here is the second table after 20 epochs, having been nudged into clusters:
 
 ![The position 2 table after 20 epochs, drawn on the CoCo's green screen as points inside a wireframe box, each with a dashed drop line to the floor. The six makers are larger amber points close together on the right, labelled ACORN, APPLE, ATARI, COMMODORE, SINCLAIR and TANDY. The model names are small black points bunched on the left, most of them labelled, with COLOR, BBC, ZX and MODEL high up on their own. A caption reads: tokens that are followed by the same kind of token end up near each other; END lies far above this box.](images/twenty-nine-points.png)
 
@@ -57,7 +57,7 @@ Two positions, 29 tokens, three numbers each: 174 numbers, most of the model.
 
 GPT-3's embedding is 12,288 numbers long where ours is three. Same idea, more room.
 
-Every extra number is another 87 multiplies per example: 29 to score the tokens and 58 more in the training step. The 6809 has no multiply for numbers this size, so each one is a routine built from its 8-bit MUL instruction, and I measured that routine on the machine at 133 cycles, about 150 microseconds. I priced the widths before choosing:
+Every extra number is another 87 multiplies per example: 29 to score the tokens and 58 more in the training step. The 6809 has no multiply for 16-bit numbers, so each one is a routine built from its 8-bit MUL instruction, and I measured that routine on the machine at 133 cycles, about 150 microseconds. I priced the widths before choosing:
 
 | numbers per word | parameters | multiplies to train | time in multiplies |
 | ---------------: | ---------: | ------------------: | -----------------: |
