@@ -9,6 +9,7 @@ and how people can use them with practical expectations.
 
 ## Working principles
 
+- When a literal phrase is available, use it. Don't use mannered prose.
 - Optimize for learning value before novelty or benchmark performance.
 - Keep the model mathematically honest. Simplifications must be named and
   explained.
