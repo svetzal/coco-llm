@@ -72,7 +72,7 @@ The run you watched last time took about 100 seconds to reach PRESS ANY KEY, and
 
 Six would probably still have fit my three-minute budget, but three was enough. Three numbers per token told 29 tokens apart well enough that the extra width never earned its cost in clock time.
 
-The other choice I priced was the one I built first and threw away. Make a token a single character instead of a whole word and the model has to predict every letter: [12,859,560 multiplies](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-001-model-feasibility.md#L101). At eleven cycles each, the cost of the bare MUL instruction and the floor I priced it at, that is 158 seconds against a 180-second budget. At what the math costs in practice, is half an hour.
+The other choice I priced was the one I built first and threw away. Make a token a single character instead of a whole word and the model has to predict every letter: [12,859,560 multiplies](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-001-model-feasibility.md#L101). At eleven cycles each, the cost of the bare MUL instruction and the floor I priced it at, that is 158 seconds against a 180-second budget. At what the math costs in practice, it is half an hour.
 
 ## What is a parameter?
 
