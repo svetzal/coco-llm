@@ -131,7 +131,7 @@ make present EXP=4
 
 It trains at the 1981 clock rate, parks when it's done, and draws names when you press a key. Nothing is sped up.
 
-The CoCo runs 6809 assembly, in [src/6809](https://github.com/svetzal/coco-llm/tree/main/src/6809). The Python beside it is how I organized the experiments: a reference model that does the same arithmetic on the Mac, so the CoCo's result can be checked against it, the experiment records with their data, and the scripts that pulled the numbers in these posts out of the runs. The live run is [EXP-004, the live training run](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-004-complete-6809-training.md).
+The CoCo runs 6809 assembly, in [src/6809](https://github.com/svetzal/coco-llm/tree/main/src/6809). The Python beside it is how I organized the experiments: a reference model that does the same arithmetic on the Mac, so the CoCo's result can be checked against it, the experiment records with their data, and the scripts that pulled the numbers in these posts out of the runs. The [repository map](https://github.com/svetzal/coco-llm#repository-map) says what each folder holds. The live run is [EXP-004, the live training run](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-004-complete-6809-training.md).
 
 ## Watch it work, start to finish
 

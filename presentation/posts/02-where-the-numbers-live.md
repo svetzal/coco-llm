@@ -39,7 +39,7 @@ add them                -0.0295   -0.0453   +0.0415
 
 ![Two tables side by side on the CoCo's green screen, in its pixel type, titled TWO TABLES, ONE PER WINDOW POSITION. Each lists tokens with three signed numbers beside them. In the position 1 table the END row is highlighted in amber; in the position 2 table the COMMODORE row is. Below, the two fetched rows are written out and added, with the sum in three black cells: minus 0.0295, minus 0.0453, plus 0.0415. A caption reads: these three numbers are the model's whole input, no arithmetic beyond the addition.](images/where-the-numbers-live.png)
 
-Those are the real rows, [exported](https://github.com/svetzal/coco-llm/blob/main/tools/export_deck_traces.py#L150-L160) from the model before training by the Python that organized the experiments and pulled every number in this post out of a run. The three numbers at the bottom are what the training step works on.
+Those are the real rows, [exported](https://github.com/svetzal/coco-llm/blob/main/tools/export_deck_traces.py#L150-L160) from the model before training by the Python that organized the experiments and pulled every number in this post out of a run; the [repository map](https://github.com/svetzal/coco-llm#repository-map) says where everything is. The three numbers at the bottom are what the training step works on.
 
 Each row of three is a token's embedding, placing it among other tokens according to their proximity. Using just one number in isolation wouldn't help the model decide what should come next. Three numbers put it in a space. Think of them like coordinates in 3D space, so each token is a point in a box. To start they appear at random positions.
 
