@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="900" viewBox="0 0 1536 900">
+<defs><pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="2" fill="#000" fill-opacity="0.07"/></pattern><radialGradient id="vig" cx="50%" cy="50%" r="72%"><stop offset="80%" stop-color="#44C532" stop-opacity="0"/><stop offset="100%" stop-color="#0a2a08" stop-opacity="0.85"/></radialGradient></defs>
+<rect width="1536" height="900" fill="#44C532"/>
+<text x="768.0" y="78" font-family="Hot CoCo" font-size="34" fill="#000000" text-anchor="middle">THREE WEIGHTS AND ONE NUDGE EACH</text>
+<text x="768.0" y="116" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" fill="#1D4A13" text-anchor="middle" letter-spacing="1.5">CHANGE = 0.0625 (A RATE I CHOSE) X 0.9655 (HOW WRONG IT WAS) X THE CONTEXT NUMBER</text>
+<text x="70" y="308" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="start" letter-spacing="3">CONTEXT NUMBER</text>
+<text x="70" y="448" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="start" letter-spacing="3">WEIGHT BEFORE</text>
+<text x="70" y="578" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="start" letter-spacing="3">CHANGE</text>
+<text x="70" y="708" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#1D4A13" text-anchor="start" letter-spacing="3">WEIGHT AFTER</text>
+<text x="520" y="210" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" fill="#1D4A13" text-anchor="middle" letter-spacing="3">WEIGHT 1</text>
+<rect x="395.0" y="270" width="250" height="58" fill="none" stroke="#064787" stroke-width="3"/>
+<text x="520" y="310" font-family="Hot CoCo" font-size="30" fill="#064787" text-anchor="middle">-0.0295</text>
+<text x="520" y="352" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" fill="#064787" text-anchor="middle" letter-spacing="3">NEGATIVE</text>
+<text x="520" y="450" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle">+0.1214</text>
+<polygon points="359.0,544.0 387.0,544.0 373.0,596.0" fill="#064787"/>
+<rect x="395.0" y="540" width="250" height="58" fill="#FAE53D" stroke="#064787" stroke-width="3"/>
+<text x="520" y="580" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle">-0.0017</text>
+<text x="520" y="622" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" fill="#064787" text-anchor="middle" letter-spacing="3">DOWN</text>
+<text x="520" y="710" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle">+0.1197</text>
+<text x="840" y="210" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" fill="#1D4A13" text-anchor="middle" letter-spacing="3">WEIGHT 2</text>
+<rect x="715.0" y="270" width="250" height="58" fill="none" stroke="#064787" stroke-width="3"/>
+<text x="840" y="310" font-family="Hot CoCo" font-size="30" fill="#064787" text-anchor="middle">-0.0453</text>
+<text x="840" y="352" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" fill="#064787" text-anchor="middle" letter-spacing="3">NEGATIVE</text>
+<text x="840" y="450" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle">-0.0705</text>
+<polygon points="679.0,544.0 707.0,544.0 693.0,596.0" fill="#064787"/>
+<rect x="715.0" y="540" width="250" height="58" fill="#FAE53D" stroke="#064787" stroke-width="3"/>
+<text x="840" y="580" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle">-0.0027</text>
+<text x="840" y="622" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" fill="#064787" text-anchor="middle" letter-spacing="3">DOWN</text>
+<text x="840" y="710" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle">-0.0732</text>
+<text x="1160" y="210" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" fill="#1D4A13" text-anchor="middle" letter-spacing="3">WEIGHT 3</text>
+<rect x="1035.0" y="270" width="250" height="58" fill="none" stroke="#064787" stroke-width="3"/>
+<text x="1160" y="310" font-family="Hot CoCo" font-size="30" fill="#064787" text-anchor="middle">+0.0415</text>
+<text x="1160" y="352" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" fill="#064787" text-anchor="middle" letter-spacing="3">POSITIVE</text>
+<text x="1160" y="450" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle">+0.0325</text>
+<polygon points="999.0,596.0 1027.0,596.0 1013.0,544.0" fill="#064787"/>
+<rect x="1035.0" y="540" width="250" height="58" fill="#FAE53D" stroke="#064787" stroke-width="3"/>
+<text x="1160" y="580" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle">+0.0025</text>
+<text x="1160" y="622" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" fill="#064787" text-anchor="middle" letter-spacing="3">UP</text>
+<text x="1160" y="710" font-family="Hot CoCo" font-size="30" fill="#000000" text-anchor="middle">+0.0350</text>
+<text x="768.0" y="846" font-family="Hot CoCo" font-size="26" fill="#000000" text-anchor="middle">EACH WEIGHT MOVES THE WAY THAT WOULD HAVE RAISED THE SCORE FOR AMIGA</text>
+<rect width="1536" height="900" fill="url(#scan)"/><rect width="1536" height="900" fill="url(#vig)"/>
+</svg>

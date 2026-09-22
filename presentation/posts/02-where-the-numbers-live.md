@@ -131,19 +131,7 @@ AMIGA should have had 100% and got 3.45%, so the model was wrong by 0.9655. Ever
 
 Take AMIGA's three weights from the scoreboard. To make AMIGA's score, each was multiplied by one of the three context numbers, minus 0.0295, minus 0.0453 and plus 0.0415, the sum of the two rows fetched from the tables at the top of this post. Each weight's contribution was its own context number, so each gets nudged by that number, scaled. The scale is the same for all three: 0.0625, a rate I chose, times 0.9655, how wrong the model was.
 
-```text
-change = 0.0625 x 0.9655 x the context number
-```
-
-```text
-                          weight 1   weight 2   weight 3
-context number             -0.0295    -0.0453    +0.0415
-AMIGA's weight, before     +0.1214    -0.0705    +0.0325
-change                     -0.0017    -0.0027    +0.0025
-AMIGA's weight, after      +0.1197    -0.0732    +0.0350
-```
-
-Where the context number was negative the weight went down, and where it was positive it went up. Every weight moves the way that would have raised AMIGA's score.
+![Three columns on the CoCo's green screen, titled THREE WEIGHTS AND ONE NUDGE EACH, with the formula beneath: change equals 0.0625, a rate I chose, times 0.9655, how wrong it was, times the context number. Each column has the context number in a navy box marked negative or positive, the weight before, the change in an amber box with a navy arrow pointing down for the two negative changes and up for the positive one, and the weight after: plus 0.1214 to plus 0.1197, minus 0.0705 to minus 0.0732, plus 0.0325 to plus 0.0350. The caption reads: each weight moves the way that would have raised the score for AMIGA.](images/one-nudge.png)
 
 The rate, 0.0625, is a sixteenth. I chose it because dividing by sixteen is four shift instructions on a 6809.
 
