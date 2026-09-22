@@ -1,0 +1,190 @@
+{
+  "ImageType": "banner",
+  "AspectRatio": "16:9",
+  "Size": "1536x1024",
+  "Character": {
+    "Description": "A highly competent, focused woman coder and systems thinker",
+    "Age": "Middle-aged, experienced",
+    "Ethnicity": "Eastern European build",
+    "Build": {
+      "Type": "Size 16, feminine",
+      "UpperBody": "Broad shoulders",
+      "LowerBody": "Slim hips"
+    },
+    "Face": {
+      "Complexion": "Light",
+      "Eyes": "Blue-grey",
+      "Expression": "Concentration with a trace of a smile, reading the numbers",
+      "Makeup": "Bold, pinks or purples, with a touch of shimmer"
+    },
+    "Hair": {
+      "Color": "Grey/silver",
+      "Length": "Long",
+      "Style": "Flowing, big wavy curls"
+    },
+    "Wardrobe": {
+      "Base": [
+        {
+          "Name": "Dark blazer",
+          "Description": "Professional dark blazer over tech-casual attire, sleeves pushed up",
+          "Context": "Always present"
+        }
+      ]
+    }
+  },
+  "Style": {
+    "Genre": "Cyberpunk / Tech Noir",
+    "Rendering": "High-detail digital painting, photorealistic, concept art quality",
+    "Lighting": {
+      "Type": "Dramatic, high-contrast, cinematic",
+      "Sources": [
+        "Bright green CoCo raster glow from a color composite CRT as the dominant light",
+        "Cyan and magenta neon rim light from the room"
+      ],
+      "Shadows": "Sharp, emphasizing the worn texture of the old machine"
+    },
+    "ColorPalette": {
+      "Primary": [
+        "Phosphor green",
+        "Cyan",
+        "Electric Blue",
+        "Magenta"
+      ],
+      "Accents": [
+        "Silver",
+        "Warm yellowed plastic",
+        "Metallic purples"
+      ],
+      "Treatment": "High saturation, strong contrast between the warm old plastic and the cool neon"
+    },
+    "Atmosphere": {
+      "Effects": [
+        "Bokeh",
+        "Atmospheric haze",
+        "Neon glow",
+        "Reflections on the CRT glass"
+      ],
+      "Mood": "Quiet, close, patient: the machine opened up and every number in view"
+    }
+  },
+  "Situation": {
+    "Name": "Where the numbers live",
+    "Setting": "The same dim home workshop at night as before. The 1981 Radio Shack TRS-80 Color Computer sits on the desk in the foreground, keyboard toward the viewer, the beige color composite CRT beside it. A long strip of green-bar fanfold printer paper lies across the desk and spills over its front edge, printed with dense columns of small signed numbers.",
+    "Camera": "Mid-shot, slightly low angle across the desk. The computer and the printout fill the lower third of the frame in sharp focus; the character sits behind it, off-centre to the right, leaning over the printout.",
+    "CharacterPose": {
+      "Expression": "Concentration with a trace of a smile, lit green by the screen, eyes on the printout",
+      "BodyPosition": "Seated behind the desk, leaning forward over the printout",
+      "Gesture": "One index finger resting on a single row of numbers on the printout; the other hand flat on the desk beside the keyboard"
+    },
+    "Props": {
+      "Character": [
+        {
+          "Name": "Dark blazer",
+          "Description": "Sleeves pushed up",
+          "Application": "Worn"
+        }
+      ],
+      "Article": [
+        {
+          "Name": "Stacey's CoCo 1",
+          "ReferenceImage": "coco1-reference.jpg",
+          "Description": "The exact Radio Shack TRS-80 Color Computer in the reference photo: a wide, low silver-grey case, scuffed and worn from forty-five years of use, with a black recessed keyboard well, small yellowed chiclet keys with dark legends, a red reset key at the top right, a Radio Shack badge with the red, green and blue stripe above the keys, and ventilation slots along the sides. Do not modernise it, clean it, or change its proportions.",
+          "Application": "Foreground, keyboard toward the viewer, sharp focus, its worn plastic catching the green screen light",
+          "SymbolicMeaning": "The machine that holds the numbers"
+        },
+        {
+          "Name": "Color composite CRT showing the CoCo green raster",
+          "ReferenceImage": "coco-screen-reference.png",
+          "Description": "A vintage beige composite monitor like the reference photo, with a deep black inner bezel and curved glass. The CoCo display is a bright, nearly rectangular green raster with dark, chunky 8-bit characters in short 32-column rows, this time arranged as a table: a narrow column of short words on the left and three columns of small numbers to the right. Preserve the screen's slight CRT bloom, scan softness and curved-glass reflections. Character shapes should be visible, but individual words and digits should remain too soft to read.",
+          "Application": "On the desk beside the computer, angled toward the character, the main light source",
+          "SymbolicMeaning": "The table, on the screen where it lives"
+        },
+        {
+          "Name": "Fanfold printout",
+          "Description": "A long strip of vintage green-bar tractor-feed printer paper with perforated edges and sprocket holes, printed in dot-matrix with dense columns of small signed numbers, softly out of focus except near her fingertip. No headings, no readable words.",
+          "Application": "Across the desk in front of the keyboard, one end spilling over the desk's front edge toward the viewer, her finger on one row",
+          "SymbolicMeaning": "The 290 numbers, written out where a person can point at one"
+        },
+        {
+          "Name": "Twenty-sided die",
+          "Description": "A translucent amber d20 catching the neon",
+          "Application": "Resting on the desk beside the printout, not held",
+          "SymbolicMeaning": "The roll comes later; this post is about the numbers"
+        }
+      ],
+      "Environment": [
+        {
+          "Name": "Workshop shelves",
+          "Description": "Out-of-focus shelves with old hardware, tools and cables, neon reflections. No posters, no signs, no labels.",
+          "Application": "Background bokeh"
+        },
+        {
+          "Name": "Coiled cables",
+          "Description": "A few old grey cables on the desk",
+          "Application": "Desk clutter, foreground edges"
+        },
+        {
+          "Name": "Plain coffee mug",
+          "Description": "A plain dark ceramic mug with nothing printed on it",
+          "Application": "On the desk, edge of frame"
+        }
+      ]
+    },
+    "KeyDetails": [
+      "The computer is unmistakably the worn 1981 machine from the reference photo, not a generic retro computer",
+      "The CRT faithfully resembles the reference photo: beige cabinet, black bezel, curved glass, and a bright green CoCo raster with dark blocky 32-column characters laid out as a small table of words and numbers",
+      "The printout is the focus of her attention: her fingertip on one row, that row alone in sharp focus, the rest of the columns softening away",
+      "The die is on the desk, set aside, not in her hand",
+      "No readable words anywhere in the image: no signs, posters, slogans, neon lettering, book titles, mug slogans, labels or captions. The CRT and the printout carry only soft, non-legible characters and digits.",
+      "No smartwatch, no modern devices, no phone; the only technology in focus is the 1981 machine, its monitor and the printout"
+    ],
+    "LightingFocus": "Green raster glow from the color CRT across the printout, her hands and face; neon rim light separates her from the dark room",
+    "ThematicTags": [
+      "retrocomputing",
+      "machine-learning",
+      "demystifying-ai",
+      "6809",
+      "parameters"
+    ]
+  },
+  "ArticleContext": {
+    "Title": "Where the numbers live",
+    "Tags": [
+      "ai",
+      "coco",
+      "6809",
+      "learning"
+    ],
+    "Themes": [
+      "290 numbers you can point at",
+      "a token as a row of three numbers",
+      "one training step, with real numbers",
+      "scores become shares, a byte picks the word"
+    ],
+    "Mood": "quiet and concrete"
+  },
+  "PromptKeywords": [
+    "highly detailed",
+    "digital painting",
+    "concept art",
+    "cyberpunk",
+    "neon light",
+    "cinematic lighting",
+    "high contrast",
+    "shallow depth of field",
+    "16:9 aspect ratio",
+    "wide shot",
+    "banner composition"
+  ],
+  "NegativeConstraints": [
+    "no text outside the authentic CRT output and the non-legible printout",
+    "no added lettering",
+    "no signage",
+    "no slogans",
+    "no book spines with titles",
+    "no smartwatch",
+    "no modern gadgets",
+    "no clean or modernised computer",
+    "no die in her hand"
+  ]
+}

@@ -2,6 +2,8 @@
 title: "Where the numbers live"
 date: 2026-09-21
 published: true
+image: "images/coco2-banner.png"
+imageAlt: "An illustration: a silver-haired woman in a dark blazer leans over a workbench at night, one finger on a row of numbers on a long strip of green-bar fanfold printout that runs past a worn 1981 Radio Shack Color Computer, while the beige CRT beside it shows a green screen with a table of short words and columns of numbers; an amber twenty-sided die rests on the desk beside the paper"
 description: "Post two of five: the two tables where the model's numbers live, why each word gets three, what a parameter is, what one step of training changes, and how a score becomes something you can roll a die on."
 tags:
   - ai
