@@ -12,7 +12,7 @@ tags:
   - learning
 ---
 
-Last post covered:
+[Last post](https://stacey.vetzal.ca/2026/2026-09-19-a-45-year-old-computer-learns-to-invent-computer-names/) covered:
 
 - The loop. Guess the next token, measure how wrong the guess was, nudge every number a little in the direction that would have made it less wrong, repeat.
 - The training data. Eighteen vintage computer names, split into words, sorted and numbered: 29 tokens. COMMODORE is 13 because it is thirteenth in that list. The number is a label, not a quantity.
@@ -68,7 +68,7 @@ Every extra number is another 87 multiplies per example: 29 to score the tokens 
 | 5 | 464 | 504,600 | 75 s |
 | 6 | 551 | 605,520 | 90 s |
 
-The run you watched last time took about 100 seconds to reach PRESS ANY KEY, and 45 of them were multiplies. The rest is computing probabilities, the updates and the display.
+The run you watched [last time](https://stacey.vetzal.ca/2026/2026-09-19-a-45-year-old-computer-learns-to-invent-computer-names/) took about 100 seconds to reach PRESS ANY KEY, and 45 of them were multiplies. The rest is computing probabilities, the updates and the display.
 
 Six would probably still have fit my three-minute budget, but three was enough. Three numbers per token told 29 tokens apart well enough that the extra width never earned its cost in clock time.
 

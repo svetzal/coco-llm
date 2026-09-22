@@ -141,4 +141,4 @@ Here's the whole thing, about two minutes, recorded from the emulator running at
 The emulator training for two minutes and then drawing names.
 </video>
 
-Next post: the training weights, why every word gets three of them, and why it's useful to think in probabilities.
+[Next post](https://stacey.vetzal.ca/2026/2026-09-21-where-the-numbers-live/): the training weights, why every word gets three of them, and why it's useful to think in probabilities.
