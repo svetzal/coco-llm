@@ -51,8 +51,6 @@ APPLE and ATARI are 0.12 apart. COMMODORE is 0.44 from ATARI and 1.13 from 64. N
 
 COMMODORE also has a different row in each table. In position 1 its row is +0.0781, +0.0250, +0.0173. In position 2 it's the row above. So the row places the token among the others and by where it sits relative to the token before it: the embedding is the token in its context. That is why the two words are everywhere in this field. A name becomes a position, and the position is where all the arithmetic happens.
 
-A vector database sells rows like these, longer.
-
 Two positions, 29 tokens, three numbers each: 174 numbers, most of the model.
 
 ## Why three?
