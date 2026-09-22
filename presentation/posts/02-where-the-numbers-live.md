@@ -39,7 +39,7 @@ add them                -0.0295   -0.0453   +0.0415
 
 ![Two tables side by side on the CoCo's green screen, in its pixel type, titled TWO TABLES, ONE PER WINDOW POSITION. Each lists tokens with three signed numbers beside them. In the position 1 table the END row is highlighted in amber; in the position 2 table the COMMODORE row is. Below, the two fetched rows are written out and added, with the sum in three black cells: minus 0.0295, minus 0.0453, plus 0.0415. A caption reads: these three numbers are the model's whole input, no arithmetic beyond the addition.](images/where-the-numbers-live.png)
 
-Those are the real rows, exported from the model before training. The three numbers at the bottom are what the training step works on.
+Those are the real rows, [exported](https://github.com/svetzal/coco-llm/blob/main/tools/export_deck_traces.py#L150-L160) from the model before training by the Python that organized the experiments and pulled every number in this post out of a run. The three numbers at the bottom are what the training step works on.
 
 Each row of three is a token's embedding, placing it among other tokens according to their proximity. Using just one number in isolation wouldn't help the model decide what should come next. Three numbers put it in a space. Think of them like coordinates in 3D space, so each token is a point in a box. To start they appear at random positions.
 
@@ -57,7 +57,7 @@ Two positions, 29 tokens, three numbers each: 174 numbers, most of the model.
 
 GPT-3's embedding is 12,288 numbers long where ours is three. Same idea, more room.
 
-Every extra number is another 87 multiplies per example: 29 to score the tokens and 58 more in the training step. The 6809 has no multiply for 16-bit numbers, so each one is a routine built from its 8-bit MUL instruction, and I measured that routine on the machine at 133 cycles, about 150 microseconds. I priced the widths before choosing:
+Every extra number is another 87 multiplies per example: 29 to score the tokens and 58 more in the training step. The 6809 has no multiply for 16-bit numbers, so each one is [a routine](https://github.com/svetzal/coco-llm/blob/main/src/6809/model_forward.asm#L280-L297) built from its 8-bit MUL instruction, and I [measured](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-014-6309-multiplier.md#L94) that routine on the machine at 133 cycles, about 150 microseconds. I priced the widths before choosing:
 
 | numbers per word | parameters | multiplies to train | time in multiplies |
 | ---------------: | ---------: | ------------------: | -----------------: |
@@ -72,7 +72,7 @@ The run you watched last time took about 100 seconds to reach PRESS ANY KEY, and
 
 Six would probably still have fit my three-minute budget, but three was enough. Three numbers per token told 29 tokens apart well enough that the extra width never earned its cost in clock time.
 
-The other choice I priced was the one I built first and threw away. Make a token a single character instead of a whole word and the model has to predict every letter: 12,859,560 multiplies. At eleven cycles each, the cost of the bare MUL instruction and the floor I priced it at, that is 158 seconds against a 180-second budget. At what the math costs in practice, is half an hour.
+The other choice I priced was the one I built first and threw away. Make a token a single character instead of a whole word and the model has to predict every letter: [12,859,560 multiplies](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-001-model-feasibility.md#L101). At eleven cycles each, the cost of the bare MUL instruction and the floor I priced it at, that is 158 seconds against a 180-second budget. At what the math costs in practice, is half an hour.
 
 ## What is a parameter?
 
@@ -96,7 +96,7 @@ I enjoy using this old hardware because I think it's easy to become wasteful the
 
 The 87 and the 29 in that count are the scoreboard: for every token the model might predict, three numbers called its weights, plus its starting nudge. To score a token, multiply the three context numbers by the token's three weights and add the nudge. Do it 29 times and every token has a score.
 
-That's 87 multiplies, and the 6809's MUL instruction multiplies two unsigned 8-bit numbers. Each weight is stored as 16 bits but scores with its top byte, the context number goes in as all 16, and one product takes two MUL instructions plus a step to fix the sign. Next post shows the 6809 doing one.
+That's 87 multiplies, and the 6809's MUL instruction multiplies two unsigned 8-bit numbers. Each weight is stored as 16 bits but scores with its top byte, the context number goes in as all 16, and one product takes two MUL instructions plus [a step to fix the sign](https://github.com/svetzal/coco-llm/blob/main/src/6809/model_forward.asm#L290-L294). Next post shows the 6809 doing one.
 
 Before training all 290 numbers are random and small, so the scores are all near zero. Here are the shares they turn into for the window END, COMMODORE, where the right answer is AMIGA:
 
@@ -113,7 +113,7 @@ Twenty-nine tokens, mostly indistinguished.
 
 ## Scores become shares
 
-Those percentages are what a score turns into once you push it through a softmax.
+Those percentages are what a score turns into once you push it through a [softmax](https://github.com/svetzal/coco-llm/blob/main/src/6809/model_forward.asm#L136).
 
 Suppose three tokens have raw scores of 3, 2 and 1. A score of 3 doesn't mean 3%, or three votes. Softmax makes every score a positive weight, then divides each by the total, so the results are shares of 100%: about 67%, 24% and 9%. It keeps the order and it exaggerates the lead.
 
@@ -125,7 +125,7 @@ On the CoCo the shares add up to 256 instead of 100, so every token owns a stret
 
 ## Training is a nudge
 
-Back to the window END, COMMODORE, where the right answer is AMIGA and the model gave it 3.45%. Training is one step, done over and over: score, compare with the right answer, nudge every weight a little in the direction that would have raised the right answer's share. Here is the step, with the real numbers.
+Back to the window END, COMMODORE, where the right answer is AMIGA and the model gave it 3.45%. Training is one step, done over and over: score, compare with the right answer, nudge every weight a little in the direction that would have raised the right answer's share. Here is the step, with [the real numbers](https://github.com/svetzal/coco-llm/blob/main/tools/export_deck_traces.py#L210-L223).
 
 AMIGA should have had 100% and got 3.45%, so the model was wrong by 0.9655. Every weight's change is that, times a rate, times what the weight contributed.
 
@@ -133,7 +133,7 @@ Take AMIGA's three weights from the scoreboard. To make AMIGA's score, each was 
 
 ![Three columns on the CoCo's green screen, titled THREE WEIGHTS AND ONE NUDGE EACH, with the formula beneath: change equals 0.0625, a rate I chose, times 0.9655, how wrong it was, times the context number. Each column has the context number in a navy box marked negative or positive, the weight before, the change in an amber box with a navy arrow pointing down for the two negative changes and up for the positive one, and the weight after: plus 0.1214 to plus 0.1197, minus 0.0705 to minus 0.0732, plus 0.0325 to plus 0.0350. The caption reads: each weight moves the way that would have raised the score for AMIGA.](images/one-nudge.png)
 
-The rate, 0.0625, is a sixteenth. I chose it because dividing by sixteen is four shift instructions on a 6809.
+The rate, 0.0625, is a sixteenth. I chose it because dividing by sixteen is [four shift instructions](https://github.com/svetzal/coco-llm/blob/main/src/6809/training.asm#L133-L140) on a 6809.
 
 The same step reaches back into the two tables, too. The END row in position 1 and the COMMODORE row in position 2 both get nudged, by how much each of the three context numbers contributed to every score that came out wrong. After the step, fetch and add those rows again and you get minus 0.0118, minus 0.0561, plus 0.0477. Those rows started random. Nudges like this are what make them mean something.
 
@@ -141,7 +141,7 @@ AMIGA now has 3.68%, up from 3.45. That is the size of one step, and there are 1
 
 ## Roll it
 
-Here is the die being rolled, from the run you watched last time, after all 1,160 of those steps. Seed 6809 drew three bytes: 50, 12, 119.
+Here is the die being rolled, from the run you watched last time, after all 1,160 of those steps. Seed 6809 [drew](https://github.com/svetzal/coco-llm/blob/main/src/6809/model_forward.asm#L23-L36) three bytes: 50, 12, 119.
 
 The first draw, 50, landed on COMMODORE, which owned 27 of the 256. TANDY owned 131, more than half the line, and was not drawn. The second draw, 12, landed on 128, which owned 17; the widest stretch there was PET's, 25. The third draw, 119, landed on END, which by then owned 228 of 256.
 
@@ -151,7 +151,7 @@ COMMODORE 128. A real name; it's in the training data. It's also the first name 
 
 Seed 6810 drew 177, 110 and 29 from the same table, and got TANDY COMPUTER. Same weights, same rows, different bytes. The eleven names on that screen are eleven paths through one table.
 
-Two things about the die. For the first two tokens, END's stretch is handed to the widest, so a name is never one word long; that rule is in the code, not the weights. And you don't have to roll. Take the widest stretch every time and you get the same name every time: greedy decoding, which is what temperature zero means. Temperature rescales the scores before they become shares. Higher narrows the fat stretch and widens the thin ones, lower does the reverse, and zero is greedy.
+Two things about the die. For the first two tokens, END's stretch is [handed to the widest](https://github.com/svetzal/coco-llm/blob/main/src/reference/fixed_token_lm.py#L218-L223), so a name is never one word long; that rule is in the code, not the weights. And you don't have to roll. Take the widest stretch every time and you get the same name every time: greedy decoding, which is what temperature zero means. Temperature rescales the scores before they become shares. Higher narrows the fat stretch and widens the thin ones, lower does the reverse, and zero is greedy.
 
 This is why it's useful to think in probabilities. The model never answers. It hands over shares, and a draw picks. Take the biggest every time and you get one answer forever; draw, and you get variety, and now and then TANDY ZX80. It's the die.
 

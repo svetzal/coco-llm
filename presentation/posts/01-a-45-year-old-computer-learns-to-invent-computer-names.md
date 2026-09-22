@@ -32,7 +32,7 @@ The model has 290 parameters, numbers that we can change to fit it to a purpose.
 
 Let's take a look at the training data...
 
-Eighteen names of vintage computers:
+Eighteen names of vintage computers, [the file the run reads](https://github.com/svetzal/coco-llm/blob/main/experiments/data/EXP-001-computer-names.txt):
 
 ```text
 ACORN ARCHIMEDES      ATARI ST              SINCLAIR ZX SPECTRUM
@@ -46,7 +46,7 @@ ATARI 800             SINCLAIR ZX81
 
 That is an absurdly small training set, and it's still useful. Big models differ from this one by the amount of training data, not by kind.
 
-A computer doesn't have words. It has numbers. So the first thing I had to decide was how to turn those names into numbered pieces. The pieces are called tokens, and here a token is a whole word, because I decided that would suit us to start. Split the eighteen names into words, sort them, number them, and you get 29 tokens, counting one extra that stands in for nothing - indicating empty spaces, and the end of a name.
+A computer doesn't have words. It has numbers. So the first thing I had to decide was how to turn those names into numbered pieces. The pieces are called tokens, and here a token is a whole word, because I decided that would suit us to start. Split the eighteen names into words, sort them, number them, and you get [29 tokens](https://github.com/svetzal/coco-llm/blob/main/experiments/data/EXP-002-tokenized-computer-names.txt), counting one extra that stands in for nothing - indicating empty spaces, and the end of a name.
 
 ```text
  0 <END>       8 APPLE       16 LISA        24 TANDY
@@ -117,7 +117,7 @@ COMMODORE 64 is in the training data. At sixty, so are 143 of the 200 draws, wor
 
 That has a name: overfitting.
 
-There's a trap at the other end too. At epoch zero, before any training, every draw is new, and every one is exactly six words long because six is where I stopped it. The end marker is a token like any other, and the model hasn't learned when to produce it. Twenty was where this model had the most of it: 179 of 200 draws that were not in the training data and still looked like a plausible computer name.
+There's a trap at the other end too. At epoch zero, before any training, every draw is new, and every one is exactly six words long because six is where I stopped it. The end marker is a token like any other, and the model hasn't learned when to produce it. Twenty was where this model had the most of it: [179 of 200 draws](https://github.com/svetzal/coco-llm/blob/main/tools/export_deck_traces.py#L259-L290) that were not in the training data and still looked like a plausible computer name.
 
 ## Try it yourself
 
@@ -130,6 +130,8 @@ make present EXP=4
 ```
 
 It trains at the 1981 clock rate, parks when it's done, and draws names when you press a key. Nothing is sped up.
+
+The CoCo runs 6809 assembly, in [src/6809](https://github.com/svetzal/coco-llm/tree/main/src/6809). The Python beside it is how I organized the experiments: a reference model that does the same arithmetic on the Mac, so the CoCo's result can be checked against it, the experiment records with their data, and the scripts that pulled the numbers in these posts out of the runs. The live run is [EXP-004, the live training run](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-004-complete-6809-training.md).
 
 ## Watch it work, start to finish
 
