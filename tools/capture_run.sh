@@ -20,6 +20,11 @@
 #                   {down} {left} {right} {esc}; see tools/xroar_keys.py
 #   --settle S      seconds to wait after the window appears before recording
 #                   (default 1); the demo keeps running meanwhile
+#   --wait-still S  before the settle, wait until the window has not changed
+#                   for S seconds: a demo that trains itself first and parks
+#                   at PRESS ANY KEY is recorded from the parking, and the
+#                   key times count from there. Gives up after --wait-max
+#                   seconds (default 900)
 #   --scale N       integer nearest-neighbour upscale for the MP4 (default 1;
 #                   the recording is already at Retina pixel density)
 #   --out DIR       where the files go (default build/captures)
@@ -35,6 +40,7 @@
 set -euo pipefail
 
 NAME=""; SECONDS_TO_RECORD=120; SETTLE=1; SCALE=1; OUT=build/captures; QUIT=0; GEOM="640x480+80+80"; RECT=""
+WAIT_STILL=0; WAIT_MAX=900
 KEYS=()
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -43,6 +49,8 @@ while [ $# -gt 0 ]; do
     --seconds) SECONDS_TO_RECORD="$2"; shift 2 ;;
     --keys) KEYS+=("$2"); shift 2 ;;
     --settle) SETTLE="$2"; shift 2 ;;
+    --wait-still) WAIT_STILL="$2"; shift 2 ;;
+    --wait-max) WAIT_MAX="$2"; shift 2 ;;
     --scale) SCALE="$2"; shift 2 ;;
     --out) OUT="$2"; shift 2 ;;
     --quit) QUIT=1; shift ;;
@@ -99,6 +107,24 @@ if [ -z "$RECT_GIVEN" ]; then
   RECT="$FX,$FY,$FW,$FH"
 fi
 echo "window: $RECT"
+
+# Wait for the screen to stop changing: a hash of a still of the window every
+# two seconds, until it has repeated for long enough.
+if [ "$WAIT_STILL" -gt 0 ]; then
+  STILL_PNG="$OUT/.still-$NAME.png"
+  LAST=""; STILL_FOR=0; WAITED=0
+  while [ "$STILL_FOR" -lt "$WAIT_STILL" ]; do
+    sleep 2; WAITED=$((WAITED + 2))
+    screencapture -x -R "$RECT" "$STILL_PNG"
+    NOW=$(md5 -q "$STILL_PNG")
+    if [ "$NOW" = "$LAST" ]; then STILL_FOR=$((STILL_FOR + 2)); else STILL_FOR=0; fi
+    LAST="$NOW"
+    if [ "$WAITED" -ge "$WAIT_MAX" ]; then echo "window still changing after ${WAIT_MAX}s" >&2; exit 1; fi
+  done
+  rm -f "$STILL_PNG"
+  echo "window still for ${WAIT_STILL}s after ${WAITED}s"
+fi
+
 # Park the pointer in the bottom-right corner so it is not in the frame.
 uv run --with pyobjc-framework-Quartz python -c 'import Quartz; b = Quartz.CGDisplayBounds(Quartz.CGMainDisplayID()); Quartz.CGWarpMouseCursorPosition((b.size.width - 2, b.size.height - 2))' 2>/dev/null || true
 sleep "$SETTLE"
@@ -128,9 +154,12 @@ if [ "$QUIT" = 1 ]; then
   pkill -x xroar || true
 fi
 
-# Encode. Nearest-neighbour scaling keeps the pixels square; yuv420p plays everywhere.
+# Encode. The window's bottom corners are rounded and show what is behind
+# them, so 12 pixels come off every edge; the CoCo raster has a black border
+# wider than that. Nearest-neighbour scaling keeps the pixels square; yuv420p
+# plays everywhere.
 ffmpeg -hide_banner -loglevel error -y -i "$MOV" \
-  -vf "scale=iw*${SCALE}:ih*${SCALE}:flags=neighbor,pad=ceil(iw/2)*2:ceil(ih/2)*2" \
+  -vf "crop=iw-24:ih-24:12:12,scale=iw*${SCALE}:ih*${SCALE}:flags=neighbor,pad=ceil(iw/2)*2:ceil(ih/2)*2" \
   -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -c:a aac -b:a 160k -movflags +faststart "$MP4"
 
 python3 - "$META" "$NAME" "$STARTED" "$RECT" "$SECONDS_TO_RECORD" "$SCALE" "$MOV" "$MP4" "$*" "${KEYS[@]:-}" <<'PY'
