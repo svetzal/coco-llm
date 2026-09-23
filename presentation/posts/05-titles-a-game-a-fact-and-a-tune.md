@@ -53,6 +53,12 @@ GIDEON TO TRUTH                  PLATO'S STEPCHILDREN TO MIRI
 
 Every word is real. None of the titles is.
 
+Here it is dealing, recorded from the emulator at the real clock rate. A screen takes about ten seconds; each keypress deals a fresh one.
+
+<video controls preload="metadata" playsinline style="width: 100%; max-width: 640px; display: block; margin: 0 auto; image-rendering: pixelated;" src="/2026/images/coco-llm-5-titles.mp4">
+The emulator dealing two screens of sixteen invented titles.
+</video>
+
 The Mac trained the 400 bytes, and it stopped at eleven epochs for a reason that belongs in the record: the CoCo adds up a score in sixteen bits, and [at twelve epochs the scores get big enough to wrap around](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-012-episode-titles.md#L261-L293). Training longer would put the two machines out of step. That costs something you can see. A model trained for sixty epochs prefers THE something OF something, the shape that dominates the real list; the eleven-epoch one leans on bare names. How well this thing writes is limited by how long it can be trained before a sixteen-bit number overflows.
 
 When output looks creative, ask what is holding the shape, what is holding the words, and who wrote the rules. Here you can point at all three: 400 bytes learned, and everything else written by a person. In a large model the same split exists, with rules bolted around the outside, and you cannot point at it. And notice what job this is. Ask this machinery for facts and every screen is an error. Ask it for invention and the screen is the deliverable. Which one you get was a decision about the task.
@@ -104,6 +110,10 @@ QUESTION: LISA
 
 Press Enter: ANSWER: CODE 2. Press E, type 6, and one byte in context RAM changes: LISA = CODE 6. The weights did not change, and the screen says so. Press Enter again: ANSWER: CODE 6.
 
+<video controls preload="metadata" playsinline style="width: 100%; max-width: 640px; display: block; margin: 0 auto; image-rendering: pixelated;" src="/2026/images/coco-llm-5-attention.mp4">
+The emulator: Enter answers CODE 2, E and 6 change the context record, Enter answers CODE 6.
+</video>
+
 The model cannot have stored that answer, because in the training data Lisa's code was different in every example. The binding changes each time, so the only thing training could teach is how to find the record that matches the question. [EXP-011, the context-editing attention head](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-011-contextual-associative-recall.md), does it with two small tables: a query row for each name and a key row for each name, both learned. Multiply the question's query row against each record's key row, take the record with the biggest score, copy its value. That is attention, the smallest thing that still is: one head, no value matrix, 160 parameters. It answered 100% of 4,096 bindings it had never seen. A lookup stored in the parameters, with no way to read the context, scored 12.18%, about chance.
 
 The main model has none of this. It is here because it is the mechanism behind the sentence in post four: pasting a document, a system prompt, a memory feature, all of it goes into context, and this is how a model uses what is there. And the caution comes with it. It used the 6 I typed exactly as faithfully as the 2. Relevant is not the same as true.
@@ -124,6 +134,12 @@ The number is how far the pitch sits above the home note, a dot holds it, R is a
 One thing about that alphabet has to be said out loud. Because a token is a step of the scale rather than a pitch, a wrong note is impossible by construction. The harmony was handed to the model, not learned by it. What it learns is contour, phrase length, rhythm, repetition and where a phrase cadences, with the current chord, mode, metre and beat in its window. Those chords were inferred from the melodies by a rule I wrote, so they are a derived feature and not ground truth. The model and the count-table baseline both got the same ones, so the comparison stays fair, and the model beats the best table by [0.494 bits per row](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-010-melody-continuation.md#L503-L545) on the held-out tunes. Where the table had seen the context before, the table won. Everywhere else, the model won, and everywhere else is 93% of the held-out rows.
 
 At the table you enter eight notes on the number keys, and the keys are scale degrees, so you cannot fumble the seed. That is the only music a person wrote. The same loop as post one, predict the next token and write it down, composes the rest. The bass, the arpeggio and the drums are rules a person wrote that follow the chords, the same arrangement as the title machine. Then it plays. Playing four voices takes every cycle the machine has, so it composes the tune into memory first, then performs it. No modern machine hides that from you; it does it faster.
+
+Here is one, with sound. This is the CoCo 1 build under the emulator at the real clock rate, so the performer is the 4,566-samples-a-second one. The seed is 1 2 3 5 5 3 2 1, in yellow; THINKING is the composer, about five seconds; the rest is the tune it wrote.
+
+<video controls preload="metadata" playsinline style="width: 100%; max-width: 640px; display: block; margin: 0 auto; image-rendering: pixelated;" src="/2026/images/coco-llm-5-melody.mp4">
+The emulator composing a tune from an eight-note seed and playing it.
+</video>
 
 The performance is its own experiment, and it was heard on the CoCo 3 through a Commodore 1703 monitor on 6 September 2026. The first player had a warble on the melody, and [EXP-018, the steady sample clock](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-018-steady-sample-clock.md), removed it by making every sample cost the same number of cycles. On the 6309 at the fast clock that is 11,188 samples a second; the CoCo 1 build plays the same tune at 4,566.
 

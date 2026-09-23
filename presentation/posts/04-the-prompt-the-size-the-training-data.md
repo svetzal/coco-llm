@@ -49,6 +49,12 @@ Now hold the model still. All 380 numbers, [checksum `6f9a6c88742221bb` before a
 | GET YOUR | START IN COLOR COMPUTING |
 | THE COMPUTER | FOR THE REST OF US |
 
+Here is the machine doing it, recorded from the emulator at the real clock rate after the training had parked. One keypress opens the list; each Enter completes the selected prompt and moves to the next.
+
+<video controls preload="metadata" playsinline style="width: 100%; max-width: 640px; display: block; margin: 0 auto; image-rendering: pixelated;" src="/2026/images/coco-llm-4-prompts.mp4">
+The emulator completing the six prompts, one Enter each.
+</video>
+
 Five of the six are training lines, word for word, which is the overfit doing its job. ARE YOU is the one that is not. It starts inside Commodore's line and ends inside Radio Shack's, KEEPING UP IN LITTLE COMPUTERS, a slogan nobody ran. The model had no memorized continuation for those two words, so its shares blended two companies' copy.
 
 That is what a prompt is. It is the first few tokens of the output, handed over before the machine starts. It is not an instruction and it is not training; the 380 numbers are identical on both sides of the table. When you type into a chat window, paste in a document, or a product adds a system prompt or a memory feature on your behalf, all of it goes into the same place: the context window, in front of whatever the model produces next. Asking teaches it nothing. Training changed the weights exactly once, before you arrived.
@@ -86,6 +92,12 @@ The vocabulary is 255 because a token identifier is one byte, and that byte has 
 You type, press the right arrow, and it ranks your next word. Type THE MODEL CAN and it offers SUGGEST, BE, REMEMBER. Type RUN THE PROGRAM with the period and the top suggestion is the end-of-phrase token: it has learned that a period is usually the end. (My first interface hid that token, because the same number also meant no suggestion. The model said stop and the product said pick something else, and made the model look foolish. I fixed the interface and retrained nothing. Some apparent model failures are product decisions.)
 
 The window is still the window. Type I KNOW THE OLD MODEL CAN and note the three suggestions. Type WE KNOW THE OLD MODEL CAN and you get the same three, because the model sees five tokens and both I and WE fell out the far side. To this model those are the same sentence.
+
+Here are those four phrases typed into the emulator at the real clock rate. The pause after each right arrow is the CoCo scoring 255 tokens.
+
+<video controls preload="metadata" playsinline style="width: 100%; max-width: 640px; display: block; margin: 0 auto; image-rendering: pixelated;" src="/2026/images/coco-llm-4-completer.mp4">
+The emulator running the sentence completer: THE MODEL CAN, then I KNOW and WE KNOW, then RUN THE PROGRAM with a period.
+</video>
 
 So, is bigger better? I measured exactly that, because I built this completer twice. The first was [EXP-006, the 8 KiB completion workbench](https://github.com/svetzal/coco-llm/blob/main/experiments/EXP-006-pretrained-tab-completion.md): 8,188 parameters, 178 tokens, a four-token window. The second is this one, four times the parameters. Same task, scored the same way, on sentences neither model trained on.
 
