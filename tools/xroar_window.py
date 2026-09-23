@@ -10,9 +10,15 @@ Exits 1 if no XRoar window is on screen.
 
 from __future__ import annotations
 
+import subprocess
 import sys
 
 import Quartz
+
+
+def xroar_pids() -> set[int]:
+    result = subprocess.run(["pgrep", "-x", "xroar"], capture_output=True, text=True)
+    return {int(line) for line in result.stdout.split()}
 
 
 def main() -> int:
@@ -20,9 +26,14 @@ def main() -> int:
         Quartz.kCGWindowListOptionOnScreenOnly | Quartz.kCGWindowListExcludeDesktopElements,
         Quartz.kCGNullWindowID,
     )
+    pids = xroar_pids()
     for window in windows:
+        # The owner name is the launching app's when XRoar is started from a
+        # shell inside one (it reads "Claude" or "Terminal"), so match the
+        # process id and fall back to the name.
         owner = str(window.get("kCGWindowOwnerName", ""))
-        if "xroar" not in owner.lower() or window.get("kCGWindowLayer", 1) != 0:
+        ours = window.get("kCGWindowOwnerPID") in pids or "xroar" in owner.lower()
+        if not ours or window.get("kCGWindowLayer", 1) != 0:
             continue
         b = window["kCGWindowBounds"]
         print(f"{int(b['X'])},{int(b['Y'])},{int(b['Width'])},{int(b['Height'])}")
